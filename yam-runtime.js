@@ -64,11 +64,12 @@
   }
 
   // ---- link routing shared by build and browser
-  const P = { quote: 'contact.html', calc: 'cbm-calculator.html', track: 'track-shipment.html', customs: 'customs-brokerage.html', mobile: 'mobile-phone-exports.html', third: 'third-country-trade.html', ocean: 'ocean-freight.html', air: 'air-freight.html', project: 'project-cargo.html', about: 'about.html', desk: 'trade-desk.html', bonded: 'bonded-warehousing.html', expo: 'exhibition-ata-carnet.html', wa: 'https://wa.me/919212558167' };
+  const P = { quote: 'contact.html', calc: 'cbm-calculator.html', track: 'track-shipment.html', customs: 'customs-brokerage.html', mobile: 'mobile-phone-exports.html', third: 'third-country-trade.html', ocean: 'ocean-freight.html', air: 'air-freight.html', project: 'project-cargo.html', about: 'about.html', desk: 'trade-desk.html', bonded: 'bonded-warehousing.html', expo: 'exhibition-ata-carnet.html', consol: 'buyers-consolidation.html', wa: 'https://wa.me/919212558167' };
   const RULES = [
     [/^terms$|trading conditions|privacy/, P.about], [/email me updates|sign in/, P.quote], [/download checklist/, P.wa],
     [/bonded warehous|ftwz/, P.bonded], [/exhibition|ata carnet/, P.expo],
     [/quote|plan a re-export|plan this route|plan a project|plan a bonded|plan my exhibition|talk to the desk|talk to us|duty estimate|let.s talk/, P.quote],
+    [/consolidation|purchase order|po management/, P.consol],
     [/calculator/, P.calc], [/^track|track shipment/, P.track],
     [/customs brokerage|trade compliance|hs code|compliance advisory/, P.customs],
     [/lithium|dangerous goods|^air freight|air freight$/, P.air],
