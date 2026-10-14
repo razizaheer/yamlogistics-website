@@ -24,12 +24,15 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .util{background:#0B4F8F;color:#CFE3F5;font-size:13px}
 .util-in{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;padding-top:8px;padding-bottom:8px}
 .util a{color:#FFFFFF;text-decoration:none}.util a.gold{color:#FFC93C;font-weight:600}
+.fx{margin-left:auto;display:flex;gap:14px;align-items:center;font-family:'Geist Mono',monospace;font-size:12px;white-space:nowrap;overflow:hidden}
+.fx b{color:#FFFFFF;font-weight:600}.fxl{color:#FFC93C;font-weight:600;letter-spacing:.06em}.fxd{color:#9FC2E6;font-size:11px}
+.btn-calc{background:#FFC93C;color:#0B2A4A!important;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none;white-space:nowrap}
 .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #E1EDF7;backdrop-filter:saturate(1.4) blur(8px)}
 .nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:12px;padding-bottom:12px;position:relative}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#0B2A4A}
 .bw{display:flex;flex-direction:column;line-height:1}.b1{font-family:'Archivo',sans-serif;font-weight:900;font-stretch:118%;font-size:24px}
-.b2{font-family:'Geist Mono',monospace;font-size:10px;color:#5E7891;letter-spacing:.14em;margin-top:3px}
-.links{display:flex;flex-wrap:wrap;gap:22px;align-items:center;font-size:15px;font-weight:500}
+.b2{white-space:nowrap;font-family:'Geist Mono',monospace;font-size:10px;color:#5E7891;letter-spacing:.14em;margin-top:3px}
+.links{display:flex;flex-wrap:nowrap;gap:20px;white-space:nowrap;align-items:center;font-size:15px;font-weight:500}
 .links>a{color:#0B2A4A;text-decoration:none}.links>a[aria-current]{color:#0A6CC2;font-weight:600}
 .sol summary{cursor:pointer;list-style:none;padding:8px 0}.sol summary::-webkit-details-marker{display:none}
 .mega{position:absolute;left:0;right:0;top:100%;background:#FFFFFF;border-bottom:1px solid #E1EDF7;box-shadow:0 30px 60px rgba(11,42,74,.12)}
@@ -41,19 +44,21 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .btn,.btn-o{padding:11px 20px;border-radius:999px;font-weight:600;text-decoration:none;white-space:nowrap}
 .btn{background:#0A6CC2;color:#FFFFFF!important}.btn-o{border:1.5px solid #0A6CC2;color:#0A6CC2!important;padding:9.5px 18px}
 .go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
-.navt{display:none}.burger{display:none}
-@media (max-width:1100px){
+.navt{display:none}.burger{display:none}.calc-m{display:none}
+@media (max-width:1240px){
  .hide-s{display:none}
+ .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
+ .links{flex-wrap:wrap;white-space:normal}
  .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
  .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
  .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
  .links>a,.sol summary{padding:12px 0;border-bottom:1px solid #EEF4FA}
- .links .btn,.links .btn-o{margin-top:12px;text-align:center}
+ .links .btn,.links .btn-o,.links .btn-calc{margin-top:12px;text-align:center}
  .navt:checked~.links{display:flex}
  .mega{position:static;box-shadow:none;border:0}.mega .wrap{padding:0}.mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
  .links{overflow-x:hidden}.links>*{min-width:0;max-width:100%}
 }
-@media (max-width:640px){.wrap{padding:0 16px}.util-in>span{display:none}.util-in{gap:6px 16px;font-size:12px}}
+@media (max-width:640px){.wrap{padding:0 16px}.util-in .u1{display:none}.util-in{gap:6px 16px;font-size:12px}.fx{margin-left:0;overflow-x:auto;width:100%;gap:12px}.fxd{display:none}}
 @media (max-width:760px){[style*="linear-gradient(90deg, rgba(255,255,255,0.9"]{background:rgba(255,255,255,0.84)!important}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
 .fab{position:fixed;right:20px;bottom:20px;z-index:50;width:60px;height:60px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(11,42,74,.25)}
@@ -70,20 +75,21 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <body>
 <header class="site">
 <div class="util"><div class="wrap util-in">
-<span class="mono"><span class="live" style="color:#FFC93C">●</span> Mumbai airport desk open 24×7</span>
-<span class="hide-s">New Delhi · Mumbai · Mundra</span>
-<a href="https://wa.me/919212558167">WhatsApp +91 92125 58167</a>
-<a href="YAM-Logistics-Corporate-Profile.pdf" download class="gold">↓ Company profile (PDF)</a>
+<span class="mono u1"><span class="live" style="color:#FFC93C">●</span> Mumbai airport desk open 24×7</span>
+<a href="https://wa.me/919212558167" class="u1">WhatsApp +91 92125 58167</a>
+<a href="YAM-Logistics-Corporate-Profile.pdf" download class="gold u1">↓ Company profile (PDF)</a>
+<div class="fx" id="fx" title="Market reference rates, updated daily. Customs duty is calculated on CBIC-notified exchange rates."><span class="fxl">₹ RATES</span><span class="fxi" data-c="USD">USD <b>—</b></span><span class="fxi" data-c="EUR">EUR <b>—</b></span><span class="fxi" data-c="CNY">CNY <b>—</b></span><span class="fxi" data-c="GBP">GBP <b>—</b></span><span class="fxi" data-c="AED">AED <b>—</b></span><span class="fxd" id="fxd"></span></div>
 </div></div>
 <nav class="nav" aria-label="Main"><div class="wrap nav-in">
 <a href="index.html" class="brand"><svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#0A6CC2"/><circle cx="28" cy="12" r="5" fill="#FFC93C"/><path d="M6 26c4 0 4-3 8-3s4 3 8 3 4-3 8-3 4 3 4 3" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M11 21h16l-3 4H14z" fill="#FFFFFF"/></svg><span class="bw"><span class="b1">YAM</span><span class="b2">LOGISTICS · SINCE 1968</span></span></a>
-<input type="checkbox" id="navt" class="navt" aria-label="Open menu"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
+<a href="cbm-calculator.html" class="calc-m">📦 CBM</a><input type="checkbox" id="navt" class="navt" aria-label="Open menu"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
 <details class="sol"><summary>Solutions ▾</summary><div class="mega"><div class="wrap mega-in">
 <div><div class="mh">FREIGHT</div><a href="ocean-freight.html">Ocean freight · FCL / LCL</a><a href="air-freight.html">Air freight</a><a href="project-cargo.html">Project, ODC &amp; breakbulk</a><a href="ocean-freight.html">Domestic haulage &amp; ICDs</a><a href="air-freight.html">Dangerous goods</a></div><div><div class="mh">CUSTOMS &amp; COMPLIANCE</div><a href="customs-brokerage.html">Customs brokerage</a><a href="customs-brokerage.html">Trade compliance advisory</a><a href="contact.html">Cargo insurance</a><a href="ocean-freight.html">Destination / DO agency</a></div><div><div class="mh">SPECIALIST</div><a href="mobile-phone-exports.html">Mobile phone exports</a><a href="buyers-consolidation.html">Buyer’s consolidation &amp; PO management</a><a href="third-country-trade.html">Third-country trade &amp; re-export</a><a href="bonded-warehousing.html">Bonded warehousing &amp; FTWZ</a><a href="exhibition-ata-carnet.html">Exhibition cargo &amp; ATA carnet</a><a href="third-country-trade.html">Merchanting trade support</a></div>
 <div class="mcta"><strong>Not sure what you need?</strong><span>Tell a licensed broker what you're moving. We'll design the route and the paperwork.</span><a href="contact.html">Talk to the desk →</a></div>
 </div></div></details>
-<a href="customs-brokerage.html">Customs</a><a href="mobile-phone-exports.html">Mobile exports</a><a href="third-country-trade.html">Third-country trade</a><a href="trade-desk.html">Trade Desk</a><a href="about.html">About</a>
+<a href="customs-brokerage.html">Customs</a><a href="mobile-phone-exports.html">Mobile exports</a><a href="third-country-trade.html">Third-country trade</a><a href="trade-desk.html">Trade Desk</a>
+<a href="cbm-calculator.html" class="btn-calc" aria-current="page">📦 CBM calculator</a>
 <a href="track-shipment.html" class="btn-o">Track shipment</a>
 <a href="contact.html" class="btn go">Get a quote</a>
 </div></div></nav>
@@ -316,6 +322,15 @@ Kachchh, Gujarat 370421</span>
 
 </footer>
 <a href="https://wa.me/919212558167" aria-label="Chat with YAM on WhatsApp" class="fab"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12Z"/><path d="M9 9.5c.3 1.8 1.7 3.7 3.8 4.6l1.2-1.1 1.8.8-.4 1.6c-3.2.2-6.9-3.2-7.2-6.4l1.6-.5.8 1.8z"/></svg></a>
+<script>
+(function(){var C=['USD','EUR','CNY','GBP','AED'],K='yamfx1';
+function show(d){if(!d||!d.r)return;var el=document.getElementById('fx');if(!el)return;el.querySelectorAll('.fxi').forEach(function(s){var c=s.getAttribute('data-c'),v=d.r[c];if(v){s.querySelector('b').textContent='₹'+v.toFixed(2)}else{s.style.display='none'}});var dd=document.getElementById('fxd');if(dd&&d.d)dd.textContent='ref. '+d.d;}
+try{var c=JSON.parse(localStorage.getItem(K)||'null');if(c&&Date.now()-c.t<6*3600e3){show(c);return}}catch(e){}
+function save(d){d.t=Date.now();try{localStorage.setItem(K,JSON.stringify(d))}catch(e){}show(d)}
+function er(){return fetch('https://open.er-api.com/v6/latest/INR').then(function(x){return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates&&j.rates[c])r[c]=1/j.rates[c]});save({r:r,d:(j.time_last_update_utc||'').slice(5,16)})})}
+fetch('https://api.frankfurter.dev/v1/latest?base=INR&symbols=USD,EUR,CNY,GBP').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates[c])r[c]=1/j.rates[c]});return er().catch(function(){}).then(function(){var c2=null;try{c2=JSON.parse(localStorage.getItem(K))}catch(e){}if(c2&&c2.r&&c2.r.AED)r.AED=c2.r.AED;save({r:r,d:new Date(j.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})})})}).catch(function(){er().catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'})});
+})();
+</script>
 <template id="tpl">
 <div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
 
