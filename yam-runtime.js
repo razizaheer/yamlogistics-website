@@ -62,6 +62,23 @@
     for (const c of node.childNodes) out += render(c, scope, ctx);
     return out + '</' + tag + '>';
   }
+
+  // ---- link routing shared by build and browser
+  const P = { quote: 'contact.html', calc: 'cbm-calculator.html', track: 'track-shipment.html', customs: 'customs-brokerage.html', mobile: 'mobile-phone-exports.html', third: 'third-country-trade.html', ocean: 'ocean-freight.html', air: 'air-freight.html', project: 'project-cargo.html', about: 'about.html', desk: 'trade-desk.html', bonded: 'bonded-warehousing.html', expo: 'exhibition-ata-carnet.html', wa: 'https://wa.me/919212558167' };
+  const RULES = [
+    [/^terms$|trading conditions|privacy/, P.about], [/email me updates|sign in/, P.quote], [/download checklist/, P.wa],
+    [/bonded warehous|ftwz/, P.bonded], [/exhibition|ata carnet/, P.expo],
+    [/quote|plan a re-export|plan this route|plan a project|plan a bonded|plan my exhibition|talk to the desk|talk to us|duty estimate|let.s talk/, P.quote],
+    [/calculator/, P.calc], [/^track|track shipment/, P.track],
+    [/customs brokerage|trade compliance|hs code|compliance advisory/, P.customs],
+    [/lithium|dangerous goods|^air freight|air freight$/, P.air],
+    [/mobile|phone/, P.mobile], [/third-country|re-export|merchanting/, P.third],
+    [/briefing|trade desk|corridor brief|read the|read all|incoterms/, P.desk],
+    [/haulage|destination|do agency|ocean/, P.ocean], [/project|odc|breakbulk/, P.project],
+    [/insurance/, P.quote], [/our story|about/, P.about], [/\bair\b/, P.air]
+  ];
+  function linkFor(text) { const k = String(text).replace(/\s+/g, ' ').trim().toLowerCase(); for (const [re, to] of RULES) if (re.test(k)) return to; return null; }
+  function fixDomLinks(root) { root.querySelectorAll('a[href="#"]').forEach((a) => { const to = linkFor(a.textContent); if (to) a.setAttribute('href', to); }); }
   class DCLogic {
     constructor(props) { this.props = props || {}; this.state = {}; }
     setState(p) { this.state = Object.assign({}, this.state, typeof p === 'function' ? p(this.state) : p); if (this.__mount) this.__mount.update(); }
@@ -91,7 +108,7 @@
     // morph needs same node name: wrap app children
     m.update = function () {
       const r = renderToString(tplRoot, inst); ctx = r.ctx;
-      const holder = app.cloneNode(false); holder.innerHTML = r.html; morph(app, holder);
+      const holder = app.cloneNode(false); holder.innerHTML = r.html; fixDomLinks(holder); morph(app, holder);
     };
     inst.__mount = m;
     ['click', 'input', 'change'].forEach((type) => app.addEventListener(type, (e) => {
@@ -102,5 +119,5 @@
     m.update();
     return inst;
   }
-  root.YAMDC = { DCLogic, renderToString, mount };
+  root.YAMDC = { DCLogic, renderToString, mount, linkFor, P };
 })(typeof window !== 'undefined' ? window : globalThis);
