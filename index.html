@@ -193,6 +193,10 @@ input{font:inherit}
 <div class="track">
 
 <div style="display: flex; align-items: center; gap: 12px; padding: 14px 28px; white-space: nowrap; font-size: 14px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.06em; background: #FFC93C; color: #0B2A4A; padding: 4px 8px; border-radius: 999px">NEW</span><span style="color: #17436B">Air–sea bridge: sea to Djibouti, air to Bangui. Cheaper than air, faster than sea</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 14px 28px; white-space: nowrap; font-size: 14px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.06em; background: #FFC93C; color: #0B2A4A; padding: 4px 8px; border-radius: 999px">NEW</span><span style="color: #17436B">Free 3D container load planner: upload your packing list and get the loading plan</span>
 </div>
 
@@ -214,6 +218,10 @@ input{font:inherit}
 
 <div style="display: flex; align-items: center; gap: 12px; padding: 14px 28px; white-space: nowrap; font-size: 14px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.06em; background: #FFC93C; color: #0B2A4A; padding: 4px 8px; border-radius: 999px">TRADE</span><span style="color: #17436B">India presses ASEAN for a rebalanced AITIGA</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 14px 28px; white-space: nowrap; font-size: 14px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.06em; background: #FFC93C; color: #0B2A4A; padding: 4px 8px; border-radius: 999px">NEW</span><span style="color: #17436B">Air–sea bridge: sea to Djibouti, air to Bangui. Cheaper than air, faster than sea</span>
 </div>
 
 <div style="display: flex; align-items: center; gap: 12px; padding: 14px 28px; white-space: nowrap; font-size: 14px">
@@ -1334,6 +1342,7 @@ window.yamQuote=function(){try{var q=document.getElementById('quote');var t=q.qu
     const lang = this.state.lang;
     const langs = ['EN', 'ES', 'PT', 'हि'].map((l) => ({ label: l, on: String(l === lang), style: 'border: 0; border-radius: 999px; min-width: 32px; min-height: 26px; font-size: 12px; cursor: pointer; font-family: Geist Mono, monospace; ' + (l === lang ? 'background: #FFC93C; color: #0B2A4A;' : 'background: transparent; color: #CFE3F5;'), pick: () => this.setState({ lang: l }) }));
     const tick = [
+      ['NEW', 'Air–sea bridge: sea to Djibouti, air to Bangui. Cheaper than air, faster than sea'],
       ['NEW', 'Free 3D container load planner: upload your packing list and get the loading plan'],
       ['MOBILE', 'India smartphone exports $9.84bn in Apr–Jun 2026, up 23%'],
       ['CUSTOMS', 'CBIC launches NAC Portal for Faceless Assessment'],
