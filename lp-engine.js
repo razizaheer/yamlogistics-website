@@ -29,7 +29,9 @@
 
   function orientations(it) {
     const { l, w, h } = it;
-    const list = it.upright
+    const list = it.orient === 'fixed'
+      ? [[l, w, h]]
+      : it.upright
       ? [[l, w, h], [w, l, h]]
       : [[l, w, h], [w, l, h], [l, h, w], [h, l, w], [w, h, l], [h, w, l]];
     const seen = new Set(), out = [];
@@ -243,20 +245,65 @@
       if (stock.reduce((a, s) => a + s.left, 0) === before) break;
     }
     const notPlaced = stock.filter((s) => s.left > 0).map((s) => ({ type: s.type, n: s.left, why: 'limit of units reached' }));
-    const cap = eq.L * eq.W * eq.H;
-    units.forEach((u, i) => {
-      u.index = i;
-      u.util = u.vol / cap;
-      u.kgUtil = u.kg / eq.maxKg;
-      // centre of gravity along the length (0..1)
-      const m = u.boxes.reduce((a, b) => a + b.type.kg, 0);
-      u.cogX = m > 0 ? u.boxes.reduce((a, b) => a + b.type.kg * (b.x + b.dx / 2), 0) / m / eq.L : 0.5;
-      u.cogZ = m > 0 ? u.boxes.reduce((a, b) => a + b.type.kg * (b.z + b.dz / 2), 0) / m / eq.W : 0.5;
-      u.counts = {};
-      for (const b of u.boxes) u.counts[b.type.idx] = (u.counts[b.type.idx] || 0) + 1;
-      u.usedL = u.boxes.reduce((a, b) => Math.max(a, b.x + b.dx), 0);
-    });
+    units.forEach((u, i) => finalize(u, eq, i));
     return { eq, strategy: opts.strategy, units, tooBig, notPlaced, totalBoxes: units.reduce((a, u) => a + u.boxes.length, 0) };
+  }
+
+  function finalize(u, eq, i) {
+    const cap = eq.L * eq.W * eq.H;
+    u.eq = eq; u.index = i;
+    u.util = u.vol / cap;
+    u.kgUtil = u.kg / eq.maxKg;
+    const m = u.boxes.reduce((a, b) => a + b.type.kg, 0);
+    u.cogX = m > 0 ? u.boxes.reduce((a, b) => a + b.type.kg * (b.x + b.dx / 2), 0) / m / eq.L : 0.5;
+    u.cogZ = m > 0 ? u.boxes.reduce((a, b) => a + b.type.kg * (b.z + b.dz / 2), 0) / m / eq.W : 0.5;
+    u.counts = {};
+    for (const b of u.boxes) u.counts[b.type.idx] = (u.counts[b.type.idx] || 0) + 1;
+    u.usedL = u.boxes.reduce((a, b) => Math.max(a, b.x + b.dx), 0);
+    return u;
+  }
+
+  /** Choose the best mix of equipment. cands = [{eq, cost}]. Fills unit by unit:
+      if everything left fits in one unit, take the cheapest that does; otherwise take the unit
+      that moves the largest share of the remaining volume or weight per unit of cost. */
+  function planMix(items, cands, opts = {}) {
+    const types = items.map((it, i) => ({ ...it, idx: i, kg: +it.kg || 0 }));
+    const stock = types.filter((t) => t.qty > 0 && t.l > 0 && t.w > 0 && t.h > 0).map((t) => ({
+      type: t, left: Math.floor(t.qty), oris: orientations(t), unitVol: t.l * t.w * t.h
+    }));
+    const tooBig = [];
+    for (const s of stock) {
+      const fitsSome = cands.some(({ eq }) => s.oris.some((o) => o.d <= eq.L + EPS && o.w <= eq.W + EPS && o.h <= eq.H + EPS) && s.type.kg <= eq.maxKg);
+      if (!fitsSome) { tooBig.push({ type: s.type, n: s.left, why: 'too large or too heavy for any of these units' }); s.left = 0; }
+    }
+    const snap = () => stock.map((x) => x.left);
+    const restore = (v) => stock.forEach((x, i) => { x.left = v[i]; });
+    const units = [];
+    let guard = 0;
+    while (stock.some((x) => x.left > 0) && guard++ < (opts.maxUnits || 200)) {
+      const before = snap();
+      const remVol = stock.reduce((a, x) => a + x.left * x.unitVol, 0);
+      const remKg = stock.reduce((a, x) => a + x.left * x.type.kg, 0);
+      let best = null;
+      for (const c of cands) {
+        for (const strategy of ['dense', 'big', 'hard']) {
+          restore(before);
+          const u = packOne(c.eq, stock, { strategy });
+          if (!u.boxes.length) continue;
+          const all = stock.every((x) => x.left === 0);
+          const share = Math.max(u.vol / Math.max(1, remVol), remKg > 0 ? u.kg / remKg : 0);
+          const score = all ? 10 + 1 / c.cost : share / c.cost;
+          if (!best || score > best.score + 1e-9) best = { c, strategy, score };
+        }
+      }
+      restore(before);
+      if (!best) break;
+      const u = packOne(best.c.eq, stock, { strategy: best.strategy });
+      units.push(finalize(u, best.c.eq, units.length));
+    }
+    const notPlaced = stock.filter((x) => x.left > 0).map((x) => ({ type: x.type, n: x.left, why: 'limit of units reached' }));
+    return { mix: true, eq: units[0] ? units[0].eq : cands[0].eq, units, tooBig, notPlaced, totalBoxes: units.reduce((a, u) => a + u.boxes.length, 0),
+      cost: units.reduce((a, u) => a + cands.find((c) => c.eq === u.eq).cost, 0) };
   }
 
   /** Group walls into loading steps; identical consecutive walls merge into one step. */
@@ -283,6 +330,6 @@
     return out;
   }
 
-  const api = { EQUIPMENT, plan, steps, orientations };
+  const api = { EQUIPMENT, plan, planMix, steps, orientations };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.LPEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);
