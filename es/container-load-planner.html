@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="es">
+<head><base href="../">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planificador y calculadora de carga de contenedores gratis con plan 3D | YAM Logistics</title>
+<meta name="description" content="Calculadora gratuita de carga de contenedores: ingrese sus bultos y vea cuántos contenedores de 20′, 40′ o 40′ HC, pallets o pallets aéreos necesita, con vista 3D, secuencia de carga paso a paso y plan en PDF.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://www.yamlogistics.com/es/container-load-planner">
+<meta property="og:type" content="website"><meta property="og:site_name" content="YAM Logistics"><meta property="og:title" content="Planificador y calculadora de carga de contenedores gratis con plan 3D | YAM Logistics"><meta property="og:description" content="Calculadora gratuita de carga de contenedores: ingrese sus bultos y vea cuántos contenedores de 20′, 40′ o 40′ HC, pallets o pallets aéreos necesita, con vista 3D, secuencia de carga paso a paso y plan en PDF."><meta property="og:url" content="https://www.yamlogistics.com/es/container-load-planner">
+<meta name="theme-color" content="#0A6CC2">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+.lpnew{color:#FFFFFF;text-decoration:none}.lpnew b{background:#FFC93C;color:#0B2A4A;font-size:10px;padding:2px 7px;border-radius:999px;margin-right:6px;letter-spacing:.06em}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:#FFFFFF;color:#0B2A4A;font-family:'Geist',system-ui,-apple-system,'Segoe UI',sans-serif}
+img,video{max-width:100%}
+a{color:#0A6CC2}a:hover{color:#0B4F8F}
+.wrap{max-width:1400px;margin:0 auto;padding:0 32px}
+.mono{font-family:'Geist Mono',monospace;letter-spacing:.05em}
+@keyframes blink{50%{opacity:.3}}.live{animation:blink 1.6s steps(2) infinite}
+.util{background:#0B4F8F;color:#CFE3F5;font-size:13px}
+.util-in{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;padding-top:8px;padding-bottom:8px}
+.util a{color:#FFFFFF;text-decoration:none}.util a.gold{color:#FFC93C;font-weight:600}
+.fx{margin-left:auto;display:flex;gap:14px;align-items:center;font-family:'Geist Mono',monospace;font-size:12px;white-space:nowrap;overflow:hidden}
+.fx b{color:#FFFFFF;font-weight:600}.fxl{color:#FFC93C;font-weight:600;letter-spacing:.06em}.fxd{color:#9FC2E6;font-size:11px}
+.btn-calc{background:#FFC93C;color:#0B2A4A!important;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none;white-space:nowrap}
+.nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #E1EDF7;backdrop-filter:saturate(1.4) blur(8px)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;position:relative}
+.brand{display:flex;align-items:center;text-decoration:none}.logo{height:84px;width:auto;display:block}
+@media (max-width:640px){.logo{height:60px}}
+.bw{display:flex;flex-direction:column;line-height:1}.b1{font-family:'Archivo',sans-serif;font-weight:900;font-stretch:118%;font-size:24px}
+.b2{white-space:nowrap;font-family:'Geist Mono',monospace;font-size:10px;color:#5E7891;letter-spacing:.14em;margin-top:3px}
+.links{display:flex;flex-wrap:nowrap;gap:20px;white-space:nowrap;align-items:center;font-size:15px;font-weight:500}
+.links>a{color:#0B2A4A;text-decoration:none}.links>a[aria-current]{color:#0A6CC2;font-weight:600}
+.sol summary{cursor:pointer;list-style:none;padding:8px 0}.sol summary::-webkit-details-marker{display:none}
+.mega{position:absolute;left:0;right:0;top:100%;background:#FFFFFF;border-bottom:1px solid #E1EDF7;box-shadow:0 30px 60px rgba(11,42,74,.12)}
+.mega-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;padding-top:28px;padding-bottom:32px}
+.mega-in a{display:block;padding:7px 0;color:#0B2A4A;text-decoration:none}.mega-in a:hover{color:#0A6CC2}
+.mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0A6CC2;margin-bottom:8px;padding-bottom:10px;border-bottom:1px solid #E1EDF7}
+.mcta{background:#FFF4D6;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#3D5873}
+.mcta strong{font-family:'Archivo',sans-serif;font-size:21px;color:#0B2A4A;line-height:1.1}.mcta a{font-weight:600;padding:0}
+.btn,.btn-o{padding:11px 20px;border-radius:999px;font-weight:600;text-decoration:none;white-space:nowrap}
+.btn{background:#0A6CC2;color:#FFFFFF!important}.btn-o{border:1.5px solid #0A6CC2;color:#0A6CC2!important;padding:9.5px 18px}
+.go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
+.navt{display:none}.burger{display:none}.calc-m{display:none}
+@media (max-width:1240px){
+ .hide-s{display:none}
+ .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
+ .links{flex-wrap:wrap;white-space:normal}
+ .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
+ .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
+ .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
+ .links>a,.sol summary{padding:12px 0;border-bottom:1px solid #EEF4FA}
+ .links .btn,.links .btn-o,.links .btn-calc{margin-top:12px;text-align:center}
+ .navt:checked~.links{display:flex}
+ .mega{position:static;box-shadow:none;border:0}.mega .wrap{padding:0}.mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
+ .links{overflow-x:hidden}.links>*{min-width:0;max-width:100%}
+}
+@media (max-width:640px){.wrap{padding:0 16px}.util-in .u1{display:none}.util-in{gap:6px 16px;font-size:12px}.fx{margin-left:0;overflow-x:auto;width:100%;gap:12px}.fxd{display:none}}
+@media (max-width:760px){[style*="linear-gradient(90deg, rgba(255,255,255,0.9"]{background:rgba(255,255,255,0.84)!important}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+.ft a{color:#CFE3F5;text-decoration:none}.ft a:hover{color:#FFFFFF}.fab{position:fixed;right:20px;bottom:20px;z-index:50;width:60px;height:60px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(11,42,74,.25)}
+
+
+
+.go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
+.card{transition:transform .3s,box-shadow .3s}.card:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(10,108,194,0.14)}
+details summary{cursor:pointer;list-style:none}details summary::-webkit-details-marker{display:none}
+</style>
+
+<link rel="stylesheet" href="load-planner.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"YAM Logistics Container Load Planner","url":"https://www.yamlogistics.com/container-load-planner","applicationCategory":"BusinessApplication","operatingSystem":"Any (web browser)","description":"Free 3D container load calculator: upload a packing list, get the best mix of 20ft, 40ft and 40ft HC containers and a step-by-step loading plan.","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"},"provider":{"@type":"Organization","name":"YAM Logistics Pvt. Ltd.","url":"https://www.yamlogistics.com"}}</script>
+<meta content="es" property="og:locale"><link href="https://www.yamlogistics.com/container-load-planner" hreflang="en" rel="alternate"><link href="https://www.yamlogistics.com/zh/container-load-planner" hreflang="zh-Hans" rel="alternate"><link href="https://www.yamlogistics.com/es/container-load-planner" hreflang="es" rel="alternate"><link href="https://www.yamlogistics.com/ar/container-load-planner" hreflang="ar" rel="alternate"><link href="https://www.yamlogistics.com/fr/container-load-planner" hreflang="fr" rel="alternate"><link href="https://www.yamlogistics.com/de/container-load-planner" hreflang="de" rel="alternate"><link href="https://www.yamlogistics.com/ja/container-load-planner" hreflang="ja" rel="alternate"><link href="https://www.yamlogistics.com/pt/container-load-planner" hreflang="pt" rel="alternate"><link href="https://www.yamlogistics.com/ru/container-load-planner" hreflang="ru" rel="alternate"><link href="https://www.yamlogistics.com/hi/container-load-planner" hreflang="hi" rel="alternate"><link href="https://www.yamlogistics.com/ko/container-load-planner" hreflang="ko" rel="alternate"><link href="https://www.yamlogistics.com/container-load-planner" hreflang="x-default" rel="alternate"><style>.langs{margin-left:8px;background:transparent;color:#FFFFFF;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:3px 8px;font:inherit;font-size:12px;cursor:pointer;max-width:130px}.langs option{color:#0B2A4A;background:#FFFFFF}
+@media (max-width:640px){.langs{margin-left:auto}}</style></head>
+<body>
+<header class="site">
+<div class="util"><div class="wrap util-in">
+<span class="mono u1"><span class="live" style="color:#FFC93C">●</span> Oficina en el aeropuerto de Mumbai abierta 24×7</span>
+<a href="https://wa.me/919212558167" class="u1">WhatsApp +91 92125 58167</a>
+<a href="es/container-load-planner.html" class="u1 lpnew"><b>NUEVO</b> Planificador 3D de carga de contenedores gratuito →</a>
+<a href="YAM-Logistics-Corporate-Profile.pdf" download="" class="gold u1">↓ Perfil de la empresa (PDF)</a>
+<div class="fx" id="fx" title="Tipos de cambio de referencia del mercado, actualizados a diario. Los derechos de aduana se calculan con los tipos de cambio notificados por el CBIC."><span class="fxl">₹ TIPOS DE CAMBIO</span><span class="fxi" data-c="USD">USD <b>—</b></span><span class="fxi" data-c="EUR">EUR <b>—</b></span><span class="fxi" data-c="CNY">CNY <b>—</b></span><span class="fxi" data-c="GBP">GBP <b>—</b></span><span class="fxi" data-c="AED">AED <b>—</b></span><span class="fxd" id="fxd"></span></div>
+<select onchange="location.href=this.value" data-notr="" aria-label="Language" class="langs"><option lang="en" value="container-load-planner.html">English</option><option lang="zh" value="zh/container-load-planner.html">中文</option><option selected lang="es" value="es/container-load-planner.html">🌐 Español</option><option lang="ar" value="ar/container-load-planner.html">العربية</option><option lang="fr" value="fr/container-load-planner.html">Français</option><option lang="de" value="de/container-load-planner.html">Deutsch</option><option lang="ja" value="ja/container-load-planner.html">日本語</option><option lang="pt" value="pt/container-load-planner.html">Português</option><option lang="ru" value="ru/container-load-planner.html">Русский</option><option lang="hi" value="hi/container-load-planner.html">हिन्दी</option><option lang="ko" value="ko/container-load-planner.html">한국어</option></select></div></div>
+<nav class="nav" aria-label="Inicio"><div class="wrap nav-in">
+<a href="es/index.html" class="brand"><img src="yam-logo.svg" alt="YAM Logistics: Your Answer to Movements, fundada en 1968" width="131" height="68" class="logo"></a>
+<a href="es/container-load-planner.html" class="calc-m">🧊 Planificador 3D</a><input type="checkbox" id="navt" class="navt" aria-label="Abrir menú"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
+<div class="links">
+<details class="sol"><summary>Soluciones ▾</summary><div class="mega"><div class="wrap mega-in">
+<div><div class="mh">FLETE</div><a href="es/ocean-freight.html">Flete marítimo · FCL / LCL</a><a href="es/air-freight.html">Flete aéreo</a><a href="project-cargo.html">Carga de proyectos, ODC y carga fraccionada</a><a href="haulage-icd.html">Transporte terrestre e ICD</a><a href="aircraft-charter.html">Fletamento de aeronaves</a><a href="es/container-load-planner.html">Planificador de carga de contenedores</a><a href="es/cbm-calculator.html">Calculadora de CBM y peso volumétrico</a></div><div><div class="mh">ADUANAS Y CUMPLIMIENTO</div><a href="es/customs-brokerage.html">Agenciamiento aduanero</a><a href="trade-compliance.html">Asesoría en cumplimiento comercial</a><a href="destination-do-agency.html">Agencia en destino / DO</a><a href="es/contact.html">Seguro de carga</a></div><div><div class="mh">ESPECIALIDADES</div><a href="es/mobile-phone-exports.html">Exportación de teléfonos móviles</a><a href="buyers-consolidation.html">Consolidación para compradores y gestión de órdenes de compra</a><a href="es/third-country-trade.html">Comercio con terceros países y reexportación</a><a href="bonded-warehousing.html">Almacenes bajo depósito aduanero y FTWZ</a><a href="exhibition-ata-carnet.html">Carga para exposiciones y cuaderno ATA</a><a href="es/third-country-trade.html">Apoyo en comercio de intermediación</a></div><div><div class="mh">CARGA ESPECIAL</div><a href="dangerous-goods.html">Mercancías peligrosas</a><a href="dg-labels.html">Etiquetas y marcas DG (gratis)</a><a href="perishables.html">Perecederos</a><a href="pharmaceuticals.html">Productos farmacéuticos</a><a href="live-animals.html">Animales vivos</a><a href="pet-relocation.html">Traslado de mascotas</a></div>
+<div class="mcta"><strong>¿No está seguro de lo que necesita?</strong><span>Cuéntele a un agente de aduanas con licencia qué va a mover. Nosotros diseñamos la ruta y la documentación.</span><a href="es/contact.html">Hable con la oficina →</a></div>
+</div></div></details>
+<a href="es/customs-brokerage.html">Aduanas</a><a href="es/mobile-phone-exports.html">Exportación de móviles</a><a href="es/third-country-trade.html">Comercio con terceros países</a><a href="trade-desk.html">Trade Desk</a>
+<a href="es/container-load-planner.html" class="btn-calc" aria-current="page">🧊 Planificador de carga 3D</a>
+<a href="track-shipment.html" class="btn-o">Rastrear envío</a>
+<a href="es/contact.html" class="btn go">Solicitar cotización</a>
+</div></div></nav>
+</header>
+<main id="app">
+<div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
+
+
+
+<div style="background: linear-gradient(135deg, #DDF0FF 0%, #F7FBFF 55%, #FFF4D6 100%)">
+<div style="max-width: 1400px; margin: 0 auto; padding: 84px 32px 40px">
+<div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; letter-spacing: 0.08em; margin-bottom: 22px">HERRAMIENTA GRATUITA · 3D · PDF PASO A PASO</div>
+<h1 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(46px, 5.6vw, 86px); line-height: 0.96; letter-spacing: -0.03em; margin: 0 0 22px; max-width: 1100px">Planificador de carga de contenedores. <span style="color: #0A6CC2">Véalo cargado antes de reservar.</span></h1>
+<p style="font-size: 20px; line-height: 1.55; color: #17436B; margin: 0; max-width: 820px">Elija contenedores secos, reefers o pallets aéreos, indíquenos si su mercancía va paletizada y agregue sus bultos a mano o directamente desde Excel. Calculamos la mejor combinación de contenedores de 20′, 40′ y 40′ HC, dónde va cada bulto y el orden de carga. Gire el plan 3D, recorra la carga paso a paso y descargue el plan en PDF para su equipo de almacén.</p>
+</div>
+</div>
+
+
+<div style="background: #F7FBFF">
+<div style="max-width: 1400px; margin: 0 auto; padding: 24px 32px 88px">
+<div id="lp-root"><img src="load-planner-preview.jpg" alt="Ejemplo de plan de carga 3D de un contenedor de 40 pies con cajas de colores" style="width: 100%; display: block; border-radius: 20px"></div>
+</div>
+</div>
+
+
+<div style="background: #FFF8E6">
+<div style="max-width: 1400px; margin: 0 auto; padding: 88px 32px">
+<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: #B45309; margin-bottom: 14px">CÓMO FUNCIONA</div>
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(34px, 3.8vw, 54px); line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 36px">De la lista de empaque al plan de carga en un minuto.</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px">
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">1</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">Elija cómo envía</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">Contenedores secos, contenedores reefer o pallets aéreos (ULD), y si sus bultos van sueltos o paletizados.</span>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">2</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">Agregue sus bultos</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">Escríbalos, pegue toda su lista de empaque desde Excel o suba el archivo .xlsx o CSV. Defina hacia qué lado puede girar cada bulto y si se le puede apilar carga encima. Cada tipo de bulto tiene su propio color.</span>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">3</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">Obtenga la mejor combinación</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">Probamos 20′, 40′ y 40′ HC (o reefers, o pallets PMC y PAG) y recomendamos la combinación más económica, con otras opciones lado a lado, el llenado y el peso de cada unidad y una vista 3D.</span>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">4</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">Cargue paso a paso</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">Recorra la carga fila por fila desde la pared frontal hasta las puertas; luego descargue el PDF para su almacén o comparta un enlace con nosotros.</span>
+</div>
+
+</div>
+</div>
+</div>
+
+
+<div style="background: #F2F8FD">
+<div style="max-width: 1000px; margin: 0 auto; padding: 96px 32px">
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(36px, 4.2vw, 56px); line-height: 1; letter-spacing: -0.03em; margin: 0 0 32px">Preguntas sobre el planificador de carga</h2>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">¿Cómo decide el planificador dónde va cada bulto?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Arma la carga en filas (muros) desde la pared frontal hasta las puertas, tal como trabajan los equipos de carga. En cada fila prueba distintas orientaciones de los bultos y combinaciones de apilado y se queda con la más densa, respetando las reglas de posición vertical, apilado, capas y peso que usted haya definido.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">¿El resultado es la mejor carga posible?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Es un plan rápido y práctico, no un óptimo matemático. Las cargas reales también dependen de la resistencia de las cajas, los pallets, el material de estiba y cómo está embalada la mercancía. Para cargas de alto valor o muy ajustadas, envíenos el plan y nuestro equipo lo revisará antes de que usted reserve.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">¿Qué significan “Solo vertical” y “Apilable”?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Solo vertical mantiene el bulto en la posición correcta (este lado arriba), de modo que solo puede girar sobre el piso. Desmarque Apilable para artículos frágiles o no apilables, así no se coloca nada encima. Máx. de capas limita cuántas unidades de ese artículo se apilan unas sobre otras.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">¿Cómo elige entre 20′, 40′ y 40′ HC?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Llena un contenedor a la vez. Si todo lo que queda cabe en un contenedor, toma el tamaño más económico que lo contenga; si no, toma el tamaño que mueve más carga por su costo de flete habitual. También muestra el plan usando un solo tamaño, para que pueda comparar. Usa medidas interiores y cargas útiles típicas, por ejemplo 1.203 × 235 × 269 cm y 26.500 kg para un 40′ High Cube.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">¿Puedo subir mi lista de empaque?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Sí. Suba un archivo .xlsx o CSV, o copie toda la tabla en Excel y péguela en la lista de bultos. El planificador detecta las columnas de nombre, medidas, cantidad y peso, incluso con una fila de título o números de serie, y le permite revisarlas antes de agregarlas. Las medidas en mm, cm, metros o pulgadas se convierten automáticamente.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">¿Funciona con pallets aéreos?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Sí, como una forma de caja. Los pallets PMC y PAG se muestran con su base útil y una altura de 160 cm o 244 cm, pero no se modela el contorno de la aeronave. Su aerolínea o nuestra oficina aérea confirmará el armado.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">¿Se guardan mis datos?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">No. Todo se ejecuta en su navegador. El enlace para compartir guarda la lista de bultos en el propio enlace, así que solo las personas a quienes se lo envíe pueden abrir el plan.</p>
+</details>
+
+</div>
+</div>
+
+<div style="background: #0A6CC2; color: #FFFFFF">
+<div style="max-width: 1400px; margin: 0 auto; padding: 80px 32px; display: flex; flex-wrap: wrap; gap: 32px; align-items: center; justify-content: space-between">
+<h2 style="flex: 1 1 600px; min-width: 0; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(38px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; margin: 0">¿Plan listo? <span style="color: #FFC93C">Nosotros lo enviamos.</span></h2>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<a href="es/contact.html" style="background: #FFC93C; color: #0B2A4A; padding: 18px 30px; border-radius: 999px; font-weight: 600; text-decoration: none">Solicitar cotización →</a>
+<a href="https://wa.me/919212558167" style="background: #25D366; color: #06331A; padding: 18px 28px; border-radius: 999px; font-weight: 600; text-decoration: none">Escriba a un agente por WhatsApp</a>
+</div>
+</div>
+</div>
+
+</div>
+</main>
+<footer>
+<div class="ft" style="background: #0B4F8F; color: #CFE3F5; font-size: 14px; position: relative">
+<svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="display: block; width: 100%; height: 60px; background: #FFFFFF" aria-hidden="true"><path d="M0 30 Q 120 0 240 30 T 480 30 T 720 30 T 960 30 T 1200 30 T 1440 30 V60 H0 Z" fill="#0B4F8F" /></svg>
+<div style="max-width: 1400px; margin: 0 auto; padding: 40px 32px 32px">
+<img src="yam-logo-white.svg" alt="YAM Logistics" style="height: 84px; width: auto; display: block; margin-bottom: 32px">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 32px">
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">FLETE</span>
+<a href="es/ocean-freight.html">Flete marítimo · FCL / LCL</a><a href="es/air-freight.html">Flete aéreo</a><a href="project-cargo.html">Carga de proyectos, ODC y carga fraccionada</a><a href="haulage-icd.html">Transporte terrestre e ICD</a><a href="aircraft-charter.html">Fletamento de aeronaves</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">ADUANAS Y CUMPLIMIENTO</span>
+<a href="es/customs-brokerage.html">Agenciamiento aduanero</a><a href="trade-compliance.html">Asesoría en cumplimiento comercial</a><a href="destination-do-agency.html">Agencia en destino / DO</a><a href="es/contact.html">Seguro de carga</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">ESPECIALIDADES</span>
+<a href="es/mobile-phone-exports.html">Exportación de teléfonos móviles</a><a href="buyers-consolidation.html">Consolidación para compradores y gestión de órdenes de compra</a><a href="es/third-country-trade.html">Comercio con terceros países y reexportación</a><a href="bonded-warehousing.html">Almacenes bajo depósito aduanero y FTWZ</a><a href="exhibition-ata-carnet.html">Carga para exposiciones y cuaderno ATA</a><a href="es/third-country-trade.html">Apoyo en comercio de intermediación</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">CARGA ESPECIAL</span>
+<a href="dangerous-goods.html">Mercancías peligrosas</a><a href="dg-labels.html">Etiquetas y marcas DG (gratis)</a><a href="perishables.html">Perecederos</a><a href="pharmaceuticals.html">Productos farmacéuticos</a><a href="live-animals.html">Animales vivos</a><a href="pet-relocation.html">Traslado de mascotas</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px; line-height: 1.6">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">HABLE CON NOSOTROS</span>
+<a href="tel:+911141603301">+91 11 4160 3301 / 02</a>
+<a href="mailto:info@yamlogistics.com">info@yamlogistics.com</a>
+<a href="https://wa.me/919212558167">WhatsApp +91 92125 58167</a>
+<a href="YAM-Logistics-Corporate-Profile.pdf" download="YAM-Logistics-Corporate-Profile.pdf" style="color: #FFC93C; font-weight: 600">↓ Perfil de la empresa (PDF)</a>
+</div>
+</div>
+<div style="margin-top: 44px; padding-top: 32px; border-top: 1px solid rgba(207,227,245,0.25); display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px">
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">NUEVA DELHI</span>
+<span style="color: #FFFFFF; font-weight: 600">Oficina central</span>
+<span style="white-space: pre-line">E-51, Kalkaji
+New Delhi 110019</span>
+<a href="https://www.google.com/maps/search/?api=1&query=E-51+Kalkaji+New+Delhi+110019" style="font-size: 13px; color: #FFC93C">Cómo llegar →</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">MUMBAI · MARÍTIMO</span>
+<span style="color: #FFFFFF; font-weight: 600">Operaciones de flete marítimo</span>
+<span style="white-space: pre-line">Room No. 51/52, 179 Commercial Chambers
+Yusuf Meherali Road, Masjid Bunder
+Mumbai 400003</span>
+<a href="https://www.google.com/maps/search/?api=1&query=179+Commercial+Chambers+Yusuf+Meherali+Road+Masjid+Bunder+Mumbai+400003" style="font-size: 13px; color: #FFC93C">Cómo llegar →</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">MUMBAI · AÉREO</span>
+<span style="color: #FFFFFF; font-weight: 600">Operaciones de flete aéreo</span>
+<span style="white-space: pre-line">406, 4th Floor, Rangoli Complex
+Sahar Air Cargo Complex, Andheri (East)
+Mumbai 400099</span>
+<a href="https://www.google.com/maps/search/?api=1&query=Rangoli+Complex+Sahar+Air+Cargo+Complex+Andheri+East+Mumbai+400099" style="font-size: 13px; color: #FFC93C">Cómo llegar →</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">MUNDRA</span>
+<span style="color: #FFFFFF; font-weight: 600">Oficina portuaria</span>
+<span style="white-space: pre-line">Office No. 111, AAROS
+Adani Ports and Special Economic Zone
+Kachchh, Gujarat 370421</span>
+<a href="https://www.google.com/maps/search/?api=1&query=AAROS+Adani+Ports+SEZ+Mundra+Gujarat+370421" style="font-size: 13px; color: #FFC93C">Cómo llegar →</a>
+</div>
+
+</div>
+<div style="margin-top: 32px; display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 13px">
+<span style="font-family: 'Archivo', sans-serif; font-weight: 700; color: #FFFFFF; font-size: 15px">Comprometidos con los compromisos.</span>
+<span>CIN U74899DL1987PTC027852</span>
+<span>Licencia de agente de aduanas R-7/92</span>
+</div>
+<div style="margin-top: 48px; padding-top: 20px; border-top: 1px solid rgba(207,227,245,0.25); display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; font-size: 13px"><span>© 2026 YAM Logistics Pvt. Ltd.</span><span><a href="es/contact.html">Contacto</a> · <a href="es/about.html">Nosotros</a></span></div>
+</div>
+</div>
+
+</footer>
+<a href="https://wa.me/919212558167" aria-label="Chatee con YAM por WhatsApp" class="fab"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12Z" /><path d="M9 9.5c.3 1.8 1.7 3.7 3.8 4.6l1.2-1.1 1.8.8-.4 1.6c-3.2.2-6.9-3.2-7.2-6.4l1.6-.5.8 1.8z" /></svg></a>
+<script>
+(function(){var C=['USD','EUR','CNY','GBP','AED'],K='yamfx1';
+function show(d){if(!d||!d.r)return;var el=document.getElementById('fx');if(!el)return;el.querySelectorAll('.fxi').forEach(function(s){var c=s.getAttribute('data-c'),v=d.r[c];if(v){s.querySelector('b').textContent='₹'+v.toFixed(2)}else{s.style.display='none'}});var dd=document.getElementById('fxd');if(dd&&d.d)dd.textContent='ref. '+d.d;}
+try{var c=JSON.parse(localStorage.getItem(K)||'null');if(c&&Date.now()-c.t<6*3600e3){show(c);return}}catch(e){}
+function save(d){d.t=Date.now();try{localStorage.setItem(K,JSON.stringify(d))}catch(e){}show(d)}
+function er(){return fetch('https://open.er-api.com/v6/latest/INR').then(function(x){return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates&&j.rates[c])r[c]=1/j.rates[c]});save({r:r,d:(j.time_last_update_utc||'').slice(5,16)})})}
+fetch('https://api.frankfurter.dev/v1/latest?base=INR&symbols=USD,EUR,CNY,GBP').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates[c])r[c]=1/j.rates[c]});return er().catch(function(){}).then(function(){var c2=null;try{c2=JSON.parse(localStorage.getItem(K))}catch(e){}if(c2&&c2.r&&c2.r.AED)r.AED=c2.r.AED;save({r:r,d:new Date(j.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})})})}).catch(function(){er().catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'})});
+})();
+</script>
+
+<script src="i18n/tr-core.js"></script><script src="i18n/es.js"></script><script>YAM_TR_OBSERVE(document.getElementById('lp-root'))</script><script src="vendor/three.min.js"></script>
+<script src="vendor/OrbitControls.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="lp-engine.js"></script>
+<script src="load-planner.js"></script>
+</body>
+</html>
