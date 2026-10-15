@@ -1,0 +1,316 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+<head><base href="../">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مخطط وحاسبة تحميل الحاويات مجانًا مع خطة تحميل ثلاثية الأبعاد | YAM Logistics</title>
+<meta name="description" content="حاسبة تحميل حاويات مجانية: أدخل طرودك واعرف عدد حاويات 20′ أو 40′ أو 40′ HC أو المنصات أو منصات الشحن الجوي التي تحتاجها، مع عرض ثلاثي الأبعاد وتسلسل تحميل خطوة بخطوة وخطة بصيغة PDF.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://www.yamlogistics.com/ar/container-load-planner">
+<meta property="og:type" content="website"><meta property="og:site_name" content="YAM Logistics"><meta property="og:title" content="مخطط وحاسبة تحميل الحاويات مجانًا مع خطة تحميل ثلاثية الأبعاد | YAM Logistics"><meta property="og:description" content="حاسبة تحميل حاويات مجانية: أدخل طرودك واعرف عدد حاويات 20′ أو 40′ أو 40′ HC أو المنصات أو منصات الشحن الجوي التي تحتاجها، مع عرض ثلاثي الأبعاد وتسلسل تحميل خطوة بخطوة وخطة بصيغة PDF."><meta property="og:url" content="https://www.yamlogistics.com/ar/container-load-planner">
+<meta name="theme-color" content="#0A6CC2">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+.lpnew{color:#FFFFFF;text-decoration:none}.lpnew b{background:#FFC93C;color:#0B2A4A;font-size:10px;padding:2px 7px;border-radius:999px;margin-right:6px;letter-spacing:.06em}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:#FFFFFF;color:#0B2A4A;font-family:'Geist',system-ui,-apple-system,'Segoe UI',sans-serif}
+img,video{max-width:100%}
+a{color:#0A6CC2}a:hover{color:#0B4F8F}
+.wrap{max-width:1400px;margin:0 auto;padding:0 32px}
+.mono{font-family:'Geist Mono',monospace;letter-spacing:.05em}
+@keyframes blink{50%{opacity:.3}}.live{animation:blink 1.6s steps(2) infinite}
+.util{background:#0B4F8F;color:#CFE3F5;font-size:13px}
+.util-in{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;padding-top:8px;padding-bottom:8px}
+.util a{color:#FFFFFF;text-decoration:none}.util a.gold{color:#FFC93C;font-weight:600}
+.fx{margin-left:auto;display:flex;gap:14px;align-items:center;font-family:'Geist Mono',monospace;font-size:12px;white-space:nowrap;overflow:hidden}
+.fx b{color:#FFFFFF;font-weight:600}.fxl{color:#FFC93C;font-weight:600;letter-spacing:.06em}.fxd{color:#9FC2E6;font-size:11px}
+.btn-calc{background:#FFC93C;color:#0B2A4A!important;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none;white-space:nowrap}
+.nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #E1EDF7;backdrop-filter:saturate(1.4) blur(8px)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;position:relative}
+.brand{display:flex;align-items:center;text-decoration:none}.logo{height:84px;width:auto;display:block}
+@media (max-width:640px){.logo{height:60px}}
+.bw{display:flex;flex-direction:column;line-height:1}.b1{font-family:'Archivo',sans-serif;font-weight:900;font-stretch:118%;font-size:24px}
+.b2{white-space:nowrap;font-family:'Geist Mono',monospace;font-size:10px;color:#5E7891;letter-spacing:.14em;margin-top:3px}
+.links{display:flex;flex-wrap:nowrap;gap:20px;white-space:nowrap;align-items:center;font-size:15px;font-weight:500}
+.links>a{color:#0B2A4A;text-decoration:none}.links>a[aria-current]{color:#0A6CC2;font-weight:600}
+.sol summary{cursor:pointer;list-style:none;padding:8px 0}.sol summary::-webkit-details-marker{display:none}
+.mega{position:absolute;left:0;right:0;top:100%;background:#FFFFFF;border-bottom:1px solid #E1EDF7;box-shadow:0 30px 60px rgba(11,42,74,.12)}
+.mega-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;padding-top:28px;padding-bottom:32px}
+.mega-in a{display:block;padding:7px 0;color:#0B2A4A;text-decoration:none}.mega-in a:hover{color:#0A6CC2}
+.mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0A6CC2;margin-bottom:8px;padding-bottom:10px;border-bottom:1px solid #E1EDF7}
+.mcta{background:#FFF4D6;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#3D5873}
+.mcta strong{font-family:'Archivo',sans-serif;font-size:21px;color:#0B2A4A;line-height:1.1}.mcta a{font-weight:600;padding:0}
+.btn,.btn-o{padding:11px 20px;border-radius:999px;font-weight:600;text-decoration:none;white-space:nowrap}
+.btn{background:#0A6CC2;color:#FFFFFF!important}.btn-o{border:1.5px solid #0A6CC2;color:#0A6CC2!important;padding:9.5px 18px}
+.go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
+.navt{display:none}.burger{display:none}.calc-m{display:none}
+@media (max-width:1240px){
+ .hide-s{display:none}
+ .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
+ .links{flex-wrap:wrap;white-space:normal}
+ .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
+ .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
+ .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
+ .links>a,.sol summary{padding:12px 0;border-bottom:1px solid #EEF4FA}
+ .links .btn,.links .btn-o,.links .btn-calc{margin-top:12px;text-align:center}
+ .navt:checked~.links{display:flex}
+ .mega{position:static;box-shadow:none;border:0}.mega .wrap{padding:0}.mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
+ .links{overflow-x:hidden}.links>*{min-width:0;max-width:100%}
+}
+@media (max-width:640px){.wrap{padding:0 16px}.util-in .u1{display:none}.util-in{gap:6px 16px;font-size:12px}.fx{margin-left:0;overflow-x:auto;width:100%;gap:12px}.fxd{display:none}}
+@media (max-width:760px){[style*="linear-gradient(270deg, rgba(255,255,255,0.9"]{background:rgba(255,255,255,0.84)!important}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+.ft a{color:#CFE3F5;text-decoration:none}.ft a:hover{color:#FFFFFF}.fab{position:fixed;right:20px;bottom:20px;z-index:50;width:60px;height:60px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(11,42,74,.25)}
+
+
+
+.go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
+.card{transition:transform .3s,box-shadow .3s}.card:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(10,108,194,0.14)}
+details summary{cursor:pointer;list-style:none}details summary::-webkit-details-marker{display:none}
+</style>
+
+<link rel="stylesheet" href="load-planner.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"YAM Logistics Container Load Planner","url":"https://www.yamlogistics.com/container-load-planner","applicationCategory":"BusinessApplication","operatingSystem":"Any (web browser)","description":"Free 3D container load calculator: upload a packing list, get the best mix of 20ft, 40ft and 40ft HC containers and a step-by-step loading plan.","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"},"provider":{"@type":"Organization","name":"YAM Logistics Pvt. Ltd.","url":"https://www.yamlogistics.com"}}</script>
+<meta content="ar" property="og:locale"><link href="https://www.yamlogistics.com/container-load-planner" hreflang="en" rel="alternate"><link href="https://www.yamlogistics.com/zh/container-load-planner" hreflang="zh-Hans" rel="alternate"><link href="https://www.yamlogistics.com/es/container-load-planner" hreflang="es" rel="alternate"><link href="https://www.yamlogistics.com/ar/container-load-planner" hreflang="ar" rel="alternate"><link href="https://www.yamlogistics.com/fr/container-load-planner" hreflang="fr" rel="alternate"><link href="https://www.yamlogistics.com/de/container-load-planner" hreflang="de" rel="alternate"><link href="https://www.yamlogistics.com/ja/container-load-planner" hreflang="ja" rel="alternate"><link href="https://www.yamlogistics.com/pt/container-load-planner" hreflang="pt" rel="alternate"><link href="https://www.yamlogistics.com/ru/container-load-planner" hreflang="ru" rel="alternate"><link href="https://www.yamlogistics.com/hi/container-load-planner" hreflang="hi" rel="alternate"><link href="https://www.yamlogistics.com/ko/container-load-planner" hreflang="ko" rel="alternate"><link href="https://www.yamlogistics.com/container-load-planner" hreflang="x-default" rel="alternate"><style>.langs{margin-left:8px;background:transparent;color:#FFFFFF;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:3px 8px;font:inherit;font-size:12px;cursor:pointer;max-width:130px}.langs option{color:#0B2A4A;background:#FFFFFF}
+@media (max-width:640px){.langs{margin-left:auto}}html[dir=rtl] *{letter-spacing:0!important}
+html[dir=rtl] .fx{margin-left:0;margin-right:auto}html[dir=rtl] .langs{margin-left:0;margin-right:8px}
+html[dir=rtl] .lp-cats button,html[dir=rtl] .lp-table th,html[dir=rtl] .lp-cmp td,html[dir=rtl] .lp-cmp th,html[dir=rtl] .lp-maptable th{text-align:right}
+html[dir=rtl] .lp-totals{margin-left:0;margin-right:auto}html[dir=rtl] .fab{right:auto;left:20px}
+html[dir=rtl] .lp-step.on{box-shadow:inset -3px 0 0 #0A6CC2}</style></head>
+<body>
+<header class="site">
+<div class="util"><div class="wrap util-in">
+<span class="mono u1"><span class="live" style="color:#FFC93C">●</span> مكتب مطار مومباي يعمل على مدار الساعة</span>
+<a href="https://wa.me/919212558167" class="u1">WhatsApp +91 92125 58167</a>
+<a href="ar/container-load-planner.html" class="u1 lpnew"><b>جديد</b> مخطط تحميل الحاويات ثلاثي الأبعاد مجانًا →</a>
+<a href="YAM-Logistics-Corporate-Profile.pdf" download="" class="gold u1">↓ ملف الشركة (PDF)</a>
+<div class="fx" id="fx" title="أسعار صرف مرجعية للسوق، تُحدَّث يوميًا. تُحتسب الرسوم الجمركية وفق أسعار الصرف التي تعلنها CBIC."><span class="fxl">أسعار ₹</span><span class="fxi" data-c="USD">USD <b>—</b></span><span class="fxi" data-c="EUR">EUR <b>—</b></span><span class="fxi" data-c="CNY">CNY <b>—</b></span><span class="fxi" data-c="GBP">GBP <b>—</b></span><span class="fxi" data-c="AED">AED <b>—</b></span><span class="fxd" id="fxd"></span></div>
+<select onchange="location.href=this.value" data-notr="" aria-label="Language" class="langs"><option lang="en" value="container-load-planner.html">English</option><option lang="zh" value="zh/container-load-planner.html">中文</option><option lang="es" value="es/container-load-planner.html">Español</option><option selected lang="ar" value="ar/container-load-planner.html">🌐 العربية</option><option lang="fr" value="fr/container-load-planner.html">Français</option><option lang="de" value="de/container-load-planner.html">Deutsch</option><option lang="ja" value="ja/container-load-planner.html">日本語</option><option lang="pt" value="pt/container-load-planner.html">Português</option><option lang="ru" value="ru/container-load-planner.html">Русский</option><option lang="hi" value="hi/container-load-planner.html">हिन्दी</option><option lang="ko" value="ko/container-load-planner.html">한국어</option></select></div></div>
+<nav class="nav" aria-label="الرئيسية"><div class="wrap nav-in">
+<a href="ar/index.html" class="brand"><img src="yam-logo.svg" alt="YAM Logistics: Your Answer to Movements، تأسست عام 1968" width="131" height="68" class="logo"></a>
+<a href="ar/container-load-planner.html" class="calc-m">🧊 المخطط ثلاثي الأبعاد</a><input type="checkbox" id="navt" class="navt" aria-label="فتح القائمة"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
+<div class="links">
+<details class="sol"><summary>الحلول ▾</summary><div class="mega"><div class="wrap mega-in">
+<div><div class="mh">الشحن</div><a href="ar/ocean-freight.html">الشحن البحري · FCL / LCL</a><a href="ar/air-freight.html">الشحن الجوي</a><a href="project-cargo.html">شحنات المشاريع والأحجام الكبيرة (ODC) والبضائع السائبة</a><a href="haulage-icd.html">النقل البري والموانئ الجافة</a><a href="aircraft-charter.html">استئجار الطائرات</a><a href="ar/container-load-planner.html">مخطط تحميل الحاويات</a><a href="ar/cbm-calculator.html">حاسبة CBM والوزن الحجمي</a></div><div><div class="mh">الجمارك والامتثال</div><a href="ar/customs-brokerage.html">التخليص الجمركي</a><a href="trade-compliance.html">استشارات الامتثال التجاري</a><a href="destination-do-agency.html">وكالة الوجهة / أوامر التسليم</a><a href="ar/contact.html">تأمين البضائع</a></div><div><div class="mh">خدمات متخصصة</div><a href="ar/mobile-phone-exports.html">تصدير الهواتف المحمولة</a><a href="buyers-consolidation.html">تجميع شحنات المشترين وإدارة أوامر الشراء</a><a href="ar/third-country-trade.html">التجارة مع دول ثالثة وإعادة التصدير</a><a href="bonded-warehousing.html">المستودعات الجمركية وFTWZ</a><a href="exhibition-ata-carnet.html">شحن المعارض ودفتر ATA</a><a href="ar/third-country-trade.html">دعم التجارة الوسيطة</a></div><div><div class="mh">بضائع خاصة</div><a href="dangerous-goods.html">البضائع الخطرة</a><a href="dg-labels.html">ملصقات وعلامات DG (مجانًا)</a><a href="perishables.html">البضائع سريعة التلف</a><a href="pharmaceuticals.html">الأدوية</a><a href="live-animals.html">الحيوانات الحية</a><a href="pet-relocation.html">نقل الحيوانات الأليفة</a></div>
+<div class="mcta"><strong>لست متأكدًا مما تحتاجه؟</strong><span>أخبر مخلّصًا مرخّصًا بما تشحنه، وسنصمّم لك المسار والمستندات.</span><a href="ar/contact.html">تحدّث إلى فريقنا →</a></div>
+</div></div></details>
+<a href="ar/customs-brokerage.html">الجمارك</a><a href="ar/mobile-phone-exports.html">تصدير الهواتف</a><a href="ar/third-country-trade.html">التجارة مع دول ثالثة</a><a href="trade-desk.html">مكتب التجارة</a>
+<a href="ar/container-load-planner.html" class="btn-calc" aria-current="page">🧊 مخطط التحميل ثلاثي الأبعاد</a>
+<a href="track-shipment.html" class="btn-o">تتبّع الشحنة</a>
+<a href="ar/contact.html" class="btn go">اطلب عرض سعر</a>
+</div></div></nav>
+</header>
+<main id="app">
+<div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
+
+
+
+<div style="background: linear-gradient(135deg, #DDF0FF 0%, #F7FBFF 55%, #FFF4D6 100%)">
+<div style="max-width: 1400px; margin: 0 auto; padding: 84px 32px 40px">
+<div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; letter-spacing: 0.08em; margin-bottom: 22px">أداة مجانية · ثلاثية الأبعاد · PDF خطوة بخطوة</div>
+<h1 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(46px, 5.6vw, 86px); line-height: 0.96; letter-spacing: -0.03em; margin: 0 0 22px; max-width: 1100px">مخطط تحميل الحاويات. <span style="color: #0A6CC2">شاهدها محمّلة قبل أن تحجز.</span></h1>
+<p style="font-size: 20px; line-height: 1.55; color: #17436B; margin: 0; max-width: 820px">اختر الحاويات الجافة أو المبرّدة أو منصات الشحن الجوي، وأخبرنا إن كانت بضاعتك على منصات، وأضف طرودك يدويًا أو مباشرة من Excel. نحسب أفضل مزيج من حاويات 20′ و40′ و40′ HC، وموضع كل طرد، وترتيب تحميلها. دوّر الخطة ثلاثية الأبعاد، وتابع التحميل خطوة بخطوة، ونزّل الخطة بصيغة PDF لفريق المستودع لديك.</p>
+</div>
+</div>
+
+
+<div style="background: #F7FBFF">
+<div style="max-width: 1400px; margin: 0 auto; padding: 24px 32px 88px">
+<div id="lp-root"><img src="load-planner-preview.jpg" alt="نموذج خطة تحميل ثلاثية الأبعاد لحاوية 40 قدمًا بكراتين ملوّنة" style="width: 100%; display: block; border-radius: 20px"></div>
+</div>
+</div>
+
+
+<div style="background: #FFF8E6">
+<div style="max-width: 1400px; margin: 0 auto; padding: 88px 32px">
+<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: #B45309; margin-bottom: 14px">كيف يعمل</div>
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(34px, 3.8vw, 54px); line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 36px">من قائمة التعبئة إلى خطة التحميل في دقيقة.</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px">
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">1</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">اختر طريقة الشحن</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">حاويات جافة أو مبرّدة أو منصات شحن جوي (ULD)، وهل طرودك سائبة أم على منصات.</span>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">2</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">أضف طرودك</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">اكتبها يدويًا، أو الصق قائمة التعبئة كاملة من Excel، أو ارفع ملف .xlsx أو CSV. حدّد اتجاهات تدوير كل طرد وما إذا كان يمكن التكديس فوقه. ولكل نوع طرد لونه الخاص.</span>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">3</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">احصل على أفضل مزيج</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">نختبر حاويات 20′ و40′ و40′ HC (أو المبرّدة، أو منصات PMC وPAG) ونوصي بأرخص تركيبة، مع عرض الخيارات الأخرى جنبًا إلى جنب، ونسبة امتلاء كل وحدة ووزنها، وعرضًا ثلاثي الأبعاد.</span>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">4</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">حمّل خطوة بخطوة</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">تابع التحميل صفًا بصف من الجدار الأمامي حتى الأبواب، ثم نزّل ملف PDF لمستودعك أو شارك رابطًا معنا.</span>
+</div>
+
+</div>
+</div>
+</div>
+
+
+<div style="background: #F2F8FD">
+<div style="max-width: 1000px; margin: 0 auto; padding: 96px 32px">
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(36px, 4.2vw, 56px); line-height: 1; letter-spacing: -0.03em; margin: 0 0 32px">أسئلة حول مخطط التحميل</h2>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">كيف يقرّر المخطط أين توضع الطرود؟<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">يبني الحمولة على شكل صفوف (جدران) من الجدار الأمامي حتى الأبواب، كما تعمل فرق التحميل. وفي كل صف يجرّب اتجاهات مختلفة للطرود وتركيبات تكديس متعددة ويحتفظ بالأكثر كثافة، مع احترام قواعد الوضع القائم والتكديس وعدد الطبقات والوزن التي تحدّدها.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">هل النتيجة هي أفضل تحميل ممكن؟<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">إنها خطة عملية وسريعة وليست حلًا رياضيًا مثاليًا. فالتحميل الفعلي يعتمد أيضًا على متانة الكراتين والمنصات ومواد الحشو وطريقة تعبئة البضاعة. للحمولات عالية القيمة أو الضيقة، أرسل إلينا الخطة وسيراجعها فريقنا قبل أن تحجز.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">ماذا يعني «قائم فقط» و«قابل للتكديس»؟<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">خيار «قائم فقط» يُبقي الطرد في وضعه الصحيح (هذا الجانب للأعلى)، فلا يُدار إلا على الأرض. ألغِ تحديد «قابل للتكديس» للأصناف الهشة أو غير القابلة للتكديس، فلا يوضع فوقها شيء. ويحدّد «الحد الأقصى للطبقات» عدد القطع من هذا الصنف التي توضع فوق بعضها.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">كيف يختار بين 20′ و40′ و40′ HC؟<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">يملأ حاوية واحدة في كل مرة. إذا كان كل ما تبقّى يتسع في حاوية واحدة، يختار أرخص مقاس يستوعبه؛ وإلا يختار المقاس الذي ينقل أكبر كمية من البضائع مقابل تكلفة الشحن المعتادة له. كما يعرض الخطة باستخدام مقاس واحد فقط لتتمكن من المقارنة. ويستخدم المقاسات الداخلية والحمولات النموذجية، مثل 1,203 × 235 × 269 cm و26,500 kg لحاوية 40′ High Cube.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">هل يمكنني رفع قائمة التعبئة؟<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">نعم. ارفع ملف .xlsx أو CSV، أو انسخ الجدول كاملًا في Excel والصقه في قائمة الطرود. يتعرّف المخطط على أعمدة الاسم والمقاسات والكمية والوزن، حتى مع وجود صف عنوان أو أرقام تسلسلية، ويتيح لك مراجعتها قبل الإضافة. وتُحوَّل المقاسات بالمليمتر أو السنتيمتر أو المتر أو البوصة تلقائيًا.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">هل يعمل مع منصات الشحن الجوي؟<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">نعم، كشكل صندوقي. تُعرض منصات PMC وPAG بقاعدتها القابلة للاستخدام وارتفاع 160 cm أو 244 cm، لكن دون محاكاة مقطع الطائرة. وستؤكد شركة الطيران أو مكتبنا للشحن الجوي طريقة التجهيز.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">هل تُحفظ بياناتي؟<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">لا. كل شيء يعمل داخل متصفحك. ويخزّن رابط المشاركة قائمة الطرود داخل الرابط نفسه، فلا يفتح الخطة إلا من ترسل إليه الرابط.</p>
+</details>
+
+</div>
+</div>
+
+<div style="background: #0A6CC2; color: #FFFFFF">
+<div style="max-width: 1400px; margin: 0 auto; padding: 80px 32px; display: flex; flex-wrap: wrap; gap: 32px; align-items: center; justify-content: space-between">
+<h2 style="flex: 1 1 600px; min-width: 0; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(38px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; margin: 0">انتهيت من الخطة؟ <span style="color: #FFC93C">سنشحنها لك.</span></h2>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<a href="ar/contact.html" style="background: #FFC93C; color: #0B2A4A; padding: 18px 30px; border-radius: 999px; font-weight: 600; text-decoration: none">اطلب عرض سعر →</a>
+<a href="https://wa.me/919212558167" style="background: #25D366; color: #06331A; padding: 18px 28px; border-radius: 999px; font-weight: 600; text-decoration: none">راسل مخلّصًا عبر WhatsApp</a>
+</div>
+</div>
+</div>
+
+</div>
+</main>
+<footer>
+<div class="ft" style="background: #0B4F8F; color: #CFE3F5; font-size: 14px; position: relative">
+<svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="display: block; width: 100%; height: 60px; background: #FFFFFF" aria-hidden="true"><path d="M0 30 Q 120 0 240 30 T 480 30 T 720 30 T 960 30 T 1200 30 T 1440 30 V60 H0 Z" fill="#0B4F8F" /></svg>
+<div style="max-width: 1400px; margin: 0 auto; padding: 40px 32px 32px">
+<img src="yam-logo-white.svg" alt="YAM Logistics" style="height: 84px; width: auto; display: block; margin-bottom: 32px">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 32px">
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">الشحن</span>
+<a href="ar/ocean-freight.html">الشحن البحري · FCL / LCL</a><a href="ar/air-freight.html">الشحن الجوي</a><a href="project-cargo.html">شحنات المشاريع والأحجام الكبيرة (ODC) والبضائع السائبة</a><a href="haulage-icd.html">النقل البري والموانئ الجافة</a><a href="aircraft-charter.html">استئجار الطائرات</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">الجمارك والامتثال</span>
+<a href="ar/customs-brokerage.html">التخليص الجمركي</a><a href="trade-compliance.html">استشارات الامتثال التجاري</a><a href="destination-do-agency.html">وكالة الوجهة / أوامر التسليم</a><a href="ar/contact.html">تأمين البضائع</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">خدمات متخصصة</span>
+<a href="ar/mobile-phone-exports.html">تصدير الهواتف المحمولة</a><a href="buyers-consolidation.html">تجميع شحنات المشترين وإدارة أوامر الشراء</a><a href="ar/third-country-trade.html">التجارة مع دول ثالثة وإعادة التصدير</a><a href="bonded-warehousing.html">المستودعات الجمركية وFTWZ</a><a href="exhibition-ata-carnet.html">شحن المعارض ودفتر ATA</a><a href="ar/third-country-trade.html">دعم التجارة الوسيطة</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">بضائع خاصة</span>
+<a href="dangerous-goods.html">البضائع الخطرة</a><a href="dg-labels.html">ملصقات وعلامات DG (مجانًا)</a><a href="perishables.html">البضائع سريعة التلف</a><a href="pharmaceuticals.html">الأدوية</a><a href="live-animals.html">الحيوانات الحية</a><a href="pet-relocation.html">نقل الحيوانات الأليفة</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px; line-height: 1.6">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">تواصل معنا</span>
+<a href="tel:+911141603301">+91 11 4160 3301 / 02</a>
+<a href="mailto:info@yamlogistics.com">info@yamlogistics.com</a>
+<a href="https://wa.me/919212558167">WhatsApp +91 92125 58167</a>
+<a href="YAM-Logistics-Corporate-Profile.pdf" download="YAM-Logistics-Corporate-Profile.pdf" style="color: #FFC93C; font-weight: 600">↓ ملف الشركة (PDF)</a>
+</div>
+</div>
+<div style="margin-top: 44px; padding-top: 32px; border-top: 1px solid rgba(207,227,245,0.25); display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px">
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">نيودلهي</span>
+<span style="color: #FFFFFF; font-weight: 600">المكتب الرئيسي</span>
+<span style="white-space: pre-line">E-51, Kalkaji
+New Delhi 110019</span>
+<a href="https://www.google.com/maps/search/?api=1&query=E-51+Kalkaji+New+Delhi+110019" style="font-size: 13px; color: #FFC93C">احصل على الاتجاهات →</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">مومباي · بحري</span>
+<span style="color: #FFFFFF; font-weight: 600">عمليات الشحن البحري</span>
+<span style="white-space: pre-line">Room No. 51/52, 179 Commercial Chambers
+Yusuf Meherali Road, Masjid Bunder
+Mumbai 400003</span>
+<a href="https://www.google.com/maps/search/?api=1&query=179+Commercial+Chambers+Yusuf+Meherali+Road+Masjid+Bunder+Mumbai+400003" style="font-size: 13px; color: #FFC93C">احصل على الاتجاهات →</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">مومباي · جوي</span>
+<span style="color: #FFFFFF; font-weight: 600">عمليات الشحن الجوي</span>
+<span style="white-space: pre-line">406, 4th Floor, Rangoli Complex
+Sahar Air Cargo Complex, Andheri (East)
+Mumbai 400099</span>
+<a href="https://www.google.com/maps/search/?api=1&query=Rangoli+Complex+Sahar+Air+Cargo+Complex+Andheri+East+Mumbai+400099" style="font-size: 13px; color: #FFC93C">احصل على الاتجاهات →</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">موندرا</span>
+<span style="color: #FFFFFF; font-weight: 600">مكتب الميناء</span>
+<span style="white-space: pre-line">Office No. 111, AAROS
+Adani Ports and Special Economic Zone
+Kachchh, Gujarat 370421</span>
+<a href="https://www.google.com/maps/search/?api=1&query=AAROS+Adani+Ports+SEZ+Mundra+Gujarat+370421" style="font-size: 13px; color: #FFC93C">احصل على الاتجاهات →</a>
+</div>
+
+</div>
+<div style="margin-top: 32px; display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 13px">
+<span style="font-family: 'Archivo', sans-serif; font-weight: 700; color: #FFFFFF; font-size: 15px">ملتزمون بالتزاماتنا.</span>
+<span>CIN U74899DL1987PTC027852</span>
+<span>ترخيص المخلّص الجمركي R-7/92</span>
+</div>
+<div style="margin-top: 48px; padding-top: 20px; border-top: 1px solid rgba(207,227,245,0.25); display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; font-size: 13px"><span>© 2026 YAM Logistics Pvt. Ltd.</span><span><a href="ar/contact.html">اتصل بنا</a> · <a href="ar/about.html">من نحن</a></span></div>
+</div>
+</div>
+
+</footer>
+<a href="https://wa.me/919212558167" aria-label="تحدّث مع YAM عبر WhatsApp" class="fab"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12Z" /><path d="M9 9.5c.3 1.8 1.7 3.7 3.8 4.6l1.2-1.1 1.8.8-.4 1.6c-3.2.2-6.9-3.2-7.2-6.4l1.6-.5.8 1.8z" /></svg></a>
+<script>
+(function(){var C=['USD','EUR','CNY','GBP','AED'],K='yamfx1';
+function show(d){if(!d||!d.r)return;var el=document.getElementById('fx');if(!el)return;el.querySelectorAll('.fxi').forEach(function(s){var c=s.getAttribute('data-c'),v=d.r[c];if(v){s.querySelector('b').textContent='₹'+v.toFixed(2)}else{s.style.display='none'}});var dd=document.getElementById('fxd');if(dd&&d.d)dd.textContent='ref. '+d.d;}
+try{var c=JSON.parse(localStorage.getItem(K)||'null');if(c&&Date.now()-c.t<6*3600e3){show(c);return}}catch(e){}
+function save(d){d.t=Date.now();try{localStorage.setItem(K,JSON.stringify(d))}catch(e){}show(d)}
+function er(){return fetch('https://open.er-api.com/v6/latest/INR').then(function(x){return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates&&j.rates[c])r[c]=1/j.rates[c]});save({r:r,d:(j.time_last_update_utc||'').slice(5,16)})})}
+fetch('https://api.frankfurter.dev/v1/latest?base=INR&symbols=USD,EUR,CNY,GBP').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates[c])r[c]=1/j.rates[c]});return er().catch(function(){}).then(function(){var c2=null;try{c2=JSON.parse(localStorage.getItem(K))}catch(e){}if(c2&&c2.r&&c2.r.AED)r.AED=c2.r.AED;save({r:r,d:new Date(j.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})})})}).catch(function(){er().catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'})});
+})();
+</script>
+
+<script src="i18n/tr-core.js"></script><script src="i18n/ar.js"></script><script>YAM_TR_OBSERVE(document.getElementById('lp-root'))</script><script src="vendor/three.min.js"></script>
+<script src="vendor/OrbitControls.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="lp-engine.js"></script>
+<script src="load-planner.js"></script>
+</body>
+</html>
