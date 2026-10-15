@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="hi">
+<head><base href="../">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CBM और वॉल्यूमेट्रिक वेट कैलकुलेटर (एयर और सी) | YAM Logistics</title>
+<meta name="description" content="मुफ़्त CBM कैलकुलेटर: कार्टन के साइज़ डालें और कुल वॉल्यूम, एयर चार्जेबल वेट (÷6000), LCL W/M और 20′, 40′ व 40′ HC में कंटेनर फ़िट पाएँ।">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://www.yamlogistics.com/hi/cbm-calculator">
+<meta property="og:type" content="website"><meta property="og:site_name" content="YAM Logistics"><meta property="og:title" content="CBM और वॉल्यूमेट्रिक वेट कैलकुलेटर (एयर और सी) | YAM Logistics"><meta property="og:description" content="मुफ़्त CBM कैलकुलेटर: कार्टन के साइज़ डालें और कुल वॉल्यूम, एयर चार्जेबल वेट (÷6000), LCL W/M और 20′, 40′ व 40′ HC में कंटेनर फ़िट पाएँ।"><meta property="og:url" content="https://www.yamlogistics.com/hi/cbm-calculator">
+<meta name="theme-color" content="#0A6CC2">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+.lpnew{color:#FFFFFF;text-decoration:none}.lpnew b{background:#FFC93C;color:#0B2A4A;font-size:10px;padding:2px 7px;border-radius:999px;margin-right:6px;letter-spacing:.06em}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:#FFFFFF;color:#0B2A4A;font-family:'Geist',system-ui,-apple-system,'Segoe UI',sans-serif}
+img,video{max-width:100%}
+a{color:#0A6CC2}a:hover{color:#0B4F8F}
+.wrap{max-width:1400px;margin:0 auto;padding:0 32px}
+.mono{font-family:'Geist Mono',monospace;letter-spacing:.05em}
+@keyframes blink{50%{opacity:.3}}.live{animation:blink 1.6s steps(2) infinite}
+.util{background:#0B4F8F;color:#CFE3F5;font-size:13px}
+.util-in{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;padding-top:8px;padding-bottom:8px}
+.util a{color:#FFFFFF;text-decoration:none}.util a.gold{color:#FFC93C;font-weight:600}
+.fx{margin-left:auto;display:flex;gap:14px;align-items:center;font-family:'Geist Mono',monospace;font-size:12px;white-space:nowrap;overflow:hidden}
+.fx b{color:#FFFFFF;font-weight:600}.fxl{color:#FFC93C;font-weight:600;letter-spacing:.06em}.fxd{color:#9FC2E6;font-size:11px}
+.btn-calc{background:#FFC93C;color:#0B2A4A!important;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none;white-space:nowrap}
+.nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #E1EDF7;backdrop-filter:saturate(1.4) blur(8px)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;position:relative}
+.brand{display:flex;align-items:center;text-decoration:none}.logo{height:84px;width:auto;display:block}
+@media (max-width:640px){.logo{height:60px}}
+.bw{display:flex;flex-direction:column;line-height:1}.b1{font-family:'Archivo',sans-serif;font-weight:900;font-stretch:118%;font-size:24px}
+.b2{white-space:nowrap;font-family:'Geist Mono',monospace;font-size:10px;color:#5E7891;letter-spacing:.14em;margin-top:3px}
+.links{display:flex;flex-wrap:nowrap;gap:20px;white-space:nowrap;align-items:center;font-size:15px;font-weight:500}
+.links>a{color:#0B2A4A;text-decoration:none}.links>a[aria-current]{color:#0A6CC2;font-weight:600}
+.sol summary{cursor:pointer;list-style:none;padding:8px 0}.sol summary::-webkit-details-marker{display:none}
+.mega{position:absolute;left:0;right:0;top:100%;background:#FFFFFF;border-bottom:1px solid #E1EDF7;box-shadow:0 30px 60px rgba(11,42,74,.12)}
+.mega-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;padding-top:28px;padding-bottom:32px}
+.mega-in a{display:block;padding:7px 0;color:#0B2A4A;text-decoration:none}.mega-in a:hover{color:#0A6CC2}
+.mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0A6CC2;margin-bottom:8px;padding-bottom:10px;border-bottom:1px solid #E1EDF7}
+.mcta{background:#FFF4D6;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#3D5873}
+.mcta strong{font-family:'Archivo',sans-serif;font-size:21px;color:#0B2A4A;line-height:1.1}.mcta a{font-weight:600;padding:0}
+.btn,.btn-o{padding:11px 20px;border-radius:999px;font-weight:600;text-decoration:none;white-space:nowrap}
+.btn{background:#0A6CC2;color:#FFFFFF!important}.btn-o{border:1.5px solid #0A6CC2;color:#0A6CC2!important;padding:9.5px 18px}
+.go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
+.navt{display:none}.burger{display:none}.calc-m{display:none}
+@media (max-width:1240px){
+ .hide-s{display:none}
+ .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
+ .links{flex-wrap:wrap;white-space:normal}
+ .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
+ .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
+ .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
+ .links>a,.sol summary{padding:12px 0;border-bottom:1px solid #EEF4FA}
+ .links .btn,.links .btn-o,.links .btn-calc{margin-top:12px;text-align:center}
+ .navt:checked~.links{display:flex}
+ .mega{position:static;box-shadow:none;border:0}.mega .wrap{padding:0}.mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
+ .links{overflow-x:hidden}.links>*{min-width:0;max-width:100%}
+}
+@media (max-width:640px){.wrap{padding:0 16px}.util-in .u1{display:none}.util-in{gap:6px 16px;font-size:12px}.fx{margin-left:0;overflow-x:auto;width:100%;gap:12px}.fxd{display:none}}
+@media (max-width:760px){[style*="linear-gradient(90deg, rgba(255,255,255,0.9"]{background:rgba(255,255,255,0.84)!important}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+.ft a{color:#CFE3F5;text-decoration:none}.ft a:hover{color:#FFFFFF}.fab{position:fixed;right:20px;bottom:20px;z-index:50;width:60px;height:60px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(11,42,74,.25)}
+
+
+
+input{font:inherit}
+input[type=number]::-webkit-inner-spin-button{opacity:.4}
+.go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
+details summary{cursor:pointer;list-style:none}details summary::-webkit-details-marker{display:none}
+</style>
+
+
+
+<meta content="hi" property="og:locale"><link href="https://www.yamlogistics.com/cbm-calculator" hreflang="en" rel="alternate"><link href="https://www.yamlogistics.com/zh/cbm-calculator" hreflang="zh-Hans" rel="alternate"><link href="https://www.yamlogistics.com/es/cbm-calculator" hreflang="es" rel="alternate"><link href="https://www.yamlogistics.com/ar/cbm-calculator" hreflang="ar" rel="alternate"><link href="https://www.yamlogistics.com/fr/cbm-calculator" hreflang="fr" rel="alternate"><link href="https://www.yamlogistics.com/de/cbm-calculator" hreflang="de" rel="alternate"><link href="https://www.yamlogistics.com/ja/cbm-calculator" hreflang="ja" rel="alternate"><link href="https://www.yamlogistics.com/pt/cbm-calculator" hreflang="pt" rel="alternate"><link href="https://www.yamlogistics.com/ru/cbm-calculator" hreflang="ru" rel="alternate"><link href="https://www.yamlogistics.com/hi/cbm-calculator" hreflang="hi" rel="alternate"><link href="https://www.yamlogistics.com/ko/cbm-calculator" hreflang="ko" rel="alternate"><link href="https://www.yamlogistics.com/cbm-calculator" hreflang="x-default" rel="alternate"><style>.langs{margin-left:8px;background:transparent;color:#FFFFFF;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:3px 8px;font:inherit;font-size:12px;cursor:pointer;max-width:130px}.langs option{color:#0B2A4A;background:#FFFFFF}
+@media (max-width:640px){.langs{margin-left:auto}}</style></head>
+<body>
+<header class="site">
+<div class="util"><div class="wrap util-in">
+<span class="mono u1"><span class="live" style="color:#FFC93C">●</span> मुंबई एयरपोर्ट डेस्क 24×7 खुला</span>
+<a href="https://wa.me/919212558167" class="u1">WhatsApp +91 92125 58167</a>
+<a href="hi/container-load-planner.html" class="u1 lpnew"><b>नया</b> मुफ़्त 3D कंटेनर लोड प्लानर →</a>
+<a href="YAM-Logistics-Corporate-Profile.pdf" download="" class="gold u1">↓ कंपनी प्रोफ़ाइल (PDF)</a>
+<div class="fx" id="fx" title="बाज़ार के संदर्भ रेट, रोज़ अपडेट। कस्टम ड्यूटी की गणना CBIC द्वारा अधिसूचित एक्सचेंज रेट पर होती है।"><span class="fxl">₹ रेट</span><span class="fxi" data-c="USD">USD <b>—</b></span><span class="fxi" data-c="EUR">EUR <b>—</b></span><span class="fxi" data-c="CNY">CNY <b>—</b></span><span class="fxi" data-c="GBP">GBP <b>—</b></span><span class="fxi" data-c="AED">AED <b>—</b></span><span class="fxd" id="fxd"></span></div>
+<select onchange="location.href=this.value" data-notr="" aria-label="Language" class="langs"><option lang="en" value="cbm-calculator.html">English</option><option lang="zh" value="zh/cbm-calculator.html">中文</option><option lang="es" value="es/cbm-calculator.html">Español</option><option lang="ar" value="ar/cbm-calculator.html">العربية</option><option lang="fr" value="fr/cbm-calculator.html">Français</option><option lang="de" value="de/cbm-calculator.html">Deutsch</option><option lang="ja" value="ja/cbm-calculator.html">日本語</option><option lang="pt" value="pt/cbm-calculator.html">Português</option><option lang="ru" value="ru/cbm-calculator.html">Русский</option><option selected lang="hi" value="hi/cbm-calculator.html">🌐 हिन्दी</option><option lang="ko" value="ko/cbm-calculator.html">한국어</option></select></div></div>
+<nav class="nav" aria-label="मुख्य"><div class="wrap nav-in">
+<a href="hi/index.html" class="brand"><img src="yam-logo.svg" alt="YAM Logistics: Your Answer to Movements, स्थापना 1968" width="131" height="68" class="logo"></a>
+<a href="hi/container-load-planner.html" class="calc-m">🧊 3D प्लानर</a><input type="checkbox" id="navt" class="navt" aria-label="मेन्यू खोलें"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
+<div class="links">
+<details class="sol"><summary>सेवाएँ ▾</summary><div class="mega"><div class="wrap mega-in">
+<div><div class="mh">फ्रेट</div><a href="hi/ocean-freight.html">ओशन फ्रेट · FCL / LCL</a><a href="hi/air-freight.html">एयर फ्रेट</a><a href="project-cargo.html">प्रोजेक्ट, ODC और ब्रेकबल्क</a><a href="haulage-icd.html">हॉलेज और ICD</a><a href="aircraft-charter.html">एयरक्राफ्ट चार्टर</a><a href="hi/container-load-planner.html">कंटेनर लोड प्लानर</a><a href="hi/cbm-calculator.html">CBM और वॉल्यूमेट्रिक वज़न कैलकुलेटर</a></div><div><div class="mh">कस्टम्स और कंप्लायंस</div><a href="hi/customs-brokerage.html">कस्टम ब्रोकरेज</a><a href="trade-compliance.html">ट्रेड कंप्लायंस सलाह</a><a href="destination-do-agency.html">डेस्टिनेशन / DO एजेंसी</a><a href="hi/contact.html">कार्गो इंश्योरेंस</a></div><div><div class="mh">विशेष सेवाएँ</div><a href="hi/mobile-phone-exports.html">मोबाइल फ़ोन एक्सपोर्ट</a><a href="buyers-consolidation.html">बायर्स कंसोलिडेशन और PO मैनेजमेंट</a><a href="hi/third-country-trade.html">थर्ड-कंट्री ट्रेड और री-एक्सपोर्ट</a><a href="bonded-warehousing.html">बॉन्डेड वेयरहाउसिंग और FTWZ</a><a href="exhibition-ata-carnet.html">प्रदर्शनी कार्गो और ATA कारनेट</a><a href="hi/third-country-trade.html">मर्चेंटिंग ट्रेड सहायता</a></div><div><div class="mh">स्पेशल कार्गो</div><a href="dangerous-goods.html">डेंजरस गुड्स</a><a href="dg-labels.html">DG लेबल और मार्क्स (मुफ़्त)</a><a href="perishables.html">पेरिशेबल्स</a><a href="pharmaceuticals.html">फ़ार्मास्युटिकल्स</a><a href="live-animals.html">जीवित पशु</a><a href="pet-relocation.html">पालतू पशु रीलोकेशन</a></div>
+<div class="mcta"><strong>तय नहीं कर पा रहे कि क्या चाहिए?</strong><span>लाइसेंसधारी ब्रोकर को बताइए कि आप क्या भेज रहे हैं। रूट और कागज़ी कार्रवाई हम तय करेंगे।</span><a href="hi/contact.html">डेस्क से बात करें →</a></div>
+</div></div></details>
+<a href="hi/customs-brokerage.html">कस्टम्स</a><a href="hi/mobile-phone-exports.html">मोबाइल एक्सपोर्ट</a><a href="hi/third-country-trade.html">थर्ड-कंट्री ट्रेड</a><a href="trade-desk.html">ट्रेड डेस्क</a>
+<a href="hi/container-load-planner.html" class="btn-calc">🧊 3D लोड प्लानर</a>
+<a href="track-shipment.html" class="btn-o">शिपमेंट ट्रैक करें</a>
+<a href="hi/contact.html" class="btn go">कोटेशन लें</a>
+</div></div></nav>
+</header>
+<main id="app">
+<div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
+
+
+
+<div style="background: linear-gradient(180deg, #DDF0FF 0%, #FFFFFF 100%)">
+<div style="max-width: 1400px; margin: 0 auto; padding: 72px 32px 32px">
+<div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.08em; margin-bottom: 20px">मुफ़्त टूल · साइन-अप की ज़रूरत नहीं</div>
+<h1 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(42px, 5.4vw, 80px); line-height: 0.98; letter-spacing: -0.03em; margin: 0 0 18px; max-width: 1000px">CBM और वॉल्यूमेट्रिक वेट कैलकुलेटर</h1>
+<p style="font-size: 19px; line-height: 1.55; color: #17436B; max-width: 720px; margin: 0">अपने कार्टन के साइज़ डालें और कुल वॉल्यूम, एयर चार्जेबल वेट और कंटेनर का कितना हिस्सा भरेगा, यह देखें। जितने चाहें उतने बॉक्स साइज़ जोड़ें।</p>
+</div>
+</div>
+
+
+<div style="max-width: 1400px; margin: 0 auto; padding: 24px 32px 80px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+
+<div style="flex: 1.6 1 640px; min-width: 0; background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 28px; box-shadow: 0 20px 50px rgba(11,42,74,0.08); padding: 28px">
+<div style="display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; justify-content: space-between; margin-bottom: 22px">
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<span style="font-size: 14px; font-weight: 600; color: #3D5873">यूनिट</span>
+<div role="radiogroup" aria-label="माप की यूनिट" style="display: inline-flex; background: #EEF6FD; border-radius: 999px; padding: 4px; gap: 4px">
+
+<button role="radio" aria-checked="true" data-ev-click="0" style="border: 0; border-radius: 999px; min-height: 36px; padding: 0 14px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Geist, sans-serif; background: #0A6CC2; color: #FFFFFF;">सेंटीमीटर</button>
+
+<button role="radio" aria-checked="false" data-ev-click="1" style="border: 0; border-radius: 999px; min-height: 36px; padding: 0 14px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Geist, sans-serif; background: transparent; color: #3D5873;">इंच</button>
+
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<span style="font-size: 14px; font-weight: 600; color: #3D5873">एयर डिवाइज़र</span>
+<div role="radiogroup" aria-label="वॉल्यूमेट्रिक डिवाइज़र" style="display: inline-flex; background: #EEF6FD; border-radius: 999px; padding: 4px; gap: 4px">
+
+<button role="radio" aria-checked="true" data-ev-click="2" style="border: 0; border-radius: 999px; min-height: 36px; padding: 0 14px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Geist, sans-serif; background: #0A6CC2; color: #FFFFFF;">÷6000 एयर</button>
+
+<button role="radio" aria-checked="false" data-ev-click="3" style="border: 0; border-radius: 999px; min-height: 36px; padding: 0 14px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Geist, sans-serif; background: transparent; color: #3D5873;">÷5000 कूरियर</button>
+
+</div>
+</div>
+</div>
+
+<div style="overflow-x: auto">
+<div style="min-width: 600px">
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 0.8fr 1.1fr 44px; gap: 10px; padding: 0 0 8px; font-size: 12px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em; color: #5E7891">
+<span>लंबाई (cm)</span><span>चौड़ाई (cm)</span><span>ऊँचाई (cm)</span><span>पीस</span><span>प्रति पीस KG</span><span></span>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 0.8fr 1.1fr 44px; gap: 10px; margin-bottom: 10px; align-items: center">
+<input type="number" min="0" step="any" inputmode="decimal" aria-label="लंबाई" value="120" data-ev-input="4" style="padding: 13px 12px; border: 1px solid #C9DCEC; border-radius: 12px; font-size: 16px; color: #0B2A4A; min-width: 0">
+<input type="number" min="0" step="any" inputmode="decimal" aria-label="चौड़ाई" value="80" data-ev-input="5" style="padding: 13px 12px; border: 1px solid #C9DCEC; border-radius: 12px; font-size: 16px; color: #0B2A4A; min-width: 0">
+<input type="number" min="0" step="any" inputmode="decimal" aria-label="ऊँचाई" value="100" data-ev-input="6" style="padding: 13px 12px; border: 1px solid #C9DCEC; border-radius: 12px; font-size: 16px; color: #0B2A4A; min-width: 0">
+<input type="number" min="0" step="1" inputmode="numeric" aria-label="पीस" value="2" data-ev-input="7" style="padding: 13px 12px; border: 1px solid #C9DCEC; border-radius: 12px; font-size: 16px; color: #0B2A4A; min-width: 0">
+<input type="number" min="0" step="any" inputmode="decimal" aria-label="प्रति पीस वज़न kg में" value="150" data-ev-input="8" style="padding: 13px 12px; border: 1px solid #C9DCEC; border-radius: 12px; font-size: 16px; color: #0B2A4A; min-width: 0">
+<button data-ev-click="9" aria-label="यह लाइन हटाएँ" disabled style="width: 44px; height: 44px; border-radius: 12px; border: 1px solid #E1EDF7; background: #FFFFFF; color: #5E7891; font-size: 20px; cursor: pointer">×</button>
+</div>
+<div style="font-size: 13px; color: #5E7891; margin: -4px 0 12px 2px">लाइन 1: 1.920 m³ · 320.0 kg वॉल्यूमेट्रिक · 300.0 kg ग्रॉस</div>
+
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px">
+<button data-ev-click="10" style="background: #EEF6FD; color: #0A6CC2; border: 0; border-radius: 999px; padding: 12px 20px; font-weight: 600; font-size: 15px; cursor: pointer">+ एक और बॉक्स साइज़ जोड़ें</button>
+<button data-ev-click="11" style="background: transparent; color: #5E7891; border: 1px solid #E1EDF7; border-radius: 999px; padding: 11px 18px; font-size: 15px; cursor: pointer">रीसेट</button>
+</div>
+</div>
+
+
+<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+<div style="background: #0A6CC2; color: #FFFFFF; border-radius: 28px; padding: 28px">
+<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: #FFC93C; margin-bottom: 6px">एयर · चार्जेबल वेट</div>
+<div style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: 64px; line-height: 1">320.0 <span style="font-size: 26px">kg</span></div>
+<div style="font-size: 15px; color: #DCEEFC; margin-top: 10px">वॉल्यूमेट्रिक वेट ज़्यादा है, इसलिए एयरलाइन वॉल्यूम पर चार्ज करेगी।</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 20px">
+<div style="background: rgba(255,255,255,0.12); border-radius: 16px; padding: 14px"><div style="font-size: 12px; color: #DCEEFC">वॉल्यूमेट्रिक वेट</div><div style="font-weight: 600; font-size: 20px; margin-top: 4px">320.0 kg</div></div>
+<div style="background: rgba(255,255,255,0.12); border-radius: 16px; padding: 14px"><div style="font-size: 12px; color: #DCEEFC">ग्रॉस वेट</div><div style="font-weight: 600; font-size: 20px; margin-top: 4px">300.0 kg</div></div>
+</div>
+</div>
+
+<div style="background: #F2F8FD; border-radius: 28px; padding: 28px">
+<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: #0A6CC2; margin-bottom: 6px">सी · कुल वॉल्यूम</div>
+<div style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: 52px; line-height: 1">1.920 <span style="font-size: 22px">m³</span></div>
+<div style="font-size: 15px; color: #3D5873; margin-top: 10px">2 पीस · 67.8 cu ft · LCL बिलिंग का आधार <strong>1.92 W/M</strong></div>
+<div style="margin-top: 20px; display: flex; flex-direction: column; gap: 12px">
+
+<div>
+<div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px"><span style="font-weight: 600">20′ स्टैंडर्ड</span><span style="color: #3D5873">7% भरा</span></div>
+<div style="height: 10px; background: #DCEAF6; border-radius: 999px; overflow: hidden"><div style="height: 100%; border-radius: 999px; width: 6.857142857142858%; background: #0A6CC2;"></div></div>
+</div>
+
+<div>
+<div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px"><span style="font-weight: 600">40′ स्टैंडर्ड</span><span style="color: #3D5873">3% भरा</span></div>
+<div style="height: 10px; background: #DCEAF6; border-radius: 999px; overflow: hidden"><div style="height: 100%; border-radius: 999px; width: 3.310344827586207%; background: #0A6CC2;"></div></div>
+</div>
+
+<div>
+<div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px"><span style="font-weight: 600">40′ हाई क्यूब</span><span style="color: #3D5873">3% भरा</span></div>
+<div style="height: 10px; background: #DCEAF6; border-radius: 999px; overflow: hidden"><div style="height: 100%; border-radius: 999px; width: 2.8235294117647056%; background: #0A6CC2;"></div></div>
+</div>
+
+</div>
+<div style="font-size: 12px; color: #5E7891; margin-top: 12px">व्यावहारिक लोड योग्य वॉल्यूम (लगभग 28 / 58 / 68 m³) पर आधारित। असली फ़िट बॉक्स के आकार और स्टैकिंग पर निर्भर करता है।</div>
+<a href="hi/container-load-planner.html#c=%7B%22unit%22%3A%22cm%22%2C%22rows%22%3A%5B%7B%22l%22%3A%22120%22%2C%22w%22%3A%2280%22%2C%22h%22%3A%22100%22%2C%22pcs%22%3A%222%22%2C%22kg%22%3A%22150%22%7D%5D%7D" style="display: inline-flex; margin-top: 16px; background: #FFC93C; color: #0B2A4A; padding: 13px 22px; border-radius: 999px; font-weight: 600; text-decoration: none">🧊 3D में लोडिंग प्लान करें →</a>
+</div>
+
+<div style="background: #FFF8E6; border-radius: 28px; padding: 24px 28px; display: flex; flex-direction: column; gap: 12px">
+<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 20px">इस शिपमेंट का रेट चाहिए?</div>
+<div style="font-size: 15px; color: #4A4030">हमें ये आँकड़े भेजें, लाइसेंसधारी ब्रोकर 2 कार्य-घंटों के भीतर जवाब देगा।</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<a class="go" href="hi/contact.html" style="background: #0A6CC2; color: #FFFFFF; padding: 13px 22px; border-radius: 999px; font-weight: 600; text-decoration: none">कोटेशन लें →</a>
+<a href="https://wa.me/919212558167" style="background: #25D366; color: #06331A; padding: 13px 22px; border-radius: 999px; font-weight: 600; text-decoration: none">WhatsApp पर भेजें</a>
+</div>
+</div>
+</div>
+</div>
+
+
+<div style="background: #F2F8FD">
+<div style="max-width: 1000px; margin: 0 auto; padding: 88px 32px">
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(34px, 4vw, 52px); line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 28px">गणना कैसे होती है</h2>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">CBM क्या है?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0; white-space: pre-line">CBM (क्यूबिक मीटर) आपके कार्गो का वॉल्यूम है। मीटर में लंबाई × चौड़ाई × ऊँचाई × पीस की संख्या। उदाहरण: 120 × 80 × 100 cm = प्रति बॉक्स 0.96 m³।</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">वॉल्यूमेट्रिक (डाइमेंशनल) वेट क्या है?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0; white-space: pre-line">एयरलाइन सिर्फ़ वज़न के लिए नहीं, बल्कि शिपमेंट द्वारा घेरी गई जगह के लिए चार्ज करती हैं। वॉल्यूमेट्रिक वेट = cm में L × W × H ÷ 6,000 (IATA स्टैंडर्ड)। कूरियर और एक्सप्रेस सेवाएँ आमतौर पर ÷ 5,000 इस्तेमाल करती हैं।</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">चार्जेबल वेट क्या है?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0; white-space: pre-line">असली ग्रॉस वेट और वॉल्यूमेट्रिक वेट में से जो ज़्यादा हो। एयरलाइन आमतौर पर इसे अगले आधे किलो तक राउंड अप करती हैं। हल्के, भारी-भरकम आकार वाले कार्गो पर वॉल्यूम से और भारी, कॉम्पैक्ट कार्गो पर वज़न से चार्ज लगता है।</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">सी LCL में W/M का क्या मतलब है?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0; white-space: pre-line">वेट या मेज़र। LCL की बिलिंग इनमें से जो ज़्यादा हो उस पर होती है: m³ में वॉल्यूम या टन में वज़न (1,000 kg = 1 रेवेन्यू टन)।</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">कंटेनर फ़िट कितना सटीक है?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0; white-space: pre-line">यह लगभग 28 m³ (20′), 58 m³ (40′) और 68 m³ (40′ HC) के व्यावहारिक लोड योग्य वॉल्यूम इस्तेमाल करता है, जिनमें ख़ाली जगह और स्टैकिंग का हिसाब शामिल है। अनियमित आकार, नॉन-स्टैकेबल कार्गो या वज़न सीमाएँ असली जवाब बदल सकती हैं, इसलिए लोड प्लान करने के लिए हमसे कहें।</p>
+</details>
+
+</div>
+</div>
+
+</div>
+</main>
+<footer>
+<div class="ft" style="background: #0B4F8F; color: #CFE3F5; font-size: 14px; position: relative">
+<svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="display: block; width: 100%; height: 60px; background: #FFFFFF" aria-hidden="true"><path d="M0 30 Q 120 0 240 30 T 480 30 T 720 30 T 960 30 T 1200 30 T 1440 30 V60 H0 Z" fill="#0B4F8F" /></svg>
+<div style="max-width: 1400px; margin: 0 auto; padding: 40px 32px 32px">
+<img src="yam-logo-white.svg" alt="YAM Logistics" style="height: 84px; width: auto; display: block; margin-bottom: 32px">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 32px">
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">फ्रेट</span>
+<a href="hi/ocean-freight.html">ओशन फ्रेट · FCL / LCL</a><a href="hi/air-freight.html">एयर फ्रेट</a><a href="project-cargo.html">प्रोजेक्ट, ODC और ब्रेकबल्क</a><a href="haulage-icd.html">हॉलेज और ICD</a><a href="aircraft-charter.html">एयरक्राफ्ट चार्टर</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">कस्टम्स और कंप्लायंस</span>
+<a href="hi/customs-brokerage.html">कस्टम ब्रोकरेज</a><a href="trade-compliance.html">ट्रेड कंप्लायंस सलाह</a><a href="destination-do-agency.html">डेस्टिनेशन / DO एजेंसी</a><a href="hi/contact.html">कार्गो इंश्योरेंस</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">विशेष सेवाएँ</span>
+<a href="hi/mobile-phone-exports.html">मोबाइल फ़ोन एक्सपोर्ट</a><a href="buyers-consolidation.html">बायर्स कंसोलिडेशन और PO मैनेजमेंट</a><a href="hi/third-country-trade.html">थर्ड-कंट्री ट्रेड और री-एक्सपोर्ट</a><a href="bonded-warehousing.html">बॉन्डेड वेयरहाउसिंग और FTWZ</a><a href="exhibition-ata-carnet.html">प्रदर्शनी कार्गो और ATA कारनेट</a><a href="hi/third-country-trade.html">मर्चेंटिंग ट्रेड सहायता</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">स्पेशल कार्गो</span>
+<a href="dangerous-goods.html">डेंजरस गुड्स</a><a href="dg-labels.html">DG लेबल और मार्क्स (मुफ़्त)</a><a href="perishables.html">पेरिशेबल्स</a><a href="pharmaceuticals.html">फ़ार्मास्युटिकल्स</a><a href="live-animals.html">जीवित पशु</a><a href="pet-relocation.html">पालतू पशु रीलोकेशन</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px; line-height: 1.6">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">हमसे बात करें</span>
+<a href="tel:+911141603301">+91 11 4160 3301 / 02</a>
+<a href="mailto:info@yamlogistics.com">info@yamlogistics.com</a>
+<a href="https://wa.me/919212558167">WhatsApp +91 92125 58167</a>
+<a href="YAM-Logistics-Corporate-Profile.pdf" download="YAM-Logistics-Corporate-Profile.pdf" style="color: #FFC93C; font-weight: 600">↓ कंपनी प्रोफ़ाइल (PDF)</a>
+</div>
+</div>
+<div style="margin-top: 44px; padding-top: 32px; border-top: 1px solid rgba(207,227,245,0.25); display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px">
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">नई दिल्ली</span>
+<span style="color: #FFFFFF; font-weight: 600">हेड ऑफ़िस</span>
+<span style="white-space: pre-line">E-51, Kalkaji
+New Delhi 110019</span>
+<a href="https://www.google.com/maps/search/?api=1&query=E-51+Kalkaji+New+Delhi+110019" style="font-size: 13px; color: #FFC93C">रास्ता देखें →</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">मुंबई · सी</span>
+<span style="color: #FFFFFF; font-weight: 600">सी फ्रेट ऑपरेशंस</span>
+<span style="white-space: pre-line">Room No. 51/52, 179 Commercial Chambers
+Yusuf Meherali Road, Masjid Bunder
+Mumbai 400003</span>
+<a href="https://www.google.com/maps/search/?api=1&query=179+Commercial+Chambers+Yusuf+Meherali+Road+Masjid+Bunder+Mumbai+400003" style="font-size: 13px; color: #FFC93C">रास्ता देखें →</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">मुंबई · एयर</span>
+<span style="color: #FFFFFF; font-weight: 600">एयर फ्रेट ऑपरेशंस</span>
+<span style="white-space: pre-line">406, 4th Floor, Rangoli Complex
+Sahar Air Cargo Complex, Andheri (East)
+Mumbai 400099</span>
+<a href="https://www.google.com/maps/search/?api=1&query=Rangoli+Complex+Sahar+Air+Cargo+Complex+Andheri+East+Mumbai+400099" style="font-size: 13px; color: #FFC93C">रास्ता देखें →</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">मुंद्रा</span>
+<span style="color: #FFFFFF; font-weight: 600">पोर्ट ऑफ़िस</span>
+<span style="white-space: pre-line">Office No. 111, AAROS
+Adani Ports and Special Economic Zone
+Kachchh, Gujarat 370421</span>
+<a href="https://www.google.com/maps/search/?api=1&query=AAROS+Adani+Ports+SEZ+Mundra+Gujarat+370421" style="font-size: 13px; color: #FFC93C">रास्ता देखें →</a>
+</div>
+
+</div>
+<div style="margin-top: 32px; display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 13px">
+<span style="font-family: 'Archivo', sans-serif; font-weight: 700; color: #FFFFFF; font-size: 15px">Committed to Commitments.</span>
+<span>CIN U74899DL1987PTC027852</span>
+<span>कस्टम ब्रोकर लाइसेंस R-7/92</span>
+</div>
+<div style="margin-top: 48px; padding-top: 20px; border-top: 1px solid rgba(207,227,245,0.25); display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; font-size: 13px"><span>© 2026 YAM Logistics Pvt. Ltd.</span><span><a href="hi/contact.html">संपर्क</a> · <a href="hi/about.html">हमारे बारे में</a></span></div>
+</div>
+</div>
+
+</footer>
+<a href="https://wa.me/919212558167" aria-label="WhatsApp पर YAM से चैट करें" class="fab"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12Z" /><path d="M9 9.5c.3 1.8 1.7 3.7 3.8 4.6l1.2-1.1 1.8.8-.4 1.6c-3.2.2-6.9-3.2-7.2-6.4l1.6-.5.8 1.8z" /></svg></a>
+<script>
+(function(){var C=['USD','EUR','CNY','GBP','AED'],K='yamfx1';
+function show(d){if(!d||!d.r)return;var el=document.getElementById('fx');if(!el)return;el.querySelectorAll('.fxi').forEach(function(s){var c=s.getAttribute('data-c'),v=d.r[c];if(v){s.querySelector('b').textContent='₹'+v.toFixed(2)}else{s.style.display='none'}});var dd=document.getElementById('fxd');if(dd&&d.d)dd.textContent='ref. '+d.d;}
+try{var c=JSON.parse(localStorage.getItem(K)||'null');if(c&&Date.now()-c.t<6*3600e3){show(c);return}}catch(e){}
+function save(d){d.t=Date.now();try{localStorage.setItem(K,JSON.stringify(d))}catch(e){}show(d)}
+function er(){return fetch('https://open.er-api.com/v6/latest/INR').then(function(x){return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates&&j.rates[c])r[c]=1/j.rates[c]});save({r:r,d:(j.time_last_update_utc||'').slice(5,16)})})}
+fetch('https://api.frankfurter.dev/v1/latest?base=INR&symbols=USD,EUR,CNY,GBP').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates[c])r[c]=1/j.rates[c]});return er().catch(function(){}).then(function(){var c2=null;try{c2=JSON.parse(localStorage.getItem(K))}catch(e){}if(c2&&c2.r&&c2.r.AED)r.AED=c2.r.AED;save({r:r,d:new Date(j.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})})})}).catch(function(){er().catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'})});
+})();
+</script>
+<template id="tpl">
+<div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
+
+
+<!-- header -->
+<div style="background: linear-gradient(180deg, #DDF0FF 0%, #FFFFFF 100%)">
+<div style="max-width: 1400px; margin: 0 auto; padding: 72px 32px 32px">
+<div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.08em; margin-bottom: 20px">FREE TOOL · NO SIGN-UP</div>
+<h1 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(42px, 5.4vw, 80px); line-height: 0.98; letter-spacing: -0.03em; margin: 0 0 18px; max-width: 1000px">CBM &amp; volumetric weight calculator</h1>
+<p style="font-size: 19px; line-height: 1.55; color: #17436B; max-width: 720px; margin: 0">Enter your carton sizes to see total volume, air chargeable weight and how much of a container you'll use. Add as many box sizes as you need.</p>
+</div>
+</div>
+
+<!-- calculator -->
+<div style="max-width: 1400px; margin: 0 auto; padding: 24px 32px 80px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<!-- inputs -->
+<div style="flex: 1.6 1 640px; min-width: 0; background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 28px; box-shadow: 0 20px 50px rgba(11,42,74,0.08); padding: 28px">
+<div style="display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; justify-content: space-between; margin-bottom: 22px">
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<span style="font-size: 14px; font-weight: 600; color: #3D5873">Units</span>
+<div role="radiogroup" aria-label="Dimension units" style="display: inline-flex; background: #EEF6FD; border-radius: 999px; padding: 4px; gap: 4px">
+<sc-for list="{{units}}" as="u" hint-placeholder-count="2">
+<button role="radio" aria-checked="{{u.on}}" onClick="{{u.pick}}" style="{{u.style}}">{{u.label}}</button>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<span style="font-size: 14px; font-weight: 600; color: #3D5873">Air divisor</span>
+<div role="radiogroup" aria-label="Volumetric divisor" style="display: inline-flex; background: #EEF6FD; border-radius: 999px; padding: 4px; gap: 4px">
+<sc-for list="{{divisors}}" as="d" hint-placeholder-count="2">
+<button role="radio" aria-checked="{{d.on}}" onClick="{{d.pick}}" style="{{d.style}}">{{d.label}}</button>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="overflow-x: auto">
+<div style="min-width: 600px">
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 0.8fr 1.1fr 44px; gap: 10px; padding: 0 0 8px; font-size: 12px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em; color: #5E7891">
+<span>LENGTH ({{unitLabel}})</span><span>WIDTH ({{unitLabel}})</span><span>HEIGHT ({{unitLabel}})</span><span>PIECES</span><span>KG PER PIECE</span><span></span>
+</div>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="1">
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 0.8fr 1.1fr 44px; gap: 10px; margin-bottom: 10px; align-items: center">
+<input type="number" min="0" step="any" inputmode="decimal" aria-label="Length" value="{{r.l}}" onChange="{{r.setL}}" style="padding: 13px 12px; border: 1px solid #C9DCEC; border-radius: 12px; font-size: 16px; color: #0B2A4A; min-width: 0">
+<input type="number" min="0" step="any" inputmode="decimal" aria-label="Width" value="{{r.w}}" onChange="{{r.setW}}" style="padding: 13px 12px; border: 1px solid #C9DCEC; border-radius: 12px; font-size: 16px; color: #0B2A4A; min-width: 0">
+<input type="number" min="0" step="any" inputmode="decimal" aria-label="Height" value="{{r.h}}" onChange="{{r.setH}}" style="padding: 13px 12px; border: 1px solid #C9DCEC; border-radius: 12px; font-size: 16px; color: #0B2A4A; min-width: 0">
+<input type="number" min="0" step="1" inputmode="numeric" aria-label="Pieces" value="{{r.pcs}}" onChange="{{r.setPcs}}" style="padding: 13px 12px; border: 1px solid #C9DCEC; border-radius: 12px; font-size: 16px; color: #0B2A4A; min-width: 0">
+<input type="number" min="0" step="any" inputmode="decimal" aria-label="Weight per piece in kg" value="{{r.kg}}" onChange="{{r.setKg}}" style="padding: 13px 12px; border: 1px solid #C9DCEC; border-radius: 12px; font-size: 16px; color: #0B2A4A; min-width: 0">
+<button onClick="{{r.remove}}" aria-label="Remove this line" disabled="{{r.only}}" style="width: 44px; height: 44px; border-radius: 12px; border: 1px solid #E1EDF7; background: #FFFFFF; color: #5E7891; font-size: 20px; cursor: pointer">×</button>
+</div>
+<div style="font-size: 13px; color: #5E7891; margin: -4px 0 12px 2px">Line {{r.n}}: {{r.cbm}} m³ · {{r.vol}} kg volumetric · {{r.gross}} kg gross</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px">
+<button onClick="{{addRow}}" style="background: #EEF6FD; color: #0A6CC2; border: 0; border-radius: 999px; padding: 12px 20px; font-weight: 600; font-size: 15px; cursor: pointer">+ Add another box size</button>
+<button onClick="{{reset}}" style="background: transparent; color: #5E7891; border: 1px solid #E1EDF7; border-radius: 999px; padding: 11px 18px; font-size: 15px; cursor: pointer">Reset</button>
+</div>
+</div>
+
+<!-- results -->
+<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+<div style="background: #0A6CC2; color: #FFFFFF; border-radius: 28px; padding: 28px">
+<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: #FFC93C; margin-bottom: 6px">AIR · CHARGEABLE WEIGHT</div>
+<div style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: 64px; line-height: 1">{{chargeable}} <span style="font-size: 26px">kg</span></div>
+<div style="font-size: 15px; color: #DCEEFC; margin-top: 10px">{{basis}}</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 20px">
+<div style="background: rgba(255,255,255,0.12); border-radius: 16px; padding: 14px"><div style="font-size: 12px; color: #DCEEFC">Volumetric weight</div><div style="font-weight: 600; font-size: 20px; margin-top: 4px">{{volTotal}} kg</div></div>
+<div style="background: rgba(255,255,255,0.12); border-radius: 16px; padding: 14px"><div style="font-size: 12px; color: #DCEEFC">Gross weight</div><div style="font-weight: 600; font-size: 20px; margin-top: 4px">{{grossTotal}} kg</div></div>
+</div>
+</div>
+
+<div style="background: #F2F8FD; border-radius: 28px; padding: 28px">
+<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: #0A6CC2; margin-bottom: 6px">SEA · TOTAL VOLUME</div>
+<div style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: 52px; line-height: 1">{{cbmTotal}} <span style="font-size: 22px">m³</span></div>
+<div style="font-size: 15px; color: #3D5873; margin-top: 10px">{{pcsTotal}} pieces · {{cft}} cu ft · LCL billed on <strong>{{wm}} W/M</strong></div>
+<div style="margin-top: 20px; display: flex; flex-direction: column; gap: 12px">
+<sc-for list="{{fits}}" as="f" hint-placeholder-count="3">
+<div>
+<div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px"><span style="font-weight: 600">{{f.name}}</span><span style="color: #3D5873">{{f.text}}</span></div>
+<div style="height: 10px; background: #DCEAF6; border-radius: 999px; overflow: hidden"><div style="{{f.bar}}"></div></div>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: #5E7891; margin-top: 12px">Based on practical loadable volume (about 28 / 58 / 68 m³). Real fit depends on box shapes and stacking.</div>
+<a href="{{planHref}}" style="display: inline-flex; margin-top: 16px; background: #FFC93C; color: #0B2A4A; padding: 13px 22px; border-radius: 999px; font-weight: 600; text-decoration: none">🧊 Plan the loading in 3D →</a>
+</div>
+
+<div style="background: #FFF8E6; border-radius: 28px; padding: 24px 28px; display: flex; flex-direction: column; gap: 12px">
+<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 20px">Want a rate for this shipment?</div>
+<div style="font-size: 15px; color: #4A4030">Send us these numbers and a licensed broker will reply within 2 working hours.</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<a class="go" href="contact.html" style="background: #0A6CC2; color: #FFFFFF; padding: 13px 22px; border-radius: 999px; font-weight: 600; text-decoration: none">Get a quote →</a>
+<a href="https://wa.me/919212558167" style="background: #25D366; color: #06331A; padding: 13px 22px; border-radius: 999px; font-weight: 600; text-decoration: none">Send on WhatsApp</a>
+</div>
+</div>
+</div>
+</div>
+
+<!-- explainer for SEO -->
+<div style="background: #F2F8FD">
+<div style="max-width: 1000px; margin: 0 auto; padding: 88px 32px">
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(34px, 4vw, 52px); line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 28px">How it's calculated</h2>
+<sc-for list="{{faqs}}" as="q" hint-placeholder-count="5">
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">{{q.q}}<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0; white-space: pre-line">{{q.a}}</p>
+</details>
+</sc-for>
+</div>
+</div>
+
+</div>
+</template>
+<script src="i18n/tr-core.js"></script><script src="i18n/hi.js"></script><script src="yam-runtime.js"></script>
+<script>
+
+(function(){const DCLogic=YAMDC.DCLogic;class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { unit: 'cm', divisor: 6000, rows: [{ l: '120', w: '80', h: '100', pcs: '2', kg: '150' }] };
+  }
+  setField(i, k, e) {
+    const v = e && e.target ? e.target.value : e;
+    const rows = this.state.rows.map((r, j) => (j === i ? { ...r, [k]: v } : r));
+    this.setState({ rows });
+  }
+  renderVals() {
+    const { unit, divisor, rows } = this.state;
+    const toCm = unit === 'in' ? 2.54 : 1;
+    const num = (s) => { const n = parseFloat(s); return isFinite(n) && n > 0 ? n : 0; };
+    const fmt = (n, d) => n.toLocaleString('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d });
+    let cbm = 0, vol = 0, gross = 0, pcs = 0;
+    const out = rows.map((r, i) => {
+      const L = num(r.l) * toCm, W = num(r.w) * toCm, H = num(r.h) * toCm, P = Math.floor(num(r.pcs)), K = num(r.kg);
+      const cm3 = L * W * H * P;
+      const rc = cm3 / 1e6, rv = cm3 / divisor, rg = K * P;
+      cbm += rc; vol += rv; gross += rg; pcs += P;
+      return {
+        ...r, n: i + 1, only: rows.length === 1,
+        cbm: fmt(rc, 3), vol: fmt(rv, 1), gross: fmt(rg, 1),
+        setL: (e) => this.setField(i, 'l', e), setW: (e) => this.setField(i, 'w', e), setH: (e) => this.setField(i, 'h', e),
+        setPcs: (e) => this.setField(i, 'pcs', e), setKg: (e) => this.setField(i, 'kg', e),
+        remove: () => { if (rows.length > 1) this.setState({ rows: rows.filter((_, j) => j !== i) }); }
+      };
+    });
+    const ch = Math.max(vol, gross);
+    const roundHalf = Math.ceil(ch * 2) / 2;
+    const basis = ch === 0 ? 'Enter your box sizes to begin.' : (vol >= gross ? 'Volumetric weight is higher, so the airline charges on volume.' : 'Gross weight is higher, so the airline charges on actual weight.');
+    const wm = Math.max(cbm, gross / 1000);
+    const pill = (on) => 'border: 0; border-radius: 999px; min-height: 36px; padding: 0 14px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Geist, sans-serif; ' + (on ? 'background: #0A6CC2; color: #FFFFFF;' : 'background: transparent; color: #3D5873;');
+    const boxes = [['20′ Standard', 28], ['40′ Standard', 58], ['40′ High Cube', 68]];
+    const fits = boxes.map(([name, cap]) => {
+      const pct = cap ? (cbm / cap) * 100 : 0;
+      const n = Math.ceil(cbm / cap);
+      const text = cbm === 0 ? '–' : (pct <= 100 ? Math.round(pct) + '% full' : n + ' containers');
+      const w = Math.min(pct, 100);
+      return { name, text, bar: 'height: 100%; border-radius: 999px; width: ' + w + '%; background: ' + (pct > 100 ? '#E2483A' : pct > 85 ? '#F59E0B' : '#0A6CC2') + ';' };
+    });
+    return {
+      rows: out, unitLabel: unit,
+      units: [['cm', 'Centimetres'], ['in', 'Inches']].map(([id, label]) => ({ label, on: String(unit === id), style: pill(unit === id), pick: () => this.setState({ unit: id }) })),
+      divisors: [[6000, '÷6000 Air'], [5000, '÷5000 Courier']].map(([id, label]) => ({ label, on: String(divisor === id), style: pill(divisor === id), pick: () => this.setState({ divisor: id }) })),
+      addRow: () => this.setState({ rows: rows.concat([{ l: '', w: '', h: '', pcs: '1', kg: '' }]) }),
+      reset: () => this.setState({ rows: [{ l: '', w: '', h: '', pcs: '1', kg: '' }] }),
+      chargeable: fmt(roundHalf, 1), basis,
+      volTotal: fmt(vol, 1), grossTotal: fmt(gross, 1),
+      cbmTotal: fmt(cbm, 3), cft: fmt(cbm * 35.3147, 1), pcsTotal: pcs, wm: fmt(wm, 2),
+      fits,
+      planHref: 'container-load-planner.html#c=' + encodeURIComponent(JSON.stringify({ unit, rows: rows.map((r) => ({ l: r.l, w: r.w, h: r.h, pcs: r.pcs, kg: r.kg })) })),
+      faqs: [
+        { q: 'What is CBM?', a: 'CBM (cubic metre) is the volume of your cargo. Length × width × height in metres × number of pieces.\nExample: 120 × 80 × 100 cm = 0.96 m³ per box.' },
+        { q: 'What is volumetric (dimensional) weight?', a: 'Airlines charge for the space a shipment takes up, not just its weight. Volumetric weight = L × W × H in cm ÷ 6,000 (IATA standard). Courier and express services usually use ÷ 5,000.' },
+        { q: 'What is chargeable weight?', a: 'The higher of the actual gross weight and the volumetric weight. Airlines usually round it up to the next half kilo. Light, bulky cargo is charged on volume, and heavy, compact cargo on weight.' },
+        { q: 'What does W/M mean for sea LCL?', a: 'Weight or Measure. LCL is billed on whichever is greater: the volume in m³ or the weight in tonnes (1,000 kg = 1 revenue tonne).' },
+        { q: 'How accurate is the container fit?', a: 'It uses practical loadable volumes of about 28 m³ (20′), 58 m³ (40′) and 68 m³ (40′ HC), which allow for gaps and stacking. Odd shapes, non-stackable cargo or weight limits can change the real answer, so ask us to plan the load.' }
+      ]
+    };
+  }
+}
+
+;YAMDC.mount(document.getElementById('app'),wrapTpl(),Component);
+function wrapTpl(){const d=document.createElement('div');d.appendChild(document.getElementById('tpl').content.cloneNode(true));return d;}})();
+</script>
+
+</body>
+</html>
