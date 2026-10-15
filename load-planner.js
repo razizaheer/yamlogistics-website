@@ -35,7 +35,7 @@
 
   // ---------------- share / import
   function encodeState() {
-    const o = { u: S.unit, wu: S.wunit, c: S.cat, p: S.pal ? 1 : 0, d: S.deck, i: S.items.map((it) => [it.name, it.l, it.w, it.h, it.qty, it.kg, ({ any: 0, upright: 1, fixed: 2 })[it.orient] || 0, it.stackable ? 1 : 0, it.maxLayers || 0, it.color || '']) };
+    const o = { u: S.unit, wu: S.wunit, c: S.cat, p: S.pal ? 1 : 0, d: S.deck, i: S.items.map((it) => [it.name, it.l, it.w, it.h, it.qty, it.kg, ({ any: 0, upright: 1, fixed: 2 })[it.orient] || 0, it.stackable ? 1 : 0, it.maxLayers || 0, it.color || '', it.onTop === false ? 0 : 1]) };
     return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/=+$/, '');
   }
   function decodeHash() {
@@ -44,7 +44,7 @@
       if (h.startsWith('p=')) {
         const o = JSON.parse(decodeURIComponent(escape(atob(h.slice(2)))));
         S.unit = o.u || 'cm'; S.wunit = o.wu || 'kg'; S.cat = CATS[o.c] ? o.c : 'dry'; S.pal = !!o.p; S.deck = o.d === 'md' ? 'md' : 'ld';
-        S.items = (o.i || []).map((r) => ({ name: r[0], l: r[1], w: r[2], h: r[3], qty: r[4], kg: r[5], orient: ['any', 'upright', 'fixed'][r[6]] || 'any', stackable: !!r[7], maxLayers: r[8] || '', color: r[9] || '' }));
+        S.items = (o.i || []).map((r) => ({ name: r[0], l: r[1], w: r[2], h: r[3], qty: r[4], kg: r[5], orient: ['any', 'upright', 'fixed'][r[6]] || 'any', stackable: !!r[7], maxLayers: r[8] || '', color: r[9] || '', onTop: r[10] !== 0 }));
         return true;
       }
       if (h.startsWith('c=')) { // from the CBM calculator
@@ -90,7 +90,7 @@
       </div>
       <p>Or copy the whole table in Excel (headers included) and paste it here:</p>
       <textarea id="lp-paste-ta" rows="5" placeholder="Description	Length	Width	Height	Qty	Weight&#10;Carton A	60	40	40	200	12"></textarea>
-      <div class="lp-row"><button class="lp-btn" id="lp-paste-go">Read pasted table</button><button type="button" class="lp-link lp-linkbtn" id="lp-tpl">Download Excel template</button></div>
+      <div class="lp-row"><button class="lp-btn" id="lp-paste-go">Read pasted table</button><button type="button" class="lp-link lp-linkbtn" id="lp-tpl">Download Excel template (same format as pier2pier)</button></div>
       <div id="lp-map"></div>
     </div>
     <button class="lp-btn lp-go" id="lp-go">Calculate load plan →</button>
@@ -104,18 +104,20 @@
   const LPImport = (function () {
     const FIELDS = [
       ['skip', '— ignore —'], ['name', 'Package name'], ['dims', 'L × W × H in one cell'], ['l', 'Length'], ['w', 'Width'], ['h', 'Height'],
-      ['qty', 'Quantity'], ['kg', 'Weight per piece'], ['kgTotal', 'Total weight (all pieces)'], ['orient', 'Orientation / this side up'], ['stack', 'Stackable'], ['layers', 'Max layers']
+      ['qty', 'Quantity'], ['kg', 'Weight per piece'], ['kgTotal', 'Total weight (all pieces)'], ['orient', 'Orientation / this side up'], ['rotate', 'Allow rotation (yes / no)'], ['stack', 'Others on top (yes / no)'], ['under', 'Can sit on others (yes / no)'], ['layers', 'Max layers']
     ];
     const RX = {
       dims: /dimension|measurement|\bsize\b|l\s*[x×*]\s*w|lxwxh/i,
-      l: /^\s*l\b|length|\blen\b|long/i,
+      l: /^\s*l\b|length|lenght|\blen\b|long/i,
       w: /^\s*w\b|width|breadth|wide/i,
       h: /^\s*h\b|height|\bhigh\b|\bht\b/i,
-      qty: /qty|quantity|pcs|pieces|no\.? ?of|number of|ctns|\bcartons?\b|pkgs|packages|units|count|\bnos\b/i,
+      qty: /qty|quantit|pcs|pieces|no\.? ?of|number of|ctns|\bcartons?\b|pkgs|packages|units|count|\bnos\b/i,
       kgTotal: /total.*(weight|wt|kg)|(gross|weight|wt).*total/i,
       kg: /weight|\bwt\b|\bkgs?\b|\blbs?\b|mass|gross/i,
-      orient: /orient|upright|this side|side up|rotat/i,
+      under: /stack\w*\s*under|under\b|sit on|on top of others/i,
       stack: /stack/i,
+      rotate: /rotat|turn/i,
+      orient: /orient|upright|this side|side up/i,
       layers: /layer|tier/i,
       name: /desc|name|item|package|product|sku|article|goods|marks|type|commodity/i
     };
@@ -215,7 +217,7 @@
       const used = new Set();
       if (hi >= 0) {
         const serial = /^\s*(s\.?\s*no|sr\.?\s*no|sl\.?\s*no|serial|#|item\s*no|line\s*no)\.?\s*$/i;
-        for (const f of ['dims', 'kgTotal', 'l', 'w', 'h', 'qty', 'kg', 'orient', 'stack', 'layers', 'name']) {
+        for (const f of ['dims', 'kgTotal', 'l', 'w', 'h', 'qty', 'kg', 'under', 'stack', 'rotate', 'orient', 'layers', 'name']) {
           for (let c = 0; c < width; c++) {
             if (map[c] !== 'skip' || serial.test(header[c] || '')) continue;
             if (RX[f].test(header[c] || '') && !(f !== 'dims' && used.has(f))) {
@@ -230,7 +232,12 @@
         (firstNum ? ['l', 'w', 'h', 'qty', 'kg'] : ['name', 'l', 'w', 'h', 'qty', 'kg']).forEach((f, i) => { if (i < width) map[i] = f; });
       }
       const lenCol = map.findIndex((f) => f === 'l' || f === 'dims'), wtCol = map.findIndex((f) => f === 'kg' || f === 'kgTotal');
-      return { header, body, map, width, lenU: (lenCol >= 0 && unitOf(header[lenCol], 'len')) || S.unit, wtU: (wtCol >= 0 && unitOf(header[wtCol], 'wt')) || S.wunit };
+      let lenU = (lenCol >= 0 && unitOf(header[lenCol], 'len')) || '';
+      if (!lenU) { // no unit in the header: very large numbers are millimetres
+        const big = Math.max(0, ...body.map((r) => ['l', 'w', 'h'].map((f) => num(r[map.indexOf(f)])).filter((v) => !isNaN(v))).flat());
+        lenU = big > 1400 ? 'mm' : S.unit;
+      }
+      return { header, body, map, width, lenU, wtU: (wtCol >= 0 && unitOf(header[wtCol], 'wt')) || S.wunit };
     }
     function toItems(P) {
       const lf = { cm: 1, mm: 0.1, m: 100, in: 2.54 }[P.lenU] || 1, wf = P.wtU === 'lb' ? 0.45359237 : 1;
@@ -242,12 +249,13 @@
         if (!(l > 0 && w > 0 && h > 0)) continue;
         let qty = col('qty') >= 0 ? Math.floor(num(g('qty'))) : 1; if (!(qty > 0)) qty = 1;
         let kg = num(g('kg')); if (col('kgTotal') >= 0 && isNaN(kg)) kg = num(g('kgTotal')) / qty;
-        const o = String(g('orient')).toLowerCase(), st = String(g('stack')).toLowerCase();
+        const o = String(g('orient')).toLowerCase(), st = String(g('stack')).toLowerCase(), ro = String(g('rotate')).trim().toLowerCase(), un = String(g('under')).trim().toLowerCase();
+        const NO = /^(no|n|false|0|non.*|not allowed)$/;
         out.push({
           name: String(g('name') || '').trim().slice(0, 40) || 'Package ' + (S.items.length + out.length + 1),
           l: l * lf, w: w * lf, h: h * lf, qty, kg: isNaN(kg) ? 0 : kg * wf,
-          orient: /fix|no.?turn|no.?rot/.test(o) ? 'fixed' : /up|side|yes|true|^y$|^1$/.test(o) ? 'upright' : 'any',
-          stackable: !/^(no|n|false|0|non.*)$/.test(st.trim()), maxLayers: Math.floor(num(g('layers'))) || '', color: ''
+          orient: /fix|no.?turn|no.?rot/.test(o) ? 'fixed' : /up|side|yes|true|^y$|^1$/.test(o) ? 'upright' : NO.test(ro) ? 'upright' : 'any',
+          stackable: !NO.test(st.trim()), onTop: !NO.test(un), maxLayers: Math.floor(num(g('layers'))) || '', color: ''
         });
       }
       return out;
@@ -306,8 +314,7 @@
       document.getElementById('lp-paste-ta').addEventListener('paste', () => setTimeout(() => { parsed = analyze(csvRows(document.getElementById('lp-paste-ta').value)); showMap(); }, 30));
       document.getElementById('lp-tpl').addEventListener('click', (e) => {
         e.preventDefault();
-        const csv = 'Description,Length (cm),Width (cm),Height (cm),Quantity,Weight per piece (kg),Orientation (any / this side up / fixed),Stackable (yes / no),Max layers\r\nCarton A,60,40,40,200,12,any,yes,\r\nMachine on pallet,120,100,110,4,650,this side up,no,1\r\n';
-        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = 'YAM-load-planner-template.csv'; document.body.appendChild(a); a.click(); a.remove();
+        const a = document.createElement('a'); a.href = 'YAM-load-planner-template.xlsx'; a.download = 'YAM-load-planner-template.xlsx'; document.body.appendChild(a); a.click(); a.remove();
       });
     }
     function fromText(text) { document.getElementById('lp-paste').hidden = false; document.getElementById('lp-paste-ta').value = text; parsed = analyze(csvRows(text)); showMap(); document.getElementById('lp-map').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
@@ -346,7 +353,7 @@
   // rows (stored internally in cm/kg)
   function renderRows() {
     const u = S.unit === 'in' ? 'in' : 'cm';
-    $('lp-head').innerHTML = `<tr><th title="Colour in the 3D plan">Colour</th><th>${S.pal ? 'Pallet name' : 'Package name'}</th>${S.pal ? '<th>Pallet size</th>' : ''}<th>Length (${u})</th><th>Width (${u})</th><th>${S.pal ? 'Height incl. pallet' : 'Height'} (${u})</th><th>Qty</th><th>Weight / pc (${S.wunit})</th><th title="How the package may be turned when loading">Orientation</th><th title="Other packages can be placed on top">${S.pal ? 'Double-stack' : 'Stackable'}</th><th title="Max layers of this item, optional">Max layers</th><th></th></tr>`;
+    $('lp-head').innerHTML = `<tr><th title="Colour in the 3D plan">Colour</th><th>${S.pal ? 'Pallet name' : 'Package name'}</th>${S.pal ? '<th>Pallet size</th>' : ''}<th>Length (${u})</th><th>Width (${u})</th><th>${S.pal ? 'Height incl. pallet' : 'Height'} (${u})</th><th>Qty</th><th>Weight / pc (${S.wunit})</th><th title="How the package may be turned when loading">Orientation</th><th title="Other packages may be placed on top of this one">${S.pal ? 'Double-stack' : 'Others on top'}</th><th title="This package may be placed on top of other cargo (untick to keep it on the floor)">Can sit on others</th><th title="Max layers of this item, optional">Max layers</th><th></th></tr>`;
     $('lp-rows').innerHTML = S.items.map((it, i) => `<tr data-i="${i}">
       <td class="lp-c"><input type="color" class="lp-color" data-k="color" value="${it.color || PALETTE[i % PALETTE.length]}" aria-label="Colour"></td>
       <td><input class="lp-in lp-name" data-k="name" value="${esc(it.name)}" maxlength="40"></td>
@@ -357,7 +364,8 @@
       <td><input class="lp-in" data-k="qty" inputmode="numeric" value="${it.qty || ''}"></td>
       <td><input class="lp-in" data-k="kg" inputmode="decimal" value="${it.kg ? +(it.kg / wtF()).toFixed(2) : ''}"></td>
       <td><select class="lp-in lp-or" data-k="orient" aria-label="Orientation">${[['any', 'Any way'], ['upright', 'This side up'], ['fixed', 'Fixed, no turning']].map(([v, t]) => `<option value="${v}"${(it.orient || 'any') === v ? ' selected' : ''}>${t}</option>`).join('')}</select></td>
-      <td class="lp-c"><input type="checkbox" data-k="stackable" ${it.stackable ? 'checked' : ''} aria-label="Stackable"></td>
+      <td class="lp-c"><input type="checkbox" data-k="stackable" ${it.stackable ? 'checked' : ''} aria-label="Others on top"></td>
+      <td class="lp-c"><input type="checkbox" data-k="onTop" ${it.onTop === false ? '' : 'checked'} aria-label="Can sit on other cargo"></td>
       <td><input class="lp-in lp-small" data-k="maxLayers" inputmode="numeric" placeholder="any" value="${it.maxLayers || ''}"></td>
       <td><button class="lp-x" data-del="${i}" aria-label="Remove">×</button></td></tr>`).join('');
     totals();
@@ -365,7 +373,7 @@
   $('lp-rows').addEventListener('input', (e) => {
     const tr = e.target.closest('tr'); if (!tr) return;
     const it = S.items[+tr.dataset.i], k = e.target.dataset.k;
-    if (k === 'stackable') it[k] = e.target.checked;
+    if (k === 'stackable' || k === 'onTop') it[k] = e.target.checked;
     else if (k === 'pallet') { const p = PALLETS.find((x) => x[0] === e.target.value); if (p && p[2]) { it.l = p[2]; it.w = p[3]; renderRows(); return; } }
     else if (k === 'name' || k === 'orient' || k === 'color') it[k] = e.target.value;
     else {

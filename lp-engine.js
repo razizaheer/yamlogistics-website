@@ -71,6 +71,7 @@
             let ny = Math.floor((ch + EPS) / o.h);
             if (!s.type.stackable) ny = Math.min(ny, 1);
             if (s.type.maxLayers > 0) ny = onTopOf ? 0 : Math.min(ny, s.type.maxLayers); // layer-limited items stay on the floor
+            if (s.type.onTop === false) { if (onTopOf) continue; ny = Math.min(ny, 1); } // floor only: may not sit on other cargo
             if (ny <= 0) continue;
             // one column (nd deep x ny high), possibly several across in the same width if cw allows (handled by outer loop)
             let n = Math.min(nd * ny, n0);
