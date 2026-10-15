@@ -438,7 +438,7 @@
     for (const o of opts) prep(o.res, items);
     S.options = opts; S.opt = 0;
     show(0);
-    try { history.replaceState(null, '', '#p=' + encodeState()); } catch (e) { /* ignore */ }
+    try { history.replaceState(null, '', location.pathname + location.search + '#p=' + encodeState()); } catch (e) { /* ignore */ }
     $('lp-out').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   function show(i) { S.opt = i; S.result = S.options[i].res; S.unitSel = 0; S.step = -1; renderResult(); }
