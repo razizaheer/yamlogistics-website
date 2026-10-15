@@ -90,7 +90,7 @@
       </div>
       <p>Or copy the whole table in Excel (headers included) and paste it here:</p>
       <textarea id="lp-paste-ta" rows="5" placeholder="Description	Length	Width	Height	Qty	Weight&#10;Carton A	60	40	40	200	12"></textarea>
-      <div class="lp-row"><button class="lp-btn" id="lp-paste-go">Read pasted table</button><button type="button" class="lp-link lp-linkbtn" id="lp-tpl">Download Excel template (same format as pier2pier)</button></div>
+      <div class="lp-row"><button class="lp-btn" id="lp-paste-go">Read pasted table</button><button type="button" class="lp-link lp-linkbtn" id="lp-tpl">Download Excel template (standard cargo-list format)</button></div>
       <div id="lp-map"></div>
     </div>
     <button class="lp-btn lp-go" id="lp-go">Calculate load plan →</button>
