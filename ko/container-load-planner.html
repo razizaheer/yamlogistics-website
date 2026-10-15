@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="ko">
+<head><base href="../">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>무료 컨테이너 적재 플래너 및 계산기, 3D 적재 계획 제공 | YAM Logistics</title>
+<meta name="description" content="무료 컨테이너 적재 계산기: 화물 정보를 입력하면 필요한 20′, 40′, 40′ HC 컨테이너, 팔레트 또는 항공 팔레트 수를 3D 화면, 단계별 적재 순서, PDF 계획과 함께 확인할 수 있습니다.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://www.yamlogistics.com/ko/container-load-planner">
+<meta property="og:type" content="website"><meta property="og:site_name" content="YAM Logistics"><meta property="og:title" content="무료 컨테이너 적재 플래너 및 계산기, 3D 적재 계획 제공 | YAM Logistics"><meta property="og:description" content="무료 컨테이너 적재 계산기: 화물 정보를 입력하면 필요한 20′, 40′, 40′ HC 컨테이너, 팔레트 또는 항공 팔레트 수를 3D 화면, 단계별 적재 순서, PDF 계획과 함께 확인할 수 있습니다."><meta property="og:url" content="https://www.yamlogistics.com/ko/container-load-planner">
+<meta name="theme-color" content="#0A6CC2">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+.lpnew{color:#FFFFFF;text-decoration:none}.lpnew b{background:#FFC93C;color:#0B2A4A;font-size:10px;padding:2px 7px;border-radius:999px;margin-right:6px;letter-spacing:.06em}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:#FFFFFF;color:#0B2A4A;font-family:'Geist',system-ui,-apple-system,'Segoe UI',sans-serif}
+img,video{max-width:100%}
+a{color:#0A6CC2}a:hover{color:#0B4F8F}
+.wrap{max-width:1400px;margin:0 auto;padding:0 32px}
+.mono{font-family:'Geist Mono',monospace;letter-spacing:.05em}
+@keyframes blink{50%{opacity:.3}}.live{animation:blink 1.6s steps(2) infinite}
+.util{background:#0B4F8F;color:#CFE3F5;font-size:13px}
+.util-in{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;padding-top:8px;padding-bottom:8px}
+.util a{color:#FFFFFF;text-decoration:none}.util a.gold{color:#FFC93C;font-weight:600}
+.fx{margin-left:auto;display:flex;gap:14px;align-items:center;font-family:'Geist Mono',monospace;font-size:12px;white-space:nowrap;overflow:hidden}
+.fx b{color:#FFFFFF;font-weight:600}.fxl{color:#FFC93C;font-weight:600;letter-spacing:.06em}.fxd{color:#9FC2E6;font-size:11px}
+.btn-calc{background:#FFC93C;color:#0B2A4A!important;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none;white-space:nowrap}
+.nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #E1EDF7;backdrop-filter:saturate(1.4) blur(8px)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;position:relative}
+.brand{display:flex;align-items:center;text-decoration:none}.logo{height:84px;width:auto;display:block}
+@media (max-width:640px){.logo{height:60px}}
+.bw{display:flex;flex-direction:column;line-height:1}.b1{font-family:'Archivo',sans-serif;font-weight:900;font-stretch:118%;font-size:24px}
+.b2{white-space:nowrap;font-family:'Geist Mono',monospace;font-size:10px;color:#5E7891;letter-spacing:.14em;margin-top:3px}
+.links{display:flex;flex-wrap:nowrap;gap:20px;white-space:nowrap;align-items:center;font-size:15px;font-weight:500}
+.links>a{color:#0B2A4A;text-decoration:none}.links>a[aria-current]{color:#0A6CC2;font-weight:600}
+.sol summary{cursor:pointer;list-style:none;padding:8px 0}.sol summary::-webkit-details-marker{display:none}
+.mega{position:absolute;left:0;right:0;top:100%;background:#FFFFFF;border-bottom:1px solid #E1EDF7;box-shadow:0 30px 60px rgba(11,42,74,.12)}
+.mega-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;padding-top:28px;padding-bottom:32px}
+.mega-in a{display:block;padding:7px 0;color:#0B2A4A;text-decoration:none}.mega-in a:hover{color:#0A6CC2}
+.mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0A6CC2;margin-bottom:8px;padding-bottom:10px;border-bottom:1px solid #E1EDF7}
+.mcta{background:#FFF4D6;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#3D5873}
+.mcta strong{font-family:'Archivo',sans-serif;font-size:21px;color:#0B2A4A;line-height:1.1}.mcta a{font-weight:600;padding:0}
+.btn,.btn-o{padding:11px 20px;border-radius:999px;font-weight:600;text-decoration:none;white-space:nowrap}
+.btn{background:#0A6CC2;color:#FFFFFF!important}.btn-o{border:1.5px solid #0A6CC2;color:#0A6CC2!important;padding:9.5px 18px}
+.go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
+.navt{display:none}.burger{display:none}.calc-m{display:none}
+@media (max-width:1240px){
+ .hide-s{display:none}
+ .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
+ .links{flex-wrap:wrap;white-space:normal}
+ .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
+ .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
+ .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
+ .links>a,.sol summary{padding:12px 0;border-bottom:1px solid #EEF4FA}
+ .links .btn,.links .btn-o,.links .btn-calc{margin-top:12px;text-align:center}
+ .navt:checked~.links{display:flex}
+ .mega{position:static;box-shadow:none;border:0}.mega .wrap{padding:0}.mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
+ .links{overflow-x:hidden}.links>*{min-width:0;max-width:100%}
+}
+@media (max-width:640px){.wrap{padding:0 16px}.util-in .u1{display:none}.util-in{gap:6px 16px;font-size:12px}.fx{margin-left:0;overflow-x:auto;width:100%;gap:12px}.fxd{display:none}}
+@media (max-width:760px){[style*="linear-gradient(90deg, rgba(255,255,255,0.9"]{background:rgba(255,255,255,0.84)!important}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+.ft a{color:#CFE3F5;text-decoration:none}.ft a:hover{color:#FFFFFF}.fab{position:fixed;right:20px;bottom:20px;z-index:50;width:60px;height:60px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(11,42,74,.25)}
+
+
+
+.go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
+.card{transition:transform .3s,box-shadow .3s}.card:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(10,108,194,0.14)}
+details summary{cursor:pointer;list-style:none}details summary::-webkit-details-marker{display:none}
+</style>
+
+<link rel="stylesheet" href="load-planner.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"YAM Logistics Container Load Planner","url":"https://www.yamlogistics.com/container-load-planner","applicationCategory":"BusinessApplication","operatingSystem":"Any (web browser)","description":"Free 3D container load calculator: upload a packing list, get the best mix of 20ft, 40ft and 40ft HC containers and a step-by-step loading plan.","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"},"provider":{"@type":"Organization","name":"YAM Logistics Pvt. Ltd.","url":"https://www.yamlogistics.com"}}</script>
+<meta content="ko" property="og:locale"><link href="https://www.yamlogistics.com/container-load-planner" hreflang="en" rel="alternate"><link href="https://www.yamlogistics.com/zh/container-load-planner" hreflang="zh-Hans" rel="alternate"><link href="https://www.yamlogistics.com/es/container-load-planner" hreflang="es" rel="alternate"><link href="https://www.yamlogistics.com/ar/container-load-planner" hreflang="ar" rel="alternate"><link href="https://www.yamlogistics.com/fr/container-load-planner" hreflang="fr" rel="alternate"><link href="https://www.yamlogistics.com/de/container-load-planner" hreflang="de" rel="alternate"><link href="https://www.yamlogistics.com/ja/container-load-planner" hreflang="ja" rel="alternate"><link href="https://www.yamlogistics.com/pt/container-load-planner" hreflang="pt" rel="alternate"><link href="https://www.yamlogistics.com/ru/container-load-planner" hreflang="ru" rel="alternate"><link href="https://www.yamlogistics.com/hi/container-load-planner" hreflang="hi" rel="alternate"><link href="https://www.yamlogistics.com/ko/container-load-planner" hreflang="ko" rel="alternate"><link href="https://www.yamlogistics.com/container-load-planner" hreflang="x-default" rel="alternate"><style>.langs{margin-left:8px;background:transparent;color:#FFFFFF;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:3px 8px;font:inherit;font-size:12px;cursor:pointer;max-width:130px}.langs option{color:#0B2A4A;background:#FFFFFF}
+@media (max-width:640px){.langs{margin-left:auto}}</style></head>
+<body>
+<header class="site">
+<div class="util"><div class="wrap util-in">
+<span class="mono u1"><span class="live" style="color:#FFC93C">●</span> 뭄바이 공항 데스크 24시간 운영</span>
+<a href="https://wa.me/919212558167" class="u1">WhatsApp +91 92125 58167</a>
+<a href="ko/container-load-planner.html" class="u1 lpnew"><b>신규</b> 무료 3D 컨테이너 적재 플래너 →</a>
+<a href="YAM-Logistics-Corporate-Profile.pdf" download="" class="gold u1">↓ 회사 소개서 (PDF)</a>
+<div class="fx" id="fx" title="시장 참고 환율이며 매일 업데이트됩니다. 관세는 CBIC 고시 환율로 계산됩니다."><span class="fxl">₹ 환율</span><span class="fxi" data-c="USD">USD <b>—</b></span><span class="fxi" data-c="EUR">EUR <b>—</b></span><span class="fxi" data-c="CNY">CNY <b>—</b></span><span class="fxi" data-c="GBP">GBP <b>—</b></span><span class="fxi" data-c="AED">AED <b>—</b></span><span class="fxd" id="fxd"></span></div>
+<select onchange="location.href=this.value" data-notr="" aria-label="Language" class="langs"><option lang="en" value="container-load-planner.html">English</option><option lang="zh" value="zh/container-load-planner.html">中文</option><option lang="es" value="es/container-load-planner.html">Español</option><option lang="ar" value="ar/container-load-planner.html">العربية</option><option lang="fr" value="fr/container-load-planner.html">Français</option><option lang="de" value="de/container-load-planner.html">Deutsch</option><option lang="ja" value="ja/container-load-planner.html">日本語</option><option lang="pt" value="pt/container-load-planner.html">Português</option><option lang="ru" value="ru/container-load-planner.html">Русский</option><option lang="hi" value="hi/container-load-planner.html">हिन्दी</option><option selected lang="ko" value="ko/container-load-planner.html">🌐 한국어</option></select></div></div>
+<nav class="nav" aria-label="메인"><div class="wrap nav-in">
+<a href="ko/index.html" class="brand"><img src="yam-logo.svg" alt="YAM Logistics: Your Answer to Movements, 1968년 설립" width="131" height="68" class="logo"></a>
+<a href="ko/container-load-planner.html" class="calc-m">🧊 3D 플래너</a><input type="checkbox" id="navt" class="navt" aria-label="메뉴 열기"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
+<div class="links">
+<details class="sol"><summary>솔루션 ▾</summary><div class="mega"><div class="wrap mega-in">
+<div><div class="mh">운송</div><a href="ko/ocean-freight.html">해상 운송 · FCL / LCL</a><a href="ko/air-freight.html">항공 운송</a><a href="project-cargo.html">프로젝트·ODC·벌크 화물</a><a href="haulage-icd.html">내륙 운송 및 ICD</a><a href="aircraft-charter.html">항공기 전세</a><a href="ko/container-load-planner.html">컨테이너 적재 플래너</a><a href="ko/cbm-calculator.html">CBM·부피중량 계산기</a></div><div><div class="mh">통관 및 컴플라이언스</div><a href="ko/customs-brokerage.html">통관 대행</a><a href="trade-compliance.html">무역 컴플라이언스 자문</a><a href="destination-do-agency.html">도착지 / DO 대리점</a><a href="ko/contact.html">적하보험</a></div><div><div class="mh">전문 서비스</div><a href="ko/mobile-phone-exports.html">휴대폰 수출</a><a href="buyers-consolidation.html">바이어 콘솔리데이션 및 PO 관리</a><a href="ko/third-country-trade.html">제3국 무역 및 재수출</a><a href="bonded-warehousing.html">보세창고 및 FTWZ</a><a href="exhibition-ata-carnet.html">전시회 화물 및 ATA 까르네</a><a href="ko/third-country-trade.html">중계무역 지원</a></div><div><div class="mh">특수 화물</div><a href="dangerous-goods.html">위험물</a><a href="dg-labels.html">위험물 라벨 및 마크 (무료)</a><a href="perishables.html">신선 화물</a><a href="pharmaceuticals.html">의약품</a><a href="live-animals.html">생동물</a><a href="pet-relocation.html">반려동물 이주</a></div>
+<div class="mcta"><strong>어떤 서비스가 필요한지 모르시겠습니까?</strong><span>운송하실 화물을 면허 관세사에게 알려 주십시오. 경로와 서류를 설계해 드립니다.</span><a href="ko/contact.html">데스크에 문의하기 →</a></div>
+</div></div></details>
+<a href="ko/customs-brokerage.html">통관</a><a href="ko/mobile-phone-exports.html">휴대폰 수출</a><a href="ko/third-country-trade.html">제3국 무역</a><a href="trade-desk.html">트레이드 데스크</a>
+<a href="ko/container-load-planner.html" class="btn-calc" aria-current="page">🧊 3D 적재 플래너</a>
+<a href="track-shipment.html" class="btn-o">화물 추적</a>
+<a href="ko/contact.html" class="btn go">견적 요청</a>
+</div></div></nav>
+</header>
+<main id="app">
+<div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
+
+
+
+<div style="background: linear-gradient(135deg, #DDF0FF 0%, #F7FBFF 55%, #FFF4D6 100%)">
+<div style="max-width: 1400px; margin: 0 auto; padding: 84px 32px 40px">
+<div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; letter-spacing: 0.08em; margin-bottom: 22px">무료 도구 · 3D · 단계별 PDF</div>
+<h1 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(46px, 5.6vw, 86px); line-height: 0.96; letter-spacing: -0.03em; margin: 0 0 22px; max-width: 1100px">컨테이너 적재 플래너. <span style="color: #0A6CC2">부킹 전에 적재 모습을 미리 확인하십시오.</span></h1>
+<p style="font-size: 20px; line-height: 1.55; color: #17436B; margin: 0; max-width: 820px">드라이 컨테이너, 냉동 컨테이너 또는 항공 팔레트를 선택하고, 화물의 팔레트 적재 여부를 알려 주신 뒤, 화물을 직접 입력하거나 Excel에서 바로 추가하십시오. 20′, 40′, 40′ HC 컨테이너의 최적 조합, 화물별 적재 위치, 적재 순서를 산출해 드립니다. 3D 플랜을 회전해 보고, 적재 과정을 단계별로 확인하고, 창고 팀을 위해 PDF로 다운로드하십시오.</p>
+</div>
+</div>
+
+
+<div style="background: #F7FBFF">
+<div style="max-width: 1400px; margin: 0 auto; padding: 24px 32px 88px">
+<div id="lp-root"><img src="load-planner-preview.jpg" alt="색색의 카톤이 실린 40피트 컨테이너의 3D 적재 계획 예시" style="width: 100%; display: block; border-radius: 20px"></div>
+</div>
+</div>
+
+
+<div style="background: #FFF8E6">
+<div style="max-width: 1400px; margin: 0 auto; padding: 88px 32px">
+<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: #B45309; margin-bottom: 14px">이용 방법</div>
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(34px, 3.8vw, 54px); line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 36px">패킹리스트에서 적재 계획까지 1분이면 충분합니다.</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px">
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">1</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">운송 방식 선택</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">드라이 컨테이너, 냉동 컨테이너 또는 항공 팔레트(ULD)를 선택하고, 화물이 낱개인지 팔레트 적재인지 지정합니다.</span>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">2</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">화물 추가</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">직접 입력하거나, Excel에서 패킹리스트 전체를 붙여넣거나, .xlsx 또는 CSV 파일을 업로드하십시오. 화물별로 회전 가능 방향과 상단 적재 가능 여부를 설정합니다. 포장 유형마다 고유한 색상이 지정됩니다.</span>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">3</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">최적 조합 확인</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">20′, 40′, 40′ HC(또는 냉동 컨테이너, PMC·PAG 팔레트)를 검토해 가장 경제적인 조합을 추천하고, 다른 옵션과 각 유닛의 적재율·중량, 3D 화면을 나란히 보여 드립니다.</span>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">4</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">단계별 적재</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">안쪽 벽부터 도어까지 열 단위로 적재 과정을 확인한 뒤, 창고용 PDF를 다운로드하거나 링크를 저희와 공유하십시오.</span>
+</div>
+
+</div>
+</div>
+</div>
+
+
+<div style="background: #F2F8FD">
+<div style="max-width: 1000px; margin: 0 auto; padding: 96px 32px">
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(36px, 4.2vw, 56px); line-height: 1; letter-spacing: -0.03em; margin: 0 0 32px">적재 플래너 자주 묻는 질문</h2>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">플래너는 화물의 적재 위치를 어떻게 정합니까?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">실제 적재 작업팀처럼 안쪽 벽부터 도어 방향으로 열(벽) 단위로 적재를 구성합니다. 열마다 다양한 화물 방향과 적층 조합을 시험해 가장 밀도가 높은 배치를 선택하며, 설정하신 세움 적재, 적층, 단수, 중량 규칙을 지킵니다.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">결과가 가능한 최적의 적재입니까?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">수학적 최적해가 아니라 빠르고 실용적인 계획입니다. 실제 적재는 카톤 강도, 팔레트, 던니지, 포장 상태에 따라서도 달라집니다. 고가 화물이나 여유가 적은 적재라면 계획을 보내 주십시오. 부킹 전에 저희 팀이 확인해 드립니다.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">“세움 적재만”과 “적층 가능”은 무슨 뜻입니까?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">세움 적재만(Upright only)은 화물을 바로 세운 상태(this side up)로 유지하므로 바닥면에서만 회전할 수 있습니다. 파손되기 쉽거나 적층할 수 없는 화물은 적층 가능(Stackable) 체크를 해제하면 위에 아무것도 올리지 않습니다. 최대 단수는 해당 품목을 몇 단까지 쌓을지 제한합니다.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">20′, 40′, 40′ HC 중 어떻게 선택합니까?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">컨테이너를 한 대씩 채웁니다. 남은 화물이 모두 컨테이너 한 대에 들어가면 이를 수용하는 가장 저렴한 규격을 선택하고, 그렇지 않으면 통상 운임 대비 가장 많은 화물을 실을 수 있는 규격을 선택합니다. 비교할 수 있도록 단일 규격만 사용한 계획도 보여 드립니다. 일반적인 내부 치수와 적재 중량을 사용합니다. 예를 들어 40′ 하이큐브는 1,203 × 235 × 269 cm, 26,500 kg입니다.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">패킹리스트를 업로드할 수 있습니까?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">네. .xlsx 또는 CSV 파일을 업로드하거나, Excel에서 표 전체를 복사해 화물 목록에 붙여넣으십시오. 제목 행이나 일련번호가 있어도 플래너가 품명, 치수, 수량, 중량 열을 찾아내며, 추가 전에 확인할 수 있습니다. mm, cm, 미터, 인치 단위 치수는 자동 변환됩니다.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">항공 팔레트에도 사용할 수 있습니까?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">네, 상자 형태로 계산합니다. PMC와 PAG 팔레트는 사용 가능한 바닥면과 160 cm 또는 244 cm 높이로 표시되지만, 항공기 동체 윤곽(contour)은 반영되지 않습니다. 빌드업은 항공사나 저희 항공 데스크가 확인해 드립니다.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">제 데이터가 저장됩니까?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">아니요. 모든 계산은 브라우저에서 이루어집니다. 공유 링크는 화물 목록을 링크 자체에 담기 때문에, 링크를 받은 사람만 계획을 열 수 있습니다.</p>
+</details>
+
+</div>
+</div>
+
+<div style="background: #0A6CC2; color: #FFFFFF">
+<div style="max-width: 1400px; margin: 0 auto; padding: 80px 32px; display: flex; flex-wrap: wrap; gap: 32px; align-items: center; justify-content: space-between">
+<h2 style="flex: 1 1 600px; min-width: 0; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(38px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; margin: 0">계획이 끝나셨습니까? <span style="color: #FFC93C">운송은 저희가 맡겠습니다.</span></h2>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<a href="ko/contact.html" style="background: #FFC93C; color: #0B2A4A; padding: 18px 30px; border-radius: 999px; font-weight: 600; text-decoration: none">견적 요청 →</a>
+<a href="https://wa.me/919212558167" style="background: #25D366; color: #06331A; padding: 18px 28px; border-radius: 999px; font-weight: 600; text-decoration: none">WhatsApp으로 관세사에게 문의</a>
+</div>
+</div>
+</div>
+
+</div>
+</main>
+<footer>
+<div class="ft" style="background: #0B4F8F; color: #CFE3F5; font-size: 14px; position: relative">
+<svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="display: block; width: 100%; height: 60px; background: #FFFFFF" aria-hidden="true"><path d="M0 30 Q 120 0 240 30 T 480 30 T 720 30 T 960 30 T 1200 30 T 1440 30 V60 H0 Z" fill="#0B4F8F" /></svg>
+<div style="max-width: 1400px; margin: 0 auto; padding: 40px 32px 32px">
+<img src="yam-logo-white.svg" alt="YAM Logistics" style="height: 84px; width: auto; display: block; margin-bottom: 32px">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 32px">
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">운송</span>
+<a href="ko/ocean-freight.html">해상 운송 · FCL / LCL</a><a href="ko/air-freight.html">항공 운송</a><a href="project-cargo.html">프로젝트·ODC·벌크 화물</a><a href="haulage-icd.html">내륙 운송 및 ICD</a><a href="aircraft-charter.html">항공기 전세</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">통관 및 컴플라이언스</span>
+<a href="ko/customs-brokerage.html">통관 대행</a><a href="trade-compliance.html">무역 컴플라이언스 자문</a><a href="destination-do-agency.html">도착지 / DO 대리점</a><a href="ko/contact.html">적하보험</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">전문 서비스</span>
+<a href="ko/mobile-phone-exports.html">휴대폰 수출</a><a href="buyers-consolidation.html">바이어 콘솔리데이션 및 PO 관리</a><a href="ko/third-country-trade.html">제3국 무역 및 재수출</a><a href="bonded-warehousing.html">보세창고 및 FTWZ</a><a href="exhibition-ata-carnet.html">전시회 화물 및 ATA 까르네</a><a href="ko/third-country-trade.html">중계무역 지원</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">특수 화물</span>
+<a href="dangerous-goods.html">위험물</a><a href="dg-labels.html">위험물 라벨 및 마크 (무료)</a><a href="perishables.html">신선 화물</a><a href="pharmaceuticals.html">의약품</a><a href="live-animals.html">생동물</a><a href="pet-relocation.html">반려동물 이주</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px; line-height: 1.6">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">문의하기</span>
+<a href="tel:+911141603301">+91 11 4160 3301 / 02</a>
+<a href="mailto:info@yamlogistics.com">info@yamlogistics.com</a>
+<a href="https://wa.me/919212558167">WhatsApp +91 92125 58167</a>
+<a href="YAM-Logistics-Corporate-Profile.pdf" download="YAM-Logistics-Corporate-Profile.pdf" style="color: #FFC93C; font-weight: 600">↓ 회사 소개서 (PDF)</a>
+</div>
+</div>
+<div style="margin-top: 44px; padding-top: 32px; border-top: 1px solid rgba(207,227,245,0.25); display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px">
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">뉴델리</span>
+<span style="color: #FFFFFF; font-weight: 600">본사</span>
+<span style="white-space: pre-line">E-51, Kalkaji
+New Delhi 110019</span>
+<a href="https://www.google.com/maps/search/?api=1&query=E-51+Kalkaji+New+Delhi+110019" style="font-size: 13px; color: #FFC93C">길찾기 →</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">뭄바이 · 해상</span>
+<span style="color: #FFFFFF; font-weight: 600">해상 운송 운영</span>
+<span style="white-space: pre-line">Room No. 51/52, 179 Commercial Chambers
+Yusuf Meherali Road, Masjid Bunder
+Mumbai 400003</span>
+<a href="https://www.google.com/maps/search/?api=1&query=179+Commercial+Chambers+Yusuf+Meherali+Road+Masjid+Bunder+Mumbai+400003" style="font-size: 13px; color: #FFC93C">길찾기 →</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">뭄바이 · 항공</span>
+<span style="color: #FFFFFF; font-weight: 600">항공 운송 운영</span>
+<span style="white-space: pre-line">406, 4th Floor, Rangoli Complex
+Sahar Air Cargo Complex, Andheri (East)
+Mumbai 400099</span>
+<a href="https://www.google.com/maps/search/?api=1&query=Rangoli+Complex+Sahar+Air+Cargo+Complex+Andheri+East+Mumbai+400099" style="font-size: 13px; color: #FFC93C">길찾기 →</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1.55">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em">문드라</span>
+<span style="color: #FFFFFF; font-weight: 600">항만 사무소</span>
+<span style="white-space: pre-line">Office No. 111, AAROS
+Adani Ports and Special Economic Zone
+Kachchh, Gujarat 370421</span>
+<a href="https://www.google.com/maps/search/?api=1&query=AAROS+Adani+Ports+SEZ+Mundra+Gujarat+370421" style="font-size: 13px; color: #FFC93C">길찾기 →</a>
+</div>
+
+</div>
+<div style="margin-top: 32px; display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 13px">
+<span style="font-family: 'Archivo', sans-serif; font-weight: 700; color: #FFFFFF; font-size: 15px">약속을 지키는 기업.</span>
+<span>CIN U74899DL1987PTC027852</span>
+<span>관세사 면허 R-7/92</span>
+</div>
+<div style="margin-top: 48px; padding-top: 20px; border-top: 1px solid rgba(207,227,245,0.25); display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; font-size: 13px"><span>© 2026 YAM Logistics Pvt. Ltd.</span><span><a href="ko/contact.html">연락처</a> · <a href="ko/about.html">회사 소개</a></span></div>
+</div>
+</div>
+
+</footer>
+<a href="https://wa.me/919212558167" aria-label="WhatsApp으로 YAM과 채팅하기" class="fab"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12Z" /><path d="M9 9.5c.3 1.8 1.7 3.7 3.8 4.6l1.2-1.1 1.8.8-.4 1.6c-3.2.2-6.9-3.2-7.2-6.4l1.6-.5.8 1.8z" /></svg></a>
+<script>
+(function(){var C=['USD','EUR','CNY','GBP','AED'],K='yamfx1';
+function show(d){if(!d||!d.r)return;var el=document.getElementById('fx');if(!el)return;el.querySelectorAll('.fxi').forEach(function(s){var c=s.getAttribute('data-c'),v=d.r[c];if(v){s.querySelector('b').textContent='₹'+v.toFixed(2)}else{s.style.display='none'}});var dd=document.getElementById('fxd');if(dd&&d.d)dd.textContent='ref. '+d.d;}
+try{var c=JSON.parse(localStorage.getItem(K)||'null');if(c&&Date.now()-c.t<6*3600e3){show(c);return}}catch(e){}
+function save(d){d.t=Date.now();try{localStorage.setItem(K,JSON.stringify(d))}catch(e){}show(d)}
+function er(){return fetch('https://open.er-api.com/v6/latest/INR').then(function(x){return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates&&j.rates[c])r[c]=1/j.rates[c]});save({r:r,d:(j.time_last_update_utc||'').slice(5,16)})})}
+fetch('https://api.frankfurter.dev/v1/latest?base=INR&symbols=USD,EUR,CNY,GBP').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates[c])r[c]=1/j.rates[c]});return er().catch(function(){}).then(function(){var c2=null;try{c2=JSON.parse(localStorage.getItem(K))}catch(e){}if(c2&&c2.r&&c2.r.AED)r.AED=c2.r.AED;save({r:r,d:new Date(j.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})})})}).catch(function(){er().catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'})});
+})();
+</script>
+
+<script src="i18n/tr-core.js"></script><script src="i18n/ko.js"></script><script>YAM_TR_OBSERVE(document.getElementById('lp-root'))</script><script src="vendor/three.min.js"></script>
+<script src="vendor/OrbitControls.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="lp-engine.js"></script>
+<script src="load-planner.js"></script>
+</body>
+</html>
