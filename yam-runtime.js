@@ -111,7 +111,7 @@
     // morph needs same node name: wrap app children
     m.update = function () {
       const r = renderToString(tplRoot, inst); ctx = r.ctx;
-      const holder = app.cloneNode(false); holder.innerHTML = r.html; fixDomLinks(holder); morph(app, holder);
+      const holder = app.cloneNode(false); holder.innerHTML = r.html; fixDomLinks(holder); if (root.YAM_TR) root.YAM_TR(holder); morph(app, holder);
     };
     inst.__mount = m;
     ['click', 'input', 'change'].forEach((type) => app.addEventListener(type, (e) => {
