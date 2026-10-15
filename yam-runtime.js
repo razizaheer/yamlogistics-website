@@ -64,7 +64,7 @@
   }
 
   // ---- link routing shared by build and browser
-  const P = { quote: 'contact.html', calc: 'cbm-calculator.html', track: 'track-shipment.html', customs: 'customs-brokerage.html', mobile: 'mobile-phone-exports.html', third: 'third-country-trade.html', ocean: 'ocean-freight.html', air: 'air-freight.html', project: 'project-cargo.html', about: 'about.html', desk: 'trade-desk.html', bonded: 'bonded-warehousing.html', expo: 'exhibition-ata-carnet.html', consol: 'buyers-consolidation.html', dg: 'dangerous-goods.html', comp: 'trade-compliance.html', doa: 'destination-do-agency.html', haul: 'haulage-icd.html', charter: 'aircraft-charter.html', peri: 'perishables.html', pharma: 'pharmaceuticals.html', animals: 'live-animals.html', pets: 'pet-relocation.html', labels: 'dg-labels.html', wa: 'https://wa.me/919212558167' };
+  const P = { quote: 'contact.html', calc: 'cbm-calculator.html', track: 'track-shipment.html', customs: 'customs-brokerage.html', mobile: 'mobile-phone-exports.html', third: 'third-country-trade.html', ocean: 'ocean-freight.html', air: 'air-freight.html', project: 'project-cargo.html', about: 'about.html', desk: 'trade-desk.html', bonded: 'bonded-warehousing.html', expo: 'exhibition-ata-carnet.html', consol: 'buyers-consolidation.html', dg: 'dangerous-goods.html', comp: 'trade-compliance.html', doa: 'destination-do-agency.html', haul: 'haulage-icd.html', charter: 'aircraft-charter.html', peri: 'perishables.html', pharma: 'pharmaceuticals.html', animals: 'live-animals.html', pets: 'pet-relocation.html', labels: 'dg-labels.html', lp: 'container-load-planner.html', wa: 'https://wa.me/919212558167' };
   const RULES = [
     [/^terms$|trading conditions|privacy/, P.about], [/email me updates|sign in/, P.quote], [/download checklist/, P.wa],
     [/bonded warehous|ftwz/, P.bonded], [/exhibition|ata carnet/, P.expo],
@@ -72,7 +72,7 @@
     [/consolidation|purchase order|po management/, P.consol],
     [/calculator/, P.calc], [/^track|track shipment/, P.track],
     [/trade compliance|compliance advisory/, P.comp], [/customs brokerage|hs code/, P.customs],
-    [/labels? (&|and) marks|dg labels|download (the )?labels|label library/, P.labels], [/dangerous goods|lithium/, P.dg], [/aircraft charter|^charter/, P.charter], [/perishable/, P.peri], [/pharma/, P.pharma], [/live animal/, P.animals], [/pet relocation|pet transport/, P.pets],
+    [/load planner|plan the load|plan (the )?loading|loading plan/, P.lp], [/labels? (&|and) marks|dg labels|download (the )?labels|label library/, P.labels], [/dangerous goods|lithium/, P.dg], [/aircraft charter|^charter/, P.charter], [/perishable/, P.peri], [/pharma/, P.pharma], [/live animal/, P.animals], [/pet relocation|pet transport/, P.pets],
     [/destination|do agency/, P.doa], [/haulage|\bicds?\b/, P.haul],
     [/^air freight|air freight$/, P.air],
     [/mobile|phone/, P.mobile], [/third-country|re-export|merchanting/, P.third],

@@ -71,6 +71,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 details summary{cursor:pointer;list-style:none}details summary::-webkit-details-marker{display:none}
 </style>
 
+
 </head>
 <body>
 <header class="site">
@@ -85,7 +86,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="cbm-calculator.html" class="calc-m">📦 CBM</a><input type="checkbox" id="navt" class="navt" aria-label="Open menu"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
 <details class="sol"><summary>Solutions ▾</summary><div class="mega"><div class="wrap mega-in">
-<div><div class="mh">FREIGHT</div><a href="ocean-freight.html">Ocean freight · FCL / LCL</a><a href="air-freight.html">Air freight</a><a href="project-cargo.html">Project, ODC &amp; breakbulk</a><a href="haulage-icd.html">Haulage &amp; ICDs</a><a href="aircraft-charter.html">Aircraft charter</a></div><div><div class="mh">CUSTOMS &amp; COMPLIANCE</div><a href="customs-brokerage.html">Customs brokerage</a><a href="trade-compliance.html">Trade compliance advisory</a><a href="destination-do-agency.html">Destination / DO agency</a><a href="contact.html">Cargo insurance</a></div><div><div class="mh">SPECIALIST</div><a href="mobile-phone-exports.html">Mobile phone exports</a><a href="buyers-consolidation.html">Buyer’s consolidation &amp; PO management</a><a href="third-country-trade.html">Third-country trade &amp; re-export</a><a href="bonded-warehousing.html">Bonded warehousing &amp; FTWZ</a><a href="exhibition-ata-carnet.html">Exhibition cargo &amp; ATA carnet</a><a href="third-country-trade.html">Merchanting trade support</a></div><div><div class="mh">SPECIAL CARGO</div><a href="dangerous-goods.html">Dangerous goods</a><a href="dg-labels.html">DG labels &amp; marks (free)</a><a href="perishables.html">Perishables</a><a href="pharmaceuticals.html">Pharmaceuticals</a><a href="live-animals.html">Live animals</a><a href="pet-relocation.html">Pet relocation</a></div>
+<div><div class="mh">FREIGHT</div><a href="ocean-freight.html">Ocean freight · FCL / LCL</a><a href="air-freight.html">Air freight</a><a href="project-cargo.html">Project, ODC &amp; breakbulk</a><a href="haulage-icd.html">Haulage &amp; ICDs</a><a href="aircraft-charter.html">Aircraft charter</a><a href="container-load-planner.html">Container load planner</a></div><div><div class="mh">CUSTOMS &amp; COMPLIANCE</div><a href="customs-brokerage.html">Customs brokerage</a><a href="trade-compliance.html">Trade compliance advisory</a><a href="destination-do-agency.html">Destination / DO agency</a><a href="contact.html">Cargo insurance</a></div><div><div class="mh">SPECIALIST</div><a href="mobile-phone-exports.html">Mobile phone exports</a><a href="buyers-consolidation.html">Buyer’s consolidation &amp; PO management</a><a href="third-country-trade.html">Third-country trade &amp; re-export</a><a href="bonded-warehousing.html">Bonded warehousing &amp; FTWZ</a><a href="exhibition-ata-carnet.html">Exhibition cargo &amp; ATA carnet</a><a href="third-country-trade.html">Merchanting trade support</a></div><div><div class="mh">SPECIAL CARGO</div><a href="dangerous-goods.html">Dangerous goods</a><a href="dg-labels.html">DG labels &amp; marks (free)</a><a href="perishables.html">Perishables</a><a href="pharmaceuticals.html">Pharmaceuticals</a><a href="live-animals.html">Live animals</a><a href="pet-relocation.html">Pet relocation</a></div>
 <div class="mcta"><strong>Not sure what you need?</strong><span>Tell a licensed broker what you're moving. We'll design the route and the paperwork.</span><a href="contact.html">Talk to the desk →</a></div>
 </div></div></details>
 <a href="customs-brokerage.html">Customs</a><a href="mobile-phone-exports.html">Mobile exports</a><a href="third-country-trade.html">Third-country trade</a><a href="trade-desk.html">Trade Desk</a>
@@ -357,6 +358,7 @@ function er(){return fetch('https://open.er-api.com/v6/latest/INR').then(functio
 fetch('https://api.frankfurter.dev/v1/latest?base=INR&symbols=USD,EUR,CNY,GBP').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates[c])r[c]=1/j.rates[c]});return er().catch(function(){}).then(function(){var c2=null;try{c2=JSON.parse(localStorage.getItem(K))}catch(e){}if(c2&&c2.r&&c2.r.AED)r.AED=c2.r.AED;save({r:r,d:new Date(j.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})})})}).catch(function(){er().catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'})});
 })();
 </script>
+
 
 </body>
 </html>
