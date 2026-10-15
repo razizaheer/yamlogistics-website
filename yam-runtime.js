@@ -64,18 +64,20 @@
   }
 
   // ---- link routing shared by build and browser
-  const P = { quote: 'contact.html', calc: 'cbm-calculator.html', track: 'track-shipment.html', customs: 'customs-brokerage.html', mobile: 'mobile-phone-exports.html', third: 'third-country-trade.html', ocean: 'ocean-freight.html', air: 'air-freight.html', project: 'project-cargo.html', about: 'about.html', desk: 'trade-desk.html', bonded: 'bonded-warehousing.html', expo: 'exhibition-ata-carnet.html', consol: 'buyers-consolidation.html', wa: 'https://wa.me/919212558167' };
+  const P = { quote: 'contact.html', calc: 'cbm-calculator.html', track: 'track-shipment.html', customs: 'customs-brokerage.html', mobile: 'mobile-phone-exports.html', third: 'third-country-trade.html', ocean: 'ocean-freight.html', air: 'air-freight.html', project: 'project-cargo.html', about: 'about.html', desk: 'trade-desk.html', bonded: 'bonded-warehousing.html', expo: 'exhibition-ata-carnet.html', consol: 'buyers-consolidation.html', dg: 'dangerous-goods.html', comp: 'trade-compliance.html', doa: 'destination-do-agency.html', haul: 'haulage-icd.html', charter: 'aircraft-charter.html', peri: 'perishables.html', pharma: 'pharmaceuticals.html', animals: 'live-animals.html', pets: 'pet-relocation.html', wa: 'https://wa.me/919212558167' };
   const RULES = [
     [/^terms$|trading conditions|privacy/, P.about], [/email me updates|sign in/, P.quote], [/download checklist/, P.wa],
     [/bonded warehous|ftwz/, P.bonded], [/exhibition|ata carnet/, P.expo],
-    [/quote|plan a re-export|plan this route|plan a project|plan a bonded|plan my exhibition|talk to the desk|talk to us|duty estimate|let.s talk/, P.quote],
+    [/quote|plan a re-export|plan this route|plan a project|plan a bonded|plan my exhibition|talk to the desk|talk to us|duty estimate|let.s talk|^ship |book a compliance|appoint yam|plan an animal|plan my pet/, P.quote],
     [/consolidation|purchase order|po management/, P.consol],
     [/calculator/, P.calc], [/^track|track shipment/, P.track],
-    [/customs brokerage|trade compliance|hs code|compliance advisory/, P.customs],
-    [/lithium|dangerous goods|^air freight|air freight$/, P.air],
+    [/trade compliance|compliance advisory/, P.comp], [/customs brokerage|hs code/, P.customs],
+    [/dangerous goods|lithium/, P.dg], [/aircraft charter|^charter/, P.charter], [/perishable/, P.peri], [/pharma/, P.pharma], [/live animal/, P.animals], [/pet relocation|pet transport/, P.pets],
+    [/destination|do agency/, P.doa], [/haulage|\bicds?\b/, P.haul],
+    [/^air freight|air freight$/, P.air],
     [/mobile|phone/, P.mobile], [/third-country|re-export|merchanting/, P.third],
     [/briefing|trade desk|corridor brief|read the|read all|incoterms/, P.desk],
-    [/haulage|destination|do agency|ocean/, P.ocean], [/project|odc|breakbulk/, P.project],
+    [/ocean/, P.ocean], [/project|odc|breakbulk/, P.project],
     [/insurance/, P.quote], [/our story|about/, P.about], [/\bair\b/, P.air]
   ];
   function linkFor(text) { const k = String(text).replace(/\s+/g, ' ').trim().toLowerCase(); for (const [re, to] of RULES) if (re.test(k)) return to; return null; }
