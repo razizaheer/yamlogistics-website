@@ -30,7 +30,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .btn-calc{background:#FFC93C;color:#0B2A4A!important;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none;white-space:nowrap}
 .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #E1EDF7;backdrop-filter:saturate(1.4) blur(8px)}
 .nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;position:relative}
-.brand{display:flex;align-items:center;text-decoration:none}.logo{height:84px;width:auto;display:block}
+.brand{display:flex;align-items:center;text-decoration:none;flex-shrink:0}.logo{height:84px;width:auto;display:block}
 @media (max-width:640px){.logo{height:60px}}
 .bw{display:flex;flex-direction:column;line-height:1}.b1{font-family:'Archivo',sans-serif;font-weight:900;font-stretch:118%;font-size:24px}
 .b2{white-space:nowrap;font-family:'Geist Mono',monospace;font-size:10px;color:#5E7891;letter-spacing:.14em;margin-top:3px}
@@ -38,7 +38,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .links>a{color:#0B2A4A;text-decoration:none}.links>a[aria-current]{color:#0A6CC2;font-weight:600}
 .sol summary{cursor:pointer;list-style:none;padding:8px 0}.sol summary::-webkit-details-marker{display:none}
 .mega{position:absolute;left:0;right:0;top:100%;background:#FFFFFF;border-bottom:1px solid #E1EDF7;box-shadow:0 30px 60px rgba(11,42,74,.12)}
-.mega-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;padding-top:28px;padding-bottom:32px}
+.mega{white-space:normal}.mega-in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(230px,270px);gap:28px;padding-top:28px;padding-bottom:32px}.mega-in a{white-space:normal;line-height:1.35}
 .mega-in a{display:block;padding:7px 0;color:#0B2A4A;text-decoration:none}.mega-in a:hover{color:#0A6CC2}
 .mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0A6CC2;margin-bottom:8px;padding-bottom:10px;border-bottom:1px solid #E1EDF7}
 .mcta{background:#FFF4D6;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#3D5873}
@@ -50,7 +50,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 @media (max-width:1240px){
  .hide-s{display:none}
  .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
- .links{flex-wrap:wrap;white-space:normal}
+ .links{flex-wrap:nowrap;white-space:normal}
  .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
  .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
  .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
@@ -60,6 +60,21 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
  .mega{position:static;box-shadow:none;border:0}.mega .wrap{padding:0}.mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
  .links{overflow-x:hidden}.links>*{min-width:0;max-width:100%}
 }
+html.navt2 .links{gap:13px;font-size:14px}html.navt2 .links .btn,html.navt2 .links .btn-o,html.navt2 .links .btn-calc{padding:9px 13px;font-size:14px}html.navt2 .logo{height:64px}html.navt2 .nav-in{gap:12px}
+html.navc .hide-s{display:none}
+html.navc .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
+html.navc .links{flex-wrap:nowrap;white-space:normal}
+html.navc .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
+html.navc .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
+html.navc .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
+html.navc .links>a,html.navc .sol summary{padding:12px 0;border-bottom:1px solid #EEF4FA}
+html.navc .links .btn,html.navc .links .btn-o,html.navc .links .btn-calc{margin-top:12px;text-align:center}
+html.navc .navt:checked~.links{display:flex}
+html.navc .mega{position:static;box-shadow:none;border:0}
+html.navc .mega .wrap{padding:0}
+html.navc .mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
+html.navc .links{overflow-x:hidden}
+html.navc .links>*{min-width:0;max-width:100%}
 @media (max-width:640px){.wrap{padding:0 16px}.util-in .u1{display:none}.util-in{gap:6px 16px;font-size:12px}.fx{margin-left:0;overflow-x:auto;width:100%;gap:12px}.fxd{display:none}}
 @media (max-width:760px){[style*="linear-gradient(90deg, rgba(255,255,255,0.9"]{background:rgba(255,255,255,0.84)!important}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
@@ -90,7 +105,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="zh/container-load-planner.html" class="calc-m">🧊 3D 装箱规划</a><input type="checkbox" id="navt" class="navt" aria-label="打开菜单"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
 <details class="sol"><summary>解决方案 ▾</summary><div class="mega"><div class="wrap mega-in">
-<div><div class="mh">货运</div><a href="zh/ocean-freight.html">海运 · 整箱 / 拼箱</a><a href="zh/air-freight.html">空运</a><a href="project-cargo.html">项目货物、超限货物及件杂货</a><a href="haulage-icd.html">陆运拖车与内陆集装箱站</a><a href="aircraft-charter.html">包机</a><a href="air-sea-bridge.html">海空联运</a><a href="zh/container-load-planner.html">集装箱装箱规划</a><a href="zh/cbm-calculator.html">CBM与体积重计算器</a></div><div><div class="mh">报关与合规</div><a href="zh/customs-brokerage.html">报关服务</a><a href="trade-compliance.html">贸易合规咨询</a><a href="destination-do-agency.html">目的港 / 换单代理</a><a href="zh/contact.html">货物保险</a></div><div><div class="mh">专业服务</div><a href="zh/mobile-phone-exports.html">手机出口</a><a href="buyers-consolidation.html">买方集运与订单（PO）管理</a><a href="zh/third-country-trade.html">第三国贸易与转口</a><a href="bonded-warehousing.html">保税仓储与 FTWZ</a><a href="exhibition-ata-carnet.html">展品运输与 ATA 单证册</a><a href="zh/third-country-trade.html">转手贸易支持</a></div><div><div class="mh">特种货物</div><a href="dangerous-goods.html">危险品</a><a href="dg-labels.html">危险品标签与标记（免费）</a><a href="perishables.html">生鲜易腐品</a><a href="pharmaceuticals.html">医药品</a><a href="live-animals.html">活体动物</a><a href="pet-relocation.html">宠物托运</a></div>
+<div><div class="mh">货运</div><a href="zh/ocean-freight.html">海运 · 整箱 / 拼箱</a><a href="zh/air-freight.html">空运</a><a href="project-cargo.html">项目货物、超限货物及件杂货</a><a href="haulage-icd.html">陆运拖车与内陆集装箱站</a><a href="aircraft-charter.html">包机</a><a href="air-sea-bridge.html">海空联运</a><a href="zh/container-load-planner.html">集装箱装箱规划</a><a href="zh/cbm-calculator.html">CBM与体积重计算器</a></div><div><div class="mh">报关与合规</div><a href="zh/customs-brokerage.html">报关服务</a><a href="trade-compliance.html">贸易合规咨询</a><a href="destination-do-agency.html">目的港 / 换单代理</a><a href="cargo-insurance.html">货物保险</a></div><div><div class="mh">专业服务</div><a href="zh/mobile-phone-exports.html">手机出口</a><a href="buyers-consolidation.html">买方集运与订单（PO）管理</a><a href="zh/third-country-trade.html">第三国贸易与转口</a><a href="bonded-warehousing.html">保税仓储与 FTWZ</a><a href="exhibition-ata-carnet.html">展品运输与 ATA 单证册</a><a href="zh/third-country-trade.html">转手贸易支持</a></div><div><div class="mh">特种货物</div><a href="dangerous-goods.html">危险品</a><a href="dg-labels.html">危险品标签与标记（免费）</a><a href="perishables.html">生鲜易腐品</a><a href="pharmaceuticals.html">医药品</a><a href="live-animals.html">活体动物</a><a href="pet-relocation.html">宠物托运</a></div>
 <div class="mcta"><strong>不确定需要哪种服务？</strong><span>告诉持牌报关员您要运什么，我们来设计路线并办理单证。</span><a href="zh/contact.html">联系服务台 →</a></div>
 </div></div></details>
 <a href="zh/customs-brokerage.html">报关</a><a href="zh/mobile-phone-exports.html">手机出口</a><a href="zh/third-country-trade.html">第三国贸易</a><a href="trade-desk.html">贸易资讯</a><a href="zh/about.html">关于我们</a>
@@ -99,6 +114,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="zh/contact.html" class="btn go">获取报价</a>
 </div></div></nav>
 </header>
+<script>(function(){var h=document.documentElement;function ov(n,l){return n.scrollWidth>n.clientWidth+2||(l&&l.scrollWidth>l.clientWidth+2)}function chk(){h.classList.remove('navc','navt2');var n=document.querySelector('.nav-in');if(!n)return;var l=n.querySelector('.links');if(ov(n,l)){h.classList.add('navt2');if(ov(n,l)){h.classList.remove('navt2');h.classList.add('navc');}}}chk();window.addEventListener('resize',chk);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(chk);window.addEventListener('load',chk);})();</script>
 <main id="app">
 <div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
 
@@ -113,7 +129,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <div style="max-width: 640px">
 <div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.08em; margin-bottom: 22px">BOM · DEL · BLR · HYD · MAA · AMD · 24×7</div>
 <h1 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(52px, 6.4vw, 100px); line-height: 0.95; letter-spacing: -0.03em; margin: 0 0 24px">空运货物， <span style="color: #0A6CC2">赶上今晚的航班。</span></h1>
-<p style="font-size: 20px; line-height: 1.55; color: #17436B; margin: 0 0 30px">经印度各大机场的进出口空运，从孟买、德里到班加罗尔、海得拉巴、金奈和艾哈迈达巴德。直接向航空公司订舱，以我们自己的报关执照清关，服务台全天候运作。</p>
+<p style="font-size: 20px; line-height: 1.55; color: #17436B; margin: 0 0 30px">经印度各大机场办理航空货物进出口，从孟买、德里到班加罗尔、海得拉巴、金奈、加尔各答、科钦和艾哈迈达巴德。直接向航空公司订舱，以我们自有的海关执照清关，并由全天候运作的团队负责。</p>
 <div style="display: flex; flex-wrap: wrap; gap: 12px">
 <a class="go" href="zh/contact.html" style="background: #0A6CC2; color: #FFFFFF; padding: 16px 28px; border-radius: 999px; font-weight: 600; text-decoration: none">获取空运报价 →</a>
 <a href="https://wa.me/message/6YB7I76DV6UJL1" style="background: #25D366; color: #06331A; padding: 16px 26px; border-radius: 999px; font-weight: 600; text-decoration: none">通过 WhatsApp 联系报关员</a>
@@ -181,48 +197,116 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 
 
 <div style="max-width: 1400px; margin: 0 auto; padding: 60px 32px 100px">
+<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: #0A6CC2; margin-bottom: 14px">我们覆盖的机场</div>
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(36px, 4.2vw, 58px); line-height: 1; letter-spacing: -0.03em; margin: 0 0 36px; max-width: 980px">从科钦到加尔各答，下一站：诺伊达。</h2>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px">
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">BOM</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">孟买，Sahar 航空货运站</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">孟买，Sahar 航空货运站</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">我们在货运站内设有自己的服务台，进出口均 24×7 营业。</span>
 </div>
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">DEL</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">德里，英迪拉·甘地国际机场</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">德里，英迪拉·甘地国际机场</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">毗邻我们的总部，可通过两家货站运营商操作货物。</span>
 </div>
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">NMI</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">新孟买机场</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">新孟买机场</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">孟买新机场，在繁忙的夜晚提供额外运力。</span>
 </div>
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">AMD</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">艾哈迈达巴德机场</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">艾哈迈达巴德机场</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">供古吉拉特邦出口商直接空运，无需卡车转运至孟买。</span>
 </div>
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">BLR</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">班加罗尔机场</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">班加罗尔机场</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">南印度制造带的电子产品和手机出口。</span>
 </div>
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">HYD</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">海得拉巴机场</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">海得拉巴机场</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">特伦甘纳邦和安得拉邦工厂的出口货物。</span>
 </div>
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">MAA</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">金奈机场</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">金奈机场</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">邻近泰米尔纳德邦的手机和电子产品工厂。</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">CCU</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">加尔各答机场</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">东印度及东北地区的门户。</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">LKO</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">勒克瑙机场</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">为北方邦出口商提供航空货运，毗邻我们的发源地坎普尔。</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">VNS</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">瓦拉纳西机场</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">来自瓦拉纳西和巴多希的地毯、丝绸与手工艺品。</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">JAI</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">斋浦尔机场</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">来自拉贾斯坦邦的宝石、珠宝、纺织品和手工艺品。</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">ATQ</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">阿姆利则机场</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">旁遮普邦生鲜易腐货物和工程产品的国际门户。</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">COK</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">科钦机场</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">喀拉拉邦主要的货运机场，承运海鲜、香料和新鲜农产品。</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">CCJ</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">科泽科德（卡利卡特）机场</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">来自马拉巴尔海岸的水果、蔬菜及发往海湾地区的货物。</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">TRV</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">特里凡得琅机场</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">将喀拉拉邦南部的新鲜农产品和海鲜运往海湾地区及更远的市场。</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">CJB</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">哥印拜陀机场</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">泰米尔纳德邦西部的纺织品、泵类及工程产品出口。</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">GOI · GOX</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">果阿（达波林与莫帕）</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">经果阿两座机场运送来自果阿和康坎地区的货物。</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">DXN · 即将开通</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">诺伊达国际机场</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">德里附近新建的杰瓦尔机场。从首批货运航班起，我们即已准备就绪。</span>
 </div>
 
 </div>
@@ -367,7 +451,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">报关与合规</span>
-<a href="zh/customs-brokerage.html">报关服务</a><a href="trade-compliance.html">贸易合规咨询</a><a href="destination-do-agency.html">目的港 / 换单代理</a><a href="zh/contact.html">货物保险</a>
+<a href="zh/customs-brokerage.html">报关服务</a><a href="trade-compliance.html">贸易合规咨询</a><a href="destination-do-agency.html">目的港 / 换单代理</a><a href="cargo-insurance.html">货物保险</a>
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 8px">
