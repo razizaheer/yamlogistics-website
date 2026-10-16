@@ -6,7 +6,7 @@
   if (!root || !E) return;
 
   const PALETTE = ['#0A6CC2', '#F59E0B', '#16A34A', '#E2483A', '#7C3AED', '#0891B2', '#DB2777', '#65A30D', '#EA580C', '#4F46E5', '#0D9488', '#A16207', '#BE123C', '#2563EB', '#9333EA', '#059669'];
-  const WA = '919212558167';
+  const WA = 'YAMLOGISTICS';
   const EMAIL = 'info@yamlogistics.com';
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const fmt = (n, d = 0) => (isFinite(n) ? n : 0).toLocaleString('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -740,7 +740,7 @@ ${n ? `<div class="lp-card">
         doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.text(title, PW - M, 10.5, { align: 'right' });
         doc.setTextColor(11, 42, 74);
         doc.setFontSize(7.5); doc.setTextColor(94, 120, 145);
-        doc.text('yamlogistics.com · WhatsApp +91 92125 58167 · Computer-generated plan for guidance; allow for dunnage, lashing and carrier rules.', M, PH - 6);
+        doc.text('yamlogistics.com · WhatsApp @YAMLOGISTICS · Computer-generated plan for guidance; allow for dunnage, lashing and carrier rules.', M, PH - 6);
         doc.setTextColor(11, 42, 74);
       };
       const clean = (s) => String(s).replace(/[′]/g, "'").replace(/[–]/g, '-').replace(/[×]/g, 'x').replace(/[·]/g, '-').replace(/[^\x20-\x7E]/g, '');
