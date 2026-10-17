@@ -30,7 +30,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .btn-calc{background:#FFC93C;color:#0B2A4A!important;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none;white-space:nowrap}
 .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #E1EDF7;backdrop-filter:saturate(1.4) blur(8px)}
 .nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;position:relative}
-.brand{display:flex;align-items:center;text-decoration:none}.logo{height:84px;width:auto;display:block}
+.brand{display:flex;align-items:center;text-decoration:none;flex-shrink:0}.logo{height:84px;width:auto;display:block}
 @media (max-width:640px){.logo{height:60px}}
 .bw{display:flex;flex-direction:column;line-height:1}.b1{font-family:'Archivo',sans-serif;font-weight:900;font-stretch:118%;font-size:24px}
 .b2{white-space:nowrap;font-family:'Geist Mono',monospace;font-size:10px;color:#5E7891;letter-spacing:.14em;margin-top:3px}
@@ -38,7 +38,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .links>a{color:#0B2A4A;text-decoration:none}.links>a[aria-current]{color:#0A6CC2;font-weight:600}
 .sol summary{cursor:pointer;list-style:none;padding:8px 0}.sol summary::-webkit-details-marker{display:none}
 .mega{position:absolute;left:0;right:0;top:100%;background:#FFFFFF;border-bottom:1px solid #E1EDF7;box-shadow:0 30px 60px rgba(11,42,74,.12)}
-.mega-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;padding-top:28px;padding-bottom:32px}
+.mega{white-space:normal}.mega-in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(230px,270px);gap:28px;padding-top:28px;padding-bottom:32px}.mega-in a{white-space:normal;line-height:1.35}
 .mega-in a{display:block;padding:7px 0;color:#0B2A4A;text-decoration:none}.mega-in a:hover{color:#0A6CC2}
 .mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0A6CC2;margin-bottom:8px;padding-bottom:10px;border-bottom:1px solid #E1EDF7}
 .mcta{background:#FFF4D6;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#3D5873}
@@ -50,7 +50,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 @media (max-width:1240px){
  .hide-s{display:none}
  .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
- .links{flex-wrap:wrap;white-space:normal}
+ .links{flex-wrap:nowrap;white-space:normal}
  .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
  .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
  .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
@@ -60,6 +60,21 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
  .mega{position:static;box-shadow:none;border:0}.mega .wrap{padding:0}.mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
  .links{overflow-x:hidden}.links>*{min-width:0;max-width:100%}
 }
+html.navt2 .links{gap:13px;font-size:14px}html.navt2 .links .btn,html.navt2 .links .btn-o,html.navt2 .links .btn-calc{padding:9px 13px;font-size:14px}html.navt2 .logo{height:64px}html.navt2 .nav-in{gap:12px}
+html.navc .hide-s{display:none}
+html.navc .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
+html.navc .links{flex-wrap:nowrap;white-space:normal}
+html.navc .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
+html.navc .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
+html.navc .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
+html.navc .links>a,html.navc .sol summary{padding:12px 0;border-bottom:1px solid #EEF4FA}
+html.navc .links .btn,html.navc .links .btn-o,html.navc .links .btn-calc{margin-top:12px;text-align:center}
+html.navc .navt:checked~.links{display:flex}
+html.navc .mega{position:static;box-shadow:none;border:0}
+html.navc .mega .wrap{padding:0}
+html.navc .mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
+html.navc .links{overflow-x:hidden}
+html.navc .links>*{min-width:0;max-width:100%}
 @media (max-width:640px){.wrap{padding:0 16px}.util-in .u1{display:none}.util-in{gap:6px 16px;font-size:12px}.fx{margin-left:0;overflow-x:auto;width:100%;gap:12px}.fxd{display:none}}
 @media (max-width:760px){[style*="linear-gradient(90deg, rgba(255,255,255,0.9"]{background:rgba(255,255,255,0.84)!important}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
@@ -93,7 +108,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="fr/container-load-planner.html" class="calc-m">🧊 Planificateur 3D</a><input type="checkbox" id="navt" class="navt" aria-label="Ouvrir le menu"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
 <details class="sol"><summary>Solutions ▾</summary><div class="mega"><div class="wrap mega-in">
-<div><div class="mh">FRET</div><a href="fr/ocean-freight.html">Fret maritime · FCL / LCL</a><a href="fr/air-freight.html">Fret aérien</a><a href="project-cargo.html">Colis lourds, hors gabarit (ODC) et breakbulk</a><a href="haulage-icd.html">Transport routier et ICD</a><a href="aircraft-charter.html">Affrètement d’avions</a><a href="air-sea-bridge.html">Pont mer-air</a><a href="fr/container-load-planner.html">Planificateur de chargement de conteneurs</a><a href="fr/cbm-calculator.html">Calculateur CBM et poids volumétrique</a></div><div><div class="mh">DOUANE ET CONFORMITÉ</div><a href="fr/customs-brokerage.html">Dédouanement</a><a href="trade-compliance.html">Conseil en conformité douanière</a><a href="destination-do-agency.html">Agent à destination / DO</a><a href="fr/contact.html">Assurance marchandises</a></div><div><div class="mh">SPÉCIALITÉS</div><a href="fr/mobile-phone-exports.html">Exportation de téléphones mobiles</a><a href="buyers-consolidation.html">Consolidation acheteur et gestion des commandes</a><a href="fr/third-country-trade.html">Commerce triangulaire et réexportation</a><a href="bonded-warehousing.html">Entrepôt sous douane et FTWZ</a><a href="exhibition-ata-carnet.html">Fret pour salons et carnet ATA</a><a href="fr/third-country-trade.html">Accompagnement du négoce international</a></div><div><div class="mh">MARCHANDISES SPÉCIALES</div><a href="dangerous-goods.html">Marchandises dangereuses</a><a href="dg-labels.html">Étiquettes et marquages DG (gratuits)</a><a href="perishables.html">Denrées périssables</a><a href="pharmaceuticals.html">Produits pharmaceutiques</a><a href="live-animals.html">Animaux vivants</a><a href="pet-relocation.html">Déménagement d’animaux de compagnie</a></div>
+<div><div class="mh">FRET</div><a href="fr/ocean-freight.html">Fret maritime · FCL / LCL</a><a href="fr/air-freight.html">Fret aérien</a><a href="project-cargo.html">Colis lourds, hors gabarit (ODC) et breakbulk</a><a href="haulage-icd.html">Transport routier et ICD</a><a href="aircraft-charter.html">Affrètement d’avions</a><a href="air-sea-bridge.html">Pont mer-air</a><a href="fr/container-load-planner.html">Planificateur de chargement de conteneurs</a><a href="fr/cbm-calculator.html">Calculateur CBM et poids volumétrique</a></div><div><div class="mh">DOUANE ET CONFORMITÉ</div><a href="fr/customs-brokerage.html">Dédouanement</a><a href="trade-compliance.html">Conseil en conformité douanière</a><a href="destination-do-agency.html">Agent à destination / DO</a><a href="cargo-insurance.html">Assurance marchandises</a></div><div><div class="mh">SPÉCIALITÉS</div><a href="fr/mobile-phone-exports.html">Exportation de téléphones mobiles</a><a href="buyers-consolidation.html">Consolidation acheteur et gestion des commandes</a><a href="fr/third-country-trade.html">Commerce triangulaire et réexportation</a><a href="bonded-warehousing.html">Entrepôt sous douane et FTWZ</a><a href="exhibition-ata-carnet.html">Fret pour salons et carnet ATA</a><a href="fr/third-country-trade.html">Accompagnement du négoce international</a></div><div><div class="mh">MARCHANDISES SPÉCIALES</div><a href="dangerous-goods.html">Marchandises dangereuses</a><a href="dg-labels.html">Étiquettes et marquages DG (gratuits)</a><a href="perishables.html">Denrées périssables</a><a href="pharmaceuticals.html">Produits pharmaceutiques</a><a href="live-animals.html">Animaux vivants</a><a href="pet-relocation.html">Déménagement d’animaux de compagnie</a></div>
 <div class="mcta"><strong>Vous ne savez pas de quoi vous avez besoin ?</strong><span>Dites à un commissionnaire agréé ce que vous expédiez. Nous concevons l’itinéraire et les documents.</span><a href="fr/contact.html">Parler au bureau →</a></div>
 </div></div></details>
 <a href="fr/customs-brokerage.html">Douane</a><a href="fr/mobile-phone-exports.html">Exportation de mobiles</a><a href="fr/third-country-trade.html">Commerce triangulaire</a><a href="trade-desk.html">Trade Desk</a><a href="fr/about.html">À propos</a>
@@ -102,6 +117,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="fr/contact.html" class="btn go">Demander un devis</a>
 </div></div></nav>
 </header>
+<script>(function(){var h=document.documentElement;function ov(n,l){return n.scrollWidth>n.clientWidth+2||(l&&l.scrollWidth>l.clientWidth+2)}function chk(){h.classList.remove('navc','navt2');var n=document.querySelector('.nav-in');if(!n)return;var l=n.querySelector('.links');if(ov(n,l)){h.classList.add('navt2');if(ov(n,l)){h.classList.remove('navt2');h.classList.add('navc');}}}chk();window.addEventListener('resize',chk);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(chk);window.addEventListener('load',chk);})();</script>
 <main id="app">
 <div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
 
@@ -266,7 +282,7 @@ Kachchh, Gujarat 370421</span>
 
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">DOUANE ET CONFORMITÉ</span>
-<a href="fr/customs-brokerage.html">Dédouanement</a><a href="trade-compliance.html">Conseil en conformité douanière</a><a href="destination-do-agency.html">Agent à destination / DO</a><a href="fr/contact.html">Assurance marchandises</a>
+<a href="fr/customs-brokerage.html">Dédouanement</a><a href="trade-compliance.html">Conseil en conformité douanière</a><a href="destination-do-agency.html">Agent à destination / DO</a><a href="cargo-insurance.html">Assurance marchandises</a>
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 8px">
