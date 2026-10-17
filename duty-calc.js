@@ -134,6 +134,8 @@
     var n45 = x[10].map(function (i) { return D.n45[i]; });
     var auto = n45.filter(function (e) { return /^all goods\.?$/i.test(e[3]) && (e[2] === '-' || e[2] === '') && /^(Nil|[\d.]+\s?%)$/.test(e[1]); });
     if (auto.length) { var a = auto[auto.length - 1]; bcd = a[1] === 'Nil' ? 0 : parseFloat(a[1]); bcdSrc = 'Notification 45/2025-Customs, S. No. ' + a[0]; }
+    var n57 = (D.n57 || []).filter(function (e) { return e[4].some(function (c) { return code.indexOf(c) === 0; }); });
+    n57.forEach(function (e) { if (e[5] === 1) { var r = e[1] === 'Nil' ? 0 : parseFloat(e[1]); if (bcd == null || r < bcd) { bcd = r; bcdSrc = 'Notification 57/2017-Customs, S. No. ' + e[0] + ' (as amended by 34/2024-Customs)'; } } });
     var prefUsed = false;
     var noRate = (bcd == null);
     if (fta && fta.data === 'uae' && x[11] != null && (bcd == null || x[11] < bcd)) { bcd = x[11]; bcdSrc = 'India–UAE CEPA (Notification 22/2022-Customs), with a valid certificate of origin'; prefUsed = true; }
@@ -199,6 +201,11 @@
       cond.slice(0, 6).forEach(function (e) { H += '<div class="dc-x"><b>S. No. ' + h(e[0]) + (e[1] ? ' · BCD ' + h(e[1]) : '') + '</b>' + (e[2] && e[2] !== '-' ? ' · condition ' + h(e[2]) : '') + ': ' + h(e[3].slice(0, 230)) + (e[3].length > 230 ? '…' : '') + '</div>'; });
       if (cond.length > 6) H += '<div class="s" style="font-size:13px;color:#5E7891">+ ' + (cond.length - 6) + ' more entries.</div>';
     }
+    var c57 = n57.filter(function (e) { return e[5] !== 1; });
+    if (c57.length) {
+      H += '<div class="dc-h">Possible concessions (Notification 57/2017-Customs, mobile phones and parts)</div>';
+      c57.forEach(function (e) { H += '<div class="dc-x"><b>S. No. ' + h(e[0]) + ' · BCD ' + h(e[1]) + '</b>' + (e[2] ? ' · condition ' + h(e[2]) + ' (end-use, under the IGCR Rules)' : '') + ': ' + h(e[3]) + '</div>'; });
+    }
     H += '<div class="dc-note"><b>Not included:</b> anti-dumping, safeguard or countervailing duty; agriculture cess (AIDC) on certain farm goods, gold, silver and alcohol; compensation cess on tobacco; concessions under other end-use or manufacturing notifications; and port, freight forwarding and clearance charges.</div>';
     var msg = 'Hello YAM, please confirm the import duty for HSN ' + fc(code) + ' (' + x[1].slice(0, 60) + ')' + (country ? ', origin ' + country : '') + (val ? ', ' + (t === 'CNF' ? 'C&F' : t) + ' ' + cur.value + ' ' + val : '') + '. Calculator estimate (indicative): ' + (av > 0 ? inr(tot) : 'BCD ' + (bcd != null ? pct(bcd) : bcdTxt) + ', IGST ' + pct(igRate)) + '.';
     H += '<div class="dc-cta"><a href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener" style="background:#25D366;color:#06331A">Confirm with a broker on WhatsApp</a><a href="contact.html" style="background:#0A6CC2;color:#fff">Get a clearance quote →</a></div>';
@@ -207,7 +214,7 @@
     out.innerHTML = H;
   }
 
-  fetch('duty-data.json?v=2').then(function (x) { return x.json(); }).then(function (j) {
+  fetch('duty-data.json?v=3').then(function (x) { return x.json(); }).then(function (j) {
     D = j; build();
     list.innerHTML = '<div class="dc-empty">Start typing an HSN code or a product name.</div>';
     var m = location.hash.match(/hs=(\d{4,8})/);
