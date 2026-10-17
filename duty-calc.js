@@ -225,11 +225,11 @@
     var msg = 'Hello YAM, please confirm the import duty for HSN ' + fc(code) + ' (' + x[1].slice(0, 60) + ')' + (country ? ', origin ' + country : '') + (val ? ', ' + (t === 'CNF' ? 'C&F' : t) + ' ' + cur.value + ' ' + val : '') + '. Calculator estimate (indicative): ' + (av > 0 ? inr(tot) : 'BCD ' + (bcd != null ? pct(bcd) : bcdTxt) + ', IGST ' + pct(igRate)) + '.';
     H += '<div class="dc-cta"><a href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener" style="background:#25D366;color:#06331A">Confirm with a broker on WhatsApp</a><a href="contact.html" style="background:#0A6CC2;color:#fff">Get a clearance quote →</a></div>';
     H += '<div class="dc-legal"><b>Disclaimer:</b> indicative estimate for guidance only. Not a customs assessment, classification ruling or legal advice. Duty is finally assessed by Customs, and classification and declarations remain the importer’s responsibility. YAM Logistics Pvt. Ltd. accepts no liability for any loss, duty, interest, penalty or cost arising from use of or reliance on this result. <a href="#disclaimer" style="color:#7A3E00;font-weight:600">Full disclaimer</a>.</div>';
-    H += '<div class="dc-src">Source: ' + h(D.v) + '. Includes Budget 2026 changes; tariff (First Schedule) rate changes made by the Finance Act 2026 from 1 May 2026 are still being added.</div>';
+    H += '<div class="dc-src">Source: ' + h(D.v) + '. Includes Budget 2026 changes. The tariff schedule used predates Budget 2025, so a few standard rates may be higher than current law; the Budget 2025 tariff changes are being added.</div>';
     out.innerHTML = H;
   }
 
-  fetch('duty-data.json?v=5').then(function (x) { return x.json(); }).then(function (j) {
+  fetch('duty-data.json?v=6').then(function (x) { return x.json(); }).then(function (j) {
     D = j; build();
     list.innerHTML = '<div class="dc-empty">Start typing an HSN code or a product name.</div>';
     var m = location.hash.match(/hs=(\d{4,8})/);
