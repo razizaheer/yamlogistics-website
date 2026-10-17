@@ -132,21 +132,28 @@
     var x = D.rows[sel], code = x[0], country = o.value.replace(/ \(trade agreement\)$/, ''), fta = FTA[country];
     var bcdTxt = x[4], bcd = x[5], bcdSrc = 'Customs Tariff (standard rate)';
     var n45 = x[10].map(function (i) { return D.n45[i]; });
-    var auto = n45.filter(function (e) { return /^all goods\.?$/i.test(e[3]) && (e[2] === '-' || e[2] === '') && /^(Nil|[\d.]+\s?%)$/.test(e[1]); });
-    if (auto.length) { var a = auto[auto.length - 1]; bcd = a[1] === 'Nil' ? 0 : parseFloat(a[1]); bcdSrc = 'Notification 45/2025-Customs, S. No. ' + a[0]; }
+    var auto = n45.filter(function (e) { return /^all goods(,? other than (those|goods|the goods) (mentioned|specified|covered) (at|in|under|against) s\.? ?nos?\.? ?[\dA-Z]+(,? (and|or) [\dA-Z]+)?( of this table)?)?\.?$/i.test(e[3]) && (e[2] === '-' || e[2] === '') && /^(Nil|[\d.]+\s?%)$/.test(e[1]); });
+    var probable = null;
+    if (!auto.length) n45.forEach(function (e) { if (!probable && e[4].indexOf(code) >= 0 && (e[2] === '-' || e[2] === '') && /^(Nil|[\d.]+\s?%)$/.test(e[1]) && !/for use|imported by|when imported|specified|list|other than|if imported|subject to|for the manufacture|for manufacture/i.test(e[3])) probable = e; });
+    if (probable) auto = [probable];
+    if (auto.length) { var a = auto[auto.length - 1]; bcd = a[1] === 'Nil' ? 0 : parseFloat(a[1]); bcdSrc = (/\//.test(a[0]) ? 'Notification ' + a[0] : 'Notification 45/2025-Customs, S. No. ' + a[0]) + (a === probable ? ' (for: ' + a[3].slice(0, 80) + ')' : ''); }
     var n57 = (D.n57 || []).filter(function (e) { return e[4].some(function (c) { return code.indexOf(c) === 0; }); });
-    n57.forEach(function (e) { if (e[5] === 1) { var r = e[1] === 'Nil' ? 0 : parseFloat(e[1]); if (bcd == null || r < bcd) { bcd = r; bcdSrc = 'Notification 57/2017-Customs, S. No. ' + e[0] + ' (as amended by 34/2024-Customs)'; } } });
+    n57.forEach(function (e) { if (e[5] === 1) { var r = e[1] === 'Nil' ? 0 : parseFloat(e[1]); if (bcd == null || r < bcd) { bcd = r; bcdSrc = 'Notification 57/2017-Customs, S. No. ' + e[0] + ' (as amended)'; } } });
     var prefUsed = false;
     var noRate = (bcd == null);
     if (fta && fta.data === 'uae' && x[11] != null && (bcd == null || x[11] < bcd)) { bcd = x[11]; bcdSrc = 'India–UAE CEPA (Notification 22/2022-Customs), with a valid certificate of origin'; prefUsed = true; }
     var ig = x[6].map(function (i) { return D.igst[i]; }), igRate = ig.length ? ig[0][0] : 18, igSure = x[7] === 1;
     var alco = /^220[3-8]/.test(code) && !/^2207/.test(code);
     if (alco) { ig = []; igRate = 0; igSure = true; }
-    var aidc = alco || /^710[68]/.test(code);
     var pfx = function (l) { return l.some(function (c) { return code.indexOf(c) === 0; }); };
-    var aidcE = (D.aidc || []).filter(function (e) { return pfx(e[1]); });
-    if (aidcE.length) aidc = true;
-    var swsNo = null; Object.keys(D.sws_ex || {}).forEach(function (k) { if (swsNo == null && pfx(D.sws_ex[k])) swsNo = k; });
+    var plen = function (l) { var m = 0; l.forEach(function (c) { if (code.indexOf(c) === 0 && c.length > m) m = c.length; }); return m; };
+    var aM = (D.aidc2 || []).filter(function (e) { return pfx(e[1]) && !pfx(e[6] || []); });
+    var aAuto = null; aM.forEach(function (e) { if (e[4] === 1 && /^(Nil|[\d.]+\s?%)$/.test(e[3]) && (!aAuto || plen(e[1]) >= plen(aAuto[1]))) aAuto = e; });
+    var aidcR = aAuto ? (aAuto[3] === 'Nil' ? 0 : parseFloat(aAuto[3])) : 0;
+    var aOther = aM.filter(function (e) { return e !== aAuto && !(aAuto && /^SA-/.test(aAuto[0]) && plen(e[1]) <= plen(aAuto[1])); });
+    var sM = (D.sws2 || []).filter(function (e) { return pfx(e[1]); });
+    var swsE = null; sM.forEach(function (e) { if (e[3] === 1 && !swsE) swsE = e; });
+    var swsNo = swsE ? swsE[0] : null, swsOther = sM.filter(function (e) { return e[3] !== 1; });
     var val = parseFloat(String(v.value).replace(/,/g, '')) || 0;
     var rate = cur.value === 'INR' ? 1 : (parseFloat(r.value) || 0);
     var t = terms.value, num = function (el) { var n = parseFloat(String(el.value).replace(/,/g, '')); return isNaN(n) ? null : n; };
@@ -157,7 +164,7 @@
     var cifR = cif * rate, landing = cifR * 0.01;
     var av = cifR + landing;
     if (noRate) av = 0;
-    var bcdAmt = bcd != null ? av * bcd / 100 : 0, sws = swsNo != null ? 0 : bcdAmt * 0.10, igst = (av + bcdAmt + sws) * igRate / 100, tot = bcdAmt + sws + igst;
+    var bcdAmt = bcd != null ? av * bcd / 100 : 0, sws = swsNo != null ? 0 : bcdAmt * 0.10, aidcAmt = av * aidcR / 100, igst = (av + bcdAmt + sws + aidcAmt) * igRate / 100, tot = bcdAmt + sws + aidcAmt + igst;
     var pol = POL[x[8]] || POL['?'];
     var H = '';
     H += '<div class="dc-c" style="font-size:15px">' + fc(code) + '</div><div style="font-family:Archivo,sans-serif;font-weight:800;font-size:24px;line-height:1.15;margin:4px 0 6px">' + h(x[1]) + '</div><div class="dc-p" style="font-size:13px">' + h(D.paths[x[2]]) + '</div>';
@@ -187,11 +194,14 @@
     H += '<tr><td>Basic customs duty <span class="s">' + (bcd != null ? pct(bcd) : h(bcdTxt || '—')) + ' · ' + h(bcdSrc) + '</span></td><td>' + (av > 0 ? inr(bcdAmt) : (bcd != null ? pct(bcd) : '—')) + '</td></tr>';
     if (swsNo != null) H += '<tr><td>Social welfare surcharge <span class="s">exempt · Notification 11/2018-Customs, S. No. ' + swsNo + '</span></td><td>' + (av > 0 ? inr(0) : 'Nil') + '</td></tr>';
     else H += '<tr><td>Social welfare surcharge <span class="s">10% of BCD</span></td><td>' + (av > 0 ? inr(sws) : '10%') + '</td></tr>';
+    if (aAuto && aidcR > 0) H += '<tr><td>Agriculture cess (AIDC) <span class="s">' + pct(aidcR) + ' · Notification ' + (/^SA-/.test(aAuto[0]) ? aAuto[0].slice(3) + '-Customs' : '11/2021-Customs, S. No. ' + h(aAuto[0])) + '</span></td><td>' + (av > 0 ? inr(aidcAmt) : pct(aidcR)) + '</td></tr>';
     if (alco) H += '<tr><td>IGST <span class="s">not applicable: alcoholic liquor for human consumption is outside GST</span></td><td>—</td></tr>';
-    else H += '<tr><td>IGST <span class="s">' + pct(igRate) + (igSure ? '' : ' · likely, check below') + ' · on value + BCD + SWS</span></td><td>' + (av > 0 ? inr(igst) : pct(igRate)) + '</td></tr>';
+    else H += '<tr><td>IGST <span class="s">' + pct(igRate) + (igSure ? '' : ' · likely, check below') + ' · on value + BCD + SWS' + (aidcAmt > 0 ? ' + AIDC' : '') + '</span></td><td>' + (av > 0 ? inr(igst) : pct(igRate)) + '</td></tr>';
     if (av > 0) H += '<tr class="dc-tot"><td><b>Total duty &amp; IGST</b></td><td>' + inr(tot) + '</td></tr>';
     H += '</table>';
-    if (aidc) H += '<div class="dc-x" style="border-left-color:#B42318;background:#FFF1EF"><b>Agriculture cess (AIDC) applies to this item and is not included above.</b> ' + (aidcE.length ? 'Rate when the cess was introduced (Notification 11/2021-Customs, S. No. ' + h(aidcE[0][0]) + '): <b>' + h(aidcE[0][2]) + '</b>' + (aidcE[0][3] ? ' for ' + h(aidcE[0][3].toLowerCase()) : '') + '. Some AIDC rates have been revised since then, so ask us for the current figure.' : 'It can be substantial for alcoholic beverages, gold and silver. Ask us for the full figure.') + '</div>';
+    if (aOther.length) { H += '<div class="dc-x" style="border-left-color:#B42318;background:#FFF1EF"><b>Agriculture cess (AIDC) may apply' + (aAuto ? ' at a different rate' : '') + ' and is not included above:</b> ' + aOther.slice(0, 3).map(function (e) { return h(e[3]) + ' (11/2021, S. No. ' + h(e[0]) + ': ' + h(e[2].slice(0, 120)) + (e[5] ? '. ' + h(e[5].slice(0, 140)) : '') + ')'; }).join('; ') + '. Ask us to confirm.</div>'; }
+    if (swsOther.length && swsNo == null) H += '<div class="dc-x">Social welfare surcharge may be exempt for some goods under this code (Notification 11/2018-Customs, S. No. ' + h(swsOther[0][0]) + ': ' + h(swsOther[0][2].slice(0, 160)) + '). The estimate above includes it.</div>';
+    var n45n = n45.filter(function (e) { return e[5]; }); if (n45n.length && auto.indexOf(n45n[0]) >= 0) H += '<div class="dc-x">' + h(n45n[0][5]) + '</div>';
     if (bcdTxt && /Rs\./.test(bcdTxt)) H += '<div class="dc-x">Tariff rate is <b>' + h(bcdTxt) + '</b>. Where a specific duty per unit is higher, that amount applies, so the actual duty may be more.</div>';
     if (fta && !prefUsed) H += '<div class="dc-x"><b>' + h(country) + '</b> is covered by the <b>' + h(fta.a) + '</b>. Goods that meet its rules of origin may pay a lower basic customs duty with a certificate of origin. ' + (fta.data ? 'No lower rate is listed for this line.' : 'We are adding this agreement’s rates; ask us for the preferential rate.') + '</div>';
     if (prefUsed) H += '<div class="dc-x">Standard tariff rate without a certificate of origin: <b>' + h(bcdTxt) + '</b>.</div>';
@@ -211,15 +221,15 @@
       H += '<div class="dc-h">Possible concessions (Notification 57/2017-Customs, mobile phones and parts)</div>';
       c57.forEach(function (e) { H += '<div class="dc-x"><b>S. No. ' + h(e[0]) + ' · BCD ' + h(e[1]) + '</b>' + (e[2] ? ' · condition ' + h(e[2]) + ' (end-use, under the IGCR Rules)' : '') + ': ' + h(e[3]) + '</div>'; });
     }
-    H += '<div class="dc-note"><b>Not included:</b> anti-dumping, safeguard or countervailing duty; agriculture cess (AIDC) on certain farm goods, gold, silver and alcohol; compensation cess on tobacco; concessions under other end-use or manufacturing notifications; and port, freight forwarding and clearance charges.</div>';
+    H += '<div class="dc-note"><b>Not included:</b> anti-dumping, safeguard or countervailing duty; agriculture cess (AIDC) where it is not shown in the table; compensation cess on tobacco; concessions under other end-use or manufacturing notifications; and port, freight forwarding and clearance charges.</div>';
     var msg = 'Hello YAM, please confirm the import duty for HSN ' + fc(code) + ' (' + x[1].slice(0, 60) + ')' + (country ? ', origin ' + country : '') + (val ? ', ' + (t === 'CNF' ? 'C&F' : t) + ' ' + cur.value + ' ' + val : '') + '. Calculator estimate (indicative): ' + (av > 0 ? inr(tot) : 'BCD ' + (bcd != null ? pct(bcd) : bcdTxt) + ', IGST ' + pct(igRate)) + '.';
     H += '<div class="dc-cta"><a href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener" style="background:#25D366;color:#06331A">Confirm with a broker on WhatsApp</a><a href="contact.html" style="background:#0A6CC2;color:#fff">Get a clearance quote →</a></div>';
     H += '<div class="dc-legal"><b>Disclaimer:</b> indicative estimate for guidance only. Not a customs assessment, classification ruling or legal advice. Duty is finally assessed by Customs, and classification and declarations remain the importer’s responsibility. YAM Logistics Pvt. Ltd. accepts no liability for any loss, duty, interest, penalty or cost arising from use of or reliance on this result. <a href="#disclaimer" style="color:#7A3E00;font-weight:600">Full disclaimer</a>.</div>';
-    H += '<div class="dc-src">Source: ' + h(D.v) + '. Budget 2026 changes are being added.</div>';
+    H += '<div class="dc-src">Source: ' + h(D.v) + '. Includes Budget 2026 changes; tariff (First Schedule) rate changes made by the Finance Act 2026 from 1 May 2026 are still being added.</div>';
     out.innerHTML = H;
   }
 
-  fetch('duty-data.json?v=4').then(function (x) { return x.json(); }).then(function (j) {
+  fetch('duty-data.json?v=5').then(function (x) { return x.json(); }).then(function (j) {
     D = j; build();
     list.innerHTML = '<div class="dc-empty">Start typing an HSN code or a product name.</div>';
     var m = location.hash.match(/hs=(\d{4,8})/);
