@@ -37,7 +37,10 @@
     '.dc-h{font-family:Archivo,sans-serif;font-weight:800;font-size:20px;margin:22px 0 8px}.dc-x{font-size:13px;color:#3D5873;line-height:1.5;border-left:3px solid #FFC93C;padding:6px 10px;margin:6px 0;background:#FFFBF0;border-radius:0 10px 10px 0}' +
     '.dc-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.dc-cta a{padding:13px 20px;border-radius:999px;font-weight:600;text-decoration:none}.dc-empty{color:#5E7891;padding:30px 10px;text-align:center}' +
     '.dc-tabs{display:inline-flex;background:#EEF6FD;border-radius:999px;padding:4px;gap:4px;margin-top:8px}.dc-tabs button{border:0;border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:#3D5873}.dc-tabs button.on{background:#0A6CC2;color:#fff}' +
-    '.dc-src{font-size:12px;color:#5E7891;margin-top:14px;line-height:1.5}';
+    '.dc-src{font-size:12px;color:#5E7891;margin-top:14px;line-height:1.5}' +
+    '.dc-warn{background:#FFF4D6;border:1px solid #F5D08A;color:#7A3E00;border-radius:18px;padding:16px 20px;margin-bottom:18px;font-size:14px;line-height:1.55}.dc-warn b{color:#7A3E00}.dc-warn a{color:#7A3E00;font-weight:600}' +
+    '.dc-ack{display:flex;gap:10px;align-items:flex-start;background:#FFFBF0;border:1px solid #F5D08A;border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.5;color:#4A3200;margin-top:14px;cursor:pointer}.dc-ack input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#0A6CC2}' +
+    '.dc-legal{font-size:12.5px;line-height:1.55;color:#7A3E00;background:#FFF8E6;border-radius:12px;padding:12px 14px;margin-top:16px}';
   document.head.appendChild(css);
 
   function h(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -45,18 +48,23 @@
   function inr(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
   function pct(n) { return (Math.round(n * 100) / 100) + '%'; }
 
-  root.innerHTML = '<div class="dc"><div class="dc-card">' +
+  root.innerHTML = '<div class="dc-warn" role="note"><b>Important: for guidance only.</b> This calculator gives an indicative estimate based on published tariff data. It is not a customs assessment, a classification ruling or legal advice, and the duty you actually pay may differ. YAM Logistics Pvt. Ltd. accepts no legal responsibility for any use of or reliance on these results. Always verify with Customs, DGFT and a licensed customs broker before you act. <a href="#disclaimer">Read the full disclaimer</a>.</div>' +
+    '<div class="dc"><div class="dc-card">' +
     '<label class="dc-l" for="dc-q">HSN code or description of goods</label>' +
     '<input id="dc-q" class="dc-in" placeholder="e.g. 8517 13 00, or “lithium battery”, “steel pipes”" autocomplete="off">' +
     '<div class="dc-row"><div><label class="dc-l" for="dc-o">Country of origin</label><select id="dc-o" class="dc-in"></select></div>' +
     '<div><label class="dc-l" for="dc-v">CIF value (optional)</label><div style="display:flex;gap:8px"><select id="dc-cur" class="dc-in" style="width:96px;flex:none"></select><input id="dc-v" class="dc-in" inputmode="decimal" placeholder="e.g. 100000"></div></div></div>' +
     '<div id="dc-fx" style="display:none;margin-top:10px"><label class="dc-l" for="dc-r">Exchange rate (₹ per unit) <span style="font-weight:400;color:#5E7891">— customs uses the CBIC-notified rate</span></label><input id="dc-r" class="dc-in" inputmode="decimal"></div>' +
+    '<label class="dc-ack"><input type="checkbox" id="dc-ack"><span>I understand that results are <b>indicative estimates for guidance only</b>, are not a customs assessment or legal advice, and that YAM Logistics Pvt. Ltd. accepts <b>no liability</b> for their use. I have read the <a href="#disclaimer">disclaimer</a>.</span></label>' +
     '<div id="dc-list" class="dc-res"><div class="dc-empty">Loading the tariff…</div></div></div>' +
     '<div class="dc-card" id="dc-out"><div class="dc-empty">Search for your goods and pick a tariff line to see the duty.</div></div></div>';
 
   var q = document.getElementById('dc-q'), o = document.getElementById('dc-o'), v = document.getElementById('dc-v'), cur = document.getElementById('dc-cur'), r = document.getElementById('dc-r'), list = document.getElementById('dc-list'), out = document.getElementById('dc-out');
   o.innerHTML = '<option value="">Select country…</option>' + COUNTRIES.map(function (c) { return '<option>' + h(c) + (FTA[c] ? ' ★' : '') + '</option>'; }).join('').replace(/ ★<\/option>/g, ' (trade agreement)</option>');
   cur.innerHTML = CUR.map(function (c) { return '<option>' + c + '</option>'; }).join('');
+  var ack = document.getElementById('dc-ack');
+  try { if (sessionStorage.getItem('yam-dc-ack') === '1') ack.checked = true; } catch (e) {}
+  ack.addEventListener('change', function () { try { sessionStorage.setItem('yam-dc-ack', ack.checked ? '1' : '0'); } catch (e) {} recalc(); });
   var fxCache = {};
   function getFx(c) {
     if (c === 'INR') return;
@@ -108,35 +116,44 @@
 
   function recalc() {
     if (!D || sel == null) return;
+    if (!ack.checked) { out.innerHTML = '<div class="dc-empty" style="color:#7A3E00">Please tick the box confirming you understand the results are for guidance only, then the estimate will appear here.</div>'; return; }
     var x = D.rows[sel], code = x[0], country = o.value.replace(/ \(trade agreement\)$/, ''), fta = FTA[country];
     var bcdTxt = x[4], bcd = x[5], bcdSrc = 'Customs Tariff (standard rate)';
     var n45 = x[10].map(function (i) { return D.n45[i]; });
     var auto = n45.filter(function (e) { return /^all goods\.?$/i.test(e[3]) && (e[2] === '-' || e[2] === '') && /^(Nil|[\d.]+\s?%)$/.test(e[1]); });
     if (auto.length) { var a = auto[auto.length - 1]; bcd = a[1] === 'Nil' ? 0 : parseFloat(a[1]); bcdSrc = 'Notification 45/2025-Customs, S. No. ' + a[0]; }
     var prefUsed = false;
+    var noRate = (bcd == null);
     if (fta && fta.data === 'uae' && x[11] != null && (bcd == null || x[11] < bcd)) { bcd = x[11]; bcdSrc = 'India–UAE CEPA (Notification 22/2022-Customs), with a valid certificate of origin'; prefUsed = true; }
     var ig = x[6].map(function (i) { return D.igst[i]; }), igRate = ig.length ? ig[0][0] : 18, igSure = x[7] === 1;
+    var alco = /^220[3-8]/.test(code) && !/^2207/.test(code);
+    if (alco) { ig = []; igRate = 0; igSure = true; }
+    var aidc = alco || /^710[68]/.test(code);
     var val = parseFloat(String(v.value).replace(/,/g, '')) || 0;
     var rate = cur.value === 'INR' ? 1 : (parseFloat(r.value) || 0);
     var av = val * rate;
+    if (noRate) av = 0;
     var bcdAmt = bcd != null ? av * bcd / 100 : 0, sws = bcdAmt * 0.10, igst = (av + bcdAmt + sws) * igRate / 100, tot = bcdAmt + sws + igst;
     var pol = POL[x[8]] || POL['?'];
     var H = '';
     H += '<div class="dc-c" style="font-size:15px">' + fc(code) + '</div><div style="font-family:Archivo,sans-serif;font-weight:800;font-size:24px;line-height:1.15;margin:4px 0 6px">' + h(x[1]) + '</div><div class="dc-p" style="font-size:13px">' + h(D.paths[x[2]]) + '</div>';
     H += '<div style="margin-top:12px"><span class="dc-pill" style="background:' + pol[2] + ';color:' + pol[3] + '">DGFT import policy: ' + pol[0] + '</span> <span class="s" style="font-size:13px;color:#5E7891">' + pol[1] + '</span></div>';
     if (x[9]) H += '<div class="dc-note"><b>Policy detail:</b> ' + h(x[9]) + '…</div>';
+    if (noRate) H += '<div class="dc-x" style="margin-top:16px">The basic customs duty rate for this tariff line is not yet loaded in the calculator, so we can’t estimate the duty. Ask us on WhatsApp and a broker will confirm it.</div>';
     if (av > 0) {
-      H += '<div class="dc-big"><span style="font-size:13px;opacity:.85">ESTIMATED DUTY &amp; TAXES</span><b>' + inr(tot) + '</b><span style="font-size:14px;opacity:.9">Effective rate ' + pct(av ? tot / av * 100 : 0) + ' of CIF · landed cost ' + inr(av + tot) + '</span></div>';
-    } else {
+      H += '<div class="dc-big"><span style="font-size:13px;opacity:.85">INDICATIVE ESTIMATE · FOR GUIDANCE ONLY</span><b>' + inr(tot) + '</b><span style="font-size:14px;opacity:.9">Effective rate ' + pct(av ? tot / av * 100 : 0) + ' of CIF · landed cost ' + inr(av + tot) + '</span></div>';
+    } else if (!noRate) {
       H += '<div class="dc-note" style="margin-top:16px">Enter a CIF value to see the duty in rupees.</div>';
     }
     H += '<table class="dc-t">';
     if (av > 0) H += '<tr><td>Assessable value (CIF' + (rate !== 1 ? ' × ' + rate : '') + ')</td><td>' + inr(av) + '</td></tr>';
     H += '<tr><td>Basic customs duty <span class="s">' + (bcd != null ? pct(bcd) : h(bcdTxt || '—')) + ' · ' + h(bcdSrc) + '</span></td><td>' + (av > 0 ? inr(bcdAmt) : (bcd != null ? pct(bcd) : '—')) + '</td></tr>';
     H += '<tr><td>Social welfare surcharge <span class="s">10% of BCD</span></td><td>' + (av > 0 ? inr(sws) : '10%') + '</td></tr>';
-    H += '<tr><td>IGST <span class="s">' + pct(igRate) + (igSure ? '' : ' · likely, check below') + ' · on value + BCD + SWS</span></td><td>' + (av > 0 ? inr(igst) : pct(igRate)) + '</td></tr>';
+    if (alco) H += '<tr><td>IGST <span class="s">not applicable: alcoholic liquor for human consumption is outside GST</span></td><td>—</td></tr>';
+    else H += '<tr><td>IGST <span class="s">' + pct(igRate) + (igSure ? '' : ' · likely, check below') + ' · on value + BCD + SWS</span></td><td>' + (av > 0 ? inr(igst) : pct(igRate)) + '</td></tr>';
     if (av > 0) H += '<tr class="dc-tot"><td><b>Total duty &amp; IGST</b></td><td>' + inr(tot) + '</td></tr>';
     H += '</table>';
+    if (aidc) H += '<div class="dc-x" style="border-left-color:#B42318;background:#FFF1EF"><b>Agriculture cess (AIDC) applies to this item and is not included above.</b> It can be substantial for alcoholic beverages, gold and silver. Ask us for the full figure.</div>';
     if (bcdTxt && /Rs\./.test(bcdTxt)) H += '<div class="dc-x">Tariff rate is <b>' + h(bcdTxt) + '</b>. Where a specific duty per unit is higher, that amount applies, so the actual duty may be more.</div>';
     if (fta && !prefUsed) H += '<div class="dc-x"><b>' + h(country) + '</b> is covered by the <b>' + h(fta.a) + '</b>. Goods that meet its rules of origin may pay a lower basic customs duty with a certificate of origin. ' + (fta.data ? 'No lower rate is listed for this line.' : 'We are adding this agreement’s rates; ask us for the preferential rate.') + '</div>';
     if (prefUsed) H += '<div class="dc-x">Standard tariff rate without a certificate of origin: <b>' + h(bcdTxt) + '</b>.</div>';
@@ -152,9 +169,10 @@
       if (cond.length > 6) H += '<div class="s" style="font-size:13px;color:#5E7891">+ ' + (cond.length - 6) + ' more entries.</div>';
     }
     H += '<div class="dc-note"><b>Not included:</b> anti-dumping, safeguard or countervailing duty; agriculture cess (AIDC) on certain farm goods, gold, silver and alcohol; compensation cess on tobacco; concessions under other end-use or manufacturing notifications; and port, freight forwarding and clearance charges.</div>';
-    var msg = 'Hello YAM, please confirm the import duty for HSN ' + fc(code) + ' (' + x[1].slice(0, 60) + ')' + (country ? ', origin ' + country : '') + (val ? ', CIF ' + cur.value + ' ' + val : '') + '. My estimate: ' + (av > 0 ? inr(tot) : 'BCD ' + (bcd != null ? pct(bcd) : bcdTxt) + ', IGST ' + pct(igRate)) + '.';
+    var msg = 'Hello YAM, please confirm the import duty for HSN ' + fc(code) + ' (' + x[1].slice(0, 60) + ')' + (country ? ', origin ' + country : '') + (val ? ', CIF ' + cur.value + ' ' + val : '') + '. Calculator estimate (indicative): ' + (av > 0 ? inr(tot) : 'BCD ' + (bcd != null ? pct(bcd) : bcdTxt) + ', IGST ' + pct(igRate)) + '.';
     H += '<div class="dc-cta"><a href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener" style="background:#25D366;color:#06331A">Confirm with a broker on WhatsApp</a><a href="contact.html" style="background:#0A6CC2;color:#fff">Get a clearance quote →</a></div>';
-    H += '<div class="dc-src">Estimate only, not a legal assessment. Source: ' + h(D.v) + '. Budget 2026 changes are being added.</div>';
+    H += '<div class="dc-legal"><b>Disclaimer:</b> indicative estimate for guidance only. Not a customs assessment, classification ruling or legal advice. Duty is finally assessed by Customs, and classification and declarations remain the importer’s responsibility. YAM Logistics Pvt. Ltd. accepts no liability for any loss, duty, interest, penalty or cost arising from use of or reliance on this result. <a href="#disclaimer" style="color:#7A3E00;font-weight:600">Full disclaimer</a>.</div>';
+    H += '<div class="dc-src">Source: ' + h(D.v) + '. Budget 2026 changes are being added.</div>';
     out.innerHTML = H;
   }
 
