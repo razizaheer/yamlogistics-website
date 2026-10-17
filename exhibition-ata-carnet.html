@@ -30,7 +30,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .btn-calc{background:#FFC93C;color:#0B2A4A!important;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none;white-space:nowrap}
 .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #E1EDF7;backdrop-filter:saturate(1.4) blur(8px)}
 .nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;position:relative}
-.brand{display:flex;align-items:center;text-decoration:none}.logo{height:84px;width:auto;display:block}
+.brand{display:flex;align-items:center;text-decoration:none;flex-shrink:0}.logo{height:84px;width:auto;display:block}
 @media (max-width:640px){.logo{height:60px}}
 .bw{display:flex;flex-direction:column;line-height:1}.b1{font-family:'Archivo',sans-serif;font-weight:900;font-stretch:118%;font-size:24px}
 .b2{white-space:nowrap;font-family:'Geist Mono',monospace;font-size:10px;color:#5E7891;letter-spacing:.14em;margin-top:3px}
@@ -38,7 +38,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .links>a{color:#0B2A4A;text-decoration:none}.links>a[aria-current]{color:#0A6CC2;font-weight:600}
 .sol summary{cursor:pointer;list-style:none;padding:8px 0}.sol summary::-webkit-details-marker{display:none}
 .mega{position:absolute;left:0;right:0;top:100%;background:#FFFFFF;border-bottom:1px solid #E1EDF7;box-shadow:0 30px 60px rgba(11,42,74,.12)}
-.mega-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;padding-top:28px;padding-bottom:32px}
+.mega{white-space:normal}.mega-in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(230px,270px);gap:28px;padding-top:28px;padding-bottom:32px}.mega-in a{white-space:normal;line-height:1.35}
 .mega-in a{display:block;padding:7px 0;color:#0B2A4A;text-decoration:none}.mega-in a:hover{color:#0A6CC2}
 .mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0A6CC2;margin-bottom:8px;padding-bottom:10px;border-bottom:1px solid #E1EDF7}
 .mcta{background:#FFF4D6;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#3D5873}
@@ -50,7 +50,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 @media (max-width:1240px){
  .hide-s{display:none}
  .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
- .links{flex-wrap:wrap;white-space:normal}
+ .links{flex-wrap:nowrap;white-space:normal}
  .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
  .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
  .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
@@ -60,6 +60,21 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
  .mega{position:static;box-shadow:none;border:0}.mega .wrap{padding:0}.mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
  .links{overflow-x:hidden}.links>*{min-width:0;max-width:100%}
 }
+html.navt2 .links{gap:13px;font-size:14px}html.navt2 .links .btn,html.navt2 .links .btn-o,html.navt2 .links .btn-calc{padding:9px 13px;font-size:14px}html.navt2 .logo{height:64px}html.navt2 .nav-in{gap:12px}
+html.navc .hide-s{display:none}
+html.navc .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
+html.navc .links{flex-wrap:nowrap;white-space:normal}
+html.navc .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
+html.navc .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
+html.navc .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
+html.navc .links>a,html.navc .sol summary{padding:12px 0;border-bottom:1px solid #EEF4FA}
+html.navc .links .btn,html.navc .links .btn-o,html.navc .links .btn-calc{margin-top:12px;text-align:center}
+html.navc .navt:checked~.links{display:flex}
+html.navc .mega{position:static;box-shadow:none;border:0}
+html.navc .mega .wrap{padding:0}
+html.navc .mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
+html.navc .links{overflow-x:hidden}
+html.navc .links>*{min-width:0;max-width:100%}
 @media (max-width:640px){.wrap{padding:0 16px}.util-in .u1{display:none}.util-in{gap:6px 16px;font-size:12px}.fx{margin-left:0;overflow-x:auto;width:100%;gap:12px}.fxd{display:none}}
 @media (max-width:760px){[style*="linear-gradient(90deg, rgba(255,255,255,0.9"]{background:rgba(255,255,255,0.84)!important}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
@@ -91,7 +106,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="container-load-planner.html" class="calc-m">🧊 3D planner</a><input type="checkbox" id="navt" class="navt" aria-label="Open menu"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
 <details class="sol"><summary>Solutions ▾</summary><div class="mega"><div class="wrap mega-in">
-<div><div class="mh">FREIGHT</div><a href="ocean-freight.html">Ocean freight · FCL / LCL</a><a href="air-freight.html">Air freight</a><a href="project-cargo.html">Project, ODC &amp; breakbulk</a><a href="haulage-icd.html">Haulage &amp; ICDs</a><a href="aircraft-charter.html">Aircraft charter</a><a href="air-sea-bridge.html">Air–sea bridge</a><a href="container-load-planner.html">Container load planner</a><a href="cbm-calculator.html">CBM &amp; volumetric calculator</a></div><div><div class="mh">CUSTOMS &amp; COMPLIANCE</div><a href="customs-brokerage.html">Customs brokerage</a><a href="trade-compliance.html">Trade compliance advisory</a><a href="destination-do-agency.html">Destination / DO agency</a><a href="contact.html">Cargo insurance</a></div><div><div class="mh">SPECIALIST</div><a href="mobile-phone-exports.html">Mobile phone exports</a><a href="buyers-consolidation.html">Buyer’s consolidation &amp; PO management</a><a href="third-country-trade.html">Third-country trade &amp; re-export</a><a href="bonded-warehousing.html">Bonded warehousing &amp; FTWZ</a><a href="exhibition-ata-carnet.html">Exhibition cargo &amp; ATA carnet</a><a href="third-country-trade.html">Merchanting trade support</a></div><div><div class="mh">SPECIAL CARGO</div><a href="dangerous-goods.html">Dangerous goods</a><a href="dg-labels.html">DG labels &amp; marks (free)</a><a href="perishables.html">Perishables</a><a href="pharmaceuticals.html">Pharmaceuticals</a><a href="live-animals.html">Live animals</a><a href="pet-relocation.html">Pet relocation</a></div>
+<div><div class="mh">FREIGHT</div><a href="ocean-freight.html">Ocean freight · FCL / LCL</a><a href="air-freight.html">Air freight</a><a href="project-cargo.html">Project, ODC &amp; breakbulk</a><a href="haulage-icd.html">Haulage &amp; ICDs</a><a href="aircraft-charter.html">Aircraft charter</a><a href="air-sea-bridge.html">Air–sea bridge</a><a href="container-load-planner.html">Container load planner</a><a href="cbm-calculator.html">CBM &amp; volumetric calculator</a></div><div><div class="mh">CUSTOMS &amp; COMPLIANCE</div><a href="customs-brokerage.html">Customs brokerage</a><a href="trade-compliance.html">Trade compliance advisory</a><a href="destination-do-agency.html">Destination / DO agency</a><a href="cargo-insurance.html">Cargo insurance</a></div><div><div class="mh">SPECIALIST</div><a href="mobile-phone-exports.html">Mobile phone exports</a><a href="buyers-consolidation.html">Buyer’s consolidation &amp; PO management</a><a href="third-country-trade.html">Third-country trade &amp; re-export</a><a href="bonded-warehousing.html">Bonded warehousing &amp; FTWZ</a><a href="exhibition-ata-carnet.html">Exhibition cargo &amp; ATA carnet</a><a href="third-country-trade.html">Merchanting trade support</a></div><div><div class="mh">SPECIAL CARGO</div><a href="dangerous-goods.html">Dangerous goods</a><a href="dg-labels.html">DG labels &amp; marks (free)</a><a href="perishables.html">Perishables</a><a href="pharmaceuticals.html">Pharmaceuticals</a><a href="live-animals.html">Live animals</a><a href="pet-relocation.html">Pet relocation</a></div>
 <div class="mcta"><strong>Not sure what you need?</strong><span>Tell a licensed broker what you're moving. We'll design the route and the paperwork.</span><a href="contact.html">Talk to the desk →</a></div>
 </div></div></details>
 <a href="customs-brokerage.html">Customs</a><a href="mobile-phone-exports.html">Mobile exports</a><a href="third-country-trade.html">Third-country trade</a><a href="trade-desk.html">Trade Desk</a><a href="about.html">About</a>
@@ -100,14 +115,19 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="contact.html" class="btn go">Get a quote</a>
 </div></div></nav>
 </header>
+<script>(function(){var h=document.documentElement;function ov(n,l){return n.scrollWidth>n.clientWidth+2||(l&&l.scrollWidth>l.clientWidth+2)}function chk(){h.classList.remove('navc','navt2');var n=document.querySelector('.nav-in');if(!n)return;var l=n.querySelector('.links');if(ov(n,l)){h.classList.add('navt2');if(ov(n,l)){h.classList.remove('navt2');h.classList.add('navc');}}}chk();window.addEventListener('resize',chk);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(chk);window.addEventListener('load',chk);})();</script>
 <main id="app">
 <div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
 
 
 
-<div style="background: linear-gradient(135deg, #DDF0FF 0%, #FFFFFF 55%, #FFF4D6 100%); position: relative; overflow: hidden">
-<div style="max-width: 1400px; margin: 0 auto; padding: 110px 32px 100px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center">
-<div style="flex: 1 1 620px; min-width: 0">
+<div style="position: relative; overflow: hidden; background: #DDEAF4">
+<video autoplay muted loop playsinline poster="exhibition-poster.jpg" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 72% 50%" aria-label="Two handlers in hi-vis vests unpack a crated machine at an exhibition stand in a trade-fair hall during setup">
+<source src="exhibition.mp4" type="video/mp4">
+</video>
+<div style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.9) 38%, rgba(255,255,255,0.3) 64%, rgba(255,255,255,0) 78%)"></div>
+<div style="position: relative; max-width: 1400px; margin: 0 auto; padding: 120px 32px 104px">
+<div style="max-width: 680px">
 <div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; letter-spacing: 0.08em; margin-bottom: 22px">EXHIBITION CARGO · ATA CARNET · TEMPORARY IMPORT</div>
 <h1 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(52px, 6.4vw, 100px); line-height: 0.95; letter-spacing: -0.03em; margin: 0 0 24px">On your stand <span style="color: #0A6CC2">before the doors open.</span></h1>
 <p style="font-size: 20px; line-height: 1.55; color: #17436B; margin: 0 0 30px; max-width: 640px">Exhibits, samples and show equipment into India and back out again without paying duty, or Indian exhibitors' cargo to trade fairs abroad. Cleared on an ATA carnet or a temporary-import bond, delivered to the hall, and brought home after the show.</p>
@@ -115,17 +135,6 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a class="go" href="exhibition-ata-carnet.html" style="background: #0A6CC2; color: #FFFFFF; padding: 16px 28px; border-radius: 999px; font-weight: 600; text-decoration: none">Plan my exhibition shipment →</a>
 <a href="https://wa.me/message/6YB7I76DV6UJL1" style="background: #25D366; color: #06331A; padding: 16px 26px; border-radius: 999px; font-weight: 600; text-decoration: none">WhatsApp a broker</a>
 </div>
-</div>
-<div style="flex: 1 1 380px; min-width: 0">
-<svg viewBox="0 0 420 340" width="100%" role="img" aria-label="Illustration of an exhibition stand with crates arriving and returning" style="display: block">
-<rect x="20" y="40" width="380" height="250" rx="28" fill="#FFFFFF" stroke="#DCEAF6" stroke-width="2" />
-<rect x="60" y="80" width="300" height="34" rx="10" fill="#0A6CC2" /><text x="210" y="103" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="900" font-size="17" fill="#FFFFFF">YOUR STAND · HALL 5</text>
-<rect x="60" y="130" width="120" height="110" rx="12" fill="#F2F8FD" /><rect x="195" y="130" width="165" height="50" rx="12" fill="#FFF4D6" /><rect x="195" y="190" width="165" height="50" rx="12" fill="#F2F8FD" />
-<g class="bob"><rect x="84" y="160" width="72" height="56" rx="6" fill="#C98B4B" /><path d="M84 178h72M120 160v56" stroke="#8A5A2B" stroke-width="3" /></g>
-<rect x="40" y="290" width="340" height="10" rx="5" fill="#BFE5FF" />
-<circle cx="350" cy="58" r="20" fill="#FFC93C" /><path d="M342 58l6 6 10-12" stroke="#0B2A4A" stroke-width="3.5" fill="none" stroke-linecap="round" />
-<text x="210" y="326" text-anchor="middle" font-family="Geist Mono, monospace" font-size="12" letter-spacing="2" fill="#5E7891">IN DUTY-FREE · SHOWN · BACK HOME</text>
-</svg>
 </div>
 </div>
 </div>
@@ -432,7 +441,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">CUSTOMS &amp; COMPLIANCE</span>
-<a href="customs-brokerage.html">Customs brokerage</a><a href="trade-compliance.html">Trade compliance advisory</a><a href="destination-do-agency.html">Destination / DO agency</a><a href="contact.html">Cargo insurance</a>
+<a href="customs-brokerage.html">Customs brokerage</a><a href="trade-compliance.html">Trade compliance advisory</a><a href="destination-do-agency.html">Destination / DO agency</a><a href="cargo-insurance.html">Cargo insurance</a>
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 8px">

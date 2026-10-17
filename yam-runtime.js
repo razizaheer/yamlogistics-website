@@ -64,7 +64,7 @@
   }
 
   // ---- link routing shared by build and browser
-  const P = { quote: 'contact.html', calc: 'cbm-calculator.html', track: 'track-shipment.html', customs: 'customs-brokerage.html', mobile: 'mobile-phone-exports.html', third: 'third-country-trade.html', ocean: 'ocean-freight.html', air: 'air-freight.html', project: 'project-cargo.html', about: 'about.html', desk: 'trade-desk.html', bonded: 'bonded-warehousing.html', expo: 'exhibition-ata-carnet.html', consol: 'buyers-consolidation.html', dg: 'dangerous-goods.html', comp: 'trade-compliance.html', doa: 'destination-do-agency.html', haul: 'haulage-icd.html', charter: 'aircraft-charter.html', peri: 'perishables.html', pharma: 'pharmaceuticals.html', animals: 'live-animals.html', pets: 'pet-relocation.html', labels: 'dg-labels.html', lp: 'container-load-planner.html', airsea: 'air-sea-bridge.html', wa: 'https://wa.me/message/6YB7I76DV6UJL1' };
+  const P = { quote: 'contact.html', calc: 'cbm-calculator.html', track: 'track-shipment.html', customs: 'customs-brokerage.html', mobile: 'mobile-phone-exports.html', third: 'third-country-trade.html', ocean: 'ocean-freight.html', air: 'air-freight.html', project: 'project-cargo.html', about: 'about.html', desk: 'trade-desk.html', bonded: 'bonded-warehousing.html', expo: 'exhibition-ata-carnet.html', consol: 'buyers-consolidation.html', dg: 'dangerous-goods.html', comp: 'trade-compliance.html', doa: 'destination-do-agency.html', haul: 'haulage-icd.html', charter: 'aircraft-charter.html', peri: 'perishables.html', pharma: 'pharmaceuticals.html', animals: 'live-animals.html', pets: 'pet-relocation.html', labels: 'dg-labels.html', lp: 'container-load-planner.html', airsea: 'air-sea-bridge.html', ins: 'cargo-insurance.html', wa: 'https://wa.me/message/6YB7I76DV6UJL1' };
   const RULES = [
     [/^terms$|trading conditions|privacy/, P.about], [/email me updates|sign in/, P.quote], [/download checklist/, P.wa],
     [/bonded warehous|ftwz/, P.bonded], [/exhibition|ata carnet/, P.expo],
@@ -79,7 +79,7 @@
     [/mobile|phone/, P.mobile], [/third-country|re-export|merchanting/, P.third],
     [/briefing|trade desk|corridor brief|read the|read all|incoterms/, P.desk],
     [/ocean/, P.ocean], [/project|odc|breakbulk/, P.project],
-    [/insurance/, P.quote], [/our story|about/, P.about], [/\bair\b/, P.air]
+    [/insurance/, P.ins], [/our story|about/, P.about], [/\bair\b/, P.air]
   ];
   function linkFor(text) { const k = String(text).replace(/\s+/g, ' ').trim().toLowerCase(); for (const [re, to] of RULES) if (re.test(k)) return to; return null; }
   function fixDomLinks(root) { root.querySelectorAll('a[href="#"]').forEach((a) => { const to = linkFor(a.textContent); if (to) a.setAttribute('href', to); }); }
