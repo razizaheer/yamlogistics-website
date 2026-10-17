@@ -30,7 +30,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .btn-calc{background:#FFC93C;color:#0B2A4A!important;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none;white-space:nowrap}
 .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #E1EDF7;backdrop-filter:saturate(1.4) blur(8px)}
 .nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;position:relative}
-.brand{display:flex;align-items:center;text-decoration:none}.logo{height:84px;width:auto;display:block}
+.brand{display:flex;align-items:center;text-decoration:none;flex-shrink:0}.logo{height:84px;width:auto;display:block}
 @media (max-width:640px){.logo{height:60px}}
 .bw{display:flex;flex-direction:column;line-height:1}.b1{font-family:'Archivo',sans-serif;font-weight:900;font-stretch:118%;font-size:24px}
 .b2{white-space:nowrap;font-family:'Geist Mono',monospace;font-size:10px;color:#5E7891;letter-spacing:.14em;margin-top:3px}
@@ -38,7 +38,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .links>a{color:#0B2A4A;text-decoration:none}.links>a[aria-current]{color:#0A6CC2;font-weight:600}
 .sol summary{cursor:pointer;list-style:none;padding:8px 0}.sol summary::-webkit-details-marker{display:none}
 .mega{position:absolute;left:0;right:0;top:100%;background:#FFFFFF;border-bottom:1px solid #E1EDF7;box-shadow:0 30px 60px rgba(11,42,74,.12)}
-.mega-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;padding-top:28px;padding-bottom:32px}
+.mega{white-space:normal}.mega-in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(230px,270px);gap:28px;padding-top:28px;padding-bottom:32px}.mega-in a{white-space:normal;line-height:1.35}
 .mega-in a{display:block;padding:7px 0;color:#0B2A4A;text-decoration:none}.mega-in a:hover{color:#0A6CC2}
 .mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0A6CC2;margin-bottom:8px;padding-bottom:10px;border-bottom:1px solid #E1EDF7}
 .mcta{background:#FFF4D6;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#3D5873}
@@ -50,7 +50,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 @media (max-width:1240px){
  .hide-s{display:none}
  .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
- .links{flex-wrap:wrap;white-space:normal}
+ .links{flex-wrap:nowrap;white-space:normal}
  .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
  .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
  .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
@@ -60,6 +60,21 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
  .mega{position:static;box-shadow:none;border:0}.mega .wrap{padding:0}.mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
  .links{overflow-x:hidden}.links>*{min-width:0;max-width:100%}
 }
+html.navt2 .links{gap:13px;font-size:14px}html.navt2 .links .btn,html.navt2 .links .btn-o,html.navt2 .links .btn-calc{padding:9px 13px;font-size:14px}html.navt2 .logo{height:64px}html.navt2 .nav-in{gap:12px}
+html.navc .hide-s{display:none}
+html.navc .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
+html.navc .links{flex-wrap:nowrap;white-space:normal}
+html.navc .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
+html.navc .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
+html.navc .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
+html.navc .links>a,html.navc .sol summary{padding:12px 0;border-bottom:1px solid #EEF4FA}
+html.navc .links .btn,html.navc .links .btn-o,html.navc .links .btn-calc{margin-top:12px;text-align:center}
+html.navc .navt:checked~.links{display:flex}
+html.navc .mega{position:static;box-shadow:none;border:0}
+html.navc .mega .wrap{padding:0}
+html.navc .mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
+html.navc .links{overflow-x:hidden}
+html.navc .links>*{min-width:0;max-width:100%}
 @media (max-width:640px){.wrap{padding:0 16px}.util-in .u1{display:none}.util-in{gap:6px 16px;font-size:12px}.fx{margin-left:0;overflow-x:auto;width:100%;gap:12px}.fxd{display:none}}
 @media (max-width:760px){[style*="linear-gradient(270deg, rgba(255,255,255,0.9"]{background:rgba(255,255,255,0.84)!important}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
@@ -94,7 +109,7 @@ html[dir=rtl] .lp-step.on{box-shadow:inset -3px 0 0 #0A6CC2}</style></head>
 <a href="ar/container-load-planner.html" class="calc-m">🧊 المخطط ثلاثي الأبعاد</a><input type="checkbox" id="navt" class="navt" aria-label="فتح القائمة"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
 <details class="sol"><summary>الحلول ▾</summary><div class="mega"><div class="wrap mega-in">
-<div><div class="mh">الشحن</div><a href="ar/ocean-freight.html">الشحن البحري · FCL / LCL</a><a href="ar/air-freight.html">الشحن الجوي</a><a href="project-cargo.html">شحنات المشاريع والأحجام الكبيرة (ODC) والبضائع السائبة</a><a href="haulage-icd.html">النقل البري والموانئ الجافة</a><a href="aircraft-charter.html">استئجار الطائرات</a><a href="air-sea-bridge.html">جسر بحري-جوي</a><a href="ar/container-load-planner.html">مخطط تحميل الحاويات</a><a href="ar/cbm-calculator.html">حاسبة CBM والوزن الحجمي</a></div><div><div class="mh">الجمارك والامتثال</div><a href="ar/customs-brokerage.html">التخليص الجمركي</a><a href="trade-compliance.html">استشارات الامتثال التجاري</a><a href="destination-do-agency.html">وكالة الوجهة / أوامر التسليم</a><a href="ar/contact.html">تأمين البضائع</a></div><div><div class="mh">خدمات متخصصة</div><a href="ar/mobile-phone-exports.html">تصدير الهواتف المحمولة</a><a href="buyers-consolidation.html">تجميع شحنات المشترين وإدارة أوامر الشراء</a><a href="ar/third-country-trade.html">التجارة مع دول ثالثة وإعادة التصدير</a><a href="bonded-warehousing.html">المستودعات الجمركية وFTWZ</a><a href="exhibition-ata-carnet.html">شحن المعارض ودفتر ATA</a><a href="ar/third-country-trade.html">دعم التجارة الوسيطة</a></div><div><div class="mh">بضائع خاصة</div><a href="dangerous-goods.html">البضائع الخطرة</a><a href="dg-labels.html">ملصقات وعلامات DG (مجانًا)</a><a href="perishables.html">البضائع سريعة التلف</a><a href="pharmaceuticals.html">الأدوية</a><a href="live-animals.html">الحيوانات الحية</a><a href="pet-relocation.html">نقل الحيوانات الأليفة</a></div>
+<div><div class="mh">الشحن</div><a href="ar/ocean-freight.html">الشحن البحري · FCL / LCL</a><a href="ar/air-freight.html">الشحن الجوي</a><a href="project-cargo.html">شحنات المشاريع والأحجام الكبيرة (ODC) والبضائع السائبة</a><a href="haulage-icd.html">النقل البري والموانئ الجافة</a><a href="aircraft-charter.html">استئجار الطائرات</a><a href="air-sea-bridge.html">جسر بحري-جوي</a><a href="ar/container-load-planner.html">مخطط تحميل الحاويات</a><a href="ar/cbm-calculator.html">حاسبة CBM والوزن الحجمي</a></div><div><div class="mh">الجمارك والامتثال</div><a href="ar/customs-brokerage.html">التخليص الجمركي</a><a href="trade-compliance.html">استشارات الامتثال التجاري</a><a href="destination-do-agency.html">وكالة الوجهة / أوامر التسليم</a><a href="cargo-insurance.html">تأمين البضائع</a></div><div><div class="mh">خدمات متخصصة</div><a href="ar/mobile-phone-exports.html">تصدير الهواتف المحمولة</a><a href="buyers-consolidation.html">تجميع شحنات المشترين وإدارة أوامر الشراء</a><a href="ar/third-country-trade.html">التجارة مع دول ثالثة وإعادة التصدير</a><a href="bonded-warehousing.html">المستودعات الجمركية وFTWZ</a><a href="exhibition-ata-carnet.html">شحن المعارض ودفتر ATA</a><a href="ar/third-country-trade.html">دعم التجارة الوسيطة</a></div><div><div class="mh">بضائع خاصة</div><a href="dangerous-goods.html">البضائع الخطرة</a><a href="dg-labels.html">ملصقات وعلامات DG (مجانًا)</a><a href="perishables.html">البضائع سريعة التلف</a><a href="pharmaceuticals.html">الأدوية</a><a href="live-animals.html">الحيوانات الحية</a><a href="pet-relocation.html">نقل الحيوانات الأليفة</a></div>
 <div class="mcta"><strong>لست متأكدًا مما تحتاجه؟</strong><span>أخبر مخلّصًا مرخّصًا بما تشحنه، وسنصمّم لك المسار والمستندات.</span><a href="ar/contact.html">تحدّث إلى فريقنا →</a></div>
 </div></div></details>
 <a href="ar/customs-brokerage.html">الجمارك</a><a href="ar/mobile-phone-exports.html">تصدير الهواتف</a><a href="ar/third-country-trade.html">التجارة مع دول ثالثة</a><a href="trade-desk.html">مكتب التجارة</a><a href="ar/about.html">من نحن</a>
@@ -103,6 +118,7 @@ html[dir=rtl] .lp-step.on{box-shadow:inset -3px 0 0 #0A6CC2}</style></head>
 <a href="ar/contact.html" class="btn go">اطلب عرض سعر</a>
 </div></div></nav>
 </header>
+<script>(function(){var h=document.documentElement;function ov(n,l){return n.scrollWidth>n.clientWidth+2||(l&&l.scrollWidth>l.clientWidth+2)}function chk(){h.classList.remove('navc','navt2');var n=document.querySelector('.nav-in');if(!n)return;var l=n.querySelector('.links');if(ov(n,l)){h.classList.add('navt2');if(ov(n,l)){h.classList.remove('navt2');h.classList.add('navc');}}}chk();window.addEventListener('resize',chk);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(chk);window.addEventListener('load',chk);})();</script>
 <main id="app">
 <div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
 
@@ -117,7 +133,7 @@ html[dir=rtl] .lp-step.on{box-shadow:inset -3px 0 0 #0A6CC2}</style></head>
 <div style="max-width: 640px">
 <div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.08em; margin-bottom: 22px">BOM · DEL · BLR · HYD · MAA · AMD · 24×7</div>
 <h1 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(52px, 6.4vw, 100px); line-height: 0.95; letter-spacing: -0.03em; margin: 0 0 24px">شحنتك الجوية على <span style="color: #0A6CC2">رحلة الليلة.</span></h1>
-<p style="font-size: 20px; line-height: 1.55; color: #17436B; margin: 0 0 30px">شحن جوي للتصدير والاستيراد عبر جميع المطارات الرئيسية في الهند، من مومباي ودلهي إلى بنغالورو وحيدر آباد وتشيناي وأحمد آباد. يُحجز مع شركات الطيران، ويُخلَّص بموجب ترخيصنا الجمركي الخاص، ويديره فريق يعمل على مدار الساعة.</p>
+<p style="font-size: 20px; line-height: 1.55; color: #17436B; margin: 0 0 30px">تصدير واستيراد الشحن الجوي عبر جميع المطارات الرئيسية في الهند، من مومباي ودلهي إلى بنغالور وحيدر أباد وتشيناي وكولكاتا وكوتشي وأحمد آباد. نحجز مباشرة مع شركات الطيران، ونُخلّص الشحنات بموجب ترخيصنا الجمركي الخاص، ويتولى إدارتها فريق يعمل على مدار الساعة.</p>
 <div style="display: flex; flex-wrap: wrap; gap: 12px">
 <a class="go" href="ar/contact.html" style="background: #0A6CC2; color: #FFFFFF; padding: 16px 28px; border-radius: 999px; font-weight: 600; text-decoration: none">اطلب عرض سعر للشحن الجوي →</a>
 <a href="https://wa.me/message/6YB7I76DV6UJL1" style="background: #25D366; color: #06331A; padding: 16px 26px; border-radius: 999px; font-weight: 600; text-decoration: none">راسل مخلّصًا عبر WhatsApp</a>
@@ -185,48 +201,116 @@ html[dir=rtl] .lp-step.on{box-shadow:inset -3px 0 0 #0A6CC2}</style></head>
 
 
 <div style="max-width: 1400px; margin: 0 auto; padding: 60px 32px 100px">
+<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: #0A6CC2; margin-bottom: 14px">المطارات التي نغطيها</div>
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(36px, 4.2vw, 58px); line-height: 1; letter-spacing: -0.03em; margin: 0 0 36px; max-width: 980px">من كوتشي إلى كولكاتا. والمحطة التالية: نويدا.</h2>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px">
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">BOM</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">مومباي، مجمع ساهار للشحن الجوي</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مومباي، مجمع ساهار للشحن الجوي</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">مكتبنا الخاص داخل مجمع الشحن، يعمل على مدار الساعة للصادرات والواردات.</span>
 </div>
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">DEL</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">دلهي، مطار إنديرا غاندي الدولي</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">دلهي، مطار إنديرا غاندي الدولي</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">قريب من مقرنا الرئيسي، ونتعامل مع الشحنات عبر مشغّلَي المحطتين.</span>
 </div>
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">NMI</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">مطار نافي مومباي</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار نافي مومباي</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">مطار مومباي الجديد، لسعة إضافية في الليالي المزدحمة.</span>
 </div>
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">AMD</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">مطار أحمد آباد</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار أحمد آباد</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">لمصدّري غوجارات الراغبين في الشحن جوًا دون النقل بالشاحنات إلى مومباي.</span>
 </div>
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">BLR</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">مطار بنغالورو</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار بنغالورو</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">صادرات الإلكترونيات والهواتف من الحزام الصناعي في جنوب الهند.</span>
 </div>
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">HYD</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">مطار حيدر آباد</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار حيدر آباد</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">صادرات مصانع تيلانغانا وأندرا براديش.</span>
 </div>
 
-<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 8px">
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">MAA</span>
-<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 30px; line-height: 1">مطار تشيناي</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار تشيناي</span>
 <span style="font-size: 15px; line-height: 1.55; color: #3D5873">قريب من مصانع الهواتف والإلكترونيات في تاميل نادو.</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">CCU</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار كولكاتا</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">بوابة شرق الهند وشمالها الشرقي.</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">LKO</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار لكناو</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">شحن جوي لمصدّري أوتار براديش، على مقربة من جذورنا في كانبور.</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">VNS</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار فاراناسي</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">السجاد والحرير والمشغولات اليدوية من فاراناسي وبهادوهي.</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">JAI</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار جايبور</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">الأحجار الكريمة والمجوهرات والمنسوجات والمشغولات اليدوية من راجستان.</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">ATQ</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار أمريتسار</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">بوابة البنجاب الدولية للبضائع القابلة للتلف والمنتجات الهندسية.</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">COK</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار كوتشي</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">مطار الشحن الرئيسي في ولاية كيرالا للمأكولات البحرية والتوابل والمنتجات الطازجة.</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">CCJ</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار كوزيكود (كاليكوت)</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">الفواكه والخضروات والشحنات المتجهة إلى الخليج من ساحل مالابار.</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">TRV</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار تيروفانانثابورام</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">المنتجات الطازجة والمأكولات البحرية من جنوب كيرالا إلى الخليج وما بعده.</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">CJB</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار كويمباتور</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">صادرات المنسوجات والمضخات والمنتجات الهندسية من غرب تاميل نادو.</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">GOI · GOX</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">غوا (دابوليم وموبا)</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">شحنات من غوا ومنطقة كونكان عبر مطارَي غوا كليهما.</span>
+</div>
+
+<div style="border: 1px solid #E1EDF7; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #B45309; font-weight: 500">DXN · قريبًا</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 104%; font-size: 23px; line-height: 1.1; overflow-wrap: anywhere">مطار نويدا الدولي</span>
+<span style="font-size: 15px; line-height: 1.55; color: #3D5873">مطار جيوار الجديد بالقرب من دلهي. سنكون جاهزين منذ أولى رحلات الشحن.</span>
 </div>
 
 </div>
@@ -371,7 +455,7 @@ html[dir=rtl] .lp-step.on{box-shadow:inset -3px 0 0 #0A6CC2}</style></head>
 
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">الجمارك والامتثال</span>
-<a href="ar/customs-brokerage.html">التخليص الجمركي</a><a href="trade-compliance.html">استشارات الامتثال التجاري</a><a href="destination-do-agency.html">وكالة الوجهة / أوامر التسليم</a><a href="ar/contact.html">تأمين البضائع</a>
+<a href="ar/customs-brokerage.html">التخليص الجمركي</a><a href="trade-compliance.html">استشارات الامتثال التجاري</a><a href="destination-do-agency.html">وكالة الوجهة / أوامر التسليم</a><a href="cargo-insurance.html">تأمين البضائع</a>
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 8px">
