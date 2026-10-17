@@ -30,7 +30,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .btn-calc{background:#FFC93C;color:#0B2A4A!important;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none;white-space:nowrap}
 .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #E1EDF7;backdrop-filter:saturate(1.4) blur(8px)}
 .nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;position:relative}
-.brand{display:flex;align-items:center;text-decoration:none}.logo{height:84px;width:auto;display:block}
+.brand{display:flex;align-items:center;text-decoration:none;flex-shrink:0}.logo{height:84px;width:auto;display:block}
 @media (max-width:640px){.logo{height:60px}}
 .bw{display:flex;flex-direction:column;line-height:1}.b1{font-family:'Archivo',sans-serif;font-weight:900;font-stretch:118%;font-size:24px}
 .b2{white-space:nowrap;font-family:'Geist Mono',monospace;font-size:10px;color:#5E7891;letter-spacing:.14em;margin-top:3px}
@@ -38,7 +38,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .links>a{color:#0B2A4A;text-decoration:none}.links>a[aria-current]{color:#0A6CC2;font-weight:600}
 .sol summary{cursor:pointer;list-style:none;padding:8px 0}.sol summary::-webkit-details-marker{display:none}
 .mega{position:absolute;left:0;right:0;top:100%;background:#FFFFFF;border-bottom:1px solid #E1EDF7;box-shadow:0 30px 60px rgba(11,42,74,.12)}
-.mega-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;padding-top:28px;padding-bottom:32px}
+.mega{white-space:normal}.mega-in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(230px,270px);gap:28px;padding-top:28px;padding-bottom:32px}.mega-in a{white-space:normal;line-height:1.35}
 .mega-in a{display:block;padding:7px 0;color:#0B2A4A;text-decoration:none}.mega-in a:hover{color:#0A6CC2}
 .mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0A6CC2;margin-bottom:8px;padding-bottom:10px;border-bottom:1px solid #E1EDF7}
 .mcta{background:#FFF4D6;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#3D5873}
@@ -50,7 +50,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 @media (max-width:1240px){
  .hide-s{display:none}
  .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
- .links{flex-wrap:wrap;white-space:normal}
+ .links{flex-wrap:nowrap;white-space:normal}
  .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
  .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
  .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
@@ -60,6 +60,21 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
  .mega{position:static;box-shadow:none;border:0}.mega .wrap{padding:0}.mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
  .links{overflow-x:hidden}.links>*{min-width:0;max-width:100%}
 }
+html.navt2 .links{gap:13px;font-size:14px}html.navt2 .links .btn,html.navt2 .links .btn-o,html.navt2 .links .btn-calc{padding:9px 13px;font-size:14px}html.navt2 .logo{height:64px}html.navt2 .nav-in{gap:12px}
+html.navc .hide-s{display:none}
+html.navc .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
+html.navc .links{flex-wrap:nowrap;white-space:normal}
+html.navc .burger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:10px}
+html.navc .burger span{display:block;width:24px;height:2.5px;background:#0B2A4A;border-radius:2px}
+html.navc .links{display:none;position:absolute;left:0;right:0;top:100%;background:#FFFFFF;flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;border-bottom:1px solid #E1EDF7;box-shadow:0 20px 40px rgba(11,42,74,.12);max-height:80vh;overflow:auto}
+html.navc .links>a,html.navc .sol summary{padding:12px 0;border-bottom:1px solid #EEF4FA}
+html.navc .links .btn,html.navc .links .btn-o,html.navc .links .btn-calc{margin-top:12px;text-align:center}
+html.navc .navt:checked~.links{display:flex}
+html.navc .mega{position:static;box-shadow:none;border:0}
+html.navc .mega .wrap{padding:0}
+html.navc .mega-in{grid-template-columns:1fr;padding:8px 0 16px;gap:16px}
+html.navc .links{overflow-x:hidden}
+html.navc .links>*{min-width:0;max-width:100%}
 @media (max-width:640px){.wrap{padding:0 16px}.util-in .u1{display:none}.util-in{gap:6px 16px;font-size:12px}.fx{margin-left:0;overflow-x:auto;width:100%;gap:12px}.fxd{display:none}}
 @media (max-width:760px){[style*="linear-gradient(90deg, rgba(255,255,255,0.9"]{background:rgba(255,255,255,0.84)!important}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
@@ -93,7 +108,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 <a href="hi/container-load-planner.html" class="calc-m">🧊 3D प्लानर</a><input type="checkbox" id="navt" class="navt" aria-label="मेन्यू खोलें"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
 <details class="sol"><summary>सेवाएँ ▾</summary><div class="mega"><div class="wrap mega-in">
-<div><div class="mh">फ्रेट</div><a href="hi/ocean-freight.html">ओशन फ्रेट · FCL / LCL</a><a href="hi/air-freight.html">एयर फ्रेट</a><a href="project-cargo.html">प्रोजेक्ट, ODC और ब्रेकबल्क</a><a href="haulage-icd.html">हॉलेज और ICD</a><a href="aircraft-charter.html">एयरक्राफ्ट चार्टर</a><a href="air-sea-bridge.html">सी-एयर ब्रिज</a><a href="hi/container-load-planner.html">कंटेनर लोड प्लानर</a><a href="hi/cbm-calculator.html">CBM और वॉल्यूमेट्रिक वज़न कैलकुलेटर</a></div><div><div class="mh">कस्टम्स और कंप्लायंस</div><a href="hi/customs-brokerage.html">कस्टम ब्रोकरेज</a><a href="trade-compliance.html">ट्रेड कंप्लायंस सलाह</a><a href="destination-do-agency.html">डेस्टिनेशन / DO एजेंसी</a><a href="hi/contact.html">कार्गो इंश्योरेंस</a></div><div><div class="mh">विशेष सेवाएँ</div><a href="hi/mobile-phone-exports.html">मोबाइल फ़ोन एक्सपोर्ट</a><a href="buyers-consolidation.html">बायर्स कंसोलिडेशन और PO मैनेजमेंट</a><a href="hi/third-country-trade.html">थर्ड-कंट्री ट्रेड और री-एक्सपोर्ट</a><a href="bonded-warehousing.html">बॉन्डेड वेयरहाउसिंग और FTWZ</a><a href="exhibition-ata-carnet.html">प्रदर्शनी कार्गो और ATA कारनेट</a><a href="hi/third-country-trade.html">मर्चेंटिंग ट्रेड सहायता</a></div><div><div class="mh">स्पेशल कार्गो</div><a href="dangerous-goods.html">डेंजरस गुड्स</a><a href="dg-labels.html">DG लेबल और मार्क्स (मुफ़्त)</a><a href="perishables.html">पेरिशेबल्स</a><a href="pharmaceuticals.html">फ़ार्मास्युटिकल्स</a><a href="live-animals.html">जीवित पशु</a><a href="pet-relocation.html">पालतू पशु रीलोकेशन</a></div>
+<div><div class="mh">फ्रेट</div><a href="hi/ocean-freight.html">ओशन फ्रेट · FCL / LCL</a><a href="hi/air-freight.html">एयर फ्रेट</a><a href="project-cargo.html">प्रोजेक्ट, ODC और ब्रेकबल्क</a><a href="haulage-icd.html">हॉलेज और ICD</a><a href="aircraft-charter.html">एयरक्राफ्ट चार्टर</a><a href="air-sea-bridge.html">सी-एयर ब्रिज</a><a href="hi/container-load-planner.html">कंटेनर लोड प्लानर</a><a href="hi/cbm-calculator.html">CBM और वॉल्यूमेट्रिक वज़न कैलकुलेटर</a></div><div><div class="mh">कस्टम्स और कंप्लायंस</div><a href="hi/customs-brokerage.html">कस्टम ब्रोकरेज</a><a href="trade-compliance.html">ट्रेड कंप्लायंस सलाह</a><a href="destination-do-agency.html">डेस्टिनेशन / DO एजेंसी</a><a href="cargo-insurance.html">कार्गो इंश्योरेंस</a></div><div><div class="mh">विशेष सेवाएँ</div><a href="hi/mobile-phone-exports.html">मोबाइल फ़ोन एक्सपोर्ट</a><a href="buyers-consolidation.html">बायर्स कंसोलिडेशन और PO मैनेजमेंट</a><a href="hi/third-country-trade.html">थर्ड-कंट्री ट्रेड और री-एक्सपोर्ट</a><a href="bonded-warehousing.html">बॉन्डेड वेयरहाउसिंग और FTWZ</a><a href="exhibition-ata-carnet.html">प्रदर्शनी कार्गो और ATA कारनेट</a><a href="hi/third-country-trade.html">मर्चेंटिंग ट्रेड सहायता</a></div><div><div class="mh">स्पेशल कार्गो</div><a href="dangerous-goods.html">डेंजरस गुड्स</a><a href="dg-labels.html">DG लेबल और मार्क्स (मुफ़्त)</a><a href="perishables.html">पेरिशेबल्स</a><a href="pharmaceuticals.html">फ़ार्मास्युटिकल्स</a><a href="live-animals.html">जीवित पशु</a><a href="pet-relocation.html">पालतू पशु रीलोकेशन</a></div>
 <div class="mcta"><strong>तय नहीं कर पा रहे कि क्या चाहिए?</strong><span>लाइसेंसधारी ब्रोकर को बताइए कि आप क्या भेज रहे हैं। रूट और कागज़ी कार्रवाई हम तय करेंगे।</span><a href="hi/contact.html">डेस्क से बात करें →</a></div>
 </div></div></details>
 <a href="hi/customs-brokerage.html">कस्टम्स</a><a href="hi/mobile-phone-exports.html">मोबाइल एक्सपोर्ट</a><a href="hi/third-country-trade.html" aria-current="page">थर्ड-कंट्री ट्रेड</a><a href="trade-desk.html">ट्रेड डेस्क</a><a href="hi/about.html">हमारे बारे में</a>
@@ -102,6 +117,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 <a href="hi/contact.html" class="btn go">कोटेशन लें</a>
 </div></div></nav>
 </header>
+<script>(function(){var h=document.documentElement;function ov(n,l){return n.scrollWidth>n.clientWidth+2||(l&&l.scrollWidth>l.clientWidth+2)}function chk(){h.classList.remove('navc','navt2');var n=document.querySelector('.nav-in');if(!n)return;var l=n.querySelector('.links');if(ov(n,l)){h.classList.add('navt2');if(ov(n,l)){h.classList.remove('navt2');h.classList.add('navc');}}}chk();window.addEventListener('resize',chk);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(chk);window.addEventListener('load',chk);})();</script>
 <main id="app">
 <div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
 
@@ -281,7 +297,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">कस्टम्स और कंप्लायंस</span>
-<a href="hi/customs-brokerage.html">कस्टम ब्रोकरेज</a><a href="trade-compliance.html">ट्रेड कंप्लायंस सलाह</a><a href="destination-do-agency.html">डेस्टिनेशन / DO एजेंसी</a><a href="hi/contact.html">कार्गो इंश्योरेंस</a>
+<a href="hi/customs-brokerage.html">कस्टम ब्रोकरेज</a><a href="trade-compliance.html">ट्रेड कंप्लायंस सलाह</a><a href="destination-do-agency.html">डेस्टिनेशन / DO एजेंसी</a><a href="cargo-insurance.html">कार्गो इंश्योरेंस</a>
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 8px">
