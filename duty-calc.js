@@ -53,7 +53,9 @@
     '<label class="dc-l" for="dc-q">HSN code or description of goods</label>' +
     '<input id="dc-q" class="dc-in" placeholder="e.g. 8517 13 00, or “lithium battery”, “steel pipes”" autocomplete="off">' +
     '<div class="dc-row"><div><label class="dc-l" for="dc-o">Country of origin</label><select id="dc-o" class="dc-in"></select></div>' +
-    '<div><label class="dc-l" for="dc-v">CIF value (optional)</label><div style="display:flex;gap:8px"><select id="dc-cur" class="dc-in" style="width:96px;flex:none"></select><input id="dc-v" class="dc-in" inputmode="decimal" placeholder="e.g. 100000"></div></div></div>' +
+    '<div><label class="dc-l" for="dc-t">Invoice terms</label><select id="dc-t" class="dc-in"><option value="CIF">CIF (cost, insurance, freight)</option><option value="CNF">C&amp;F / CFR (cost and freight)</option><option value="FOB">FOB (free on board)</option></select></div></div>' +
+    '<div style="margin-top:16px"><label class="dc-l" for="dc-v"><span id="dc-vl">CIF</span> value (optional)</label><div style="display:flex;gap:8px"><select id="dc-cur" class="dc-in" style="width:96px;flex:none"></select><input id="dc-v" class="dc-in" inputmode="decimal" placeholder="e.g. 100000"></div></div>' +
+    '<div class="dc-row" id="dc-adj" style="display:none"><div id="dc-frw"><label class="dc-l" for="dc-fr">Freight <span style="font-weight:400;color:#5E7891">(default 20% of FOB)</span></label><input id="dc-fr" class="dc-in" inputmode="decimal" placeholder="Leave blank for 20%"></div><div><label class="dc-l" for="dc-in2">Insurance <span style="font-weight:400;color:#5E7891">(default 1.125%)</span></label><input id="dc-in2" class="dc-in" inputmode="decimal" placeholder="Leave blank for 1.125%"></div></div>' +
     '<div id="dc-fx" style="display:none;margin-top:10px"><label class="dc-l" for="dc-r">Exchange rate (₹ per unit) <span style="font-weight:400;color:#5E7891">— customs uses the CBIC-notified rate</span></label><input id="dc-r" class="dc-in" inputmode="decimal"></div>' +
     '<label class="dc-ack"><input type="checkbox" id="dc-ack"><span>I understand that results are <b>indicative estimates for guidance only</b>, are not a customs assessment or legal advice, and that YAM Logistics Pvt. Ltd. accepts <b>no liability</b> for their use. I have read the <a href="#disclaimer">disclaimer</a>.</span></label>' +
     '<div id="dc-list" class="dc-res"><div class="dc-empty">Loading the tariff…</div></div></div>' +
@@ -62,6 +64,16 @@
   var q = document.getElementById('dc-q'), o = document.getElementById('dc-o'), v = document.getElementById('dc-v'), cur = document.getElementById('dc-cur'), r = document.getElementById('dc-r'), list = document.getElementById('dc-list'), out = document.getElementById('dc-out');
   o.innerHTML = '<option value="">Select country…</option>' + COUNTRIES.map(function (c) { return '<option>' + h(c) + (FTA[c] ? ' ★' : '') + '</option>'; }).join('').replace(/ ★<\/option>/g, ' (trade agreement)</option>');
   cur.innerHTML = CUR.map(function (c) { return '<option>' + c + '</option>'; }).join('');
+  var terms = document.getElementById('dc-t'), frI = document.getElementById('dc-fr'), insI = document.getElementById('dc-in2');
+  function termsUI() {
+    var t = terms.value;
+    document.getElementById('dc-vl').textContent = t === 'CNF' ? 'C&F' : t;
+    document.getElementById('dc-adj').style.display = t === 'CIF' ? 'none' : 'grid';
+    document.getElementById('dc-frw').style.display = t === 'FOB' ? 'block' : 'none';
+    recalc();
+  }
+  terms.addEventListener('change', termsUI);
+  [frI, insI].forEach(function (el) { el.addEventListener('input', recalc); });
   var ack = document.getElementById('dc-ack');
   try { if (sessionStorage.getItem('yam-dc-ack') === '1') ack.checked = true; } catch (e) {}
   ack.addEventListener('change', function () { try { sessionStorage.setItem('yam-dc-ack', ack.checked ? '1' : '0'); } catch (e) {} recalc(); });
@@ -131,7 +143,13 @@
     var aidc = alco || /^710[68]/.test(code);
     var val = parseFloat(String(v.value).replace(/,/g, '')) || 0;
     var rate = cur.value === 'INR' ? 1 : (parseFloat(r.value) || 0);
-    var av = val * rate;
+    var t = terms.value, num = function (el) { var n = parseFloat(String(el.value).replace(/,/g, '')); return isNaN(n) ? null : n; };
+    var fob = 0, fr = 0, ins = 0, cnf = 0, cif = 0, frDef = false, insDef = false;
+    if (t === 'FOB') { fob = val; fr = num(frI); if (fr == null) { fr = fob * 0.20; frDef = true; } ins = num(insI); if (ins == null) { ins = fob * 0.01125; insDef = true; } cif = fob + fr + ins; }
+    else if (t === 'CNF') { cnf = val; ins = num(insI); if (ins == null) { ins = cnf * 0.01125; insDef = true; } cif = cnf + ins; }
+    else cif = val;
+    var cifR = cif * rate, landing = cifR * 0.01;
+    var av = cifR + landing;
     if (noRate) av = 0;
     var bcdAmt = bcd != null ? av * bcd / 100 : 0, sws = bcdAmt * 0.10, igst = (av + bcdAmt + sws) * igRate / 100, tot = bcdAmt + sws + igst;
     var pol = POL[x[8]] || POL['?'];
@@ -141,12 +159,25 @@
     if (x[9]) H += '<div class="dc-note"><b>Policy detail:</b> ' + h(x[9]) + '…</div>';
     if (noRate) H += '<div class="dc-x" style="margin-top:16px">The basic customs duty rate for this tariff line is not yet loaded in the calculator, so we can’t estimate the duty. Ask us on WhatsApp and a broker will confirm it.</div>';
     if (av > 0) {
-      H += '<div class="dc-big"><span style="font-size:13px;opacity:.85">INDICATIVE ESTIMATE · FOR GUIDANCE ONLY</span><b>' + inr(tot) + '</b><span style="font-size:14px;opacity:.9">Effective rate ' + pct(av ? tot / av * 100 : 0) + ' of CIF · landed cost ' + inr(av + tot) + '</span></div>';
+      H += '<div class="dc-big"><span style="font-size:13px;opacity:.85">INDICATIVE ESTIMATE · FOR GUIDANCE ONLY</span><b>' + inr(tot) + '</b><span style="font-size:14px;opacity:.9">Effective rate ' + pct(cifR ? tot / cifR * 100 : 0) + ' of CIF · landed cost ' + inr(cifR + tot) + '</span></div>';
     } else if (!noRate) {
-      H += '<div class="dc-note" style="margin-top:16px">Enter a CIF value to see the duty in rupees.</div>';
+      H += '<div class="dc-note" style="margin-top:16px">Enter the invoice value to see the duty in rupees.</div>';
     }
     H += '<table class="dc-t">';
-    if (av > 0) H += '<tr><td>Assessable value (CIF' + (rate !== 1 ? ' × ' + rate : '') + ')</td><td>' + inr(av) + '</td></tr>';
+    if (av > 0) {
+      var R = function (n) { return inr(n * rate); };
+      if (t === 'FOB') {
+        H += '<tr><td>FOB value' + (rate !== 1 ? ' <span class="s">' + cur.value + ' × ' + rate + '</span>' : '') + '</td><td>' + R(fob) + '</td></tr>';
+        H += '<tr><td>Freight <span class="s">' + (frDef ? '20% of FOB (default)' : 'as entered') + '</span></td><td>' + R(fr) + '</td></tr>';
+        H += '<tr><td>Insurance <span class="s">' + (insDef ? '1.125% of FOB (default)' : 'as entered') + '</span></td><td>' + R(ins) + '</td></tr>';
+      } else if (t === 'CNF') {
+        H += '<tr><td>C&amp;F value' + (rate !== 1 ? ' <span class="s">' + cur.value + ' × ' + rate + '</span>' : '') + '</td><td>' + R(cnf) + '</td></tr>';
+        H += '<tr><td>Insurance <span class="s">' + (insDef ? '1.125% of C&amp;F (default)' : 'as entered') + '</span></td><td>' + R(ins) + '</td></tr>';
+      }
+      H += '<tr><td>CIF value' + (t === 'CIF' && rate !== 1 ? ' <span class="s">' + cur.value + ' × ' + rate + '</span>' : '') + '</td><td>' + inr(cifR) + '</td></tr>';
+      H += '<tr><td>Landing charges <span class="s">1% of CIF</span></td><td>' + inr(landing) + '</td></tr>';
+      H += '<tr><td><b>Assessable value</b> <span class="s">CIF + landing charges</span></td><td>' + inr(av) + '</td></tr>';
+    }
     H += '<tr><td>Basic customs duty <span class="s">' + (bcd != null ? pct(bcd) : h(bcdTxt || '—')) + ' · ' + h(bcdSrc) + '</span></td><td>' + (av > 0 ? inr(bcdAmt) : (bcd != null ? pct(bcd) : '—')) + '</td></tr>';
     H += '<tr><td>Social welfare surcharge <span class="s">10% of BCD</span></td><td>' + (av > 0 ? inr(sws) : '10%') + '</td></tr>';
     if (alco) H += '<tr><td>IGST <span class="s">not applicable: alcoholic liquor for human consumption is outside GST</span></td><td>—</td></tr>';
@@ -169,7 +200,7 @@
       if (cond.length > 6) H += '<div class="s" style="font-size:13px;color:#5E7891">+ ' + (cond.length - 6) + ' more entries.</div>';
     }
     H += '<div class="dc-note"><b>Not included:</b> anti-dumping, safeguard or countervailing duty; agriculture cess (AIDC) on certain farm goods, gold, silver and alcohol; compensation cess on tobacco; concessions under other end-use or manufacturing notifications; and port, freight forwarding and clearance charges.</div>';
-    var msg = 'Hello YAM, please confirm the import duty for HSN ' + fc(code) + ' (' + x[1].slice(0, 60) + ')' + (country ? ', origin ' + country : '') + (val ? ', CIF ' + cur.value + ' ' + val : '') + '. Calculator estimate (indicative): ' + (av > 0 ? inr(tot) : 'BCD ' + (bcd != null ? pct(bcd) : bcdTxt) + ', IGST ' + pct(igRate)) + '.';
+    var msg = 'Hello YAM, please confirm the import duty for HSN ' + fc(code) + ' (' + x[1].slice(0, 60) + ')' + (country ? ', origin ' + country : '') + (val ? ', ' + (t === 'CNF' ? 'C&F' : t) + ' ' + cur.value + ' ' + val : '') + '. Calculator estimate (indicative): ' + (av > 0 ? inr(tot) : 'BCD ' + (bcd != null ? pct(bcd) : bcdTxt) + ', IGST ' + pct(igRate)) + '.';
     H += '<div class="dc-cta"><a href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener" style="background:#25D366;color:#06331A">Confirm with a broker on WhatsApp</a><a href="contact.html" style="background:#0A6CC2;color:#fff">Get a clearance quote →</a></div>';
     H += '<div class="dc-legal"><b>Disclaimer:</b> indicative estimate for guidance only. Not a customs assessment, classification ruling or legal advice. Duty is finally assessed by Customs, and classification and declarations remain the importer’s responsibility. YAM Logistics Pvt. Ltd. accepts no liability for any loss, duty, interest, penalty or cost arising from use of or reliance on this result. <a href="#disclaimer" style="color:#7A3E00;font-weight:600">Full disclaimer</a>.</div>';
     H += '<div class="dc-src">Source: ' + h(D.v) + '. Budget 2026 changes are being added.</div>';
