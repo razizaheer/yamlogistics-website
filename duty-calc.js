@@ -6,6 +6,7 @@
   var WA = 'YAMLOGISTICS';
   var FTA = {
     'United Arab Emirates': { a: 'India–UAE CEPA', data: 'uae' },
+    'United Kingdom': { a: 'India–UK CETA', data: 'fta2' }, 'Oman': { a: 'India–Oman CEPA', data: 'fta2' }, 'New Zealand': { a: 'India–New Zealand FTA', data: 'fta2' },
     'Japan': { a: 'India–Japan CEPA' }, 'South Korea': { a: 'India–Korea CEPA' },
     'Australia': { a: 'India–Australia ECTA' }, 'Mauritius': { a: 'India–Mauritius CECPA' },
     'Singapore': { a: 'India–Singapore CECA / ASEAN' }, 'Malaysia': { a: 'India–Malaysia CECA / ASEAN' },
@@ -139,8 +140,14 @@
     if (auto.length) { var a = auto[auto.length - 1]; bcd = a[1] === 'Nil' ? 0 : parseFloat(a[1]); bcdSrc = (/\//.test(a[0]) ? 'Notification ' + a[0] : 'Notification 45/2025-Customs, S. No. ' + a[0]) + (a === probable ? ' (for: ' + a[3].slice(0, 80) + ')' : ''); }
     var n57 = (D.n57 || []).filter(function (e) { return e[4].some(function (c) { return code.indexOf(c) === 0; }); });
     n57.forEach(function (e) { if (e[5] === 1) { var r = e[1] === 'Nil' ? 0 : parseFloat(e[1]); if (bcd == null || r < bcd) { bcd = r; bcdSrc = 'Notification 57/2017-Customs, S. No. ' + e[0] + ' (as amended)'; } } });
-    var prefUsed = false;
     var noRate = (bcd == null);
+    var prefUsed = false;
+    var ftaA = null, ftaO = [], ftaAidc = null;
+    if (fta && fta.data === 'fta2' && D.fta2 && D.fta2[country]) {
+      var FT = D.fta2[country], bl = -1;
+      FT.e.forEach(function (e) { var l = 0; e[0].forEach(function (c) { if (code.indexOf(c) === 0 && c.length > l) l = c.length; }); if (!l) return; if (e[4] === 1) { if (l > bl) { bl = l; ftaA = e; } } else ftaO.push(e); });
+      if (ftaA && ftaA[2] != null && (bcd == null || ftaA[2] < bcd)) { bcd = ftaA[2]; bcdSrc = FT.label + ', with a valid certificate of origin'; prefUsed = true; if (ftaA[3] != null) ftaAidc = ftaA[3]; }
+    }
     if (fta && fta.data === 'uae' && x[11] != null && (bcd == null || x[11] < bcd)) { bcd = x[11]; bcdSrc = 'India–UAE CEPA (Notification 22/2022-Customs), with a valid certificate of origin'; prefUsed = true; }
     var ig = x[6].map(function (i) { return D.igst[i]; }), igRate = ig.length ? ig[0][0] : 18, igSure = x[7] === 1;
     var alco = /^220[3-8]/.test(code) && !/^2207/.test(code);
@@ -150,6 +157,7 @@
     var aM = (D.aidc2 || []).filter(function (e) { return pfx(e[1]) && !pfx(e[6] || []); });
     var aAuto = null; aM.forEach(function (e) { if (e[4] === 1 && /^(Nil|[\d.]+\s?%)$/.test(e[3]) && (!aAuto || plen(e[1]) >= plen(aAuto[1]))) aAuto = e; });
     var aidcR = aAuto ? (aAuto[3] === 'Nil' ? 0 : parseFloat(aAuto[3])) : 0;
+    if (ftaAidc != null && aAuto && ftaAidc < aidcR) aidcR = ftaAidc;
     var aOther = aM.filter(function (e) { return e !== aAuto && !(aAuto && /^SA-/.test(aAuto[0]) && plen(e[1]) <= plen(aAuto[1])); });
     var sM = (D.sws2 || []).filter(function (e) { return pfx(e[1]); });
     var swsE = null; sM.forEach(function (e) { if (e[3] === 1 && !swsE) swsE = e; });
@@ -205,6 +213,7 @@
     if (bcdTxt && /Rs\./.test(bcdTxt)) H += '<div class="dc-x">Tariff rate is <b>' + h(bcdTxt) + '</b>. Where a specific duty per unit is higher, that amount applies, so the actual duty may be more.</div>';
     if (fta && !prefUsed) H += '<div class="dc-x"><b>' + h(country) + '</b> is covered by the <b>' + h(fta.a) + '</b>. Goods that meet its rules of origin may pay a lower basic customs duty with a certificate of origin. ' + (fta.data ? 'No lower rate is listed for this line.' : 'We are adding this agreement’s rates; ask us for the preferential rate.') + '</div>';
     if (prefUsed) H += '<div class="dc-x">Standard tariff rate without a certificate of origin: <b>' + h(bcdTxt) + '</b>.</div>';
+    if (ftaO.length) H += '<div class="dc-x">Under the <b>' + h(fta.a) + '</b>, a preferential rate of <b>' + pct(ftaO[0][2]) + '</b> may apply to: ' + h(ftaO[0][1]) + '. Ask us to confirm.</div>';
     if (ig.length > 1 || !igSure) {
       H += '<div class="dc-h">IGST: confirm the right entry</div>';
       ig.slice(0, 4).forEach(function (e) { H += '<div class="dc-x"><b>' + pct(e[0]) + '</b> · Schedule ' + e[1] + ', S. No. ' + h(e[2]) + ': ' + h(e[3].slice(0, 220)) + (e[3].length > 220 ? '…' : '') + '</div>'; });
@@ -229,7 +238,7 @@
     out.innerHTML = H;
   }
 
-  fetch('duty-data.json?v=7').then(function (x) { return x.json(); }).then(function (j) {
+  fetch('duty-data.json?v=8').then(function (x) { return x.json(); }).then(function (j) {
     D = j; build();
     list.innerHTML = '<div class="dc-empty">Start typing an HSN code or a product name.</div>';
     var m = location.hash.match(/hs=(\d{4,8})/);
