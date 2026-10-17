@@ -143,6 +143,10 @@
     var alco = /^220[3-8]/.test(code) && !/^2207/.test(code);
     if (alco) { ig = []; igRate = 0; igSure = true; }
     var aidc = alco || /^710[68]/.test(code);
+    var pfx = function (l) { return l.some(function (c) { return code.indexOf(c) === 0; }); };
+    var aidcE = (D.aidc || []).filter(function (e) { return pfx(e[1]); });
+    if (aidcE.length) aidc = true;
+    var swsNo = null; Object.keys(D.sws_ex || {}).forEach(function (k) { if (swsNo == null && pfx(D.sws_ex[k])) swsNo = k; });
     var val = parseFloat(String(v.value).replace(/,/g, '')) || 0;
     var rate = cur.value === 'INR' ? 1 : (parseFloat(r.value) || 0);
     var t = terms.value, num = function (el) { var n = parseFloat(String(el.value).replace(/,/g, '')); return isNaN(n) ? null : n; };
@@ -153,7 +157,7 @@
     var cifR = cif * rate, landing = cifR * 0.01;
     var av = cifR + landing;
     if (noRate) av = 0;
-    var bcdAmt = bcd != null ? av * bcd / 100 : 0, sws = bcdAmt * 0.10, igst = (av + bcdAmt + sws) * igRate / 100, tot = bcdAmt + sws + igst;
+    var bcdAmt = bcd != null ? av * bcd / 100 : 0, sws = swsNo != null ? 0 : bcdAmt * 0.10, igst = (av + bcdAmt + sws) * igRate / 100, tot = bcdAmt + sws + igst;
     var pol = POL[x[8]] || POL['?'];
     var H = '';
     H += '<div class="dc-c" style="font-size:15px">' + fc(code) + '</div><div style="font-family:Archivo,sans-serif;font-weight:800;font-size:24px;line-height:1.15;margin:4px 0 6px">' + h(x[1]) + '</div><div class="dc-p" style="font-size:13px">' + h(D.paths[x[2]]) + '</div>';
@@ -181,12 +185,13 @@
       H += '<tr><td><b>Assessable value</b> <span class="s">CIF + landing charges</span></td><td>' + inr(av) + '</td></tr>';
     }
     H += '<tr><td>Basic customs duty <span class="s">' + (bcd != null ? pct(bcd) : h(bcdTxt || '—')) + ' · ' + h(bcdSrc) + '</span></td><td>' + (av > 0 ? inr(bcdAmt) : (bcd != null ? pct(bcd) : '—')) + '</td></tr>';
-    H += '<tr><td>Social welfare surcharge <span class="s">10% of BCD</span></td><td>' + (av > 0 ? inr(sws) : '10%') + '</td></tr>';
+    if (swsNo != null) H += '<tr><td>Social welfare surcharge <span class="s">exempt · Notification 11/2018-Customs, S. No. ' + swsNo + '</span></td><td>' + (av > 0 ? inr(0) : 'Nil') + '</td></tr>';
+    else H += '<tr><td>Social welfare surcharge <span class="s">10% of BCD</span></td><td>' + (av > 0 ? inr(sws) : '10%') + '</td></tr>';
     if (alco) H += '<tr><td>IGST <span class="s">not applicable: alcoholic liquor for human consumption is outside GST</span></td><td>—</td></tr>';
     else H += '<tr><td>IGST <span class="s">' + pct(igRate) + (igSure ? '' : ' · likely, check below') + ' · on value + BCD + SWS</span></td><td>' + (av > 0 ? inr(igst) : pct(igRate)) + '</td></tr>';
     if (av > 0) H += '<tr class="dc-tot"><td><b>Total duty &amp; IGST</b></td><td>' + inr(tot) + '</td></tr>';
     H += '</table>';
-    if (aidc) H += '<div class="dc-x" style="border-left-color:#B42318;background:#FFF1EF"><b>Agriculture cess (AIDC) applies to this item and is not included above.</b> It can be substantial for alcoholic beverages, gold and silver. Ask us for the full figure.</div>';
+    if (aidc) H += '<div class="dc-x" style="border-left-color:#B42318;background:#FFF1EF"><b>Agriculture cess (AIDC) applies to this item and is not included above.</b> ' + (aidcE.length ? 'Rate when the cess was introduced (Notification 11/2021-Customs, S. No. ' + h(aidcE[0][0]) + '): <b>' + h(aidcE[0][2]) + '</b>' + (aidcE[0][3] ? ' for ' + h(aidcE[0][3].toLowerCase()) : '') + '. Some AIDC rates have been revised since then, so ask us for the current figure.' : 'It can be substantial for alcoholic beverages, gold and silver. Ask us for the full figure.') + '</div>';
     if (bcdTxt && /Rs\./.test(bcdTxt)) H += '<div class="dc-x">Tariff rate is <b>' + h(bcdTxt) + '</b>. Where a specific duty per unit is higher, that amount applies, so the actual duty may be more.</div>';
     if (fta && !prefUsed) H += '<div class="dc-x"><b>' + h(country) + '</b> is covered by the <b>' + h(fta.a) + '</b>. Goods that meet its rules of origin may pay a lower basic customs duty with a certificate of origin. ' + (fta.data ? 'No lower rate is listed for this line.' : 'We are adding this agreement’s rates; ask us for the preferential rate.') + '</div>';
     if (prefUsed) H += '<div class="dc-x">Standard tariff rate without a certificate of origin: <b>' + h(bcdTxt) + '</b>.</div>';
@@ -214,7 +219,7 @@
     out.innerHTML = H;
   }
 
-  fetch('duty-data.json?v=3').then(function (x) { return x.json(); }).then(function (j) {
+  fetch('duty-data.json?v=4').then(function (x) { return x.json(); }).then(function (j) {
     D = j; build();
     list.innerHTML = '<div class="dc-empty">Start typing an HSN code or a product name.</div>';
     var m = location.hash.match(/hs=(\d{4,8})/);
