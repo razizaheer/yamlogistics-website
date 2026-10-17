@@ -176,7 +176,7 @@
     out.innerHTML = H;
   }
 
-  fetch('duty-data.json').then(function (x) { return x.json(); }).then(function (j) {
+  fetch('duty-data.json?v=2').then(function (x) { return x.json(); }).then(function (j) {
     D = j; build();
     list.innerHTML = '<div class="dc-empty">Start typing an HSN code or a product name.</div>';
     var m = location.hash.match(/hs=(\d{4,8})/);
