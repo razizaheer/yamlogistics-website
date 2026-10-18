@@ -24,7 +24,7 @@
   Object.keys(FTAFILE).forEach(function (k) { if (FTA[k]) FTA[k].file = FTAFILE[k]; });
   var FTAD = {};
   var COUNTRIES = ['China', 'United States', 'United Arab Emirates', 'Germany', 'Japan', 'South Korea', 'Singapore', 'Malaysia', 'Thailand', 'Vietnam', 'Indonesia', 'Taiwan', 'Hong Kong', 'United Kingdom', 'Italy', 'France', 'Netherlands', 'Belgium', 'Spain', 'Switzerland', 'Australia', 'Saudi Arabia', 'Qatar', 'Oman', 'Kuwait', 'Bahrain', 'Russia', 'Turkey', 'Israel', 'Sri Lanka', 'Bangladesh', 'Nepal', 'Bhutan', 'Maldives', 'Mauritius', 'South Africa', 'Kenya', 'Nigeria', 'Egypt', 'Brazil', 'Argentina', 'Chile', 'Mexico', 'Canada', 'Peru', 'Colombia', 'Uruguay', 'Paraguay', 'Norway', 'Iceland', 'Sweden', 'Denmark', 'Finland', 'Poland', 'Czech Republic', 'Austria', 'Ireland', 'Portugal', 'Philippines', 'Cambodia', 'Laos', 'Myanmar', 'Brunei', 'New Zealand', 'Afghanistan', 'Iran', 'Ukraine', 'Other'];
-  var CUR = ['INR', 'USD', 'EUR', 'CNY', 'GBP', 'AED', 'JPY', 'SGD'];
+  var CUR = ['INR', 'USD', 'EUR', 'CNY', 'GBP', 'AED', 'JPY', 'SGD', 'HKD', 'CHF', 'AUD', 'CAD', 'NZD', 'SAR', 'QAR', 'KWD', 'BHD', 'KRW', 'SEK', 'NOK', 'DKK', 'TRY', 'ZAR'];
   var POL = { F: ['Free', 'Import freely, no DGFT licence needed', '#E9FBF0', '#0F7A3D'], R: ['Restricted', 'Needs a DGFT authorisation or meets a policy condition', '#FFF4D6', '#9A5B00'], P: ['Prohibited', 'Cannot be imported', '#FFE3DF', '#B42318'], S: ['State trading (STE)', 'Import only through notified state agencies', '#F1E9FF', '#5B2BB5'], M: ['Varies', 'Policy differs between sub-lines; check the exact item', '#FFF4D6', '#9A5B00'], '?': ['Not found', 'Check the ITC(HS) Schedule I for this item', '#EEF2F6', '#3D5873'] };
 
   var css = document.createElement('style');
@@ -60,7 +60,7 @@
     '<div><label class="dc-l" for="dc-t">Invoice terms</label><select id="dc-t" class="dc-in"><option value="CIF">CIF (cost, insurance, freight)</option><option value="CNF">C&amp;F / CFR (cost and freight)</option><option value="FOB">FOB (free on board)</option></select></div></div>' +
     '<div style="margin-top:16px"><label class="dc-l" for="dc-v"><span id="dc-vl">CIF</span> value (optional)</label><div style="display:flex;gap:8px"><select id="dc-cur" class="dc-in" style="width:96px;flex:none"></select><input id="dc-v" class="dc-in" inputmode="decimal" placeholder="e.g. 100000"></div></div>' +
     '<div class="dc-row" id="dc-adj" style="display:none"><div id="dc-frw"><label class="dc-l" for="dc-fr">Freight <span style="font-weight:400;color:#5E7891">(default 20% of FOB)</span></label><input id="dc-fr" class="dc-in" inputmode="decimal" placeholder="Leave blank for 20%"></div><div><label class="dc-l" for="dc-in2">Insurance <span style="font-weight:400;color:#5E7891">(default 1.125%)</span></label><input id="dc-in2" class="dc-in" inputmode="decimal" placeholder="Leave blank for 1.125%"></div></div>' +
-    '<div id="dc-fx" style="display:none;margin-top:10px"><label class="dc-l" for="dc-r">Exchange rate (₹ per unit) <span style="font-weight:400;color:#5E7891">— customs uses the CBIC-notified rate</span></label><input id="dc-r" class="dc-in" inputmode="decimal"></div>' +
+    '<div id="dc-fx" style="display:none;margin-top:10px"><label class="dc-l" for="dc-r">Exchange rate (₹ per unit)</label><input id="dc-r" class="dc-in" inputmode="decimal"><div id="dc-fxn" style="font-size:12px;color:#5E7891;margin-top:6px;line-height:1.45"></div></div>' +
     '<label class="dc-ack"><input type="checkbox" id="dc-ack"><span>I understand that results are <b>indicative estimates for guidance only</b>, are not a customs assessment or legal advice, and that YAM Logistics Pvt. Ltd. accepts <b>no liability</b> for their use. I have read the <a href="#disclaimer">disclaimer</a>.</span></label>' +
     '<div id="dc-list" class="dc-res"><div class="dc-empty">Loading the tariff…</div></div></div>' +
     '<div class="dc-card" id="dc-out"><div class="dc-empty">Search for your goods and pick a tariff line to see the duty.</div></div></div>';
@@ -81,13 +81,30 @@
   var ack = document.getElementById('dc-ack');
   try { if (sessionStorage.getItem('yam-dc-ack') === '1') ack.checked = true; } catch (e) {}
   ack.addEventListener('change', function () { try { sessionStorage.setItem('yam-dc-ack', ack.checked ? '1' : '0'); } catch (e) {} recalc(); });
-  var fxCache = {};
+  var fxCache = {}, fxn = document.getElementById('dc-fxn'), CBIC = null;
+  // CBIC customs exchange rates (import rate): live from ICEGATE via /api/cbic-fx, falling back to the bundled snapshot
+  var cbicP = fetch('api/cbic-fx').then(function (x) { if (!x.ok) throw 0; return x.json(); })
+    .catch(function () { return fetch('cbic-fx.json?v=1').then(function (x) { return x.json(); }); })
+    .then(function (j) { if (j && j.r) CBIC = j; return CBIC; }).catch(function () { return null; });
+  function fmtD(d) { var m = /^(\d{2})-(\d{2})-(\d{4})$/.exec(d || ''); return m ? new Date(Date.UTC(+m[3], +m[2] - 1, +m[1])).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : d; }
+  function setNote(h) { if (fxn) fxn.innerHTML = h; }
   function getFx(c) {
-    if (c === 'INR') return;
-    if (fxCache[c]) { r.value = fxCache[c]; recalc(); return; }
-    fetch('https://api.frankfurter.dev/v1/latest?base=' + c + '&symbols=INR').then(function (x) { return x.json(); }).then(function (j) {
-      if (j && j.rates && j.rates.INR) { fxCache[c] = j.rates.INR.toFixed(2); if (cur.value === c) { r.value = fxCache[c]; recalc(); } }
-    }).catch(function () {});
+    if (c === 'INR') { setNote(''); return; }
+    setNote('Loading the CBIC customs exchange rate…');
+    cbicP.then(function (cb) {
+      if (cur.value !== c) return;
+      var x = cb && cb.r && cb.r[c];
+      if (x) {
+        var per = x.i / (x.u || 1);
+        r.value = per >= 1 ? per.toFixed(2) : per.toFixed(4); recalc();
+        setNote('<b style="color:#0F7B3F">✓ CBIC customs rate for imports</b>: ₹' + x.i + (x.u > 1 ? ' per ' + x.u + ' ' + c : ' per ' + c) + ' (export rate ₹' + x.e + '). Exchange rate notification No. ' + cb.n + ', in force from ' + fmtD(cb.d) + '. Customs uses the rate in force on the date the bill of entry is filed. You can edit this rate.');
+        return;
+      }
+      if (fxCache[c]) { r.value = fxCache[c]; recalc(); setNote('⚠ CBIC does not notify a rate for ' + c + '. Showing a market reference rate: customs will convert it via a notified currency. Please confirm with us.'); return; }
+      fetch('https://api.frankfurter.dev/v1/latest?base=' + c + '&symbols=INR').then(function (y) { return y.json(); }).then(function (j) {
+        if (j && j.rates && j.rates.INR) { fxCache[c] = j.rates.INR.toFixed(2); if (cur.value === c) { r.value = fxCache[c]; recalc(); setNote('⚠ Market reference rate, not a CBIC-notified rate. Please confirm with us.'); } }
+      }).catch(function () { setNote('Enter the exchange rate.'); });
+    });
   }
   cur.addEventListener('change', function () { document.getElementById('dc-fx').style.display = cur.value === 'INR' ? 'none' : 'block'; r.value = ''; getFx(cur.value); recalc(); });
   [o, v, r].forEach(function (el) { el.addEventListener('input', recalc); el.addEventListener('change', recalc); });
