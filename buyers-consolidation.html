@@ -23,9 +23,9 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .mono{font-family:'Geist Mono',monospace;letter-spacing:.05em}
 @keyframes blink{50%{opacity:.3}}.live{animation:blink 1.6s steps(2) infinite}
 .util{background:#0B4F8F;color:#CFE3F5;font-size:13px}
-.util-in{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;padding-top:8px;padding-bottom:8px}
+.util-in{display:flex;flex-wrap:nowrap;gap:8px 22px;align-items:center;padding-top:8px;padding-bottom:8px;white-space:nowrap;min-width:0}.util-in>*{flex:none}
 .util a{color:#FFFFFF;text-decoration:none}.util a.gold{color:#FFC93C;font-weight:600}
-.fx{margin-left:auto;display:flex;gap:14px;align-items:center;font-family:'Geist Mono',monospace;font-size:12px;white-space:nowrap;overflow:hidden}
+.util-in>.fx{margin-left:auto;flex:0 1 auto;min-width:0}.fx{margin-left:auto;display:flex;gap:14px;align-items:center;font-family:'Geist Mono',monospace;font-size:12px;white-space:nowrap;overflow:hidden}
 .fx b{color:#FFFFFF;font-weight:600}.fxl{color:#FFC93C;font-weight:600;letter-spacing:.06em}.fxd{color:#9FC2E6;font-size:11px}
 .btn-calc{background:#FFC93C;color:#0B2A4A!important;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none;white-space:nowrap}.btn-calc.btn-duty{background:#10B981;color:#000000!important}
 .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #E1EDF7;backdrop-filter:saturate(1.4) blur(8px)}
@@ -97,8 +97,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <header class="site">
 <div class="util"><div class="wrap util-in">
 <span class="mono u1"><span class="live" style="color:#FFC93C">●</span> Mumbai airport desk open 24×7</span>
-<a href="https://wa.me/message/6YB7I76DV6UJL1" class="u1">WhatsApp @YAMLOGISTICS</a>
-<a href="container-load-planner.html" class="u1 lpnew"><b>NEW</b> Free 3D container load planner →</a>
+<a href="https://wa.me/message/6YB7I76DV6UJL1" class="u1">WhatsApp us</a>
 <a href="YAM-Logistics-Corporate-Profile.pdf" download="" class="gold u1">↓ Company profile (PDF)</a>
 <div class="fx" id="fx" title="Market reference rates, updated daily. Customs duty is calculated on CBIC-notified exchange rates."><span class="fxl">₹ RATES</span><span class="fxi" data-c="USD">USD <b>—</b></span><span class="fxi" data-c="EUR">EUR <b>—</b></span><span class="fxi" data-c="CNY">CNY <b>—</b></span><span class="fxi" data-c="GBP">GBP <b>—</b></span><span class="fxi" data-c="AED">AED <b>—</b></span><span class="fxd" id="fxd"></span></div>
 <select onchange="location.href=this.value" data-notr="" aria-label="Language" class="langs"><option selected lang="en" value="index.html">🌐 English</option><option lang="zh" value="zh/index.html">中文</option><option lang="es" value="es/index.html">Español</option><option lang="ar" value="ar/index.html">العربية</option><option lang="fr" value="fr/index.html">Français</option><option lang="de" value="de/index.html">Deutsch</option><option lang="ja" value="ja/index.html">日本語</option><option lang="pt" value="pt/index.html">Português</option><option lang="ru" value="ru/index.html">Русский</option><option lang="hi" value="hi/index.html">हिन्दी</option><option lang="ko" value="ko/index.html">한국어</option></select></div></div>
