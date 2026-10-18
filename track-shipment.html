@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Track Your Shipment: Air, Sea & Customs | YAM Logistics</title>
-<meta name="description" content="Track air and sea shipments by AWB, container, bill of lading, shipping bill or bill of entry, including customs milestones.">
+<title>Free Container & AWB Tracking: All Shipping Lines & Airlines | YAM Logistics</title>
+<meta name="description" content="Free container and air waybill tracking for 40+ shipping lines and 80+ airlines, plus the Indian port, CFS, ICD and rail leg. Paste any container, AWB or B/L number.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://www.yamlogistics.com/track-shipment">
-<meta property="og:type" content="website"><meta property="og:site_name" content="YAM Logistics"><meta property="og:title" content="Track Your Shipment: Air, Sea & Customs | YAM Logistics"><meta property="og:description" content="Track air and sea shipments by AWB, container, bill of lading, shipping bill or bill of entry, including customs milestones."><meta property="og:url" content="https://www.yamlogistics.com/track-shipment">
+<meta property="og:type" content="website"><meta property="og:site_name" content="YAM Logistics"><meta property="og:title" content="Free Container & AWB Tracking: All Shipping Lines & Airlines | YAM Logistics"><meta property="og:description" content="Free container and air waybill tracking for 40+ shipping lines and 80+ airlines, plus the Indian port, CFS, ICD and rail leg. Paste any container, AWB or B/L number."><meta property="og:url" content="https://www.yamlogistics.com/track-shipment">
 <meta name="theme-color" content="#0A6CC2">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -82,14 +82,8 @@ html.navc .links>*{min-width:0;max-width:100%}
 
 
 
-input{font:inherit}
 .go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
 details summary{cursor:pointer;list-style:none}details summary::-webkit-details-marker{display:none}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(10,108,194,.45)}70%{box-shadow:0 0 0 12px rgba(10,108,194,0)}100%{box-shadow:0 0 0 0 rgba(10,108,194,0)}}
-.now{animation:pulse 2s infinite}
-@keyframes drift{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
-.mover{animation:drift 3s ease-in-out infinite}
-@media (prefers-reduced-motion: reduce){.now,.mover{animation:none}}
 </style>
 
 
@@ -124,254 +118,69 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <main id="app">
 <div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
 
-</div>
 
 
-<div style="background: linear-gradient(180deg, #DDF0FF 0%, #FFFFFF 100%)">
-<div style="max-width: 1400px; margin: 0 auto; padding: 64px 32px 28px">
-<div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.08em; margin-bottom: 20px">AIR · SEA · CUSTOMS — ONE SCREEN</div>
-<h1 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(42px, 5.4vw, 80px); line-height: 0.98; letter-spacing: -0.03em; margin: 0 0 16px; max-width: 1000px">Where's my shipment?</h1>
-<p style="font-size: 19px; line-height: 1.55; color: #17436B; max-width: 760px; margin: 0 0 28px">Track air and sea cargo with any reference you have. Unlike carrier sites, you also see the customs steps: shipping bill, LEO, bill of entry, duty and out of charge.</p>
-
-<div style="background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 28px; box-shadow: 0 20px 50px rgba(11,42,74,0.10); padding: 22px; max-width: 1100px">
-<div role="tablist" aria-label="Reference type" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px">
-
-<button role="tab" aria-selected="false" data-ev-click="0" style="border: 0; border-radius: 999px; min-height: 38px; padding: 0 16px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Geist, sans-serif; background: #EEF6FD; color: #3D5873;">YAM job no.</button>
-
-<button role="tab" aria-selected="true" data-ev-click="1" style="border: 0; border-radius: 999px; min-height: 38px; padding: 0 16px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Geist, sans-serif; background: #0A6CC2; color: #FFFFFF;">Air waybill (AWB)</button>
-
-<button role="tab" aria-selected="false" data-ev-click="2" style="border: 0; border-radius: 999px; min-height: 38px; padding: 0 16px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Geist, sans-serif; background: #EEF6FD; color: #3D5873;">Container no.</button>
-
-<button role="tab" aria-selected="false" data-ev-click="3" style="border: 0; border-radius: 999px; min-height: 38px; padding: 0 16px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Geist, sans-serif; background: #EEF6FD; color: #3D5873;">Bill of lading</button>
-
-<button role="tab" aria-selected="false" data-ev-click="4" style="border: 0; border-radius: 999px; min-height: 38px; padding: 0 16px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Geist, sans-serif; background: #EEF6FD; color: #3D5873;">Shipping bill</button>
-
-<button role="tab" aria-selected="false" data-ev-click="5" style="border: 0; border-radius: 999px; min-height: 38px; padding: 0 16px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Geist, sans-serif; background: #EEF6FD; color: #3D5873;">Bill of entry</button>
-
-</div>
-<div style="display: flex; flex-wrap: wrap; gap: 10px">
-<input type="text" aria-label="Tracking reference" placeholder="e.g. 123-4567 8905" value="123-4567 8905" data-ev-input="6" style="flex: 1 1 360px; min-width: 0; padding: 18px 20px; border: 1.5px solid #C9DCEC; border-radius: 999px; font-size: 18px; color: #0B2A4A; font-family: 'Geist Mono', monospace">
-<button class="go" data-ev-click="7" style="background: #0A6CC2; color: #FFFFFF; border: 0; border-radius: 999px; padding: 0 34px; min-height: 60px; font-size: 17px; font-weight: 600; cursor: pointer; font-family: inherit">Track →</button>
-</div>
-<div style="display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-top: 14px; font-size: 14px; color: #5E7891">
-<span>Try a sample:</span>
-<button data-ev-click="8" style="background: #EEF6FD; color: #0A6CC2; border: 0; border-radius: 999px; padding: 8px 14px; font-weight: 600; cursor: pointer; font-family: inherit">✈ Air export · phones BOM → DXB</button>
-<button data-ev-click="9" style="background: #EEF6FD; color: #0A6CC2; border: 0; border-radius: 999px; padding: 8px 14px; font-weight: 600; cursor: pointer; font-family: inherit">⛴ Sea import · Shanghai → Nhava Sheva</button>
-</div>
-</div>
+<div style="background: linear-gradient(135deg, #DDF0FF 0%, #F7FBFF 55%, #FFF4D6 100%)">
+<div style="max-width: 1400px; margin: 0 auto; padding: 84px 32px 36px">
+<div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.08em; margin-bottom: 22px">FREE TRACKER · 40+ SHIPPING LINES · 80+ AIRLINES · INDIAN PORTS &amp; ICDS</div>
+<h1 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(46px, 5.6vw, 86px); line-height: 0.96; letter-spacing: -0.03em; margin: 0 0 22px; max-width: 1100px">Track any container or air waybill. <span style="color: #0A6CC2">One box, every carrier.</span></h1>
+<p style="font-size: 20px; line-height: 1.55; color: #17436B; margin: 0; max-width: 820px">Paste a container number, air waybill or bill of lading. We recognise the shipping line or airline from the number and take you straight to its official live tracking, plus the Indian leg through ports, CFS, ICDs and rail.</p>
 </div>
 </div>
 
 
-<div style="max-width: 1400px; margin: 0 auto; padding: 20px 32px 80px">
-<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.08em; color: #B4441A; background: #FFF1EC; display: inline-block; padding: 6px 12px; border-radius: 999px; margin-bottom: 16px">DESIGN PREVIEW · SAMPLE DATA</div>
-
-
-<div style="background: #0A6CC2; color: #FFFFFF; border-radius: 28px; padding: 30px 32px; margin-bottom: 20px">
-<div style="display: flex; flex-wrap: wrap; gap: 14px 24px; justify-content: space-between; align-items: flex-start">
-<div style="min-width: 0">
-<div style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #BFE5FF; letter-spacing: 0.06em">AIR EXPORT · YAM JOB YAM/BOM/AE/26-1048</div>
-<div style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: 40px; line-height: 1.05; margin-top: 8px">86 cartons of mobile handsets, in the air</div>
-<div style="font-size: 16px; color: #DCEEFC; margin-top: 8px">Last update 14 Oct, 23:52 IST</div>
-</div>
-<div style="background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 10px 18px; font-weight: 700; font-size: 15px; white-space: nowrap">Departed · in flight</div>
-</div>
-
-<div style="display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; align-items: center; margin-top: 30px">
-<div><div style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 112%; font-size: 34px">BOM</div><div style="font-size: 14px; color: #DCEEFC">Mumbai, India</div><div style="font-size: 13px; color: #BFE5FF; margin-top: 2px">Off-block 14 Oct 23:40</div></div>
-<div style="position: relative; height: 34px">
-<div style="position: absolute; left: 0; right: 0; top: 16px; height: 3px; background: rgba(255,255,255,0.25); border-radius: 999px"></div>
-<div style="position: absolute; left: 0; top: 16px; height: 3px; background: #FFC93C; border-radius: 999px; width: 72%;"></div>
-<div class="mover" style="position: absolute; top: 0; left: calc(72% - 14px); width: 34px; height: 34px; border-radius: 50%; background: #FFFFFF; color: #0A6CC2; display: flex; align-items: center; justify-content: center; font-size: 17px;">✈</div>
-</div>
-<div style="text-align: right"><div style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 112%; font-size: 34px">DXB</div><div style="font-size: 14px; color: #DCEEFC">Dubai, UAE</div><div style="font-size: 13px; color: #BFE5FF; margin-top: 2px">ETA 15 Oct 01:55 local</div></div>
-</div>
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-top: 26px">
-
-<div style="background: rgba(255,255,255,0.12); border-radius: 16px; padding: 14px 16px; min-width: 0"><div style="font-size: 12px; color: #DCEEFC">Air waybill</div><div style="font-weight: 600; font-size: 17px; margin-top: 4px; overflow-wrap: anywhere">123-4567 8905</div></div>
-
-<div style="background: rgba(255,255,255,0.12); border-radius: 16px; padding: 14px 16px; min-width: 0"><div style="font-size: 12px; color: #DCEEFC">Pieces / gross</div><div style="font-weight: 600; font-size: 17px; margin-top: 4px; overflow-wrap: anywhere">86 ctns · 1,240 kg</div></div>
-
-<div style="background: rgba(255,255,255,0.12); border-radius: 16px; padding: 14px 16px; min-width: 0"><div style="font-size: 12px; color: #DCEEFC">Chargeable weight</div><div style="font-weight: 600; font-size: 17px; margin-top: 4px; overflow-wrap: anywhere">1,310 kg</div></div>
-
-<div style="background: rgba(255,255,255,0.12); border-radius: 16px; padding: 14px 16px; min-width: 0"><div style="font-size: 12px; color: #DCEEFC">Shipping bill</div><div style="font-weight: 600; font-size: 17px; margin-top: 4px; overflow-wrap: anywhere">4821736 · LEO granted</div></div>
-
-<div style="background: rgba(255,255,255,0.12); border-radius: 16px; padding: 14px 16px; min-width: 0"><div style="font-size: 12px; color: #DCEEFC">Special handling</div><div style="font-weight: 600; font-size: 17px; margin-top: 4px; overflow-wrap: anywhere">Lithium batteries, PI 967</div></div>
-
+<div style="background: #F7FBFF">
+<div style="max-width: 1400px; margin: 0 auto; padding: 24px 32px 88px">
+<div id="trk-root"><div style="background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 24px; padding: 40px; text-align: center; color: #5E7891">Loading the tracker…</div></div>
 </div>
 </div>
 
-<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
 
+<div style="background: #FFF8E6">
+<div style="max-width: 1400px; margin: 0 auto; padding: 88px 32px">
+<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: #B45309; margin-bottom: 14px">HOW IT WORKS</div>
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(34px, 3.8vw, 54px); line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 36px">Straight to the source, in three steps.</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px">
 
-<div style="flex: 1.6 1 620px; min-width: 0; background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 28px; padding: 30px 32px">
-<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: baseline; margin-bottom: 22px">
-<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 28px; margin: 0">Every step, freight and customs</h2>
-<div style="display: flex; gap: 14px; font-size: 13px; color: #5E7891; align-items: center"><span style="display: inline-flex; gap: 6px; align-items: center"><span style="width: 10px; height: 10px; border-radius: 3px; background: #FFC93C"></span>Customs step</span><span style="display: inline-flex; gap: 6px; align-items: center"><span style="width: 10px; height: 10px; border-radius: 50%; background: #0A6CC2"></span>Freight step</span></div>
-</div>
-
-<div style="display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 16px">
-<div style="display: flex; flex-direction: column; align-items: center">
-<div style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex: none; background: #0A6CC2; color: #FFFFFF;">✓</div>
-<div style="flex: 1; width: 3px; min-height: 18px; margin: 4px 0; border-radius: 3px; background: #0A6CC2;"></div>
-</div>
-<div style="padding-bottom: 22px; min-width: 0">
-<div style="display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center">
-<span style="font-weight: 600; font-size: 17px; color: #0B2A4A;">Booking confirmed with airline</span>
-
-
-</div>
-<div style="font-size: 14px; color: #5E7891; margin-top: 4px">14 Oct · 10:20</div>
-<div style="font-size: 15px; color: #3D5873; margin-top: 6px; line-height: 1.5">Space held on tonight's freighter.</div>
-</div>
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">1</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">Paste any number</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">A container number (e.g. MSKU 123456 5), an 11-digit air waybill (e.g. 176-12345675) or a bill of lading. Spaces and dashes don't matter.</span>
 </div>
 
-<div style="display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 16px">
-<div style="display: flex; flex-direction: column; align-items: center">
-<div style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex: none; background: #0A6CC2; color: #FFFFFF;">✓</div>
-<div style="flex: 1; width: 3px; min-height: 18px; margin: 4px 0; border-radius: 3px; background: #0A6CC2;"></div>
-</div>
-<div style="padding-bottom: 22px; min-width: 0">
-<div style="display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center">
-<span style="font-weight: 600; font-size: 17px; color: #0B2A4A;">Cargo received at Sahar export terminal</span>
-
-
-</div>
-<div style="font-size: 14px; color: #5E7891; margin-top: 4px">14 Oct · 17:05</div>
-<div style="font-size: 15px; color: #3D5873; margin-top: 6px; line-height: 1.5">Weighed and dimensioned. Battery labels checked.</div>
-</div>
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">2</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">We identify the carrier</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">The first four letters of a container number identify the shipping line, and the first three digits of an AWB identify the airline. We also check the check digit to catch typing mistakes.</span>
 </div>
 
-<div style="display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 16px">
-<div style="display: flex; flex-direction: column; align-items: center">
-<div style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex: none; background: #FFC93C; color: #0B2A4A;">✓</div>
-<div style="flex: 1; width: 3px; min-height: 18px; margin: 4px 0; border-radius: 3px; background: #0A6CC2;"></div>
+<div style="background: #FFFFFF; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #0A6CC2; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%;">3</span>
+<span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 19px">Live status from the source</span>
+<span style="font-size: 14px; line-height: 1.55; color: #4A4030">Open the carrier's own official tracking with your number ready, check the Indian port, CFS, ICD and rail leg, and WhatsApp our brokers if the cargo needs clearing.</span>
 </div>
-<div style="padding-bottom: 22px; min-width: 0">
-<div style="display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center">
-<span style="font-weight: 600; font-size: 17px; color: #0B2A4A;">Shipping bill filed on ICEGATE</span>
-<span style="background: #FFF3CC; color: #7A5A00; border-radius: 999px; padding: 3px 9px; font-size: 11px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em">CUSTOMS</span>
-
-</div>
-<div style="font-size: 14px; color: #5E7891; margin-top: 4px">14 Oct · 17:40</div>
-<div style="font-size: 15px; color: #3D5873; margin-top: 6px; line-height: 1.5">Filed by our licensed broker. Checklist approved by you at 16:55.</div>
-</div>
-</div>
-
-<div style="display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 16px">
-<div style="display: flex; flex-direction: column; align-items: center">
-<div style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex: none; background: #FFC93C; color: #0B2A4A;">✓</div>
-<div style="flex: 1; width: 3px; min-height: 18px; margin: 4px 0; border-radius: 3px; background: #0A6CC2;"></div>
-</div>
-<div style="padding-bottom: 22px; min-width: 0">
-<div style="display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center">
-<span style="font-weight: 600; font-size: 17px; color: #0B2A4A;">Customs examination done, LEO granted</span>
-<span style="background: #FFF3CC; color: #7A5A00; border-radius: 999px; padding: 3px 9px; font-size: 11px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em">CUSTOMS</span>
-
-</div>
-<div style="font-size: 14px; color: #5E7891; margin-top: 4px">14 Oct · 20:15</div>
-<div style="font-size: 15px; color: #3D5873; margin-top: 6px; line-height: 1.5">Let Export Order issued. Cargo cleared to fly.</div>
-</div>
-</div>
-
-<div style="display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 16px">
-<div style="display: flex; flex-direction: column; align-items: center">
-<div style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex: none; background: #0A6CC2; color: #FFFFFF;">✓</div>
-<div style="flex: 1; width: 3px; min-height: 18px; margin: 4px 0; border-radius: 3px; background: #0A6CC2;"></div>
-</div>
-<div style="padding-bottom: 22px; min-width: 0">
-<div style="display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center">
-<span style="font-weight: 600; font-size: 17px; color: #0B2A4A;">Built up on pallet and loaded</span>
-
-
-</div>
-<div style="font-size: 14px; color: #5E7891; margin-top: 4px">14 Oct · 22:50</div>
 
 </div>
 </div>
-
-<div style="display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 16px">
-<div style="display: flex; flex-direction: column; align-items: center">
-<div style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex: none; background: #0A6CC2; color: #FFFFFF;">✓</div>
-<div style="flex: 1; width: 3px; min-height: 18px; margin: 4px 0; border-radius: 3px; background: #0A6CC2;"></div>
-</div>
-<div style="padding-bottom: 22px; min-width: 0">
-<div style="display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center">
-<span style="font-weight: 600; font-size: 17px; color: #0B2A4A;">Departed Mumbai</span>
-
-
-</div>
-<div style="font-size: 14px; color: #5E7891; margin-top: 4px">14 Oct · 23:40</div>
-
-</div>
-</div>
-
-<div style="display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 16px">
-<div style="display: flex; flex-direction: column; align-items: center">
-<div class="now" style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex: none; background: #FFFFFF; border: 3px solid #0A6CC2; color: #0A6CC2; box-sizing: border-box;"></div>
-<div style="flex: 1; width: 3px; min-height: 18px; margin: 4px 0; border-radius: 3px; background: #E1EDF7;"></div>
-</div>
-<div style="padding-bottom: 22px; min-width: 0">
-<div style="display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center">
-<span style="font-weight: 700; font-size: 17px; color: #0B2A4A;">In flight, arriving Dubai</span>
-
-<span style="background: #0A6CC2; color: #FFFFFF; border-radius: 999px; padding: 3px 9px; font-size: 11px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em">NOW</span>
-</div>
-<div style="font-size: 14px; color: #5E7891; margin-top: 4px">Expected 15 Oct · 01:55 local</div>
-
-</div>
-</div>
-
-<div style="display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 16px">
-<div style="display: flex; flex-direction: column; align-items: center">
-<div style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex: none; background: #FFFFFF; border: 2px dashed #C9DCEC; box-sizing: border-box;"></div>
-<div style="display: none"></div>
-</div>
-<div style="padding-bottom: 22px; min-width: 0">
-<div style="display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center">
-<span style="font-weight: 600; font-size: 17px; color: #8AA0B5;">Handed over to consignee</span>
-
-
-</div>
-<div style="font-size: 14px; color: #5E7891; margin-top: 4px">Expected 15 Oct · morning</div>
-
-</div>
-</div>
-
 </div>
 
 
-<div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
-<div style="background: #E9FBF0; border-radius: 28px; padding: 26px 28px">
-<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 21px">Get every update on WhatsApp</div>
-<div style="font-size: 15px; color: #2C5240; margin: 8px 0 16px; line-height: 1.5">We'll message you at each milestone, including the customs ones. No app to install.</div>
-<a href="https://wa.me/message/6YB7I76DV6UJL1" style="display: inline-block; background: #25D366; color: #06331A; padding: 13px 22px; border-radius: 999px; font-weight: 600; text-decoration: none">Turn on WhatsApp alerts</a>
-<div style="font-size: 13px; color: #2C5240; margin-top: 12px">Or <a href="contact.html" style="color: #0F7A3D">email me updates</a></div>
+<div style="background: #FFFFFF">
+<div style="max-width: 1400px; margin: 0 auto; padding: 88px 32px">
+<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: #0A6CC2; margin-bottom: 14px">COVERAGE</div>
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(34px, 3.8vw, 54px); line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 28px">Shipping lines and airlines we recognise</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px">
+<div style="background: #F2F8FD; border-radius: 20px; padding: 26px">
+<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 20px; margin-bottom: 10px">⛴ Container tracking</div>
+<p style="font-size: 15px; line-height: 1.7; color: #3D5873; margin: 0">Maersk, MSC, CMA CGM, APL, ANL, Hapag-Lloyd, ONE (Ocean Network Express), COSCO, OOCL, Evergreen, Yang Ming, HMM, ZIM, Wan Hai, PIL, KMTC, RCL, SITC, X-Press Feeders, Emirates Shipping Line, TS Lines, Shipping Corporation of India, Unifeeder and more, plus leased containers through any line.</p>
 </div>
-
-<div style="background: #F2F8FD; border-radius: 28px; padding: 26px 28px">
-<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px"><div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 21px">Documents</div><span style="font-size: 13px; color: #5E7891">🔒 Clients only</span></div>
-<div style="display: flex; flex-direction: column; gap: 8px; margin: 16px 0">
-
-<div style="display: flex; justify-content: space-between; gap: 10px; background: #FFFFFF; border-radius: 12px; padding: 12px 14px; font-size: 15px"><span>Air waybill copy</span><span style="color: #5E7891; font-size: 13px">PDF</span></div>
-
-<div style="display: flex; justify-content: space-between; gap: 10px; background: #FFFFFF; border-radius: 12px; padding: 12px 14px; font-size: 15px"><span>Shipping bill + LEO</span><span style="color: #5E7891; font-size: 13px">PDF</span></div>
-
-<div style="display: flex; justify-content: space-between; gap: 10px; background: #FFFFFF; border-radius: 12px; padding: 12px 14px; font-size: 15px"><span>Invoice &amp; packing list</span><span style="color: #5E7891; font-size: 13px">PDF</span></div>
-
-<div style="display: flex; justify-content: space-between; gap: 10px; background: #FFFFFF; border-radius: 12px; padding: 12px 14px; font-size: 15px"><span>Dangerous goods declaration</span><span style="color: #5E7891; font-size: 13px">PDF</span></div>
-
+<div style="background: #F2F8FD; border-radius: 20px; padding: 26px">
+<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 20px; margin-bottom: 10px">✈ Air cargo (AWB) tracking</div>
+<p style="font-size: 15px; line-height: 1.7; color: #3D5873; margin: 0">Emirates SkyCargo, Qatar Airways Cargo, Etihad Cargo, flydubai Cargo, Air India, Lufthansa Cargo, Turkish Cargo, Singapore Airlines Cargo, Cathay Cargo, British Airways World Cargo, Air France KLM Cargo, Saudia Cargo, Ethiopian Cargo, Cargolux, FedEx, UPS and 80+ more airlines.</p>
 </div>
-<a class="go" href="contact.html" style="display: inline-block; background: #0A6CC2; color: #FFFFFF; padding: 12px 20px; border-radius: 999px; font-weight: 600; text-decoration: none">Sign in to download</a>
-</div>
-
-<div style="background: #FFF8E6; border-radius: 28px; padding: 26px 28px">
-<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 21px">Your desk for this job</div>
-<div style="font-size: 15px; color: #4A4030; margin: 8px 0 14px; line-height: 1.5">Sahar Air Cargo desk, Mumbai. Open 24×7.<br>A real person replies within 2 working hours. For urgent cargo, WhatsApp or call any time.</div>
-<div style="display: flex; flex-wrap: wrap; gap: 10px">
-<a href="tel:+911141603301" style="background: #0B2A4A; color: #FFFFFF; padding: 12px 20px; border-radius: 999px; font-weight: 600; text-decoration: none">Call +91 11 4160 3301</a>
-</div>
+<div style="background: #F2F8FD; border-radius: 20px; padding: 26px">
+<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 20px; margin-bottom: 10px">🇮🇳 The Indian leg</div>
+<p style="font-size: 15px; line-height: 1.7; color: #3D5873; margin: 0">Container movements through Nhava Sheva (JNPT), Mundra, Chennai, Kolkata and other Indian ports, CFSs, ICDs such as Tughlakabad, Dadri and Patparganj, and rail on the freight corridors, from India's Logistics Data Bank.</p>
 </div>
 </div>
 </div>
@@ -379,64 +188,53 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 
 
 <div style="background: #F2F8FD">
-<div style="max-width: 1400px; margin: 0 auto; padding: 88px 32px">
-<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(34px, 4vw, 52px); line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 14px; max-width: 900px">Three sources. One answer.</h2>
-<p style="font-size: 18px; color: #3D5873; max-width: 760px; margin: 0 0 36px; line-height: 1.55">Most trackers only show what the airline or shipping line knows. Yours joins three feeds, so you're never left wondering whether cargo is stuck with customs.</p>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px">
+<div style="max-width: 1000px; margin: 0 auto; padding: 96px 32px">
+<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(36px, 4.2vw, 56px); line-height: 1; letter-spacing: -0.03em; margin: 0 0 32px">Tracking questions</h2>
 
-<div style="background: #FFFFFF; border-radius: 24px; padding: 28px">
-<div style="width: 52px; height: 52px; border-radius: 16px; background: #DDF0FF; display: flex; align-items: center; justify-content: center; font-size: 24px;">🛳</div>
-<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 22px; margin: 18px 0 8px">Airlines &amp; shipping lines</div>
-<div style="font-size: 16px; line-height: 1.6; color: #3D5873">Flight status, vessel position, transshipment and arrival come straight from carrier feeds, refreshed every few hours.</div>
-</div>
-
-<div style="background: #FFFFFF; border-radius: 24px; padding: 28px">
-<div style="width: 52px; height: 52px; border-radius: 16px; background: #FFF3CC; display: flex; align-items: center; justify-content: center; font-size: 24px;">🛃</div>
-<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 22px; margin: 18px 0 8px">Indian customs (ICEGATE)</div>
-<div style="font-size: 16px; line-height: 1.6; color: #3D5873">Shipping bill, LEO, bill of entry, assessment, duty and out of charge, the steps other trackers leave out.</div>
-</div>
-
-<div style="background: #FFFFFF; border-radius: 24px; padding: 28px">
-<div style="width: 52px; height: 52px; border-radius: 16px; background: #E9FBF0; display: flex; align-items: center; justify-content: center; font-size: 24px;">🧭</div>
-<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 22px; margin: 18px 0 8px">Our own desks</div>
-<div style="font-size: 16px; line-height: 1.6; color: #3D5873">Cargo received, examination, trucking and delivery, updated by the YAM team handling your job in Mumbai, Delhi or Mundra.</div>
-</div>
-
-</div>
-</div>
-</div>
-
-
-<div style="max-width: 1000px; margin: 0 auto; padding: 88px 32px">
-<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(34px, 4vw, 52px); line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 28px">Tracking questions</h2>
-
-<details style="background: #F2F8FD; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
-<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">Which numbers can I track with?<span style="color: #0A6CC2">+</span></summary>
-<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Your YAM job number, air waybill (AWB), container number, bill of lading, shipping bill or bill of entry number. Any one is enough.</p>
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">Is the tracker free?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Yes. There is no sign-up and no limit. Live status comes straight from the shipping line or airline's own tracking, so it is as current as the carrier's data.</p>
 </details>
 
-<details style="background: #F2F8FD; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
-<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">How do I track an air waybill (AWB)?<span style="color: #0A6CC2">+</span></summary>
-<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Enter the 11-digit AWB: the 3-digit airline prefix followed by the 8-digit serial, for example 123-4567 8905. You will see flight status plus the export or import customs steps.</p>
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">Where do I find my container number?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">On the bill of lading, the container itself (four letters and seven digits on the doors) or your shipping line's booking confirmation. The last digit is a check digit, and we flag numbers that don't add up.</p>
 </details>
 
-<details style="background: #F2F8FD; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
-<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">How do I track a container?<span style="color: #0A6CC2">+</span></summary>
-<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Enter the 11-character container number: 4 letters and 7 digits, for example SMPU 771234 9. You will see vessel milestones, port arrival, customs and delivery.</p>
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">Where do I find my air waybill number?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">On the air waybill or the airline booking. It has 11 digits: a 3-digit airline prefix (176 is Emirates, 157 is Qatar Airways, 098 is Air India) followed by an 8-digit serial.</p>
 </details>
 
-<details style="background: #F2F8FD; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
-<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">What do LEO and out of charge mean?<span style="color: #0A6CC2">+</span></summary>
-<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">LEO (Let Export Order) is customs permission for export cargo to leave India. Out of charge is customs permission for import cargo to be taken out of the port or CFS. Until you see these, cargo cannot move.</p>
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">My container belongs to a leasing company. Can I still track it?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Yes. Containers with leasing prefixes (for example TGHU, TCNU, SEGU, CAIU) are tracked by the shipping line carrying them. Choose the line from the list, or use the all-carriers search.</p>
 </details>
 
-<details style="background: #F2F8FD; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
-<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">Can I get updates without checking the website?<span style="color: #0A6CC2">+</span></summary>
-<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Yes. Turn on WhatsApp or email alerts and we will message you at each milestone, including customs steps.</p>
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">Can I see customs status for my shipment?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Customs steps such as the shipping bill, LEO, bill of entry, duty and out of charge are not published by carriers. If YAM is handling your clearance, WhatsApp your job number and our team will give you the exact customs status.</p>
+</details>
+
+<details style="background: #FFFFFF; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
+<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">How do I track the Indian leg after discharge?<span style="color: #0A6CC2">+</span></summary>
+<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">Use the India leg (Logistics Data Bank) button. It covers container movements through major Indian ports, CFSs, ICDs and rail on the freight corridors.</p>
 </details>
 
 </div>
+</div>
 
+<div style="background: #0A6CC2; color: #FFFFFF">
+<div style="max-width: 1400px; margin: 0 auto; padding: 80px 32px; display: flex; flex-wrap: wrap; gap: 32px; align-items: center; justify-content: space-between">
+<h2 style="flex: 1 1 600px; min-width: 0; font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(38px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; margin: 0">Shipment stuck at customs? <span style="color: #FFC93C">Our licensed brokers will clear it.</span></h2>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<a href="contact.html" style="background: #FFC93C; color: #0B2A4A; padding: 18px 30px; border-radius: 999px; font-weight: 600; text-decoration: none">Get a quote →</a>
+<a href="https://wa.me/message/6YB7I76DV6UJL1" style="background: #25D366; color: #06331A; padding: 18px 28px; border-radius: 999px; font-weight: 600; text-decoration: none">WhatsApp a broker</a>
+</div>
+</div>
+</div>
+
+</div>
 </main>
 <footer>
 <div class="ft" style="background: #0B4F8F; color: #CFE3F5; font-size: 14px; position: relative">
@@ -531,271 +329,7 @@ function er(){return fetch('https://open.er-api.com/v6/latest/INR').then(functio
 fetch('https://api.frankfurter.dev/v1/latest?base=INR&symbols=USD,EUR,CNY,GBP').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates[c])r[c]=1/j.rates[c]});return er().catch(function(){}).then(function(){var c2=null;try{c2=JSON.parse(localStorage.getItem(K))}catch(e){}if(c2&&c2.r&&c2.r.AED)r.AED=c2.r.AED;save({r:r,d:new Date(j.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})})})}).catch(function(){er().catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'})});
 })();
 </script>
-<template id="tpl">
-<div style="font-family: 'Geist', system-ui, sans-serif; color: #0B2A4A; background: #FFFFFF; min-width: 0; overflow: hidden">
 
-</div>
-
-<!-- search hero -->
-<div style="background: linear-gradient(180deg, #DDF0FF 0%, #FFFFFF 100%)">
-<div style="max-width: 1400px; margin: 0 auto; padding: 64px 32px 28px">
-<div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.08em; margin-bottom: 20px">AIR · SEA · CUSTOMS — ONE SCREEN</div>
-<h1 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(42px, 5.4vw, 80px); line-height: 0.98; letter-spacing: -0.03em; margin: 0 0 16px; max-width: 1000px">Where's my shipment?</h1>
-<p style="font-size: 19px; line-height: 1.55; color: #17436B; max-width: 760px; margin: 0 0 28px">Track air and sea cargo with any reference you have. Unlike carrier sites, you also see the customs steps: shipping bill, LEO, bill of entry, duty and out of charge.</p>
-
-<div style="background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 28px; box-shadow: 0 20px 50px rgba(11,42,74,0.10); padding: 22px; max-width: 1100px">
-<div role="tablist" aria-label="Reference type" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px">
-<sc-for list="{{kinds}}" as="k" hint-placeholder-count="6">
-<button role="tab" aria-selected="{{k.on}}" onClick="{{k.pick}}" style="{{k.style}}">{{k.label}}</button>
-</sc-for>
-</div>
-<div style="display: flex; flex-wrap: wrap; gap: 10px">
-<input type="text" aria-label="Tracking reference" placeholder="{{placeholder}}" value="{{q}}" onChange="{{setQ}}" style="flex: 1 1 360px; min-width: 0; padding: 18px 20px; border: 1.5px solid #C9DCEC; border-radius: 999px; font-size: 18px; color: #0B2A4A; font-family: 'Geist Mono', monospace">
-<button class="go" onClick="{{track}}" style="background: #0A6CC2; color: #FFFFFF; border: 0; border-radius: 999px; padding: 0 34px; min-height: 60px; font-size: 17px; font-weight: 600; cursor: pointer; font-family: inherit">Track →</button>
-</div>
-<div style="display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-top: 14px; font-size: 14px; color: #5E7891">
-<span>Try a sample:</span>
-<button onClick="{{sampleAir}}" style="background: #EEF6FD; color: #0A6CC2; border: 0; border-radius: 999px; padding: 8px 14px; font-weight: 600; cursor: pointer; font-family: inherit">✈ Air export · phones BOM → DXB</button>
-<button onClick="{{sampleSea}}" style="background: #EEF6FD; color: #0A6CC2; border: 0; border-radius: 999px; padding: 8px 14px; font-weight: 600; cursor: pointer; font-family: inherit">⛴ Sea import · Shanghai → Nhava Sheva</button>
-</div>
-</div>
-</div>
-</div>
-
-<!-- result -->
-<div style="max-width: 1400px; margin: 0 auto; padding: 20px 32px 80px">
-<div style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.08em; color: #B4441A; background: #FFF1EC; display: inline-block; padding: 6px 12px; border-radius: 999px; margin-bottom: 16px">DESIGN PREVIEW · SAMPLE DATA</div>
-
-<!-- summary card -->
-<div style="background: #0A6CC2; color: #FFFFFF; border-radius: 28px; padding: 30px 32px; margin-bottom: 20px">
-<div style="display: flex; flex-wrap: wrap; gap: 14px 24px; justify-content: space-between; align-items: flex-start">
-<div style="min-width: 0">
-<div style="font-family: 'Geist Mono', monospace; font-size: 13px; color: #BFE5FF; letter-spacing: 0.06em">{{r.modeLabel}} · YAM JOB {{r.job}}</div>
-<div style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: 40px; line-height: 1.05; margin-top: 8px">{{r.headline}}</div>
-<div style="font-size: 16px; color: #DCEEFC; margin-top: 8px">Last update {{r.updated}}</div>
-</div>
-<div style="background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 10px 18px; font-weight: 700; font-size: 15px; white-space: nowrap">{{r.status}}</div>
-</div>
-
-<div style="display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; align-items: center; margin-top: 30px">
-<div><div style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 112%; font-size: 34px">{{r.fromCode}}</div><div style="font-size: 14px; color: #DCEEFC">{{r.fromName}}</div><div style="font-size: 13px; color: #BFE5FF; margin-top: 2px">{{r.fromTime}}</div></div>
-<div style="position: relative; height: 34px">
-<div style="position: absolute; left: 0; right: 0; top: 16px; height: 3px; background: rgba(255,255,255,0.25); border-radius: 999px"></div>
-<div style="{{r.barStyle}}"></div>
-<div class="mover" style="{{r.iconStyle}}">{{r.icon}}</div>
-</div>
-<div style="text-align: right"><div style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 112%; font-size: 34px">{{r.toCode}}</div><div style="font-size: 14px; color: #DCEEFC">{{r.toName}}</div><div style="font-size: 13px; color: #BFE5FF; margin-top: 2px">{{r.toTime}}</div></div>
-</div>
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-top: 26px">
-<sc-for list="{{r.facts}}" as="f" hint-placeholder-count="5">
-<div style="background: rgba(255,255,255,0.12); border-radius: 16px; padding: 14px 16px; min-width: 0"><div style="font-size: 12px; color: #DCEEFC">{{f.k}}</div><div style="font-weight: 600; font-size: 17px; margin-top: 4px; overflow-wrap: anywhere">{{f.v}}</div></div>
-</sc-for>
-</div>
-</div>
-
-<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
-
-<!-- milestones -->
-<div style="flex: 1.6 1 620px; min-width: 0; background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 28px; padding: 30px 32px">
-<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: baseline; margin-bottom: 22px">
-<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 108%; font-size: 28px; margin: 0">Every step, freight and customs</h2>
-<div style="display: flex; gap: 14px; font-size: 13px; color: #5E7891; align-items: center"><span style="display: inline-flex; gap: 6px; align-items: center"><span style="width: 10px; height: 10px; border-radius: 3px; background: #FFC93C"></span>Customs step</span><span style="display: inline-flex; gap: 6px; align-items: center"><span style="width: 10px; height: 10px; border-radius: 50%; background: #0A6CC2"></span>Freight step</span></div>
-</div>
-<sc-for list="{{r.steps}}" as="s" hint-placeholder-count="8">
-<div style="display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 16px">
-<div style="display: flex; flex-direction: column; align-items: center">
-<div class="{{s.dotClass}}" style="{{s.dot}}">{{s.mark}}</div>
-<div style="{{s.line}}"></div>
-</div>
-<div style="padding-bottom: 22px; min-width: 0">
-<div style="display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center">
-<span style="{{s.titleStyle}}">{{s.t}}</span>
-<sc-if value="{{s.customs}}" hint-placeholder-val="{{ true }}"><span style="background: #FFF3CC; color: #7A5A00; border-radius: 999px; padding: 3px 9px; font-size: 11px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em">CUSTOMS</span></sc-if>
-<sc-if value="{{s.isNow}}" hint-placeholder-val="{{ false }}"><span style="background: #0A6CC2; color: #FFFFFF; border-radius: 999px; padding: 3px 9px; font-size: 11px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em">NOW</span></sc-if>
-</div>
-<div style="font-size: 14px; color: #5E7891; margin-top: 4px">{{s.when}}</div>
-<sc-if value="{{s.hasNote}}" hint-placeholder-val="{{ true }}"><div style="font-size: 15px; color: #3D5873; margin-top: 6px; line-height: 1.5">{{s.note}}</div></sc-if>
-</div>
-</div>
-</sc-for>
-</div>
-
-<!-- side -->
-<div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
-<div style="background: #E9FBF0; border-radius: 28px; padding: 26px 28px">
-<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 21px">Get every update on WhatsApp</div>
-<div style="font-size: 15px; color: #2C5240; margin: 8px 0 16px; line-height: 1.5">We'll message you at each milestone, including the customs ones. No app to install.</div>
-<a href="https://wa.me/message/6YB7I76DV6UJL1" style="display: inline-block; background: #25D366; color: #06331A; padding: 13px 22px; border-radius: 999px; font-weight: 600; text-decoration: none">Turn on WhatsApp alerts</a>
-<div style="font-size: 13px; color: #2C5240; margin-top: 12px">Or <a href="contact.html" style="color: #0F7A3D">email me updates</a></div>
-</div>
-
-<div style="background: #F2F8FD; border-radius: 28px; padding: 26px 28px">
-<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px"><div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 21px">Documents</div><span style="font-size: 13px; color: #5E7891">🔒 Clients only</span></div>
-<div style="display: flex; flex-direction: column; gap: 8px; margin: 16px 0">
-<sc-for list="{{r.docs}}" as="d" hint-placeholder-count="4">
-<div style="display: flex; justify-content: space-between; gap: 10px; background: #FFFFFF; border-radius: 12px; padding: 12px 14px; font-size: 15px"><span>{{d.n}}</span><span style="color: #5E7891; font-size: 13px">{{d.s}}</span></div>
-</sc-for>
-</div>
-<a class="go" href="contact.html" style="display: inline-block; background: #0A6CC2; color: #FFFFFF; padding: 12px 20px; border-radius: 999px; font-weight: 600; text-decoration: none">Sign in to download</a>
-</div>
-
-<div style="background: #FFF8E6; border-radius: 28px; padding: 26px 28px">
-<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 21px">Your desk for this job</div>
-<div style="font-size: 15px; color: #4A4030; margin: 8px 0 14px; line-height: 1.5">{{r.desk}}<br>A real person replies within 2 working hours. For urgent cargo, WhatsApp or call any time.</div>
-<div style="display: flex; flex-wrap: wrap; gap: 10px">
-<a href="tel:+911141603301" style="background: #0B2A4A; color: #FFFFFF; padding: 12px 20px; border-radius: 999px; font-weight: 600; text-decoration: none">Call +91 11 4160 3301</a>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- how it works -->
-<div style="background: #F2F8FD">
-<div style="max-width: 1400px; margin: 0 auto; padding: 88px 32px">
-<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(34px, 4vw, 52px); line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 14px; max-width: 900px">Three sources. One answer.</h2>
-<p style="font-size: 18px; color: #3D5873; max-width: 760px; margin: 0 0 36px; line-height: 1.55">Most trackers only show what the airline or shipping line knows. Yours joins three feeds, so you're never left wondering whether cargo is stuck with customs.</p>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px">
-<sc-for list="{{sources}}" as="x" hint-placeholder-count="3">
-<div style="background: #FFFFFF; border-radius: 24px; padding: 28px">
-<div style="{{x.box}}">{{x.i}}</div>
-<div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-stretch: 106%; font-size: 22px; margin: 18px 0 8px">{{x.t}}</div>
-<div style="font-size: 16px; line-height: 1.6; color: #3D5873">{{x.b}}</div>
-</div>
-</sc-for>
-</div>
-</div>
-</div>
-
-<!-- FAQ -->
-<div style="max-width: 1000px; margin: 0 auto; padding: 88px 32px">
-<h2 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(34px, 4vw, 52px); line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 28px">Tracking questions</h2>
-<sc-for list="{{faqs}}" as="q" hint-placeholder-count="5">
-<details style="background: #F2F8FD; border-radius: 16px; padding: 20px 24px; margin-bottom: 10px">
-<summary style="font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 20px">{{q.q}}<span style="color: #0A6CC2">+</span></summary>
-<p style="font-size: 16px; line-height: 1.65; color: #3D5873; margin: 12px 0 0">{{q.a}}</p>
-</details>
-</sc-for>
-</div>
-
-
-</template>
-<script src="yam-runtime.js"></script>
-<script>
-
-(function(){const DCLogic=YAMDC.DCLogic;class Component extends DCLogic {
-  constructor(props) {
-    super(props);
-    this.state = { kind: 'awb', q: '123-4567 8905', mode: 'air' };
-  }
-  renderVals() {
-    const { kind, q, mode } = this.state;
-    const KINDS = [
-      ['job', 'YAM job no.', 'e.g. YAM/BOM/AE/26-1048', null],
-      ['awb', 'Air waybill (AWB)', 'e.g. 123-4567 8905', 'air'],
-      ['cntr', 'Container no.', 'e.g. SMPU 771234 9', 'sea'],
-      ['bl', 'Bill of lading', 'e.g. SHA2610045', 'sea'],
-      ['sb', 'Shipping bill', 'e.g. 4821736', 'air'],
-      ['be', 'Bill of entry', 'e.g. 5937204', 'sea']
-    ];
-    const tab = (on) => 'border: 0; border-radius: 999px; min-height: 38px; padding: 0 16px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Geist, sans-serif; ' + (on ? 'background: #0A6CC2; color: #FFFFFF;' : 'background: #EEF6FD; color: #3D5873;');
-    const cur = KINDS.find(k => k[0] === kind) || KINDS[0];
-
-    const AIR = {
-      modeLabel: 'AIR EXPORT', job: 'YAM/BOM/AE/26-1048', icon: '✈',
-      headline: '86 cartons of mobile handsets, in the air',
-      updated: '14 Oct, 23:52 IST', status: 'Departed · in flight', pct: 72,
-      fromCode: 'BOM', fromName: 'Mumbai, India', fromTime: 'Off-block 14 Oct 23:40',
-      toCode: 'DXB', toName: 'Dubai, UAE', toTime: 'ETA 15 Oct 01:55 local',
-      facts: [
-        { k: 'Air waybill', v: '123-4567 8905' }, { k: 'Pieces / gross', v: '86 ctns · 1,240 kg' },
-        { k: 'Chargeable weight', v: '1,310 kg' }, { k: 'Shipping bill', v: '4821736 · LEO granted' },
-        { k: 'Special handling', v: 'Lithium batteries, PI 967' }
-      ],
-      steps: [
-        ['Booking confirmed with airline', '14 Oct · 10:20', 'Space held on tonight\'s freighter.', 0],
-        ['Cargo received at Sahar export terminal', '14 Oct · 17:05', 'Weighed and dimensioned. Battery labels checked.', 0],
-        ['Shipping bill filed on ICEGATE', '14 Oct · 17:40', 'Filed by our licensed broker. Checklist approved by you at 16:55.', 1],
-        ['Customs examination done, LEO granted', '14 Oct · 20:15', 'Let Export Order issued. Cargo cleared to fly.', 1],
-        ['Built up on pallet and loaded', '14 Oct · 22:50', '', 0],
-        ['Departed Mumbai', '14 Oct · 23:40', '', 0],
-        ['In flight, arriving Dubai', 'Expected 15 Oct · 01:55 local', '', 0],
-        ['Handed over to consignee', 'Expected 15 Oct · morning', '', 0]
-      ], now: 6,
-      docs: [{ n: 'Air waybill copy', s: 'PDF' }, { n: 'Shipping bill + LEO', s: 'PDF' }, { n: 'Invoice & packing list', s: 'PDF' }, { n: 'Dangerous goods declaration', s: 'PDF' }],
-      desk: 'Sahar Air Cargo desk, Mumbai. Open 24×7.'
-    };
-    const SEA = {
-      modeLabel: 'SEA IMPORT · FCL', job: 'YAM/NSA/SI/26-0377', icon: '⛴',
-      headline: '1 × 40′ HC of machine parts, with customs',
-      updated: '13 Oct, 15:30 IST', status: 'Duty paid · awaiting out of charge', pct: 100,
-      fromCode: 'CNSHA', fromName: 'Shanghai, China', fromTime: 'Sailed 21 Sep',
-      toCode: 'INNSA', toName: 'Nhava Sheva, India', toTime: 'Arrived 11 Oct',
-      facts: [
-        { k: 'Container', v: 'SMPU 771234 9 · 40′ HC' }, { k: 'Bill of lading', v: 'SHA2610045' },
-        { k: 'Vessel / voyage', v: 'Sample Vessel · 041W' }, { k: 'Bill of entry', v: '5937204 · assessed' },
-        { k: 'Free days left at CFS', v: '3 days' }
-      ],
-      steps: [
-        ['Booking confirmed', '12 Sep', '', 0],
-        ['Container loaded at Shanghai', '19 Sep', '', 0],
-        ['Vessel sailed from Shanghai', '21 Sep', '', 0],
-        ['Transshipment at Port Klang', '29 Sep – 2 Oct', 'Connected on schedule.', 0],
-        ['Bill of entry filed on ICEGATE', '10 Oct (advance filing)', 'Filed before arrival, so clearance started early.', 1],
-        ['Arrived Nhava Sheva, IGM filed', '11 Oct', 'Container moved to CFS.', 0],
-        ['Assessed and duty paid', '13 Oct · 15:30', 'Duty paid online. Waiting for examination slot.', 1],
-        ['Out of charge', 'Expected 14 Oct', 'Customs releases the cargo for delivery.', 1],
-        ['Delivery order, gate-out and delivery', 'Expected 15 Oct', 'Truck booked to your factory.', 0]
-      ], now: 7,
-      docs: [{ n: 'Bill of lading', s: 'PDF' }, { n: 'Bill of entry + duty challan', s: 'PDF' }, { n: 'Delivery order', s: 'Pending' }, { n: 'Proof of delivery', s: 'Pending' }],
-      desk: 'Sea import desk, Masjid Bunder, Mumbai.'
-    };
-    const D = mode === 'sea' ? SEA : AIR;
-    const steps = D.steps.map(([t, when, note, customs], i) => {
-      const done = i < D.now, isNow = i === D.now, last = i === D.steps.length - 1;
-      const col = customs ? '#FFC93C' : '#0A6CC2';
-      const dot = 'width: 30px; height: 30px; border-radius: ' + (customs ? '9px' : '50%') + '; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex: none; ' +
-        (done ? 'background: ' + col + '; color: ' + (customs ? '#0B2A4A' : '#FFFFFF') + ';' : isNow ? 'background: #FFFFFF; border: 3px solid ' + col + '; color: #0A6CC2; box-sizing: border-box;' : 'background: #FFFFFF; border: 2px dashed #C9DCEC; box-sizing: border-box;');
-      return {
-        t, when, note, customs: !!customs, isNow, hasNote: !!note,
-        mark: done ? '✓' : '', dotClass: isNow ? 'now' : '', dot,
-        line: last ? 'display: none' : 'flex: 1; width: 3px; min-height: 18px; margin: 4px 0; border-radius: 3px; background: ' + (done ? '#0A6CC2' : '#E1EDF7') + ';',
-        titleStyle: 'font-weight: ' + (isNow ? '700' : '600') + '; font-size: 17px; color: ' + (done || isNow ? '#0B2A4A' : '#8AA0B5') + ';'
-      };
-    });
-    const r = {
-      ...D, steps,
-      barStyle: 'position: absolute; left: 0; top: 16px; height: 3px; background: #FFC93C; border-radius: 999px; width: ' + D.pct + '%;',
-      iconStyle: 'position: absolute; top: 0; left: calc(' + Math.min(D.pct, 96) + '% - 14px); width: 34px; height: 34px; border-radius: 50%; background: #FFFFFF; color: #0A6CC2; display: flex; align-items: center; justify-content: center; font-size: 17px;'
-    };
-    return {
-      kinds: KINDS.map(([id, label, , m]) => ({ label, on: String(kind === id), style: tab(kind === id), pick: () => this.setState({ kind: id, q: '', mode: m || mode }) })),
-      placeholder: cur[2], q,
-      setQ: (e) => this.setState({ q: e && e.target ? e.target.value : e }),
-      track: () => this.setState({ mode: cur[3] || mode }),
-      sampleAir: () => this.setState({ kind: 'awb', q: '123-4567 8905', mode: 'air' }),
-      sampleSea: () => this.setState({ kind: 'cntr', q: 'SMPU 771234 9', mode: 'sea' }),
-      r,
-      sources: [
-        { i: '🛳', box: 'width: 52px; height: 52px; border-radius: 16px; background: #DDF0FF; display: flex; align-items: center; justify-content: center; font-size: 24px;', t: 'Airlines & shipping lines', b: 'Flight status, vessel position, transshipment and arrival come straight from carrier feeds, refreshed every few hours.' },
-        { i: '🛃', box: 'width: 52px; height: 52px; border-radius: 16px; background: #FFF3CC; display: flex; align-items: center; justify-content: center; font-size: 24px;', t: 'Indian customs (ICEGATE)', b: 'Shipping bill, LEO, bill of entry, assessment, duty and out of charge, the steps other trackers leave out.' },
-        { i: '🧭', box: 'width: 52px; height: 52px; border-radius: 16px; background: #E9FBF0; display: flex; align-items: center; justify-content: center; font-size: 24px;', t: 'Our own desks', b: 'Cargo received, examination, trucking and delivery, updated by the YAM team handling your job in Mumbai, Delhi or Mundra.' }
-      ],
-      faqs: [
-        { q: 'Which numbers can I track with?', a: 'Your YAM job number, air waybill (AWB), container number, bill of lading, shipping bill or bill of entry number. Any one is enough.' },
-        { q: 'How do I track an air waybill (AWB)?', a: 'Enter the 11-digit AWB: the 3-digit airline prefix followed by the 8-digit serial, for example 123-4567 8905. You will see flight status plus the export or import customs steps.' },
-        { q: 'How do I track a container?', a: 'Enter the 11-character container number: 4 letters and 7 digits, for example SMPU 771234 9. You will see vessel milestones, port arrival, customs and delivery.' },
-        { q: 'What do LEO and out of charge mean?', a: 'LEO (Let Export Order) is customs permission for export cargo to leave India. Out of charge is customs permission for import cargo to be taken out of the port or CFS. Until you see these, cargo cannot move.' },
-        { q: 'Can I get updates without checking the website?', a: 'Yes. Turn on WhatsApp or email alerts and we will message you at each milestone, including customs steps.' }
-      ]
-    };
-  }
-}
-
-;YAMDC.mount(document.getElementById('app'),wrapTpl(),Component);
-function wrapTpl(){const d=document.createElement('div');d.appendChild(document.getElementById('tpl').content.cloneNode(true));return d;}})();
-</script>
-
+<script src="track.js?v=1"></script>
 </body>
 </html>
