@@ -23,9 +23,9 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .mono{font-family:'Geist Mono',monospace;letter-spacing:.05em}
 @keyframes blink{50%{opacity:.3}}.live{animation:blink 1.6s steps(2) infinite}
 .util{background:#0B4F8F;color:#CFE3F5;font-size:13px}
-.util-in{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;padding-top:8px;padding-bottom:8px}
+.util-in{display:flex;flex-wrap:nowrap;gap:8px 22px;align-items:center;padding-top:8px;padding-bottom:8px;white-space:nowrap;min-width:0}.util-in>*{flex:none}
 .util a{color:#FFFFFF;text-decoration:none}.util a.gold{color:#FFC93C;font-weight:600}
-.fx{margin-left:auto;display:flex;gap:14px;align-items:center;font-family:'Geist Mono',monospace;font-size:12px;white-space:nowrap;overflow:hidden}
+.util-in>.fx{margin-left:auto;flex:0 1 auto;min-width:0}.fx{margin-left:auto;display:flex;gap:14px;align-items:center;font-family:'Geist Mono',monospace;font-size:12px;white-space:nowrap;overflow:hidden}
 .fx b{color:#FFFFFF;font-weight:600}.fxl{color:#FFC93C;font-weight:600;letter-spacing:.06em}.fxd{color:#9FC2E6;font-size:11px}
 .btn-calc{background:#FFC93C;color:#0B2A4A!important;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none;white-space:nowrap}.btn-calc.btn-duty{background:#10B981;color:#000000!important}
 .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #E1EDF7;backdrop-filter:saturate(1.4) blur(8px)}
@@ -96,8 +96,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <header class="site">
 <div class="util"><div class="wrap util-in">
 <span class="mono u1"><span class="live" style="color:#FFC93C">●</span> Bureau de l’aéroport de Mumbai ouvert 24×7</span>
-<a href="https://wa.me/message/6YB7I76DV6UJL1" class="u1">WhatsApp @YAMLOGISTICS</a>
-<a href="fr/container-load-planner.html" class="u1 lpnew"><b>NOUVEAU</b> Planificateur de chargement 3D gratuit →</a>
+<a href="https://wa.me/message/6YB7I76DV6UJL1" class="u1">Écrivez-nous sur WhatsApp</a>
 <a href="YAM-Logistics-Corporate-Profile.pdf" download="" class="gold u1">↓ Présentation de l’entreprise (PDF)</a>
 <div class="fx" id="fx" title="Taux de référence du marché, mis à jour quotidiennement. Les droits de douane sont calculés sur les taux de change notifiés par le CBIC."><span class="fxl">COURS ₹</span><span class="fxi" data-c="USD">USD <b>—</b></span><span class="fxi" data-c="EUR">EUR <b>—</b></span><span class="fxi" data-c="CNY">CNY <b>—</b></span><span class="fxi" data-c="GBP">GBP <b>—</b></span><span class="fxi" data-c="AED">AED <b>—</b></span><span class="fxd" id="fxd"></span></div>
 <select onchange="location.href=this.value" data-notr="" aria-label="Language" class="langs"><option lang="en" value="about.html">English</option><option lang="zh" value="zh/about.html">中文</option><option lang="es" value="es/about.html">Español</option><option lang="ar" value="ar/about.html">العربية</option><option selected lang="fr" value="fr/about.html">🌐 Français</option><option lang="de" value="de/about.html">Deutsch</option><option lang="ja" value="ja/about.html">日本語</option><option lang="pt" value="pt/about.html">Português</option><option lang="ru" value="ru/about.html">Русский</option><option lang="hi" value="hi/about.html">हिन्दी</option><option lang="ko" value="ko/about.html">한국어</option></select></div></div>
