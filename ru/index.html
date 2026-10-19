@@ -1038,12 +1038,13 @@ Kachchh, Gujarat 370421</span>
 </footer>
 <a href="https://wa.me/message/6YB7I76DV6UJL1" aria-label="Написать YAM в WhatsApp" class="fab"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12Z" /><path d="M9 9.5c.3 1.8 1.7 3.7 3.8 4.6l1.2-1.1 1.8.8-.4 1.6c-3.2.2-6.9-3.2-7.2-6.4l1.6-.5.8 1.8z" /></svg></a>
 <script>
-(function(){var C=['USD','EUR','CNY','GBP','AED'],K='yamfx1';
+(function(){var C=['USD','EUR','CNY','GBP','AED'],K='yamfx2';
 function show(d){if(!d||!d.r)return;var el=document.getElementById('fx');if(!el)return;el.querySelectorAll('.fxi').forEach(function(s){var c=s.getAttribute('data-c'),v=d.r[c];if(v){s.querySelector('b').textContent='₹'+v.toFixed(2)}else{s.style.display='none'}});var dd=document.getElementById('fxd');if(dd&&d.d)dd.textContent='ref. '+d.d;}
-try{var c=JSON.parse(localStorage.getItem(K)||'null');if(c&&Date.now()-c.t<6*3600e3){show(c);return}}catch(e){}
+try{var c=JSON.parse(localStorage.getItem(K)||'null');if(c&&Date.now()-c.t<3*3600e3){show(c);return}}catch(e){}
 function save(d){d.t=Date.now();try{localStorage.setItem(K,JSON.stringify(d))}catch(e){}show(d)}
-function er(){return fetch('https://open.er-api.com/v6/latest/INR').then(function(x){return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates&&j.rates[c])r[c]=1/j.rates[c]});save({r:r,d:(j.time_last_update_utc||'').slice(5,16)})})}
-fetch('https://api.frankfurter.dev/v1/latest?base=INR&symbols=USD,EUR,CNY,GBP').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates[c])r[c]=1/j.rates[c]});return er().catch(function(){}).then(function(){var c2=null;try{c2=JSON.parse(localStorage.getItem(K))}catch(e){}if(c2&&c2.r&&c2.r.AED)r.AED=c2.r.AED;save({r:r,d:new Date(j.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})})})}).catch(function(){er().catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'})});
+function er(){return fetch('https://open.er-api.com/v6/latest/INR').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(j){if(!j.rates)throw 0;var r={};C.forEach(function(c){if(j.rates[c])r[c]=1/j.rates[c]});var dt=j.time_last_update_unix?new Date(j.time_last_update_unix*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';save({r:r,d:dt})})}
+function ecb(){return fetch('https://api.frankfurter.dev/v1/latest?base=INR&symbols=USD,EUR,CNY,GBP').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(j){var r={};C.forEach(function(c){if(j.rates[c])r[c]=1/j.rates[c]});save({r:r,d:new Date(j.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})})})}
+er().catch(function(){return ecb()}).catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'});
 })();
 </script>
 <template id="tpl">
