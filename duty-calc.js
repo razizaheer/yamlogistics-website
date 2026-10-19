@@ -197,8 +197,8 @@
     if (t === 'FOB') { fob = val; fr = num(frI); if (fr == null) { fr = fob * 0.20; frDef = true; } ins = num(insI); if (ins == null) { ins = fob * 0.01125; insDef = true; } cif = fob + fr + ins; }
     else if (t === 'CNF') { cnf = val; ins = num(insI); if (ins == null) { ins = cnf * 0.01125; insDef = true; } cif = cnf + ins; }
     else cif = val;
-    var cifR = cif * rate, landing = cifR * 0.01;
-    var av = cifR + landing;
+    var cifR = cif * rate;
+    var av = cifR;
     if (noRate) av = 0;
     var bcdAmt = bcd != null ? av * bcd / 100 : 0, sws = swsNo != null ? 0 : bcdAmt * 0.10, aidcAmt = av * aidcR / 100, igst = (av + bcdAmt + sws + aidcAmt) * igRate / 100, tot = bcdAmt + sws + aidcAmt + igst;
     var pol = POL[x[8]] || POL['?'];
@@ -224,8 +224,7 @@
         H += '<tr><td>Insurance <span class="s">' + (insDef ? '1.125% of C&amp;F (default)' : 'as entered') + '</span></td><td>' + R(ins) + '</td></tr>';
       }
       H += '<tr><td>CIF value' + (t === 'CIF' && rate !== 1 ? ' <span class="s">' + cur.value + ' × ' + rate + '</span>' : '') + '</td><td>' + inr(cifR) + '</td></tr>';
-      H += '<tr><td>Landing charges <span class="s">1% of CIF</span></td><td>' + inr(landing) + '</td></tr>';
-      H += '<tr><td><b>Assessable value</b> <span class="s">CIF + landing charges</span></td><td>' + inr(av) + '</td></tr>';
+      H += '<tr><td><b>Assessable value</b> <span class="s">CIF value in rupees</span></td><td>' + inr(av) + '</td></tr>';
     }
     H += '<tr><td>Basic customs duty <span class="s">' + (bcd != null ? pct(bcd) : h(bcdTxt || '—')) + ' · ' + h(bcdSrc) + '</span></td><td>' + (av > 0 ? inr(bcdAmt) : (bcd != null ? pct(bcd) : '—')) + '</td></tr>';
     if (swsNo != null) H += '<tr><td>Social welfare surcharge <span class="s">exempt · Notification 11/2018-Customs, S. No. ' + swsNo + '</span></td><td>' + (av > 0 ? inr(0) : 'Nil') + '</td></tr>';
