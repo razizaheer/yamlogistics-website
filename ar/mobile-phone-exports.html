@@ -13,6 +13,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+.links summary.nbf,summary.nbf{background:#FFF4D6;color:#5A4310!important;box-shadow:inset 0 0 0 1.5px #FFC93C}.nbf:hover{background:#FFEDB8}
+.ft-in{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 32px}.mega .ft-in{padding-top:24px;padding-bottom:26px}
+.ft-h{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;font-size:11px;letter-spacing:.1em;color:#0A6CC2}.ft-h a{font-family:'Archivo',sans-serif;font-weight:700;font-size:14px;letter-spacing:0;color:#0A6CC2!important;text-decoration:none}
+.ft-c .mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;color:#5E7891;margin:4px 0 6px}
+.ft-c a{display:block;padding:9px 12px;margin:0 -12px;border-radius:12px;text-decoration:none;color:#0B2A4A;white-space:normal}.ft-c a:hover{background:#F2F8FD}
+.ft-c a b{display:block;font-family:'Archivo',sans-serif;font-weight:700;font-size:15px}.ft-c a span{display:block;font-size:13px;line-height:1.4;color:#3D5873;margin-top:2px}
+.ft-f{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;border-top:1px solid #E1EDF7;margin-top:10px;padding-top:12px;font-size:13.5px;color:#3D5873}.ft-f a{color:#0A6CC2;font-weight:600;text-decoration:none}
+html.navc .ft-in,html.navc .mega .ft-in{grid-template-columns:1fr;padding:8px 0 16px}html.navc .ft-c a span{display:none}
 .nb{display:inline-flex!important;align-items:center;justify-content:center;gap:5px;width:140px;height:44px;padding:0 10px!important;hyphens:auto;overflow-wrap:anywhere;border-radius:999px;font-family:'Archivo',sans-serif;font-size:13.5px;font-weight:700;line-height:1.15;text-align:center;white-space:normal;text-decoration:none;color:#FFFFFF!important;box-sizing:border-box;border:0!important;transition:transform .15s,filter .15s}
 .nb:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(11,42,74,.14)}.nb i{font-style:normal;flex:none}.nb[aria-current]{box-shadow:0 0 0 3px rgba(10,108,194,.35)}
 .nb1{background:#0B2A4A}.nb2{background:#17436B}.nb3{background:#0B4F8F}.nb4{background:#0A6CC2}.nb5{background:#E1EDF7;color:#0B2A4A!important}.nb6{background:#FFF4D6;color:#5A4310!important}.nb5:hover{background:#D4E5F4}.nb6:hover{background:#FFEDB8}
@@ -56,6 +64,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
 .navt{display:none}.burger{display:none}.calc-m{display:none}
 @media (max-width:1240px){
+ .ft-in{grid-template-columns:1fr;padding:8px 0 16px}.ft-c a span{display:none}
  .nav .links .nb{width:100%;height:46px;font-size:15px;margin-top:8px}
  .hide-s{display:none}
  .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
@@ -125,16 +134,30 @@ html[dir=rtl] .lp-step.on{box-shadow:inset -3px 0 0 #0A6CC2}</style></head>
 <a href="ar/container-load-planner.html" class="calc-m">🧊 حاسبة التحميل</a><input type="checkbox" id="navt" class="navt" aria-label="فتح القائمة"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
 <details class="sol"><summary class="nb nb1">الحلول ▾</summary><div class="mega"><div class="wrap mega-in">
-<div><div class="mh">الشحن</div><a href="ar/ocean-freight.html">الشحن البحري · FCL / LCL</a><a href="ar/air-freight.html">الشحن الجوي</a><a href="project-cargo.html">شحنات المشاريع والأحجام الكبيرة (ODC) والبضائع السائبة</a><a href="haulage-icd.html">النقل البري والموانئ الجافة</a><a href="aircraft-charter.html">استئجار الطائرات</a><a href="air-sea-bridge.html">جسر بحري-جوي</a><a href="expedited-shipping.html">الشحن العاجل والسريع</a><a href="ar/container-load-planner.html">حاسبة تحميل الحاويات</a><a href="ar/cbm-calculator.html">حاسبة CBM والوزن الحجمي</a></div><div><div class="mh">الجمارك والامتثال</div><a href="ar/customs-brokerage.html">التخليص الجمركي</a><a href="customs-duty-calculator.html">حاسبة الرسوم الجمركية</a><a href="export-benefit-finder.html">حوافز التصدير</a><a href="incoterms.html">مستكشف Incoterms 2020</a><a href="trade-compliance.html">استشارات الامتثال التجاري</a><a href="destination-do-agency.html">وكالة الوجهة / أوامر التسليم</a><a href="cargo-insurance.html">تأمين البضائع</a><a href="supply-chain-consulting.html">استشارات سلسلة التوريد</a></div><div><div class="mh">خدمات متخصصة</div><a href="ar/mobile-phone-exports.html">تصدير الهواتف</a><a href="buyers-consolidation.html">تجميع شحنات المشترين وإدارة أوامر الشراء</a><a href="ar/third-country-trade.html">التجارة مع دول ثالثة وإعادة التصدير</a><a href="bonded-warehousing.html">المستودعات الجمركية وFTWZ</a><a href="exhibition-ata-carnet.html">شحن المعارض ودفتر ATA</a><a href="ar/third-country-trade.html">دعم التجارة الوسيطة</a><a href="emergency-relief-cargo.html">شحنات الطوارئ والإغاثة</a><a href="complex-regions.html">المناطق الصعبة</a></div><div><div class="mh">بضائع خاصة</div><a href="dangerous-goods.html">البضائع الخطرة</a><a href="dg-labels.html">ملصقات وعلامات DG (مجانًا)</a><a href="lithium-battery-checker.html">مدقّق بطاريات الليثيوم</a><a href="perishables.html">البضائع سريعة التلف</a><a href="pharmaceuticals.html">الأدوية</a><a href="live-animals.html">الحيوانات الحية</a><a href="pet-relocation.html">نقل الحيوانات الأليفة</a></div>
+<div><div class="mh">الشحن</div><a href="ar/ocean-freight.html">الشحن البحري · FCL / LCL</a><a href="ar/air-freight.html">الشحن الجوي</a><a href="project-cargo.html">شحنات المشاريع والأحجام الكبيرة (ODC) والبضائع السائبة</a><a href="haulage-icd.html">النقل البري والموانئ الجافة</a><a href="aircraft-charter.html">استئجار الطائرات</a><a href="air-sea-bridge.html">جسر بحري-جوي</a><a href="expedited-shipping.html">الشحن العاجل والسريع</a></div><div><div class="mh">الجمارك والامتثال</div><a href="ar/customs-brokerage.html">التخليص الجمركي</a><a href="trade-compliance.html">استشارات الامتثال التجاري</a><a href="destination-do-agency.html">وكالة الوجهة / أوامر التسليم</a><a href="cargo-insurance.html">تأمين البضائع</a><a href="supply-chain-consulting.html">استشارات سلسلة التوريد</a></div><div><div class="mh">خدمات متخصصة</div><a href="ar/mobile-phone-exports.html">تصدير الهواتف</a><a href="buyers-consolidation.html">تجميع شحنات المشترين وإدارة أوامر الشراء</a><a href="ar/third-country-trade.html">التجارة مع دول ثالثة وإعادة التصدير</a><a href="bonded-warehousing.html">المستودعات الجمركية وFTWZ</a><a href="exhibition-ata-carnet.html">شحن المعارض ودفتر ATA</a><a href="ar/third-country-trade.html">دعم التجارة الوسيطة</a><a href="emergency-relief-cargo.html">شحنات الطوارئ والإغاثة</a><a href="complex-regions.html">المناطق الصعبة</a></div><div><div class="mh">بضائع خاصة</div><a href="dangerous-goods.html">البضائع الخطرة</a><a href="perishables.html">البضائع سريعة التلف</a><a href="pharmaceuticals.html">الأدوية</a><a href="live-animals.html">الحيوانات الحية</a><a href="pet-relocation.html">نقل الحيوانات الأليفة</a></div>
 <div class="mcta"><strong>لست متأكدًا مما تحتاجه؟</strong><span>أخبر مخلّصًا مرخّصًا بما تشحنه، وسنصمّم لك المسار والمستندات.</span><a href="ar/contact.html">تحدّث إلى فريقنا →</a></div>
+</div></div></details>
+<details class="sol ftm"><summary class="nb nbf">أدوات مجانية ▾</summary><div class="mega"><div class="wrap ft-in">
+<div class="ft-h"><span class="mono">أدوات مجانية · بدون تسجيل</span><a href="free-tools.html">عرض كل الأدوات ←</a></div>
+<div class="ft-c"><div class="mh">الجمارك والرسوم</div>
+<a href="customs-duty-calculator.html"><b>حاسبة رسوم الاستيراد</b><span>الرسوم الأساسية وSWS وIGST لأي رمز HSN مع التكلفة الواصلة</span></a>
+<a href="export-benefit-finder.html"><b>حوافز التصدير</b><span>معدلات الاسترداد وRoDTEP وRoSCTL حسب رمز HS</span></a>
+<a href="incoterms.html"><b>مخطط إنكوترمز 2020</b><span>من يدفع ومن يتحمل المخاطر في القواعد الـ11</span></a></div>
+<div class="ft-c"><div class="mh">الشحن والحاويات</div>
+<a href="ar/container-load-planner.html"><b>حاسبة تحميل الحاويات</b><span>كم حاوية 20′ أو 40′ أو 40′ HC تحتاج، مع خطة تحميل ثلاثية الأبعاد</span></a>
+<a href="ar/cbm-calculator.html"><b>الحجم المكعب والوزن الحجمي</b><span>الحجم الكلي والوزن المحتسب جواً وW/M للشحن الجزئي</span></a>
+<a href="track-shipment.html"><b>تتبع شحنة</b><span>أكثر من 55 خط ملاحي و400 شركة طيران، مع مرحلة الميناء الهندي</span></a></div>
+<div class="ft-c"><div class="mh">البضائع الخطرة</div>
+<a href="lithium-battery-checker.html"><b>فاحص بطاريات الليثيوم</b><span>رقم UN وتعليمات التعبئة والملصقات في 30 ثانية</span></a>
+<a href="dg-labels.html"><b>ملصقات البضائع الخطرة</b><span>51 ملصقاً بصيغة PDF للطباعة: فئات الخطر وعلامات الليثيوم وCAO</span></a></div>
+<div class="ft-f"><a href="trade-desk.html">Trade Desk: تحديثات الجمارك والشحن في الهند ←</a><a href="https://wa.me/message/6YB7I76DV6UJL1">تحتاج مساعدة في النتيجة؟ راسل المكتب عبر واتساب ←</a></div>
 </div></div></details>
 <a href="ar/about.html" class="nb nb2"><span>من نحن</span></a><a href="ar/mobile-phone-exports.html" class="nb nb3" aria-current="page"><span>تصدير الهواتف</span></a>
 <a href="customs-duty-calculator.html" class="nb nb4"><span>حاسبة رسوم الاستيراد</span></a>
-<a href="export-benefit-finder.html" class="nb nb5"><span>حوافز التصدير</span></a>
-<a href="ar/container-load-planner.html" class="nb nb6"><span>حاسبة تحميل الحاويات</span></a>
 <a href="track-shipment.html" class="btn-o">تتبّع الشحنة</a>
 <a href="ar/contact.html" class="btn go">اطلب عرض سعر</a>
 </div></div></nav>
+<script>(function(){var d=document.querySelectorAll(".links details.sol");d.forEach(function(x){x.addEventListener("toggle",function(){if(x.open)d.forEach(function(y){if(y!==x)y.open=false})})});document.addEventListener("click",function(e){d.forEach(function(x){if(x.open&&!x.contains(e.target))x.open=false})})})();</script>
 </header>
 <script>(function(){var h=document.documentElement;function ov(n,l){return n.scrollWidth>n.clientWidth+2||(l&&l.scrollWidth>l.clientWidth+2)}function chk(){h.classList.remove('navc','navt2','navt3');var n=document.querySelector('.nav-in');if(!n)return;var l=n.querySelector('.links');if(ov(n,l)){h.classList.add('navt2');if(ov(n,l)){h.classList.remove('navt2');h.classList.add('navt3');if(ov(n,l)){h.classList.remove('navt3');h.classList.add('navc');}}}}chk();window.addEventListener('resize',chk);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(chk);window.addEventListener('load',chk);})();</script>
 <main id="app">
