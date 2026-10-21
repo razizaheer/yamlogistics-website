@@ -13,6 +13,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+.links summary.nbf,summary.nbf{background:#FFF4D6;color:#5A4310!important;box-shadow:inset 0 0 0 1.5px #FFC93C}.nbf:hover{background:#FFEDB8}
+.ft-in{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 32px}.mega .ft-in{padding-top:24px;padding-bottom:26px}
+.ft-h{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;font-size:11px;letter-spacing:.1em;color:#0A6CC2}.ft-h a{font-family:'Archivo',sans-serif;font-weight:700;font-size:14px;letter-spacing:0;color:#0A6CC2!important;text-decoration:none}
+.ft-c .mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;color:#5E7891;margin:4px 0 6px}
+.ft-c a{display:block;padding:9px 12px;margin:0 -12px;border-radius:12px;text-decoration:none;color:#0B2A4A;white-space:normal}.ft-c a:hover{background:#F2F8FD}
+.ft-c a b{display:block;font-family:'Archivo',sans-serif;font-weight:700;font-size:15px}.ft-c a span{display:block;font-size:13px;line-height:1.4;color:#3D5873;margin-top:2px}
+.ft-f{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;border-top:1px solid #E1EDF7;margin-top:10px;padding-top:12px;font-size:13.5px;color:#3D5873}.ft-f a{color:#0A6CC2;font-weight:600;text-decoration:none}
+html.navc .ft-in,html.navc .mega .ft-in{grid-template-columns:1fr;padding:8px 0 16px}html.navc .ft-c a span{display:none}
 .nb{display:inline-flex!important;align-items:center;justify-content:center;gap:5px;width:140px;height:44px;padding:0 10px!important;hyphens:auto;overflow-wrap:anywhere;border-radius:999px;font-family:'Archivo',sans-serif;font-size:13.5px;font-weight:700;line-height:1.15;text-align:center;white-space:normal;text-decoration:none;color:#FFFFFF!important;box-sizing:border-box;border:0!important;transition:transform .15s,filter .15s}
 .nb:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(11,42,74,.14)}.nb i{font-style:normal;flex:none}.nb[aria-current]{box-shadow:0 0 0 3px rgba(10,108,194,.35)}
 .nb1{background:#0B2A4A}.nb2{background:#17436B}.nb3{background:#0B4F8F}.nb4{background:#0A6CC2}.nb5{background:#E1EDF7;color:#0B2A4A!important}.nb6{background:#FFF4D6;color:#5A4310!important}.nb5:hover{background:#D4E5F4}.nb6:hover{background:#FFEDB8}
@@ -56,6 +64,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
 .navt{display:none}.burger{display:none}.calc-m{display:none}
 @media (max-width:1240px){
+ .ft-in{grid-template-columns:1fr;padding:8px 0 16px}.ft-c a span{display:none}
  .nav .links .nb{width:100%;height:46px;font-size:15px;margin-top:8px}
  .hide-s{display:none}
  .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
@@ -116,16 +125,30 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="de/container-load-planner.html" class="calc-m">🧊 Ladungsrechner</a><input type="checkbox" id="navt" class="navt" aria-label="Menü öffnen"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
 <details class="sol"><summary class="nb nb1">Lösungen ▾</summary><div class="mega"><div class="wrap mega-in">
-<div><div class="mh">FRACHT</div><a href="de/ocean-freight.html">Seefracht · FCL / LCL</a><a href="de/air-freight.html">Luftfracht</a><a href="project-cargo.html">Projektladung, ODC &amp; Breakbulk</a><a href="haulage-icd.html">Lkw-Transport &amp; ICDs</a><a href="aircraft-charter.html">Flugzeugcharter</a><a href="air-sea-bridge.html">Sea-Air-Brücke</a><a href="expedited-shipping.html">Express &amp; dringend</a><a href="de/container-load-planner.html">Container-Ladungsrechner</a><a href="de/cbm-calculator.html">CBM- &amp; Volumengewicht-Rechner</a></div><div><div class="mh">ZOLL &amp; COMPLIANCE</div><a href="de/customs-brokerage.html">Zollabfertigung</a><a href="customs-duty-calculator.html">Zollrechner</a><a href="export-benefit-finder.html">Exportvorteile</a><a href="incoterms.html">Incoterms 2020 Explorer</a><a href="trade-compliance.html">Beratung Außenhandels-Compliance</a><a href="destination-do-agency.html">Empfangsagentur / DO</a><a href="cargo-insurance.html">Transportversicherung</a><a href="supply-chain-consulting.html">Supply-Chain-Beratung</a></div><div><div class="mh">SPEZIALLEISTUNGEN</div><a href="de/mobile-phone-exports.html">Handy-Exporte</a><a href="buyers-consolidation.html">Einkäuferkonsolidierung &amp; PO-Management</a><a href="de/third-country-trade.html">Drittlandhandel &amp; Re-Export</a><a href="bonded-warehousing.html">Zolllager &amp; FTWZ</a><a href="exhibition-ata-carnet.html">Messefracht &amp; Carnet ATA</a><a href="de/third-country-trade.html">Unterstützung im Transithandel</a><a href="emergency-relief-cargo.html">Not- und Hilfsgüter</a><a href="complex-regions.html">Schwierige Regionen</a></div><div><div class="mh">SONDERFRACHT</div><a href="dangerous-goods.html">Gefahrgut</a><a href="dg-labels.html">Gefahrgutetiketten &amp; Kennzeichen (kostenlos)</a><a href="lithium-battery-checker.html">Lithiumbatterie-Check</a><a href="perishables.html">Verderbliche Waren</a><a href="pharmaceuticals.html">Pharmazeutika</a><a href="live-animals.html">Lebende Tiere</a><a href="pet-relocation.html">Haustier-Umzug</a></div>
+<div><div class="mh">FRACHT</div><a href="de/ocean-freight.html">Seefracht · FCL / LCL</a><a href="de/air-freight.html">Luftfracht</a><a href="project-cargo.html">Projektladung, ODC &amp; Breakbulk</a><a href="haulage-icd.html">Lkw-Transport &amp; ICDs</a><a href="aircraft-charter.html">Flugzeugcharter</a><a href="air-sea-bridge.html">Sea-Air-Brücke</a><a href="expedited-shipping.html">Express &amp; dringend</a></div><div><div class="mh">ZOLL &amp; COMPLIANCE</div><a href="de/customs-brokerage.html">Zollabfertigung</a><a href="trade-compliance.html">Beratung Außenhandels-Compliance</a><a href="destination-do-agency.html">Empfangsagentur / DO</a><a href="cargo-insurance.html">Transportversicherung</a><a href="supply-chain-consulting.html">Supply-Chain-Beratung</a></div><div><div class="mh">SPEZIALLEISTUNGEN</div><a href="de/mobile-phone-exports.html">Handy-Exporte</a><a href="buyers-consolidation.html">Einkäuferkonsolidierung &amp; PO-Management</a><a href="de/third-country-trade.html">Drittlandhandel &amp; Re-Export</a><a href="bonded-warehousing.html">Zolllager &amp; FTWZ</a><a href="exhibition-ata-carnet.html">Messefracht &amp; Carnet ATA</a><a href="de/third-country-trade.html">Unterstützung im Transithandel</a><a href="emergency-relief-cargo.html">Not- und Hilfsgüter</a><a href="complex-regions.html">Schwierige Regionen</a></div><div><div class="mh">SONDERFRACHT</div><a href="dangerous-goods.html">Gefahrgut</a><a href="perishables.html">Verderbliche Waren</a><a href="pharmaceuticals.html">Pharmazeutika</a><a href="live-animals.html">Lebende Tiere</a><a href="pet-relocation.html">Haustier-Umzug</a></div>
 <div class="mcta"><strong>Nicht sicher, was Sie brauchen?</strong><span>Sagen Sie einem lizenzierten Zollagenten, was Sie transportieren. Wir planen Route und Papiere.</span><a href="de/contact.html">Mit dem Desk sprechen →</a></div>
+</div></div></details>
+<details class="sol ftm"><summary class="nb nbf">Kostenlose Tools ▾</summary><div class="mega"><div class="wrap ft-in">
+<div class="ft-h"><span class="mono">KOSTENLOSE TOOLS · OHNE ANMELDUNG</span><a href="free-tools.html">Alle kostenlosen Tools →</a></div>
+<div class="ft-c"><div class="mh">ZOLL &amp; ABGABEN</div>
+<a href="customs-duty-calculator.html"><b>Einfuhrzoll-Rechner</b><span>BCD, SWS und IGST für jeden HSN-Code, mit Einstandskosten</span></a>
+<a href="export-benefit-finder.html"><b>Exportvorteile</b><span>Drawback-, RoDTEP- und RoSCTL-Sätze nach HS-Code</span></a>
+<a href="incoterms.html"><b>Incoterms-2020-Übersicht</b><span>Wer zahlt und wer trägt das Risiko, für alle 11 Klauseln</span></a></div>
+<div class="ft-c"><div class="mh">FRACHT &amp; CONTAINER</div>
+<a href="de/container-load-planner.html"><b>Container-Ladungsrechner</b><span>Wie viele 20′, 40′ oder 40′ HC Sie brauchen, mit 3D-Stauplan</span></a>
+<a href="de/cbm-calculator.html"><b>CBM &amp; Volumengewicht</b><span>Gesamtvolumen, Luftfracht-Taxgewicht und LCL W/M</span></a>
+<a href="track-shipment.html"><b>Sendung verfolgen</b><span>55+ Reedereien und 400 Airlines, plus der indische Hafenabschnitt</span></a></div>
+<div class="ft-c"><div class="mh">GEFAHRGUT</div>
+<a href="lithium-battery-checker.html"><b>Lithiumbatterie-Check</b><span>UN-Nummer, Verpackungsanweisung und Etiketten in 30 Sekunden</span></a>
+<a href="dg-labels.html"><b>Gefahrgut-Etiketten</b><span>51 druckbare PDF-Etiketten: Gefahrklassen, Lithium-Marken, CAO</span></a></div>
+<div class="ft-f"><a href="trade-desk.html">Trade Desk: Zoll- und Versand-News für Indien →</a><a href="https://wa.me/message/6YB7I76DV6UJL1">Hilfe beim Ergebnis? WhatsApp an den Desk →</a></div>
 </div></div></details>
 <a href="de/about.html" class="nb nb2"><span>Über uns</span></a><a href="de/mobile-phone-exports.html" class="nb nb3"><span>Handy-Exporte</span></a>
 <a href="customs-duty-calculator.html" class="nb nb4"><span>Einfuhrzoll-Rechner</span></a>
-<a href="export-benefit-finder.html" class="nb nb5"><span>Exportvorteile</span></a>
-<a href="de/container-load-planner.html" class="nb nb6"><span>Container-Ladungsrechner</span></a>
 <a href="track-shipment.html" class="btn-o">Sendung verfolgen</a>
 <a href="de/contact.html" class="btn go">Angebot anfordern</a>
 </div></div></nav>
+<script>(function(){var d=document.querySelectorAll(".links details.sol");d.forEach(function(x){x.addEventListener("toggle",function(){if(x.open)d.forEach(function(y){if(y!==x)y.open=false})})});document.addEventListener("click",function(e){d.forEach(function(x){if(x.open&&!x.contains(e.target))x.open=false})})})();</script>
 </header>
 <script>(function(){var h=document.documentElement;function ov(n,l){return n.scrollWidth>n.clientWidth+2||(l&&l.scrollWidth>l.clientWidth+2)}function chk(){h.classList.remove('navc','navt2','navt3');var n=document.querySelector('.nav-in');if(!n)return;var l=n.querySelector('.links');if(ov(n,l)){h.classList.add('navt2');if(ov(n,l)){h.classList.remove('navt2');h.classList.add('navt3');if(ov(n,l)){h.classList.remove('navt3');h.classList.add('navc');}}}}chk();window.addEventListener('resize',chk);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(chk);window.addEventListener('load',chk);})();</script>
 <main id="app">
