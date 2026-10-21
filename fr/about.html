@@ -13,6 +13,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+.nb{display:inline-flex!important;align-items:center;justify-content:center;gap:5px;width:140px;height:44px;padding:0 8px!important;hyphens:auto;overflow-wrap:anywhere;border-radius:12px;font-size:13.5px;font-weight:700;line-height:1.15;text-align:center;white-space:normal;text-decoration:none;color:#FFFFFF!important;box-sizing:border-box;border:0!important;transition:transform .15s,filter .15s}
+.nb:hover{transform:translateY(-1px);filter:brightness(1.08)}.nb i{font-style:normal;flex:none}.nb[aria-current]{box-shadow:0 0 0 3px rgba(10,108,194,.35)}
+.nb1{background:#0B2A4A}.nb2{background:#6D28D9}.nb3{background:#0A6CC2}.nb4{background:#10B981;color:#04271B!important}.nb5{background:#C2410C}.nb6{background:#FFC93C;color:#0B2A4A!important}
+.sol summary.nb{list-style:none;cursor:pointer}
+.nav .links{gap:8px}
+html.navt2 .links .nb{width:124px;font-size:12.5px;height:42px}
+html.navt3 .links .nb{width:112px;font-size:12px;height:40px;padding:0 6px!important}
+html.navc .links .nb{width:100%;height:46px;margin-top:8px;font-size:15px}html.navc .sol summary.nb{display:flex!important}
 .lpnew{color:#FFFFFF;text-decoration:none}.lpnew b{background:#FFC93C;color:#0B2A4A;font-size:10px;padding:2px 7px;border-radius:999px;margin-right:6px;letter-spacing:.06em}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -48,6 +56,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
 .navt{display:none}.burger{display:none}.calc-m{display:none}
 @media (max-width:1240px){
+ .nav .links .nb{width:100%;height:46px;font-size:15px;margin-top:8px}
  .hide-s{display:none}
  .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
  .links{flex-wrap:nowrap;white-space:normal}
@@ -104,13 +113,14 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="fr/index.html" class="brand"><img src="yam-logo.svg" alt="YAM Logistics : Your Answer to Movements, depuis 1968" width="131" height="68" class="logo"></a>
 <a href="fr/container-load-planner.html" class="calc-m">🧊 Planificateur 3D</a><input type="checkbox" id="navt" class="navt" aria-label="Ouvrir le menu"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
-<details class="sol"><summary>Solutions ▾</summary><div class="mega"><div class="wrap mega-in">
-<div><div class="mh">FRET</div><a href="fr/ocean-freight.html">Fret maritime · FCL / LCL</a><a href="fr/air-freight.html">Fret aérien</a><a href="project-cargo.html">Colis lourds, hors gabarit (ODC) et breakbulk</a><a href="haulage-icd.html">Transport routier et ICD</a><a href="aircraft-charter.html">Affrètement d’avions</a><a href="air-sea-bridge.html">Pont mer-air</a><a href="expedited-shipping.html">Express et urgent</a><a href="fr/container-load-planner.html">Planificateur de chargement de conteneurs</a><a href="fr/cbm-calculator.html">Calculateur CBM et poids volumétrique</a></div><div><div class="mh">DOUANE ET CONFORMITÉ</div><a href="fr/customs-brokerage.html">Dédouanement</a><a href="customs-duty-calculator.html">Calculateur de droits de douane</a><a href="export-benefit-finder.html">Export benefit finder</a><a href="incoterms.html">Explorateur Incoterms 2020</a><a href="trade-compliance.html">Conseil en conformité douanière</a><a href="destination-do-agency.html">Agent à destination / DO</a><a href="cargo-insurance.html">Assurance marchandises</a><a href="supply-chain-consulting.html">Conseil en supply chain</a></div><div><div class="mh">SPÉCIALITÉS</div><a href="fr/mobile-phone-exports.html">Exportation de téléphones mobiles</a><a href="buyers-consolidation.html">Consolidation acheteur et gestion des commandes</a><a href="fr/third-country-trade.html">Commerce triangulaire et réexportation</a><a href="bonded-warehousing.html">Entrepôt sous douane et FTWZ</a><a href="exhibition-ata-carnet.html">Fret pour salons et carnet ATA</a><a href="fr/third-country-trade.html">Accompagnement du négoce international</a><a href="emergency-relief-cargo.html">Fret d’urgence et humanitaire</a><a href="complex-regions.html">Régions complexes</a></div><div><div class="mh">MARCHANDISES SPÉCIALES</div><a href="dangerous-goods.html">Marchandises dangereuses</a><a href="dg-labels.html">Étiquettes et marquages DG (gratuits)</a><a href="lithium-battery-checker.html">Vérificateur de batteries au lithium</a><a href="perishables.html">Denrées périssables</a><a href="pharmaceuticals.html">Produits pharmaceutiques</a><a href="live-animals.html">Animaux vivants</a><a href="pet-relocation.html">Déménagement d’animaux de compagnie</a></div>
+<details class="sol"><summary class="nb nb1">Solutions ▾</summary><div class="mega"><div class="wrap mega-in">
+<div><div class="mh">FRET</div><a href="fr/ocean-freight.html">Fret maritime · FCL / LCL</a><a href="fr/air-freight.html">Fret aérien</a><a href="project-cargo.html">Colis lourds, hors gabarit (ODC) et breakbulk</a><a href="haulage-icd.html">Transport routier et ICD</a><a href="aircraft-charter.html">Affrètement d’avions</a><a href="air-sea-bridge.html">Pont mer-air</a><a href="expedited-shipping.html">Express et urgent</a><a href="fr/container-load-planner.html">Planificateur de chargement de conteneurs</a><a href="fr/cbm-calculator.html">Calculateur CBM et poids volumétrique</a></div><div><div class="mh">DOUANE ET CONFORMITÉ</div><a href="fr/customs-brokerage.html">Dédouanement</a><a href="customs-duty-calculator.html">Calculateur de droits de douane</a><a href="export-benefit-finder.html">Aides à l’export</a><a href="incoterms.html">Explorateur Incoterms 2020</a><a href="trade-compliance.html">Conseil en conformité douanière</a><a href="destination-do-agency.html">Agent à destination / DO</a><a href="cargo-insurance.html">Assurance marchandises</a><a href="supply-chain-consulting.html">Conseil en supply chain</a></div><div><div class="mh">SPÉCIALITÉS</div><a href="fr/mobile-phone-exports.html">Export de téléphones</a><a href="buyers-consolidation.html">Consolidation acheteur et gestion des commandes</a><a href="fr/third-country-trade.html">Commerce triangulaire et réexportation</a><a href="bonded-warehousing.html">Entrepôt sous douane et FTWZ</a><a href="exhibition-ata-carnet.html">Fret pour salons et carnet ATA</a><a href="fr/third-country-trade.html">Accompagnement du négoce international</a><a href="emergency-relief-cargo.html">Fret d’urgence et humanitaire</a><a href="complex-regions.html">Régions complexes</a></div><div><div class="mh">MARCHANDISES SPÉCIALES</div><a href="dangerous-goods.html">Marchandises dangereuses</a><a href="dg-labels.html">Étiquettes et marquages DG (gratuits)</a><a href="lithium-battery-checker.html">Vérificateur de batteries au lithium</a><a href="perishables.html">Denrées périssables</a><a href="pharmaceuticals.html">Produits pharmaceutiques</a><a href="live-animals.html">Animaux vivants</a><a href="pet-relocation.html">Déménagement d’animaux de compagnie</a></div>
 <div class="mcta"><strong>Vous ne savez pas de quoi vous avez besoin ?</strong><span>Dites à un commissionnaire agréé ce que vous expédiez. Nous concevons l’itinéraire et les documents.</span><a href="fr/contact.html">Parler au bureau →</a></div>
 </div></div></details>
-<a href="fr/customs-brokerage.html">Douane</a><a href="fr/mobile-phone-exports.html">Exportation de mobiles</a><a href="fr/third-country-trade.html">Commerce triangulaire</a><a href="fr/about.html" aria-current="page">À propos de nous</a>
-<a href="fr/container-load-planner.html" class="btn-calc">🧊 Planificateur de chargement 3D</a>
-<a href="customs-duty-calculator.html" class="btn-calc btn-duty">🧮 Calculateur de droits à l’importation</a>
+<a href="fr/mobile-phone-exports.html" class="nb nb2"><span>Export de téléphones</span></a><a href="fr/about.html" class="nb nb3" aria-current="page"><span>À propos de nous</span></a>
+<a href="customs-duty-calculator.html" class="nb nb4"><span>Calculateur de droits à l’importation</span></a>
+<a href="export-benefit-finder.html" class="nb nb5"><span>Aides à l’export</span></a>
+<a href="fr/container-load-planner.html" class="nb nb6"><span>Plan de chargement 3D</span></a>
 <a href="track-shipment.html" class="btn-o">Suivre un envoi</a>
 <a href="fr/contact.html" class="btn go">Demander un devis</a>
 </div></div></nav>
@@ -475,7 +485,7 @@ Kachchh, Gujarat 370421</span>
 
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">SPÉCIALITÉS</span>
-<a href="fr/mobile-phone-exports.html">Exportation de téléphones mobiles</a><a href="buyers-consolidation.html">Consolidation acheteur et gestion des commandes</a><a href="fr/third-country-trade.html">Commerce triangulaire et réexportation</a><a href="bonded-warehousing.html">Entrepôt sous douane et FTWZ</a><a href="exhibition-ata-carnet.html">Fret pour salons et carnet ATA</a><a href="fr/third-country-trade.html">Accompagnement du négoce international</a><a href="emergency-relief-cargo.html">Fret d’urgence et humanitaire</a><a href="complex-regions.html">Régions complexes</a>
+<a href="fr/mobile-phone-exports.html">Export de téléphones</a><a href="buyers-consolidation.html">Consolidation acheteur et gestion des commandes</a><a href="fr/third-country-trade.html">Commerce triangulaire et réexportation</a><a href="bonded-warehousing.html">Entrepôt sous douane et FTWZ</a><a href="exhibition-ata-carnet.html">Fret pour salons et carnet ATA</a><a href="fr/third-country-trade.html">Accompagnement du négoce international</a><a href="emergency-relief-cargo.html">Fret d’urgence et humanitaire</a><a href="complex-regions.html">Régions complexes</a>
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 8px">
