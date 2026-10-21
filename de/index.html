@@ -13,6 +13,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+.nb{display:inline-flex!important;align-items:center;justify-content:center;gap:5px;width:140px;height:44px;padding:0 8px!important;hyphens:auto;overflow-wrap:anywhere;border-radius:12px;font-size:13.5px;font-weight:700;line-height:1.15;text-align:center;white-space:normal;text-decoration:none;color:#FFFFFF!important;box-sizing:border-box;border:0!important;transition:transform .15s,filter .15s}
+.nb:hover{transform:translateY(-1px);filter:brightness(1.08)}.nb i{font-style:normal;flex:none}.nb[aria-current]{box-shadow:0 0 0 3px rgba(10,108,194,.35)}
+.nb1{background:#0B2A4A}.nb2{background:#6D28D9}.nb3{background:#0A6CC2}.nb4{background:#10B981;color:#04271B!important}.nb5{background:#C2410C}.nb6{background:#FFC93C;color:#0B2A4A!important}
+.sol summary.nb{list-style:none;cursor:pointer}
+.nav .links{gap:8px}
+html.navt2 .links .nb{width:124px;font-size:12.5px;height:42px}
+html.navt3 .links .nb{width:112px;font-size:12px;height:40px;padding:0 6px!important}
+html.navc .links .nb{width:100%;height:46px;margin-top:8px;font-size:15px}html.navc .sol summary.nb{display:flex!important}
 .lpnew{color:#FFFFFF;text-decoration:none}.lpnew b{background:#FFC93C;color:#0B2A4A;font-size:10px;padding:2px 7px;border-radius:999px;margin-right:6px;letter-spacing:.06em}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -48,6 +56,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
 .navt{display:none}.burger{display:none}.calc-m{display:none}
 @media (max-width:1240px){
+ .nav .links .nb{width:100%;height:46px;font-size:15px;margin-top:8px}
  .hide-s{display:none}
  .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
  .links{flex-wrap:nowrap;white-space:normal}
@@ -133,13 +142,14 @@ input{font:inherit}
 <a href="de/index.html" class="brand"><img src="yam-logo.svg" alt="YAM Logistics: Your Answer to Movements, gegründet 1968" width="131" height="68" class="logo"></a>
 <a href="de/container-load-planner.html" class="calc-m">🧊 3D-Planer</a><input type="checkbox" id="navt" class="navt" aria-label="Menü öffnen"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
-<details class="sol"><summary>Lösungen ▾</summary><div class="mega"><div class="wrap mega-in">
-<div><div class="mh">FRACHT</div><a href="de/ocean-freight.html">Seefracht · FCL / LCL</a><a href="de/air-freight.html">Luftfracht</a><a href="project-cargo.html">Projektladung, ODC &amp; Breakbulk</a><a href="haulage-icd.html">Lkw-Transport &amp; ICDs</a><a href="aircraft-charter.html">Flugzeugcharter</a><a href="air-sea-bridge.html">Sea-Air-Brücke</a><a href="expedited-shipping.html">Express &amp; dringend</a><a href="de/container-load-planner.html">Containerstauplaner</a><a href="de/cbm-calculator.html">CBM- &amp; Volumengewicht-Rechner</a></div><div><div class="mh">ZOLL &amp; COMPLIANCE</div><a href="de/customs-brokerage.html">Zollabfertigung</a><a href="customs-duty-calculator.html">Zollrechner</a><a href="export-benefit-finder.html">Export benefit finder</a><a href="incoterms.html">Incoterms 2020 Explorer</a><a href="trade-compliance.html">Beratung Außenhandels-Compliance</a><a href="destination-do-agency.html">Empfangsagentur / DO</a><a href="cargo-insurance.html">Transportversicherung</a><a href="supply-chain-consulting.html">Supply-Chain-Beratung</a></div><div><div class="mh">SPEZIALLEISTUNGEN</div><a href="de/mobile-phone-exports.html">Handy-Exporte</a><a href="buyers-consolidation.html">Einkäuferkonsolidierung &amp; PO-Management</a><a href="de/third-country-trade.html">Drittlandhandel &amp; Re-Export</a><a href="bonded-warehousing.html">Zolllager &amp; FTWZ</a><a href="exhibition-ata-carnet.html">Messefracht &amp; Carnet ATA</a><a href="de/third-country-trade.html">Unterstützung im Transithandel</a><a href="emergency-relief-cargo.html">Not- und Hilfsgüter</a><a href="complex-regions.html">Schwierige Regionen</a></div><div><div class="mh">SONDERFRACHT</div><a href="dangerous-goods.html">Gefahrgut</a><a href="dg-labels.html">Gefahrgutetiketten &amp; Kennzeichen (kostenlos)</a><a href="lithium-battery-checker.html">Lithiumbatterie-Check</a><a href="perishables.html">Verderbliche Waren</a><a href="pharmaceuticals.html">Pharmazeutika</a><a href="live-animals.html">Lebende Tiere</a><a href="pet-relocation.html">Haustier-Umzug</a></div>
+<details class="sol"><summary class="nb nb1">Lösungen ▾</summary><div class="mega"><div class="wrap mega-in">
+<div><div class="mh">FRACHT</div><a href="de/ocean-freight.html">Seefracht · FCL / LCL</a><a href="de/air-freight.html">Luftfracht</a><a href="project-cargo.html">Projektladung, ODC &amp; Breakbulk</a><a href="haulage-icd.html">Lkw-Transport &amp; ICDs</a><a href="aircraft-charter.html">Flugzeugcharter</a><a href="air-sea-bridge.html">Sea-Air-Brücke</a><a href="expedited-shipping.html">Express &amp; dringend</a><a href="de/container-load-planner.html">Containerstauplaner</a><a href="de/cbm-calculator.html">CBM- &amp; Volumengewicht-Rechner</a></div><div><div class="mh">ZOLL &amp; COMPLIANCE</div><a href="de/customs-brokerage.html">Zollabfertigung</a><a href="customs-duty-calculator.html">Zollrechner</a><a href="export-benefit-finder.html">Exportvorteile</a><a href="incoterms.html">Incoterms 2020 Explorer</a><a href="trade-compliance.html">Beratung Außenhandels-Compliance</a><a href="destination-do-agency.html">Empfangsagentur / DO</a><a href="cargo-insurance.html">Transportversicherung</a><a href="supply-chain-consulting.html">Supply-Chain-Beratung</a></div><div><div class="mh">SPEZIALLEISTUNGEN</div><a href="de/mobile-phone-exports.html">Handy-Exporte</a><a href="buyers-consolidation.html">Einkäuferkonsolidierung &amp; PO-Management</a><a href="de/third-country-trade.html">Drittlandhandel &amp; Re-Export</a><a href="bonded-warehousing.html">Zolllager &amp; FTWZ</a><a href="exhibition-ata-carnet.html">Messefracht &amp; Carnet ATA</a><a href="de/third-country-trade.html">Unterstützung im Transithandel</a><a href="emergency-relief-cargo.html">Not- und Hilfsgüter</a><a href="complex-regions.html">Schwierige Regionen</a></div><div><div class="mh">SONDERFRACHT</div><a href="dangerous-goods.html">Gefahrgut</a><a href="dg-labels.html">Gefahrgutetiketten &amp; Kennzeichen (kostenlos)</a><a href="lithium-battery-checker.html">Lithiumbatterie-Check</a><a href="perishables.html">Verderbliche Waren</a><a href="pharmaceuticals.html">Pharmazeutika</a><a href="live-animals.html">Lebende Tiere</a><a href="pet-relocation.html">Haustier-Umzug</a></div>
 <div class="mcta"><strong>Nicht sicher, was Sie brauchen?</strong><span>Sagen Sie einem lizenzierten Zollagenten, was Sie transportieren. Wir planen Route und Papiere.</span><a href="de/contact.html">Mit dem Desk sprechen →</a></div>
 </div></div></details>
-<a href="de/customs-brokerage.html">Zoll</a><a href="de/mobile-phone-exports.html">Handy-Exporte</a><a href="de/third-country-trade.html">Drittlandhandel</a><a href="de/about.html">Über uns</a>
-<a href="de/container-load-planner.html" class="btn-calc">🧊 3D-Stauplaner</a>
-<a href="customs-duty-calculator.html" class="btn-calc btn-duty">🧮 Einfuhrzoll-Rechner</a>
+<a href="de/mobile-phone-exports.html" class="nb nb2"><span>Handy-Exporte</span></a><a href="de/about.html" class="nb nb3"><span>Über uns</span></a>
+<a href="customs-duty-calculator.html" class="nb nb4"><span>Einfuhrzoll-Rechner</span></a>
+<a href="export-benefit-finder.html" class="nb nb5"><span>Exportvorteile</span></a>
+<a href="de/container-load-planner.html" class="nb nb6"><span>3D-Stauplaner</span></a>
 <a href="track-shipment.html" class="btn-o">Sendung verfolgen</a>
 <a href="de/contact.html" class="btn go">Angebot anfordern</a>
 </div></div></nav>
@@ -743,7 +753,7 @@ input{font:inherit}
 
 <a class="card" href="export-benefit-finder.html" style="background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 20px; padding: 24px; text-decoration: none; color: #0B2A4A; display: flex; gap: 16px; align-items: start">
 <span style="flex: 0 0 auto; width: 50px; height: 50px; border-radius: 14px; background: #FFF4D6; color: #B45309; display: flex; align-items: center; justify-content: center; font-family: 'Geist Mono', monospace; font-size: 14px; font-weight: 500">₹</span>
-<span style="display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-weight: 600; font-size: 17px">Export benefit finder</span><span style="font-size: 14px; line-height: 1.5; color: #5E7891">Drawback, RoDTEP and RoSCTL on your HS code, worked out in rupees. Live now.</span></span>
+<span style="display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-weight: 600; font-size: 17px">Exportvorteile</span><span style="font-size: 14px; line-height: 1.5; color: #5E7891">Drawback, RoDTEP and RoSCTL on your HS code, worked out in rupees. Live now.</span></span>
 </a>
 
 <a class="card" href="incoterms.html" style="background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 20px; padding: 24px; text-decoration: none; color: #0B2A4A; display: flex; gap: 16px; align-items: start">
