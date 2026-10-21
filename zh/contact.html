@@ -13,6 +13,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+.links summary.nbf,summary.nbf{background:#FFF4D6;color:#5A4310!important;box-shadow:inset 0 0 0 1.5px #FFC93C}.nbf:hover{background:#FFEDB8}
+.ft-in{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 32px}.mega .ft-in{padding-top:24px;padding-bottom:26px}
+.ft-h{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;font-size:11px;letter-spacing:.1em;color:#0A6CC2}.ft-h a{font-family:'Archivo',sans-serif;font-weight:700;font-size:14px;letter-spacing:0;color:#0A6CC2!important;text-decoration:none}
+.ft-c .mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;color:#5E7891;margin:4px 0 6px}
+.ft-c a{display:block;padding:9px 12px;margin:0 -12px;border-radius:12px;text-decoration:none;color:#0B2A4A;white-space:normal}.ft-c a:hover{background:#F2F8FD}
+.ft-c a b{display:block;font-family:'Archivo',sans-serif;font-weight:700;font-size:15px}.ft-c a span{display:block;font-size:13px;line-height:1.4;color:#3D5873;margin-top:2px}
+.ft-f{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;border-top:1px solid #E1EDF7;margin-top:10px;padding-top:12px;font-size:13.5px;color:#3D5873}.ft-f a{color:#0A6CC2;font-weight:600;text-decoration:none}
+html.navc .ft-in,html.navc .mega .ft-in{grid-template-columns:1fr;padding:8px 0 16px}html.navc .ft-c a span{display:none}
 .nb{display:inline-flex!important;align-items:center;justify-content:center;gap:5px;width:140px;height:44px;padding:0 10px!important;hyphens:auto;overflow-wrap:anywhere;border-radius:999px;font-family:'Archivo',sans-serif;font-size:13.5px;font-weight:700;line-height:1.15;text-align:center;white-space:normal;text-decoration:none;color:#FFFFFF!important;box-sizing:border-box;border:0!important;transition:transform .15s,filter .15s}
 .nb:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(11,42,74,.14)}.nb i{font-style:normal;flex:none}.nb[aria-current]{box-shadow:0 0 0 3px rgba(10,108,194,.35)}
 .nb1{background:#0B2A4A}.nb2{background:#17436B}.nb3{background:#0B4F8F}.nb4{background:#0A6CC2}.nb5{background:#E1EDF7;color:#0B2A4A!important}.nb6{background:#FFF4D6;color:#5A4310!important}.nb5:hover{background:#D4E5F4}.nb6:hover{background:#FFEDB8}
@@ -56,6 +64,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
 .navt{display:none}.burger{display:none}.calc-m{display:none}
 @media (max-width:1240px){
+ .ft-in{grid-template-columns:1fr;padding:8px 0 16px}.ft-c a span{display:none}
  .nav .links .nb{width:100%;height:46px;font-size:15px;margin-top:8px}
  .hide-s{display:none}
  .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
@@ -116,16 +125,30 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="zh/container-load-planner.html" class="calc-m">🧊 装载计算器</a><input type="checkbox" id="navt" class="navt" aria-label="打开菜单"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
 <details class="sol"><summary class="nb nb1">解决方案 ▾</summary><div class="mega"><div class="wrap mega-in">
-<div><div class="mh">货运</div><a href="zh/ocean-freight.html">海运 · 整箱 / 拼箱</a><a href="zh/air-freight.html">空运</a><a href="project-cargo.html">项目货物、超限货物及件杂货</a><a href="haulage-icd.html">陆运拖车与内陆集装箱站</a><a href="aircraft-charter.html">包机</a><a href="air-sea-bridge.html">海空联运</a><a href="expedited-shipping.html">加急与紧急运输</a><a href="zh/container-load-planner.html">集装箱装载计算器</a><a href="zh/cbm-calculator.html">CBM与体积重计算器</a></div><div><div class="mh">报关与合规</div><a href="zh/customs-brokerage.html">报关服务</a><a href="customs-duty-calculator.html">关税计算器</a><a href="export-benefit-finder.html">出口优惠查询</a><a href="incoterms.html">Incoterms 2020 贸易术语查询</a><a href="trade-compliance.html">贸易合规咨询</a><a href="destination-do-agency.html">目的港 / 换单代理</a><a href="cargo-insurance.html">货物保险</a><a href="supply-chain-consulting.html">供应链咨询</a></div><div><div class="mh">专业服务</div><a href="zh/mobile-phone-exports.html">手机出口</a><a href="buyers-consolidation.html">买方集运与订单（PO）管理</a><a href="zh/third-country-trade.html">第三国贸易与转口</a><a href="bonded-warehousing.html">保税仓储与 FTWZ</a><a href="exhibition-ata-carnet.html">展品运输与 ATA 单证册</a><a href="zh/third-country-trade.html">转手贸易支持</a><a href="emergency-relief-cargo.html">紧急救援物资运输</a><a href="complex-regions.html">复杂地区</a></div><div><div class="mh">特种货物</div><a href="dangerous-goods.html">危险品</a><a href="dg-labels.html">危险品标签与标记（免费）</a><a href="lithium-battery-checker.html">锂电池查询工具</a><a href="perishables.html">生鲜易腐品</a><a href="pharmaceuticals.html">医药品</a><a href="live-animals.html">活体动物</a><a href="pet-relocation.html">宠物托运</a></div>
+<div><div class="mh">货运</div><a href="zh/ocean-freight.html">海运 · 整箱 / 拼箱</a><a href="zh/air-freight.html">空运</a><a href="project-cargo.html">项目货物、超限货物及件杂货</a><a href="haulage-icd.html">陆运拖车与内陆集装箱站</a><a href="aircraft-charter.html">包机</a><a href="air-sea-bridge.html">海空联运</a><a href="expedited-shipping.html">加急与紧急运输</a></div><div><div class="mh">报关与合规</div><a href="zh/customs-brokerage.html">报关服务</a><a href="trade-compliance.html">贸易合规咨询</a><a href="destination-do-agency.html">目的港 / 换单代理</a><a href="cargo-insurance.html">货物保险</a><a href="supply-chain-consulting.html">供应链咨询</a></div><div><div class="mh">专业服务</div><a href="zh/mobile-phone-exports.html">手机出口</a><a href="buyers-consolidation.html">买方集运与订单（PO）管理</a><a href="zh/third-country-trade.html">第三国贸易与转口</a><a href="bonded-warehousing.html">保税仓储与 FTWZ</a><a href="exhibition-ata-carnet.html">展品运输与 ATA 单证册</a><a href="zh/third-country-trade.html">转手贸易支持</a><a href="emergency-relief-cargo.html">紧急救援物资运输</a><a href="complex-regions.html">复杂地区</a></div><div><div class="mh">特种货物</div><a href="dangerous-goods.html">危险品</a><a href="perishables.html">生鲜易腐品</a><a href="pharmaceuticals.html">医药品</a><a href="live-animals.html">活体动物</a><a href="pet-relocation.html">宠物托运</a></div>
 <div class="mcta"><strong>不确定需要哪种服务？</strong><span>告诉持牌报关员您要运什么，我们来设计路线并办理单证。</span><a href="zh/contact.html">联系服务台 →</a></div>
+</div></div></details>
+<details class="sol ftm"><summary class="nb nbf">免费工具 ▾</summary><div class="mega"><div class="wrap ft-in">
+<div class="ft-h"><span class="mono">免费工具 · 无需注册</span><a href="free-tools.html">查看全部免费工具 →</a></div>
+<div class="ft-c"><div class="mh">海关与关税</div>
+<a href="customs-duty-calculator.html"><b>进口关税计算器</b><span>任意HSN编码的基本关税、SWS和IGST及到岸成本</span></a>
+<a href="export-benefit-finder.html"><b>出口优惠查询</b><span>按HS编码查退税、RoDTEP和RoSCTL费率</span></a>
+<a href="incoterms.html"><b>2020国际贸易术语图表</b><span>11条规则下谁付费、谁承担风险</span></a></div>
+<div class="ft-c"><div class="mh">货物与集装箱</div>
+<a href="zh/container-load-planner.html"><b>集装箱装载计算器</b><span>需要几个20′、40′或40′高柜，附3D装箱图</span></a>
+<a href="zh/cbm-calculator.html"><b>立方数与体积重量</b><span>总体积、空运计费重量和拼箱W/M</span></a>
+<a href="track-shipment.html"><b>追踪货物</b><span>55+家船公司和400家航空公司，含印度港口段</span></a></div>
+<div class="ft-c"><div class="mh">危险品</div>
+<a href="lithium-battery-checker.html"><b>锂电池检查工具</b><span>30秒查UN编号、包装说明和标签</span></a>
+<a href="dg-labels.html"><b>危险品标签</b><span>51种可打印PDF标签：危险类别、锂电池标记、CAO</span></a></div>
+<div class="ft-f"><a href="trade-desk.html">Trade Desk：印度海关与航运动态 →</a><a href="https://wa.me/message/6YB7I76DV6UJL1">对结果有疑问？WhatsApp联系我们 →</a></div>
 </div></div></details>
 <a href="zh/about.html" class="nb nb2"><span>关于我们</span></a><a href="zh/mobile-phone-exports.html" class="nb nb3"><span>手机出口</span></a>
 <a href="customs-duty-calculator.html" class="nb nb4"><span>进口关税计算器</span></a>
-<a href="export-benefit-finder.html" class="nb nb5"><span>出口优惠查询</span></a>
-<a href="zh/container-load-planner.html" class="nb nb6"><span>集装箱装载计算器</span></a>
 <a href="track-shipment.html" class="btn-o">货物追踪</a>
 <a href="zh/contact.html" class="btn go">获取报价</a>
 </div></div></nav>
+<script>(function(){var d=document.querySelectorAll(".links details.sol");d.forEach(function(x){x.addEventListener("toggle",function(){if(x.open)d.forEach(function(y){if(y!==x)y.open=false})})});document.addEventListener("click",function(e){d.forEach(function(x){if(x.open&&!x.contains(e.target))x.open=false})})})();</script>
 </header>
 <script>(function(){var h=document.documentElement;function ov(n,l){return n.scrollWidth>n.clientWidth+2||(l&&l.scrollWidth>l.clientWidth+2)}function chk(){h.classList.remove('navc','navt2','navt3');var n=document.querySelector('.nav-in');if(!n)return;var l=n.querySelector('.links');if(ov(n,l)){h.classList.add('navt2');if(ov(n,l)){h.classList.remove('navt2');h.classList.add('navt3');if(ov(n,l)){h.classList.remove('navt3');h.classList.add('navc');}}}}chk();window.addEventListener('resize',chk);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(chk);window.addEventListener('load',chk);})();</script>
 <main id="app">
