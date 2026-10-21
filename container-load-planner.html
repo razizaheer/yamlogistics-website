@@ -13,6 +13,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+.nb{display:inline-flex!important;align-items:center;justify-content:center;gap:5px;width:140px;height:44px;padding:0 8px!important;hyphens:auto;overflow-wrap:anywhere;border-radius:12px;font-size:13.5px;font-weight:700;line-height:1.15;text-align:center;white-space:normal;text-decoration:none;color:#FFFFFF!important;box-sizing:border-box;border:0!important;transition:transform .15s,filter .15s}
+.nb:hover{transform:translateY(-1px);filter:brightness(1.08)}.nb i{font-style:normal;flex:none}.nb[aria-current]{box-shadow:0 0 0 3px rgba(10,108,194,.35)}
+.nb1{background:#0B2A4A}.nb2{background:#6D28D9}.nb3{background:#0A6CC2}.nb4{background:#10B981;color:#04271B!important}.nb5{background:#C2410C}.nb6{background:#FFC93C;color:#0B2A4A!important}
+.sol summary.nb{list-style:none;cursor:pointer}
+.nav .links{gap:8px}
+html.navt2 .links .nb{width:124px;font-size:12.5px;height:42px}
+html.navt3 .links .nb{width:112px;font-size:12px;height:40px;padding:0 6px!important}
+html.navc .links .nb{width:100%;height:46px;margin-top:8px;font-size:15px}html.navc .sol summary.nb{display:flex!important}
 .lpnew{color:#FFFFFF;text-decoration:none}.lpnew b{background:#FFC93C;color:#0B2A4A;font-size:10px;padding:2px 7px;border-radius:999px;margin-right:6px;letter-spacing:.06em}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -48,6 +56,7 @@ a{color:#0A6CC2}a:hover{color:#0B4F8F}
 .go{transition:transform .2s,background .2s}.go:hover{transform:translateY(-2px);background:#0B4F8F;color:#FFFFFF}
 .navt{display:none}.burger{display:none}.calc-m{display:none}
 @media (max-width:1240px){
+ .nav .links .nb{width:100%;height:46px;font-size:15px;margin-top:8px}
  .hide-s{display:none}
  .calc-m{display:inline-block;white-space:nowrap;margin-left:auto;background:#FFC93C;color:#0B2A4A;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none}
  .links{flex-wrap:nowrap;white-space:normal}
@@ -103,13 +112,14 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="index.html" class="brand"><img src="yam-logo.svg" alt="YAM Logistics: Your Answer to Movements, established 1968" width="131" height="68" class="logo"></a>
 <a href="container-load-planner.html" class="calc-m">🧊 3D planner</a><input type="checkbox" id="navt" class="navt" aria-label="Open menu"><label for="navt" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
 <div class="links">
-<details class="sol"><summary>Solutions ▾</summary><div class="mega"><div class="wrap mega-in">
+<details class="sol"><summary class="nb nb1">Solutions ▾</summary><div class="mega"><div class="wrap mega-in">
 <div><div class="mh">FREIGHT</div><a href="ocean-freight.html">Ocean freight · FCL / LCL</a><a href="air-freight.html">Air freight</a><a href="project-cargo.html">Project, ODC &amp; breakbulk</a><a href="haulage-icd.html">Haulage &amp; ICDs</a><a href="aircraft-charter.html">Aircraft charter</a><a href="air-sea-bridge.html">Air–sea bridge</a><a href="expedited-shipping.html">Expedited &amp; urgent</a><a href="container-load-planner.html">Container load planner</a><a href="cbm-calculator.html">CBM &amp; volumetric calculator</a></div><div><div class="mh">CUSTOMS &amp; COMPLIANCE</div><a href="customs-brokerage.html">Customs brokerage</a><a href="customs-duty-calculator.html">Customs duty calculator</a><a href="export-benefit-finder.html">Export benefit finder</a><a href="incoterms.html">Incoterms 2020 explorer</a><a href="trade-compliance.html">Trade compliance advisory</a><a href="destination-do-agency.html">Destination / DO agency</a><a href="cargo-insurance.html">Cargo insurance</a><a href="supply-chain-consulting.html">Supply chain consulting</a></div><div><div class="mh">SPECIALIST</div><a href="mobile-phone-exports.html">Mobile phone exports</a><a href="buyers-consolidation.html">Buyer’s consolidation &amp; PO management</a><a href="third-country-trade.html">Third-country trade &amp; re-export</a><a href="bonded-warehousing.html">Bonded warehousing &amp; FTWZ</a><a href="exhibition-ata-carnet.html">Exhibition cargo &amp; ATA carnet</a><a href="third-country-trade.html">Merchanting trade support</a><a href="emergency-relief-cargo.html">Emergency &amp; relief cargo</a><a href="complex-regions.html">Complex regions</a></div><div><div class="mh">SPECIAL CARGO</div><a href="dangerous-goods.html">Dangerous goods</a><a href="dg-labels.html">DG labels &amp; marks (free)</a><a href="lithium-battery-checker.html">Lithium battery checker</a><a href="perishables.html">Perishables</a><a href="pharmaceuticals.html">Pharmaceuticals</a><a href="live-animals.html">Live animals</a><a href="pet-relocation.html">Pet relocation</a></div>
 <div class="mcta"><strong>Not sure what you need?</strong><span>Tell a licensed broker what you're moving. We'll design the route and the paperwork.</span><a href="contact.html">Talk to the desk →</a></div>
 </div></div></details>
-<a href="customs-brokerage.html">Customs</a><a href="mobile-phone-exports.html">Mobile exports</a><a href="third-country-trade.html">Third-country trade</a><a href="about.html">About us</a>
-<a href="container-load-planner.html" class="btn-calc" aria-current="page">🧊 3D load planner</a>
-<a href="customs-duty-calculator.html" class="btn-calc btn-duty">🧮 Import duty calculator</a>
+<a href="mobile-phone-exports.html" class="nb nb2"><span>Mobile phone exports</span></a><a href="about.html" class="nb nb3"><span>About us</span></a>
+<a href="customs-duty-calculator.html" class="nb nb4"><span>Import duty calculator</span></a>
+<a href="export-benefit-finder.html" class="nb nb5"><span>Export benefit finder</span></a>
+<a href="container-load-planner.html" class="nb nb6" aria-current="page"><span>3D load planner</span></a>
 <a href="track-shipment.html" class="btn-o">Track shipment</a>
 <a href="contact.html" class="btn go">Get a quote</a>
 </div></div></nav>
