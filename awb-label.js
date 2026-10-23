@@ -309,9 +309,9 @@
   }
   function showResult(r) {
     $('al-upst').style.display = 'none';
-    // only the mandatory label details are filled in; optional ones (origin, weight, transfer points,
-    // handling, house waybill) are left blank for the user to add if they want
-    var FILL = ['air', 'awb', 'dst', 'tot'], f = {};
+    // only the main label details are filled in (airline, AWB, origin, destination, pieces, weight); the rest
+    // (transfer points, handling, house waybill) are left blank for the user to add if they want
+    var FILL = ['air', 'awb', 'org', 'dst', 'tot', 'tw'], f = {};
     FILL.forEach(function (k) { if (r.fields[k]) f[k] = r.fields[k]; });
     var keys = Object.keys(f);
     if (!f.awb) {
@@ -329,6 +329,7 @@
     });
     ['al-from', 'al-to'].forEach(function (id) { $(id).value = ''; });
     cur = 0; refresh();
+    if (f.tw && r.unit) $('al-u').value = r.unit;
     keys.forEach(function (k) { if (f[k].conf !== 'ok' || f[k].why) msg(FIDS[k], f[k].why || 'Read from your file. Please check.', 'chk'); });
     if (!f.dst && r.dstOpts) msg('al-dst', 'Your file says "' + (r.dstText || '') + '". Pick the airport: ' + r.dstOpts.slice(0, 6).join(', ') + '.', 'chk');
     else if (!f.dst) msg('al-dst', 'Not found in your file. Please enter the destination.', 'chk');
@@ -338,7 +339,7 @@
     $('al-upr').innerHTML = '<div class="al-res">' + (th ? '<img id="al-thumb" src="' + th + '" alt="Your air waybill" title="Open your file to compare">' : '') + '<div><b style="color:#0B2A4A">' + (r.isHouse ? 'House air waybill' : 'Air waybill') + ' read: ' + keys.length + ' details filled in.</b>' +
       '<ul><li><b style="color:#0F7B3F">Green</b>: ' + nOk + ' passed our checks (check digit, airline, airport codes).</li>' +
       '<li><b style="color:#8A5A00">Amber</b>: ' + nChk + ' need a quick look against your document.</li>' +
-      '<li>Only the main label details are filled in. Add optional details such as weight or handling yourself if you want them. Your file was not uploaded.</li></ul></div></div>';
+      '<li>Only the main label details are filled in. Add optional details such as transfer points or handling yourself if you want them. Your file was not uploaded.</li></ul></div></div>';
     var ti = $('al-thumb'); if (ti) ti.addEventListener('click', function () { try { r.thumb.toBlob(function (b) { window.open(URL.createObjectURL(b), '_blank'); }, 'image/jpeg', 0.9); } catch (e) {} });
     var top = $('al-up').getBoundingClientRect().top; if (top < 0) $('al-up').scrollIntoView({ behavior: 'smooth' });
   }
