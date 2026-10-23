@@ -50,6 +50,12 @@
     '.al-prev{position:sticky;top:20px}.al-pv{background:#F2F8FD;border-radius:18px;padding:18px;display:flex;justify-content:center}.al-pv svg{width:100%;max-width:340px;height:auto;background:#FFFFFF;box-shadow:0 8px 24px -10px rgba(11,42,74,.35);border-radius:4px}' +
     '.al-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;font-size:14px;color:#3D5873}.al-nav button{font:inherit;border:1px solid #C9DCEC;background:#FFFFFF;border-radius:999px;padding:6px 14px;cursor:pointer;color:#0B2A4A}' +
     '.al-src{font-size:12px;color:#5E7891;margin-top:12px;line-height:1.5}' +
+    '.al-up{border:1.5px dashed #9CC3E6;background:#F5FAFE;border-radius:18px;padding:16px 18px;margin:0 0 18px;transition:background .15s,border-color .15s}.al-up.drag{background:#E6F1FB;border-color:#0A6CC2}' +
+    '.al-up-t{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.al-up-i{width:44px;height:44px;border-radius:12px;background:#0B2A4A;color:#FFC93C;display:flex;align-items:center;justify-content:center;flex:none;font-size:22px}' +
+    '.al-up-x{flex:1;min-width:200px}.al-up-x b{display:block;font-family:"Archivo",sans-serif;font-size:15.5px;color:#0B2A4A}.al-up-x span{font-size:13px;color:#5E7891;line-height:1.45;display:block;margin-top:2px}' +
+    '.al-up .al-btn{padding:10px 18px;font-size:14px}.al-bar{height:6px;border-radius:9px;background:#DCEAF6;overflow:hidden;margin-top:12px}.al-bar i{display:block;height:100%;width:0;background:#0A6CC2;transition:width .3s}' +
+    '.al-res{display:flex;gap:14px;margin-top:14px;align-items:flex-start}.al-res img{width:92px;flex:none;border:1px solid #C9DCEC;border-radius:6px;background:#fff;cursor:zoom-in}.al-res ul{margin:6px 0 0;padding:0;list-style:none;font-size:13px;line-height:1.6;color:#3D5873}.al-res li b{color:#0B2A4A}' +
+    '.al-in.f-ok{border-color:#3FA46A;background:#F3FBF6}.al-in.f-chk{border-color:#E0A11B;background:#FFFAEB}.al-msg.chk{color:#8A5A00}' +
     '</style>';
 
   var ackd = false; try { ackd = sessionStorage.getItem('al-ack') === '1'; } catch (e) {}
@@ -59,6 +65,9 @@
     '<div class="al-warn" role="note"><b>For guidance only.</b> This tool prints labels in the layout of IATA Resolution 606 from the details you enter. Check them against your air waybill and the airline\'s or handler\'s requirements before use. Dangerous goods need their own marks and labels. YAM Logistics Pvt. Ltd. accepts no legal responsibility for any use of these labels. <a href="#disclaimer">Read the full disclaimer</a>.</div>' +
     '<div class="al"><div class="al-card">' +
     '<div class="al-h">Shipment details</div><p class="al-s">Fields marked optional can be left blank. Everything stays in your browser.</p>' +
+    '<div class="al-up" id="al-up"><div class="al-up-t"><div class="al-up-i" aria-hidden="true">⇪</div><div class="al-up-x"><b>Fill in from your air waybill</b><span>Drop a PDF, JPG or PNG of your AWB here. It is read on your own device and never uploaded. You check the details before printing.</span></div>' +
+    '<label class="al-btn" for="al-file" style="display:inline-block">Choose file</label><input type="file" id="al-file" accept="application/pdf,image/jpeg,image/png,image/webp,.pdf,.jpg,.jpeg,.png,.webp" hidden></div>' +
+    '<div id="al-upst" style="display:none"><div class="al-msg" id="al-upm" style="color:#3D5873"></div><div class="al-bar"><i id="al-upb"></i></div></div><div id="al-upr"></div></div>' +
     '<div class="al-sec" style="border:0;padding-top:0;margin-top:0">Air waybill (mandatory)</div>' +
     '<div class="al-g">' +
     fld('al-air', 'Airline', 0, 'Type name or prefix, e.g. 176 or Emirates', ' list="al-airl"') +
@@ -279,6 +288,60 @@
     var w = window.open('', '_blank'); busy(true, 'Opening the print view…');
     makePdf(d).then(function (doc) { doc.autoPrint(); var u = doc.output('bloburl'); if (w) w.location.href = u; else window.open(u, '_blank'); busy(false, ''); refresh(); }).catch(function () { if (w) w.close(); busy(false, 'Could not open the print view. Use Download PDF instead.'); refresh(); });
   });
+
+  // ---------- fill in from an uploaded air waybill (read locally) ----------
+  var readerP = null, FIDS = { air: 'al-air', awb: 'al-awb', dst: 'al-dst', org: 'al-org', tot: 'al-tot', tw: 'al-tw', v1: 'al-v1', v2: 'al-v2', hi: 'al-hi', hw: 'al-hw', hp: 'al-hp', hwt: 'al-hwt' };
+  var FNAMES = { awb: 'Air waybill number', air: 'Airline', org: 'Origin', dst: 'Destination', v1: 'Transfer point 1', v2: 'Transfer point 2', tot: 'Total pieces', tw: 'Total weight', hi: 'Handling information', hw: 'HAWB number', hp: 'HAWB pieces', hwt: 'HAWB weight' };
+  function apName(c) { if (!D) return c; for (var i = 0; i < D.ap.length; i++) if (D.ap[i][0] === c) return c + ' · ' + D.ap[i][1] + ', ' + D.ap[i][2]; return c; }
+  function clearFill() { Object.keys(FIDS).forEach(function (k) { var e = $(FIDS[k]); e.classList.remove('f-ok', 'f-chk'); }); }
+  function upMsg(t, p) { $('al-upst').style.display = 'block'; $('al-upm').textContent = t; $('al-upb').style.width = Math.round((p || 0) * 100) + '%'; }
+  function handleFile(file) {
+    if (!file) return;
+    if (!D) { upMsg('Still loading the airline list. Try again in a moment.', 0); return; }
+    if (file.size > 25 * 1024 * 1024) { upMsg('That file is over 25 MB. Please use a smaller scan or photo.', 0); return; }
+    if (!/pdf|jpe?g|png|webp/i.test(file.type + file.name)) { upMsg('Please choose a PDF, JPG or PNG file.', 0); return; }
+    $('al-upr').innerHTML = ''; upMsg('Opening your file…', 0.03);
+    if (!readerP) readerP = new Promise(function (res, rej) { var s = document.createElement('script'); s.src = 'awb-reader.js?v=1'; s.onload = function () { res(window.AWBRead); }; s.onerror = rej; document.head.appendChild(s); });
+    readerP.then(function (R) { return R.read(file, D, function (p) { upMsg(p.stage + '…', p.p); }); }).then(showResult).catch(function () {
+      readerP = window.AWBRead ? readerP : null;
+      upMsg('Sorry, we could not read that file. Please type the details in below.', 0);
+    });
+  }
+  function showResult(r) {
+    $('al-upst').style.display = 'none';
+    var f = r.fields, keys = Object.keys(f);
+    if (!f.awb) {
+      $('al-upr').innerHTML = '<p class="al-msg bad" style="margin-top:12px">We could not find an air waybill number in this file. ' + (r.method === 'ocr' ? 'Try a sharper, straight-on photo or a PDF, or ' : '') + 'type the details in below.</p>';
+      return;
+    }
+    clearFill();
+    keys.forEach(function (k) {
+      var id = FIDS[k], e = $(id); if (!e) return;
+      e.value = /^(dst|org|v1|v2)$/.test(k) ? apName(f[k].v) : f[k].v;
+      e.classList.add(f[k].conf === 'ok' ? 'f-ok' : 'f-chk');
+    });
+    if (r.unit) $('al-u').value = r.unit;
+    ['al-from', 'al-to'].forEach(function (id) { $(id).value = ''; });
+    cur = 0; refresh();
+    keys.forEach(function (k) { if (f[k].conf !== 'ok' || f[k].why) msg(FIDS[k], f[k].why || 'Read from your file. Please check.', 'chk'); });
+    if (!f.dst && r.dstOpts) msg('al-dst', 'Your file says "' + (r.dstText || '') + '". Pick the airport: ' + r.dstOpts.slice(0, 6).join(', ') + '.', 'chk');
+    else if (!f.dst) msg('al-dst', 'Not found in your file. Please enter the destination.', 'chk');
+    if (!f.tot) msg('al-tot', 'Not found in your file. Please enter the total pieces.', 'chk');
+    var nOk = keys.filter(function (k) { return f[k].conf === 'ok'; }).length, nChk = keys.length - nOk;
+    var th = ''; try { var c = r.thumb, k2 = 240 / c.width, s = document.createElement('canvas'); s.width = 240; s.height = Math.round(c.height * k2); s.getContext('2d').drawImage(c, 0, 0, s.width, s.height); th = s.toDataURL('image/jpeg', 0.8); } catch (e) {}
+    $('al-upr').innerHTML = '<div class="al-res">' + (th ? '<img id="al-thumb" src="' + th + '" alt="Your air waybill" title="Open your file to compare">' : '') + '<div><b style="color:#0B2A4A">' + (r.isHouse ? 'House air waybill' : 'Air waybill') + ' read: ' + keys.length + ' details filled in.</b>' +
+      '<ul><li><b style="color:#0F7B3F">Green</b>: ' + nOk + ' passed our checks (check digit, airline, airport codes).</li>' +
+      '<li><b style="color:#8A5A00">Amber</b>: ' + nChk + ' need a quick look against your document.</li>' +
+      '<li>Anything missing? Type it in. Your file was not uploaded.</li></ul></div></div>';
+    var ti = $('al-thumb'); if (ti) ti.addEventListener('click', function () { try { r.thumb.toBlob(function (b) { window.open(URL.createObjectURL(b), '_blank'); }, 'image/jpeg', 0.9); } catch (e) {} });
+    var top = $('al-up').getBoundingClientRect().top; if (top < 0) $('al-up').scrollIntoView({ behavior: 'smooth' });
+  }
+  $('al-file').addEventListener('change', function (e) { handleFile(e.target.files[0]); e.target.value = ''; });
+  var up = $('al-up');
+  ['dragenter', 'dragover'].forEach(function (ev) { up.addEventListener(ev, function (e) { e.preventDefault(); up.classList.add('drag'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { up.addEventListener(ev, function (e) { e.preventDefault(); up.classList.remove('drag'); }); });
+  up.addEventListener('drop', function (e) { handleFile(e.dataTransfer && e.dataTransfer.files[0]); });
+  root.addEventListener('input', function (e) { if (e.target.classList) e.target.classList.remove('f-ok', 'f-chk'); });
 
   // logo: converted to black and white so it prints cleanly on thermal printers
   var im = new Image(); im.onload = function () {
