@@ -301,7 +301,7 @@
     if (file.size > 25 * 1024 * 1024) { upMsg('That file is over 25 MB. Please use a smaller scan or photo.', 0); return; }
     if (!/pdf|jpe?g|png|webp/i.test(file.type + file.name)) { upMsg('Please choose a PDF, JPG or PNG file.', 0); return; }
     $('al-upr').innerHTML = ''; upMsg('Opening your file…', 0.03);
-    if (!readerP) readerP = new Promise(function (res, rej) { var s = document.createElement('script'); s.src = 'awb-reader.js?v=1'; s.onload = function () { res(window.AWBRead); }; s.onerror = rej; document.head.appendChild(s); });
+    if (!readerP) readerP = new Promise(function (res, rej) { var s = document.createElement('script'); s.src = 'awb-reader.js?v=2'; s.onload = function () { res(window.AWBRead); }; s.onerror = rej; document.head.appendChild(s); });
     readerP.then(function (R) { return R.read(file, D, function (p) { upMsg(p.stage + '…', p.p); }); }).then(showResult).catch(function () {
       readerP = window.AWBRead ? readerP : null;
       upMsg('Sorry, we could not read that file. Please type the details in below.', 0);
@@ -315,6 +315,9 @@
       return;
     }
     clearFill();
+    // start from a clean form so nothing is left over from an earlier file
+    Object.keys(FIDS).concat(['al-pw', 'al-oi', 'al-from', 'al-to']).forEach(function (k) { var e = $(FIDS[k] || k); if (e) e.value = ''; });
+    Object.keys(FIDS).forEach(function (k) { msg(FIDS[k], ''); });
     keys.forEach(function (k) {
       var id = FIDS[k], e = $(id); if (!e) return;
       e.value = /^(dst|org|v1|v2)$/.test(k) ? apName(f[k].v) : f[k].v;

@@ -142,7 +142,7 @@
     var R = prep(data), out = { fields: {}, notes: [] };
     API.last = words;
     var lines = buildLines(words);
-    function set(k, v, conf, why) { if (v === '' || v == null) return; out.fields[k] = { v: v, conf: conf, why: why || '' }; }
+    function set(k, v, conf, why, weak) { if (v === '' || v == null) return; out.fields[k] = { v: v, conf: conf, why: why || '', weak: !!weak }; }
     var fixedLines = lines.map(function (l) { return l.text.split(/\s+/).map(digitFix).join(' '); });
     var all = fixedLines.join('\n');
 
@@ -226,6 +226,11 @@
 
     // 4. pieces and gross weight (rate description block)
     var pcsLab = findLabel(words, ['no\\.?', 'of', 'pieces']) || findLabel(words, ['pieces']), gwLab = findLabel(words, ['gross', 'weight']);
+    if (!gwLab && pcsLab) {
+      // "Gross" unreadable: the gross weight column is the left-most "Weight" heading next to the pieces heading
+      var wl = findLabel(words, ['weight'], 'all').filter(function (l) { return Math.abs(l.y0 - pcsLab.y0) < pcsLab.h * 4 && l.x0 > pcsLab.x0; }).sort(function (a, b) { return a.x0 - b.x0; });
+      if (wl.length) gwLab = wl[0];
+    }
     function numBelow(lab, maxDy, isInt, row) {
       if (!lab) return null;
       var ws = below(words, lab, lab.x0 - W * 0.02, lab.x1 + W * 0.015, maxDy).sort(function (a, b) { return a.y0 - b.y0; }), hits = [];
@@ -239,15 +244,29 @@
       }
       return hits[0] || null;
     }
-    var pcs = numBelow(pcsLab, H * 0.3, true), gw = numBelow(gwLab, H * 0.3, false, pcs && pcs.w), unit = 'KG';
-    if (gw) { var uw = words.filter(function (w) { return Math.abs((w.y0 + w.y1) / 2 - (gw.w.y0 + gw.w.y1) / 2) < (gw.w.y1 - gw.w.y0) && w.x0 > gw.w.x1 && w.x0 - gw.w.x1 < W * 0.12; }).sort(function (a, b) { return a.x0 - b.x0; })[0]; if (uw && /^(L|LB|LBS)$/i.test(cleanTok(uw.t))) unit = 'LB'; }
+    var pcs = numBelow(pcsLab, H * 0.3, true), gw = numBelow(gwLab, H * 0.3, false, pcs && pcs.w), unit = 'KG', gwByUnit = false;
+    // strongest signal: the gross weight is the number followed by the unit letter (K or L) on the pieces row,
+    // e.g. "7  1650.0 K  Q  1680.0" (1680.0 there is the chargeable weight, not the gross weight)
+    if (pcs && pcs.w) {
+      var py = (pcs.w.y0 + pcs.w.y1) / 2, ph = pcs.w.y1 - pcs.w.y0;
+      var row = words.filter(function (w) { return Math.abs((w.y0 + w.y1) / 2 - py) < ph * 0.9 && w.x0 > pcs.w.x1; }).sort(function (a, b) { return a.x0 - b.x0; });
+      for (var ri = 0; ri < row.length; ri++) {
+        var tk = cleanTok(row[ri].t), num = null, u = null;
+        var glued = tk.match(/^(\d[\d,]*(?:\.\d{1,3})?)(K|KG|KGS|L|LB|LBS)$/i);
+        if (glued) { num = glued[1]; u = glued[2]; }
+        else if (/^(K|KG|KGS|L|LB|LBS)$/i.test(tk) && ri > 0) { num = digitFix(cleanTok(row[ri - 1].t)); u = tk; }
+        if (num) { num = num.replace(/,(?=\d{3}\b)/g, ''); if (/^\d{1,6}(\.\d{1,3})?$/.test(num)) { gw = { v: num, w: row[ri] }; unit = /^L/i.test(u) ? 'LB' : 'KG'; gwByUnit = true; break; } }
+      }
+    }
+    if (gw && !gwByUnit) { var uw = words.filter(function (w) { return Math.abs((w.y0 + w.y1) / 2 - (gw.w.y0 + gw.w.y1) / 2) < (gw.w.y1 - gw.w.y0) && w.x0 > gw.w.x1 && w.x0 - gw.w.x1 < W * 0.12; }).sort(function (a, b) { return a.x0 - b.x0; })[0]; if (uw && /^(L|LB|LBS)$/i.test(cleanTok(uw.t))) unit = 'LB'; }
     // fallback: a line like "31 298.0 K Q ..." or "31 PCS 298 KGS"
     if (!pcs || !gw) {
       for (var i = 0; i < fixedLines.length; i++) {
         var m1 = fixedLines[i].match(/^\s*(\d{1,4})\s+(\d{1,6}(?:\.\d{1,3})?)\s*(K|KG|KGS|L|LB|LBS)\b/i);
         if (m1) { if (!pcs) pcs = { v: m1[1] }; if (!gw) { gw = { v: m1[2] }; unit = /^L/i.test(m1[3]) ? 'LB' : 'KG'; } break; }
       }
-      var m2 = all.match(/\b(\d{1,4})\s*(?:PCS|PIECES|PKGS|PACKAGES|CTNS|CARTONS)\b/i), m3 = all.match(/\b(\d{1,6}(?:\.\d{1,3})?)\s*(KGS?|KILOS?|LBS?)\b/i);
+      var m2 = all.match(/\b(\d{1,4})\s*(?:PCS|PIECES|PKGS|PACKAGES|CTNS|CARTONS)\b/i), m3 = null;
+      fixedLines.some(function (L) { if (/VOL|CHARG|DIM|CBM/i.test(L)) return false; var mm = L.match(/\b(\d{1,6}(?:\.\d{1,3})?)\s*(KGS?|KILOS?|LBS?)\b/i); if (mm) m3 = mm; return !!mm; });
       if (!pcs && m2) pcs = { v: m2[1], weak: 1 };
       if (!gw && m3) { gw = { v: m3[1], weak: 1 }; unit = /^L/i.test(m3[2]) ? 'LB' : 'KG'; }
     }
@@ -255,13 +274,13 @@
     function seenTwice(v) { if (!v) return false; var n = 0; all.split(/\s+/).forEach(function (k) { k = k.replace(/,(?=\d{3}\b)/g, ''); if (/^\d+(\.\d+)?$/.test(k) && +k === +v) n++; }); return n >= 2; }
     if (pcs && +pcs.v > 0) {
       var pc2 = seenTwice(pcs.v) && !pcs.weak ? 'ok' : 'check';
-      if (isHouse) { set('hp', String(+pcs.v), pc2); set('tot', String(+pcs.v), 'check', 'This is a house air waybill. Enter the total pieces of the master AWB if it is different.'); }
-      else set('tot', String(+pcs.v), pc2);
+      if (isHouse) { set('hp', String(+pcs.v), pc2, '', !!pcs.weak); set('tot', String(+pcs.v), 'check', 'This is a house air waybill. Enter the total pieces of the master AWB if it is different.', !!pcs.weak); }
+      else set('tot', String(+pcs.v), pc2, '', !!pcs.weak);
     }
     if (gw && +gw.v > 0) {
-      var gv = String(+gw.v), g2 = seenTwice(gw.v) && !gw.weak ? 'ok' : 'check';
-      if (isHouse) { set('hwt', gv, g2); set('tw', gv, 'check', 'House weight. Enter the master AWB weight if it is different.'); }
-      else set('tw', gv, g2);
+      var gv = String(+gw.v), g2 = (gwByUnit || seenTwice(gw.v)) && !gw.weak ? 'ok' : 'check';
+      if (isHouse) { set('hwt', gv, g2, '', !!gw.weak); set('tw', gv, 'check', 'House weight. Enter the master AWB weight if it is different.', !!gw.weak); }
+      else set('tw', gv, g2, '', !!gw.weak);
       out.unit = unit;
     }
 
@@ -365,12 +384,17 @@
       rs.forEach(function (r) { var f = r.fields[k]; if (!f) return; var v = String(f.v); if (!votes[v]) { votes[v] = []; order.push(v); } votes[v].push(f); });
       order.sort(function (x, y) {
         var ox = votes[x].some(function (f) { return f.conf === 'ok'; }), oy = votes[y].some(function (f) { return f.conf === 'ok'; });
-        return (votes[y].length - votes[x].length) || (oy - ox);
+        var sx = votes[x].filter(function (f) { return !f.weak; }).length, sy = votes[y].filter(function (f) { return !f.weak; }).length;
+        return (oy - ox) || (sy - sx) || (votes[y].length - votes[x].length);
       });
       var win = votes[order[0]], best = win.filter(function (f) { return f.conf === 'ok'; })[0] || win[0];
-      if (order.length > 1 && !win.some(function (f) { return f.conf === 'ok'; }) && win.length < 2) out.fields[k] = { v: best.v, conf: 'check', why: 'Unclear in your file: we read ' + order.slice(0, 3).join(' or ') + '. Please check.' };
-      else out.fields[k] = { v: best.v, conf: best.conf === 'ok' || (win.length >= 2 && !best.why) ? 'ok' : 'check', why: best.why };
+      var strong = win.filter(function (f) { return !f.weak; });
+      if (order.length > 1 && !(k === 'awb' && best.conf === 'ok')) out.fields[k] = { v: best.v, conf: 'check', why: 'Unclear in your file: we read ' + order.slice(0, 3).join(' or ') + '. Please check.' };
+      else out.fields[k] = { v: best.v, conf: best.conf === 'ok' || (strong.length >= 2 && !best.why) ? 'ok' : 'check', why: best.why };
     });
+    var F = out.fields;
+    ['v1', 'v2'].forEach(function (k) { if (F[k] && F.dst && F[k].v === F.dst.v) delete F[k]; });
+    if (!F.v1 && F.v2) { F.v1 = F.v2; delete F.v2; }
     return out;
   }
 
@@ -423,6 +447,6 @@
     };
   }
 
-  API = { read: read, parse: parse, buildLines: buildLines, ocrWords: ocrWords };
+  API = { read: read, parse: parse, buildLines: buildLines, ocrWords: ocrWords, merge: merge };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else G.AWBRead = API;
 })(typeof window !== 'undefined' ? window : globalThis);
