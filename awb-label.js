@@ -309,7 +309,11 @@
   }
   function showResult(r) {
     $('al-upst').style.display = 'none';
-    var f = r.fields, keys = Object.keys(f);
+    // only the mandatory label details are filled in; optional ones (origin, weight, transfer points,
+    // handling, house waybill) are left blank for the user to add if they want
+    var FILL = ['air', 'awb', 'dst', 'tot'], f = {};
+    FILL.forEach(function (k) { if (r.fields[k]) f[k] = r.fields[k]; });
+    var keys = Object.keys(f);
     if (!f.awb) {
       $('al-upr').innerHTML = '<p class="al-msg bad" style="margin-top:12px">We could not find an air waybill number in this file. ' + (r.method === 'ocr' ? 'Try a sharper, straight-on photo or a PDF, or ' : '') + 'type the details in below.</p>';
       return;
@@ -323,7 +327,6 @@
       e.value = /^(dst|org|v1|v2)$/.test(k) ? apName(f[k].v) : f[k].v;
       e.classList.add(f[k].conf === 'ok' ? 'f-ok' : 'f-chk');
     });
-    if (r.unit) $('al-u').value = r.unit;
     ['al-from', 'al-to'].forEach(function (id) { $(id).value = ''; });
     cur = 0; refresh();
     keys.forEach(function (k) { if (f[k].conf !== 'ok' || f[k].why) msg(FIDS[k], f[k].why || 'Read from your file. Please check.', 'chk'); });
@@ -335,7 +338,7 @@
     $('al-upr').innerHTML = '<div class="al-res">' + (th ? '<img id="al-thumb" src="' + th + '" alt="Your air waybill" title="Open your file to compare">' : '') + '<div><b style="color:#0B2A4A">' + (r.isHouse ? 'House air waybill' : 'Air waybill') + ' read: ' + keys.length + ' details filled in.</b>' +
       '<ul><li><b style="color:#0F7B3F">Green</b>: ' + nOk + ' passed our checks (check digit, airline, airport codes).</li>' +
       '<li><b style="color:#8A5A00">Amber</b>: ' + nChk + ' need a quick look against your document.</li>' +
-      '<li>Anything missing? Type it in. Your file was not uploaded.</li></ul></div></div>';
+      '<li>Only the main label details are filled in. Add optional details such as weight or handling yourself if you want them. Your file was not uploaded.</li></ul></div></div>';
     var ti = $('al-thumb'); if (ti) ti.addEventListener('click', function () { try { r.thumb.toBlob(function (b) { window.open(URL.createObjectURL(b), '_blank'); }, 'image/jpeg', 0.9); } catch (e) {} });
     var top = $('al-up').getBoundingClientRect().top; if (top < 0) $('al-up').scrollIntoView({ behavior: 'smooth' });
   }
