@@ -42,6 +42,7 @@ The free tools below are provided for guidance only; each page carries its own d
 ## Free tools
 
 - [AWB label generator](https://www.yamlogistics.com/awb-label-generator): Free air waybill label generator: create barcoded IATA Resolution 606 cargo labels for every piece, with destination, pieces, weight and house waybill, as a print-ready PDF for 4x6 thermal, 10x15 cm or A4.
+- [Container sizes guide](https://www.yamlogistics.com/container-sizes): Free plain-language guide to shipping container sizes: inside and outside dimensions, door openings, tare, payload and max gross weight for 20ft, 40ft, 40ft high cube, 45ft, reefer, open top, flat rack and ISO tank containers, including in-gauge vs out-of-gauge cargo, with downloadable PDF spec sheets.
 - [CBM and volumetric weight calculator](https://www.yamlogistics.com/cbm-calculator): Free CBM calculator: enter carton sizes to get total volume, air chargeable weight (÷6000), LCL W/M and container fit for 20′, 40′ and 40′ HC.
 - [Container load calculator](https://www.yamlogistics.com/container-load-planner): Free container load calculator: enter your packages and see how many 20′, 40′ or 40′ HC containers, pallets or air pallets you need, with a 3D view, step-by-step loading sequence and PDF plan.
 - [Import duty calculator](https://www.yamlogistics.com/customs-duty-calculator): Free India import duty calculator: search 12,000+ HSN tariff lines by code or description, choose the country of origin and see BCD, social welfare surcharge, IGST, landed cost and DGFT import policy.
