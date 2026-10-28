@@ -8,11 +8,9 @@ const UA = 'Mozilla/5.0 (compatible; YAMLogistics-TradeDesk/1.0; +https://www.ya
 // f: 1 = keep everything (feed is already on-topic), 0 = keep only trade/shipping-relevant items
 const FEEDS = [
   // Indian government
-  { s: 'PIB', u: ['https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3', 'https://www.pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3'], f: 0, g: 1, b: 1 },
   { s: 'RBI', u: 'https://www.rbi.org.in/pressreleases_rss.xml', f: 0, g: 1 },
   { s: 'RBI', u: 'https://www.rbi.org.in/notifications_rss.xml', f: 0, g: 1 },
-  // International bodies
-  { s: 'WTO', u: 'https://www.wto.org/library/rss/latest_news_e.xml', f: 1, g: 1, b: 1 },
+  // International bodies: WTO/UNCTAD/IMO feeds block automated readers; covered via trade press
       // Shipping and logistics press
   { s: 'The Loadstar', u: 'https://theloadstar.com/feed/', f: 1 },
   { s: 'Splash247', u: 'https://splash247.com/feed/', f: 0 },
@@ -21,10 +19,8 @@ const FEEDS = [
   { s: 'Hellenic Shipping News', u: 'https://www.hellenicshippingnews.com/feed/', f: 0 },
   { s: 'Seatrade Maritime', u: 'https://www.seatrade-maritime.com/rss.xml', f: 0 },
   { s: 'The Maritime Executive', u: 'https://maritime-executive.com/articles.rss', f: 0 },
-  { s: 'Air Cargo News', u: ['https://www.aircargonews.net/feed/', 'https://www.aircargonews.net/feed'], f: 1, b: 1 },
   { s: 'Air Cargo Week', u: 'https://aircargoweek.com/feed/', f: 1 },
   // Indian trade press
-  { s: 'STAT Times', u: ['https://www.stattimes.com/feed', 'https://www.stattimes.com/rss.xml', 'https://www.stattimes.com/feed/'], f: 1 },
   { s: 'CargoTalk', u: 'https://www.cargotalk.in/feed/', f: 1 },
   { s: 'Maritime Gateway', u: 'https://www.maritimegateway.com/feed/', f: 1 },
   { s: 'Logistics Insider', u: 'https://www.logisticsinsider.in/feed/', f: 1 },
@@ -32,19 +28,16 @@ const FEEDS = [
   { s: 'Economic Times', u: 'https://economictimes.indiatimes.com/news/economy/foreign-trade/rssfeeds/1200949414.cms', f: 1 },
   { s: 'BusinessLine', u: 'https://www.thehindubusinessline.com/economy/logistics/feeder/default.rss', f: 1 },
   { s: 'BusinessLine', u: 'https://www.thehindubusinessline.com/economy/feeder/default.rss', f: 0 },
-  { s: 'Business Standard', u: 'https://www.business-standard.com/rss/economy-102.rss', f: 0, b: 1 },
-  { s: 'Financial Express', u: ['https://www.financialexpress.com/business/infrastructure/feed/', 'https://www.financialexpress.com/economy/feed/'], f: 0 },
   { s: 'Mint', u: 'https://www.livemint.com/rss/economy', f: 0 },
   // Commodities
-    { s: 'OilPrice.com', u: 'https://oilprice.com/rss/main', f: 0, b: 1 },
   { s: 'Hellenic Shipping News', u: 'https://www.hellenicshippingnews.com/category/commodities/feed/', f: 1 }
 ];
 
 const REL = /\b(customs?|cbic|dgft|icegate|tariffs?|dut(y|ies)|export|import|trade (deal|pact|agreement|talks|policy|deficit)|fta|wto|sanction|freight|shipping|shipper|container|teu|vessel|ship|port|terminal|cargo|logistic|air ?cargo|freighter|airline|supply chain|suez|red sea|hormuz|panama|strait|canal|bunker|charter|baltic|scfi|drewry|rupee|forex|crude|brent|oil price|lng|commodit|steel|alumin|copper|iron ore|coal|wheat|rice|sugar|cotton|gold|silver|rare earth)/i;
 const INDIA = /\b(india|indian|mumbai|nhava|jnpt|jnpa|mundra|kandla|chennai|delhi|gujarat|kolkata|cochin|kochi|vizag|visakhapatnam|tuticorin|hazira|pipavav|rupee|dgft|cbic|bengaluru|hyderabad)\b/i;
 const CATS = [
-  ['customs', /\b(customs?|cbic|icegate|bill of entry|shipping bill|duty|duties|tariff|igst|bcd|anti-dumping|safeguard)/i],
-  ['policy', /\b(fta|trade (deal|pact|agreement|talks|policy)|wto|dgft|sanction|export ban|import ban|quota|foreign trade|rodtep|drawback|ceasefire|minister)/i],
+  ['customs', /\b(customs?|cbic|icegate|bill of entry|shipping bill|igst|bcd|anti-dumping|safeguard dut|import duty|export duty)/i],
+  ['policy', /\b(tariff|fta|trade (deal|pact|agreement|talks|policy)|wto|dgft|sanction|export ban|import ban|quota|foreign trade|rodtep|drawback|ceasefire|minister)/i],
   ['air', /\b(air ?cargo|air freight|airline|freighter|airport|awb|iata|aviation)/i],
   ['routes', /\b(port|vessel|ship|shipping|container|teu|suez|red sea|hormuz|panama|canal|strait|terminal|freight rate|carrier|alliance|blank sailing|congestion)/i],
   ['mobile', /\b(smartphone|mobile phone|iphone|apple|electronics|semiconductor)/i],
@@ -91,7 +84,7 @@ async function brent() {
     if (isFinite(close) && close > 0) return { v: close, ch: open ? +((close - open) / open * 100).toFixed(2) : null, d: c[1], src: 'ICE Brent futures', u: 'https://stooq.com/q/?s=cb.f' };
   }
   // 2) Yahoo Finance chart endpoint (BZ=F)
-  r = await get('https://query1.finance.yahoo.com/v8/finance/chart/BZ%3DF?range=5d&interval=1d', 6000, 1);
+  r = await get('https://query1.finance.yahoo.com/v8/finance/chart/BZ%3DF?range=1d&interval=1d', 6000, 1);
   if (r.ok) {
     try {
       const m = JSON.parse(r.text).chart.result[0].meta; const v = m.regularMarketPrice, p = m.chartPreviousClose || m.previousClose;
