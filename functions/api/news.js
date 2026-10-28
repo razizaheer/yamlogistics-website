@@ -2,19 +2,18 @@
 // GET /api/news          -> {updated, items:[{t,u,s,d,c}], n:{brent,wci}}
 // GET /api/news?debug=1  -> per-feed status report
 // Shows headline, source, time and link only. Article text is never republished.
+const BUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
 const UA = 'Mozilla/5.0 (compatible; YAMLogistics-TradeDesk/1.0; +https://www.yamlogistics.com/trade-desk)';
 
 // f: 1 = keep everything (feed is already on-topic), 0 = keep only trade/shipping-relevant items
 const FEEDS = [
   // Indian government
-  { s: 'PIB', u: 'https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3', f: 0, g: 1 },
+  { s: 'PIB', u: ['https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3', 'https://www.pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3'], f: 0, g: 1, b: 1 },
   { s: 'RBI', u: 'https://www.rbi.org.in/pressreleases_rss.xml', f: 0, g: 1 },
   { s: 'RBI', u: 'https://www.rbi.org.in/notifications_rss.xml', f: 0, g: 1 },
   // International bodies
-  { s: 'WTO', u: 'https://www.wto.org/library/rss/latest_news_e.xml', f: 1, g: 1 },
-  { s: 'UNCTAD', u: 'https://unctad.org/rss.xml', f: 0, g: 1 },
-  { s: 'IMO', u: 'https://www.imo.org/en/rss', f: 1, g: 1 },
-  // Shipping and logistics press
+  { s: 'WTO', u: 'https://www.wto.org/library/rss/latest_news_e.xml', f: 1, g: 1, b: 1 },
+      // Shipping and logistics press
   { s: 'The Loadstar', u: 'https://theloadstar.com/feed/', f: 1 },
   { s: 'Splash247', u: 'https://splash247.com/feed/', f: 0 },
   { s: 'gCaptain', u: 'https://gcaptain.com/feed/', f: 0 },
@@ -22,10 +21,10 @@ const FEEDS = [
   { s: 'Hellenic Shipping News', u: 'https://www.hellenicshippingnews.com/feed/', f: 0 },
   { s: 'Seatrade Maritime', u: 'https://www.seatrade-maritime.com/rss.xml', f: 0 },
   { s: 'The Maritime Executive', u: 'https://maritime-executive.com/articles.rss', f: 0 },
-  { s: 'Air Cargo News', u: 'https://www.aircargonews.net/feed/', f: 1 },
+  { s: 'Air Cargo News', u: ['https://www.aircargonews.net/feed/', 'https://www.aircargonews.net/feed'], f: 1, b: 1 },
   { s: 'Air Cargo Week', u: 'https://aircargoweek.com/feed/', f: 1 },
   // Indian trade press
-  { s: 'STAT Times', u: 'https://www.stattimes.com/rss', f: 1 },
+  { s: 'STAT Times', u: ['https://www.stattimes.com/feed', 'https://www.stattimes.com/rss.xml', 'https://www.stattimes.com/feed/'], f: 1 },
   { s: 'CargoTalk', u: 'https://www.cargotalk.in/feed/', f: 1 },
   { s: 'Maritime Gateway', u: 'https://www.maritimegateway.com/feed/', f: 1 },
   { s: 'Logistics Insider', u: 'https://www.logisticsinsider.in/feed/', f: 1 },
@@ -33,12 +32,11 @@ const FEEDS = [
   { s: 'Economic Times', u: 'https://economictimes.indiatimes.com/news/economy/foreign-trade/rssfeeds/1200949414.cms', f: 1 },
   { s: 'BusinessLine', u: 'https://www.thehindubusinessline.com/economy/logistics/feeder/default.rss', f: 1 },
   { s: 'BusinessLine', u: 'https://www.thehindubusinessline.com/economy/feeder/default.rss', f: 0 },
-  { s: 'Business Standard', u: 'https://www.business-standard.com/rss/economy-102.rss', f: 0 },
-  { s: 'Financial Express', u: 'https://www.financialexpress.com/about/logistics/feed/', f: 1 },
+  { s: 'Business Standard', u: 'https://www.business-standard.com/rss/economy-102.rss', f: 0, b: 1 },
+  { s: 'Financial Express', u: ['https://www.financialexpress.com/business/infrastructure/feed/', 'https://www.financialexpress.com/economy/feed/'], f: 0 },
   { s: 'Mint', u: 'https://www.livemint.com/rss/economy', f: 0 },
   // Commodities
-  { s: 'Mining.com', u: 'https://www.mining.com/feed/', f: 0 },
-  { s: 'OilPrice.com', u: 'https://oilprice.com/rss/main', f: 0 },
+    { s: 'OilPrice.com', u: 'https://oilprice.com/rss/main', f: 0, b: 1 },
   { s: 'Hellenic Shipping News', u: 'https://www.hellenicshippingnews.com/category/commodities/feed/', f: 1 }
 ];
 
@@ -75,22 +73,32 @@ function parse(xml) {
   return out;
 }
 
-async function get(url, ms = 8000) {
+async function get(url, ms = 8000, b = 0) {
   const ac = new AbortController(); const tm = setTimeout(() => ac.abort(), ms);
   try {
-    const r = await fetch(url, { headers: { 'User-Agent': UA, 'Accept': 'application/rss+xml, application/atom+xml, application/xml, text/xml, text/html;q=0.8, */*;q=0.5' }, signal: ac.signal, cf: { cacheTtl: 900, cacheEverything: true } });
+    const r = await fetch(url, { headers: { 'User-Agent': b ? BUA : UA, 'Accept-Language': 'en-IN,en;q=0.9', 'Accept': 'application/rss+xml, application/atom+xml, application/xml, text/xml, text/html;q=0.8, */*;q=0.5' }, signal: ac.signal, cf: { cacheTtl: 900, cacheEverything: true } });
     return { ok: r.ok, status: r.status, text: r.ok ? await r.text() : '' };
   } catch (e) { return { ok: false, status: String(e && e.name || e), text: '' }; }
   finally { clearTimeout(tm); }
 }
 
 async function brent() {
-  // Stooq daily CSV for Brent futures (cb.f): Symbol,Date,Time,Open,High,Low,Close,Volume
-  const r = await get('https://stooq.com/q/l/?s=cb.f&f=sd2t2ohlc&h&e=csv', 6000);
-  if (!r.ok) return null;
-  const row = r.text.trim().split('\n')[1]; if (!row) return null;
-  const c = row.split(','); const close = parseFloat(c[6]), open = parseFloat(c[3]);
-  return isFinite(close) ? { v: close, ch: isFinite(open) && open ? +((close - open) / open * 100).toFixed(2) : null, d: c[1], src: 'Stooq (ICE Brent futures)', u: 'https://stooq.com/q/?s=cb.f' } : null;
+  // 1) Stooq daily CSV for ICE Brent futures (cb.f)
+  let r = await get('https://stooq.com/q/l/?s=cb.f&f=sd2t2ohlc&h&e=csv', 6000, 1);
+  if (r.ok) {
+    const row = r.text.trim().split('\n')[1] || ''; const c = row.split(',');
+    const close = parseFloat(c[6]), open = parseFloat(c[3]);
+    if (isFinite(close) && close > 0) return { v: close, ch: open ? +((close - open) / open * 100).toFixed(2) : null, d: c[1], src: 'ICE Brent futures', u: 'https://stooq.com/q/?s=cb.f' };
+  }
+  // 2) Yahoo Finance chart endpoint (BZ=F)
+  r = await get('https://query1.finance.yahoo.com/v8/finance/chart/BZ%3DF?range=5d&interval=1d', 6000, 1);
+  if (r.ok) {
+    try {
+      const m = JSON.parse(r.text).chart.result[0].meta; const v = m.regularMarketPrice, p = m.chartPreviousClose || m.previousClose;
+      if (v) return { v: +v.toFixed(2), ch: p ? +((v - p) / p * 100).toFixed(2) : null, src: 'ICE Brent futures', u: 'https://finance.yahoo.com/quote/BZ%3DF/' };
+    } catch (e) {}
+  }
+  return { err: 'unavailable', s1: r && r.status };
 }
 
 async function wci() {
@@ -105,8 +113,8 @@ async function wci() {
 
 async function build(debug) {
   const res = await Promise.all(FEEDS.map(async (f) => {
-    const r = await get(f.u);
-    const items = r.ok ? parse(r.text) : [];
+    let r = null, items = [];
+    for (const u of [].concat(f.u)) { r = await get(u, 8000, f.b); items = r.ok ? parse(r.text) : []; if (items.length) break; }
     return { f, r, items };
   }));
   const now = Date.now(), maxAge = 7 * 864e5, seen = new Set(), all = [];
@@ -118,13 +126,16 @@ async function build(debug) {
       const txt = it.t + ' ' + it.x;
       if (f.g && !REL.test(txt)) continue;            // government feeds: trade-related only
       if (!f.f && !(REL.test(txt) && (INDIA.test(txt) || /\b(suez|red sea|hormuz|panama|freight rate|tariff|wto|fta|sanction|drewry|baltic|brent)/i.test(txt)))) continue;
-      const k = it.t.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().slice(0, 80);
-      if (seen.has(k)) continue; seen.add(k);
+      const w = new Set(it.t.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(' ').filter(x => x.length > 3));
+      let dup = false;
+      for (const o of seen) { let c = 0; for (const x of w) if (o.has(x)) c++; if (c / Math.max(1, Math.min(w.size, o.size)) >= 0.7) { dup = true; break; } }
+      if (dup) continue; seen.add(w);
       const c = CATS.filter(([, re]) => re.test(txt)).map(([n]) => n).slice(0, 2);
+      if (!c.length) c.push('trade');
       all.push({ t: it.t, u: it.u, s: f.s, d: it.d, c, in: INDIA.test(txt) ? 1 : 0 });
       kept++;
     }
-    report.push({ s: f.s, u: f.u, status: r.status, parsed: items.length, kept, newest: items.reduce((a, b) => Math.max(a, b.d), 0) ? new Date(items.reduce((a, b) => Math.max(a, b.d), 0)).toISOString() : null });
+    report.push({ s: f.s, u: [].concat(f.u)[0], status: r.status, parsed: items.length, kept, newest: items.reduce((a, b) => Math.max(a, b.d), 0) ? new Date(items.reduce((a, b) => Math.max(a, b.d), 0)).toISOString() : null });
   }
   // India-relevant stories first within the same day, then newest first
   all.sort((a, b) => (Math.floor(b.d / 864e5) - Math.floor(a.d / 864e5)) || (b.in - a.in) || (b.d - a.d));
