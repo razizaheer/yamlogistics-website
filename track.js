@@ -67,7 +67,7 @@
   // Airline cargo tracking: [url, mode] mode 1 = AWB filled in via link ({p} prefix, {s} 8-digit serial); 0 = official page, AWB copied; 2 = page takes the full 11-digit number
   var LHC = ["https://www.lufthansa-cargo.com/en/eservices/etracking/awb-details/-/awb/{p}/{s}?searchFilter=awb", 1], AI = ["https://aicargoportal.airindia.com/icargoneoportal/app/main/#/app?.html", 2], IAG = ["https://www.iagcargo.com/en/home/", 0], AFKL = ["https://www.afklcargo.com/mycargo/shipment/singlesearch", 2], CLX = ["https://www.cargolux.com/track-and-trace/", 0];
   var AIRT = {"157": ["https://www.qrcargo.com/s/track-your-shipment?documentType=MAWB&documentPrefix={p}&documentNumber={s}", 1], "607": ["https://www.etihadcargo.com/en/e-services/shipment-tracking?awb={p}{s}", 1], "020": LHC, "220": LHC, "016": ["https://www.unitedcargo.com/en/us/track/awb/{p}-{s}", 1],
-    "098": AI, "236": AI, "312": ["https://6ecargo.goindigo.in/", 2, null, "Paste {s} in the Track your Air Waybill box"], "775": ["https://www.spicexpress.com/", 2, null, "Open the Track your Shipment tab, then paste {s}"], "176": ["https://eskycargo.emirates.com/app/offerandorder/#/home/find-offer", 2, null, "Paste {s} in the Search & Track box at the top"], "724": ["https://offerandorder.swissworldcargo.com/app/offerandorder/#/home/find-offer", 2, null, "Paste {s} in the Search & Track box at the top"], "141": ["https://cargo.flydubai.com/", 2, null, "Paste {s} in the Search & Track box at the top"],
+    "098": AI, "236": AI, "312": ["https://6ecargo.goindigo.in/", 2, null, "Paste {s} in the Track your Air Waybill box"], "775": ["https://www.spicexpress.com/", 2, null, "Open the Track your Shipment tab, then paste {s}"], "176": ["https://eskycargo.emirates.com/app/offerandorder/#/shipments/list?type=D&values={p}{s}", 1], "738": ["https://track.champ.aero/vn", 2, "Vietnam Airlines Cargo"], "724": ["https://offerandorder.swissworldcargo.com/app/offerandorder/#/home/find-offer", 2, null, "Paste {s} in the Search & Track box at the top"], "141": ["https://cargo.flydubai.com/", 2, null, "Paste {s} in the Search & Track box at the top"],
     "618": ["https://www.siacargo.com/e-services/quicksearch_public/", 2], "160": ["https://www.cathaycargo.com/en-us/track-and-trace.html", 0], "180": ["https://cargo.koreanair.com/en/tracking", 0], "235": ["https://www.turkishcargo.com/en/cargo-tracking", 0], "057": AFKL, "074": AFKL, "129": AFKL, "014": ["https://www.aircanada.com/cargo/tracking", 2], "172": CLX, "356": CLX,
     "065": ["https://www.saudiacargo.com/en/digital-services", 0], "071": ["https://cargo.ethiopianairlines.com/my-cargo/track-your-shipment", 2], "603": ["https://srilankancargo.ibsplc.aero/icargoneoportal/app/main/", 2, null, "Open the Track Shipments tab, then paste {s}"], "910": ["https://cargo.omanair.com/track-shipment", 0], "072": ["https://www.gulfair.com/cargo", 0], "125": IAG, "075": IAG, "053": IAG,
     "706": ["https://www.kqcargo.com/", 0], "217": ["https://www.thaicargo.com/en/main", 0], "232": ["https://www.malaysiaairlines.com/content/mk/en/shipment-tracking.html", 0], "514": ["https://cargo.airarabia.com/cargo-tracking/", 0], "229": ["https://www.kuwaitairways.com/en/cargo/pages/tracking.aspx", 0], "077": ["https://egyptair-cargo.com/home.htm", 0],
@@ -81,9 +81,9 @@
   var LDB = 'https://ldb.co.in/ldb/containersearch';
   var PRE = null, EX = root.getAttribute('data-ex'), EXL = root.getAttribute('data-exl'), ps = root.getAttribute('data-sea');
   if (ps) for (var pi = 0; pi < SEA.length; pi++) if (SEA[pi][0] === ps) PRE = SEA[pi];
-  var css = '.tk-card{background:#fff;border:1px solid #E1EDF7;border-radius:24px;padding:28px}.tk-row{display:flex;gap:10px;flex-wrap:wrap}.tk-in{flex:1 1 360px;min-width:0;font:inherit;font-size:20px;padding:18px 20px;border:2px solid #CFE3F5;border-radius:16px;outline:none;letter-spacing:.02em}.tk-in:focus{border-color:#0A6CC2}.tk-go{background:#0A6CC2;color:#fff;border:0;border-radius:16px;padding:0 30px;font:inherit;font-weight:700;font-size:18px;cursor:pointer;min-height:62px}.tk-go:hover{background:#0B4F8F}.tk-hint{font-size:13px;color:#5E7891;margin-top:10px}.tk-hint button{background:none;border:0;color:#0A6CC2;font:inherit;cursor:pointer;padding:0 4px;text-decoration:underline}.tk-res{margin-top:18px}.tk-kind{font-family:"Geist Mono",monospace;font-size:12px;letter-spacing:.1em;color:#5E7891}.tk-h{font-family:Archivo,sans-serif;font-weight:900;font-size:28px;line-height:1.15;margin:6px 0 4px}.tk-num{font-family:"Geist Mono",monospace;font-size:16px;color:#17436B}.tk-ok{color:#0F7B3F;font-size:13px;margin-top:6px}.tk-bad{color:#B42318;font-size:13px;margin-top:6px}.tk-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-top:18px}.tk-b{display:block;text-align:left;border-radius:16px;padding:16px 18px;font:inherit;cursor:pointer;text-decoration:none;border:1px solid #CFE3F5;background:#F7FBFF;color:#0B2A4A}.tk-b b{display:block;font-size:16px;margin-bottom:3px}.tk-b span{font-size:13px;color:#5E7891}.tk-b.pri{background:#0A6CC2;border-color:#0A6CC2;color:#fff}.tk-b.pri span{color:#DDEBFA}.tk-b.wa{background:#25D366;border-color:#25D366;color:#06331A}.tk-b.wa span{color:#0B4D24}.tk-b:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(10,108,194,.14)}.tk-sel{font:inherit;font-size:15px;padding:12px 14px;border:1px solid #CFE3F5;border-radius:12px;margin-top:12px;max-width:100%}.tk-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0B2A4A;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.25)}.tk-rec{margin-top:14px;font-size:13px;color:#5E7891}.tk-rec button{background:#EEF5FC;border:0;border-radius:999px;padding:5px 10px;margin:4px 4px 0 0;font:inherit;font-size:12px;color:#0B2A4A;cursor:pointer}';
+  var css = '.tk-card{background:#fff;border:1px solid #E1EDF7;border-radius:24px;padding:28px}.tk-row{display:flex;gap:10px;flex-wrap:wrap}.tk-in{flex:1 1 360px;min-width:0;font:inherit;font-size:20px;padding:18px 20px;border:2px solid #CFE3F5;border-radius:16px;outline:none;letter-spacing:.02em}.tk-in:focus{border-color:#0A6CC2}.tk-go{background:#0A6CC2;color:#fff;border:0;border-radius:16px;padding:0 30px;font:inherit;font-weight:700;font-size:18px;cursor:pointer;min-height:62px}.tk-go:hover{background:#0B4F8F}.tk-hint{font-size:13px;color:#5E7891;margin-top:10px}.tk-hint button{background:none;border:0;color:#0A6CC2;font:inherit;cursor:pointer;padding:0 4px;text-decoration:underline}.tk-res{margin-top:18px}.tk-kind{font-family:"Geist Mono",monospace;font-size:12px;letter-spacing:.1em;color:#5E7891}.tk-h{font-family:Archivo,sans-serif;font-weight:900;font-size:28px;line-height:1.15;margin:6px 0 4px}.tk-num{font-family:"Geist Mono",monospace;font-size:16px;color:#17436B}.tk-ok{color:#0F7B3F;font-size:13px;margin-top:6px}.tk-bad{color:#B42318;font-size:13px;margin-top:6px}.tk-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-top:18px}.tk-b{display:block;text-align:left;border-radius:16px;padding:16px 18px;font:inherit;cursor:pointer;text-decoration:none;border:1px solid #CFE3F5;background:#F7FBFF;color:#0B2A4A}.tk-b b{display:block;font-size:16px;margin-bottom:3px}.tk-b span{font-size:13px;color:#5E7891}.tk-b.pri{background:#0A6CC2;border-color:#0A6CC2;color:#fff}.tk-b.pri span{color:#DDEBFA}.tk-b.wa{background:#25D366;border-color:#25D366;color:#06331A}.tk-b.wa span{color:#0B4D24}.tk-b:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(10,108,194,.14)}.tk-sel{font:inherit;font-size:15px;padding:12px 14px;border:1px solid #CFE3F5;border-radius:12px;margin-top:12px;max-width:100%}.tk-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0B2A4A;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.25)}.tk-rec{margin-top:14px;font-size:13px;color:#5E7891}.tk-up{display:flex;gap:12px;align-items:center;margin-top:14px;padding:12px 14px;border:1.5px dashed #9CC5EA;border-radius:14px;background:#F7FBFF;cursor:pointer}.tk-up:hover{border-color:#0A6CC2;background:#EEF5FC}.tk-up-i{flex:none;width:38px;height:38px;border-radius:10px;background:#0B2A4A;color:#FFC93C;display:flex;align-items:center;justify-content:center;font-size:20px}.tk-up b{display:block;font-size:15px;color:#0B2A4A}.tk-up i{display:block;font-style:normal;font-size:12.5px;color:#5E7891;margin-top:2px}.tk-upm{font-size:13.5px;color:#3D5873;margin-top:8px}.tk-upm .bar{height:5px;border-radius:9px;background:#E1EDF7;margin-top:6px;overflow:hidden}.tk-upm .bar i{display:block;height:100%;background:#0A6CC2;transition:width .3s}.tk-b.sum{background:#FFF8E6;border-color:#F5D58A}.tk-rec button{background:#EEF5FC;border:0;border-radius:999px;padding:5px 10px;margin:4px 4px 0 0;font:inherit;font-size:12px;color:#0B2A4A;cursor:pointer}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
-  root.innerHTML = '<div class="tk-card"><div class="tk-row"><input class="tk-in" id="tk-q" placeholder="Container, AWB or B/L number, e.g. MSKU 123456 5" autocomplete="off" spellcheck="false" aria-label="Tracking number"><button class="tk-go" id="tk-go">Track →</button></div><div class="tk-hint">Try: ' + (EX ? '<button data-x="' + h(EX) + '">' + h(EXL || EX) + '</button>' : '<button data-x="MSKU1234565">MSKU 123456 5</button><button data-x="176-12345675">176-1234 5675</button><button data-x="HLCUBO1251012345">Hapag-Lloyd B/L</button>') + '</div><div id="tk-rec" class="tk-rec"></div><div id="tk-res" class="tk-res"></div></div>';
+  root.innerHTML = '<div class="tk-card"><div class="tk-row"><input class="tk-in" id="tk-q" placeholder="Container, AWB or B/L number, e.g. MSKU 123456 5" autocomplete="off" spellcheck="false" aria-label="Tracking number"><button class="tk-go" id="tk-go">Track →</button></div><div class="tk-hint">Try: ' + (EX ? '<button data-x="' + h(EX) + '">' + h(EXL || EX) + '</button>' : '<button data-x="MSKU1234565">MSKU 123456 5</button><button data-x="176-12345675">176-1234 5675</button><button data-x="HLCUBO1251012345">Hapag-Lloyd B/L</button>') + '</div><label class="tk-up"><input type="file" id="tk-file" accept=".pdf,image/*" hidden><span class="tk-up-i">⇪</span><span><b>Or upload your air waybill copy</b><i>PDF, scan or phone photo · we read the AWB number for you · the file never leaves your device</i></span></label><div id="tk-upm" class="tk-upm"></div><div id="tk-rec" class="tk-rec"></div><div id="tk-res" class="tk-res"></div></div>';
   var q = document.getElementById('tk-q'), res = document.getElementById('tk-res');
   function h(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function toast(t) { var d = document.createElement('div'); d.className = 'tk-toast'; d.textContent = t; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 3500); }
@@ -137,12 +137,14 @@
     } else {
       H += '<div class="tk-bad" style="font-size:15px">That doesn\'t look like a container (4 letters + 7 digits), AWB (11 digits) or B/L number. Please check and try again.</div>';
     }
+    if (H.indexOf('tk-btns') >= 0) H = H.replace(/<\/div>$/, '') + '<button class="tk-b sum" id="tk-sum" type="button"><b>Download tracking summary (PDF) ↓</b><span>Number, carrier and where to track it, to save or share</span></button></div>';
     res.innerHTML = H; res.setAttribute('data-n', n); if (H.indexOf('doesn\'t look like') < 0) remember(raw.toUpperCase());
   }
   document.getElementById('tk-go').addEventListener('click', run);
   q.addEventListener('keydown', function (e) { if (e.key === 'Enter') run(); });
   root.addEventListener('click', function (e) {
     var x = e.target.closest('[data-x]'); if (x) { q.value = x.getAttribute('data-x'); run(); return; }
+    if (e.target.closest('#tk-sum')) { summary(); return; }
     var c = e.target.closest('[data-copy]'); if (c) { copy(c.getAttribute('data-copy')); if (c.getAttribute('data-direct') !== '1') toast((c.getAttribute('data-hint') || 'Number') + ' copied: paste it into the tracking box on the page that opens.'); }
   });
   root.addEventListener('change', function (e) {
@@ -151,6 +153,57 @@
     var old = b.querySelector('.tk-b.pri'); if (old) old.remove();
     b.insertAdjacentHTML('afterbegin', carrierBtn(c, n));
   });
+
+  // ---- upload an air waybill: read the AWB number in the browser (same reader as the AWB label tool) ----
+  var TB = (function () { var sc = document.currentScript || [].slice.call(document.scripts).filter(function (x) { return /track\.js/.test(x.src); })[0]; return sc ? sc.src.replace(/[^\/]*$/, '') : ''; })();
+  function load(src) { return new Promise(function (ok, no) { var x = document.createElement('script'); x.src = TB + src; x.onload = ok; x.onerror = no; document.head.appendChild(x); }); }
+  var RD = null;
+  function reader() {
+    if (!RD) RD = Promise.all([window.AWBRead ? 0 : load('awb-reader.js?v=2'), fetch(TB + 'awb-data.json?v=1').then(function (x) { return x.json(); })]).then(function (a) { return { R: window.AWBRead, D: a[1] }; });
+    return RD;
+  }
+  var upm = document.getElementById('tk-upm');
+  function msg(t, p) { upm.innerHTML = h(t) + (p != null ? '<div class="bar"><i style="width:' + Math.round(p * 100) + '%"></i></div>' : ''); }
+  document.getElementById('tk-file').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+    msg('Reading ' + f.name + '…', 0.03); res.innerHTML = '';
+    reader().then(function (o) { return o.R.read(f, o.D, function (p) { msg(p.stage + '…', p.p); }); }).then(function (r) {
+      var a = r && r.fields && r.fields.awb;
+      if (!a) { upm.innerHTML = '<span class="tk-bad" style="font-size:13.5px">We couldn\'t find an air waybill number in this file. Please type it above, or WhatsApp us the copy and we\'ll track it for you.</span>'; return; }
+      var ok = a.conf === 'ok';
+      upm.innerHTML = (ok ? '<span class="tk-ok" style="font-size:13.5px">✓ Read from your file: AWB ' : '<span style="color:#8A5A00">Read from your file: AWB ') + h(a.v) + (r.isHouse ? ' (this looks like a house AWB; we used the airline\'s master AWB number on it)' : '') + (ok ? '' : '. ' + h(a.why || 'Please compare it with your document.')) + '</span>';
+      q.value = a.v; run();
+    }).catch(function () { RD = null; upm.innerHTML = '<span class="tk-bad" style="font-size:13.5px">Sorry, this file could not be read here. Please type the number above.</span>'; });
+  });
+
+  // ---- branded one-page tracking summary (PDF) ----
+  function summary() {
+    var b = document.getElementById('tk-sum'); if (b) b.disabled = true;
+    var need = [window.jspdf ? 0 : load('vendor/jspdf.umd.min.js'), window.YAMBrand ? 0 : load('yam-brand.js?v=2')];
+    Promise.all(need).then(function () { var BR = window.YAMBrand; BR.logoSrc = TB + 'yam-logo.svg'; BR.qrSrc = TB + 'yam-qr.png'; return BR.ready(); }).then(function (BR) {
+      var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' }), W = 210, M = 16, y = 40;
+      var kind = (res.querySelector('.tk-kind') || {}).textContent || '', who = (res.querySelector('.tk-h') || {}).textContent || '', num = (res.querySelector('.tk-num') || {}).textContent || '';
+      var chk = res.querySelector('.tk-ok') ? 'Check digit valid' : res.querySelector('.tk-bad') ? 'Check digit does not match: please re-check the number' : '';
+      var link = res.querySelector('.tk-b.pri'), lt = link ? link.querySelector('b').textContent.replace(' ↗', '') : '', lh = link ? link.href : '';
+      var when = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      BR.header(doc, 'Tracking summary', when); BR.footer(doc, 'Live status is shown on the carrier\'s own website. This summary records the number and where to track it.');
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(94, 120, 145); doc.text(kind, M, y); y += 9;
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(22); doc.setTextColor(11, 42, 74); doc.text(doc.splitTextToSize(who, W - 2 * M), M, y); y += 11;
+      doc.setFont('courier', 'bold'); doc.setFontSize(18); doc.setTextColor(23, 67, 107); doc.text(num, M, y); y += 8;
+      if (chk) { doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(chk[0] === 'C' && chk.indexOf('not') < 0 ? 15 : 180, chk.indexOf('not') < 0 ? 123 : 35, chk.indexOf('not') < 0 ? 63 : 24); doc.text(chk, M, y); y += 10; }
+      doc.setFillColor(242, 248, 253); doc.roundedRect(M, y, W - 2 * M, 34, 3, 3, 'F');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(11, 42, 74); doc.text('Where to see the live status', M + 6, y + 9);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(43, 66, 92);
+      doc.text(doc.splitTextToSize(lt || 'On the carrier\'s own tracking page', W - 2 * M - 12), M + 6, y + 16);
+      if (lh) { doc.setTextColor(10, 108, 194); doc.textWithLink(doc.splitTextToSize(lh, W - 2 * M - 12)[0], M + 6, y + 23, { url: lh }); }
+      doc.setTextColor(94, 120, 145); doc.setFontSize(9); doc.text('Track it again any time at www.yamlogistics.com/track-shipment', M + 6, y + 30); y += 44;
+      BR.promo(doc, M, y, W - 2 * M, 'Need this shipment cleared or delivered? Talk to YAM.'); y += 38;
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(94, 120, 145);
+      doc.text(doc.splitTextToSize('YAM Logistics Pvt. Ltd. is a licensed customs broker (since 1992) with offices in New Delhi, Mumbai (sea and air) and Mundra. Customs clearance, sea and air freight, ICD trucking, insurance and project cargo.', W - 2 * M), M, y);
+      BR.finish(doc);
+      doc.save('YAM-tracking-' + (res.getAttribute('data-n') || 'summary').replace(/[^A-Z0-9-]/gi, '') + '.pdf');
+    }).catch(function () { toast('Sorry, the PDF could not be created in this browser.'); }).then(function () { if (b) b.disabled = false; });
+  }
   var u = new URLSearchParams(location.search).get('n'); if (u) { q.value = u; run(); }
   showRec();
 })();

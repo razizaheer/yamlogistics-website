@@ -24,7 +24,7 @@
     });
   }
   B.ready = function () {
-    if (!P) P = Promise.all([load('yam-logo.svg', 1000, 0.52), load('yam-qr.png', 420, 1)]).then(function (a) { B.logo = a[0]; B.qr = a[1]; return B; });
+    if (!P) P = Promise.all([load(B.logoSrc || 'yam-logo.svg', 1000, 0.52), load(B.qrSrc || 'yam-qr.png', 420, 1)]).then(function (a) { B.logo = a[0]; B.qr = a[1]; return B; });
     return P;
   };
   function size(doc) { var s = doc.internal.pageSize; return { W: s.getWidth(), H: s.getHeight() }; }
