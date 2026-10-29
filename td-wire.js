@@ -61,13 +61,15 @@
       (list.length > SHOW ? '<button class="w-more" data-more="1">Show more headlines</button>' : '') +
       '<div class="w-note">Headlines and links belong to their publishers. YAM Logistics selects and sorts them automatically and does not edit them. Market figures are for reference only' + (DATA && DATA.updated ? ' · checked ' + ago(DATA.updated) : '') + '.</div>';
   }
+  // The live feeds run on Cloudflare; copies served elsewhere (e.g. GitHub Pages) read them from the Cloudflare site.
+  var API = /(\.pages\.dev|yamlogistics\.com)$/.test(location.hostname) ? '/' : 'https://yamlogistics.pages.dev/';
   function load() {
     try { var bc = JSON.parse(localStorage.getItem(BKEY) || 'null'); if (bc) { BRIEFS = bc; render(); } } catch (e) { }
-    fetch('/api/briefs').then(function (r) { return r.json(); }).then(function (b) { if (b && b.briefs) { BRIEFS = b; try { localStorage.setItem(BKEY, JSON.stringify(b)); } catch (e) { } render(); } }).catch(function () { });
+    fetch(API + 'api/briefs').then(function (r) { return r.json(); }).then(function (b) { if (b && b.briefs) { BRIEFS = b; try { localStorage.setItem(BKEY, JSON.stringify(b)); } catch (e) { } render(); } }).catch(function () { });
     try { var c = JSON.parse(localStorage.getItem(KEY) || 'null'); if (c && Date.now() - c.updated < 30 * 60e3) { DATA = c; render(); return; } if (c) { DATA = c; render(); } } catch (e) { }
     Promise.all([
-      fetch('/api/news').then(function (r) { return r.json(); }),
-      fetch('/api/cbic-fx').then(function (r) { return r.json(); }).catch(function () { return null; })
+      fetch(API + 'api/news').then(function (r) { return r.json(); }),
+      fetch(API + 'api/cbic-fx').then(function (r) { return r.json(); }).catch(function () { return null; })
     ]).then(function (a) {
       var d = a[0] || {}; d.n = d.n || {};
       if (a[1] && a[1].r && a[1].r.USD) d.n.fx = { v: a[1].r.USD.i, no: a[1].n };
