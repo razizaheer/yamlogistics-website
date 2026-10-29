@@ -734,11 +734,16 @@ ${n ? `<div class="lp-card">
       const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
       const r = S.result;
       const PW = 297, PH = 210, M = 12;
+      if (window.YAMBrand) await YAMBrand.ready();
       const head = (title) => {
+        if (window.YAMBrand) {
+          YAMBrand.header(doc, 'Container load plan', title);
+          YAMBrand.footer(doc, 'Computer-generated plan for guidance; allow for dunnage, lashing and carrier rules. Need help loading or shipping it? Talk to YAM.');
+          return;
+        }
         doc.setFillColor(10, 108, 194); doc.rect(0, 0, PW, 16, 'F');
         doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.text('YAM Logistics · Container load plan', M, 10.5);
         doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.text(title, PW - M, 10.5, { align: 'right' });
-        doc.setTextColor(11, 42, 74);
         doc.setFontSize(7.5); doc.setTextColor(94, 120, 145);
         doc.text('yamlogistics.com · WhatsApp @YAMLOGISTICS · Computer-generated plan for guidance; allow for dunnage, lashing and carrier rules.', M, PH - 6);
         doc.setTextColor(11, 42, 74);
@@ -747,10 +752,10 @@ ${n ? `<div class="lp-card">
       // page 1: summary
       head(new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }));
       doc.setFont('helvetica', 'bold'); doc.setFontSize(20);
-      doc.text(clean(composition(r)), M, 30);
+      doc.text(clean(composition(r)), M, 35);
       doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
-      doc.text(clean(`${fmt(r.totalBoxes)} ${S.pal ? 'pallets' : 'packages'} planned - ${fmt(r.units.reduce((a, u) => a + u.vol, 0) / 1e6, 2)} m3 - ${showWt(r.units.reduce((a, u) => a + u.kg, 0))} ${S.wunit}`), M, 37);
-      let y = 47;
+      doc.text(clean(`${fmt(r.totalBoxes)} ${S.pal ? 'pallets' : 'packages'} planned - ${fmt(r.units.reduce((a, u) => a + u.vol, 0) / 1e6, 2)} m3 - ${showWt(r.units.reduce((a, u) => a + u.kg, 0))} ${S.wunit}`), M, 42);
+      let y = 52;
       doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
       const cols = [M, M + 8, M + 80, M + 140, M + 160, M + 185, M + 215];
       ['', 'Package', `L x W x H (${S.unit})`, 'Qty', `Wt/pc (${S.wunit})`, 'Upright', 'Stackable'].forEach((t, i) => doc.text(t, cols[i], y));
@@ -765,9 +770,10 @@ ${n ? `<div class="lp-card">
       r.groups.forEach((g) => {
         const u = g.units[0], a = u.index + 1, b = g.units[g.units.length - 1].index + 1;
         doc.text(clean(`Unit ${a}${b > a ? '-' + b + ' (' + g.units.length + ' identical)' : ''} - ${u.eq.name}: ${fmt(u.boxes.length)} pcs, ${Math.round(u.util * 100)}% volume, ${showWt(u.kg)} ${S.wunit} (${Math.round(u.kgUtil * 100)}% of payload)`), M, y);
-        y += 5.5; if (y > PH - 14) { doc.addPage(); head('Units'); y = 26; }
+        y += 5.5; if (y > PH - 24) { doc.addPage(); head('Units'); y = 32; }
       });
       if (r.tooBig.length) { y += 2; doc.setTextColor(226, 72, 58); r.tooBig.forEach((t) => { doc.text(clean(`Not loaded: ${t.n} x ${t.type.name} - ${t.why}`), M, y); y += 5; }); doc.setTextColor(11, 42, 74); }
+      if (window.YAMBrand && y < PH - 60) YAMBrand.promo(doc, M, PH - 52, PW - 2 * M, 'Ready to ship this load? YAM Logistics can handle the whole move.');
       // per unit group
       let shots = 0;
       for (const g of r.groups) {
@@ -775,15 +781,15 @@ ${n ? `<div class="lp-card">
         const title = `Unit ${a}${b > a ? '-' + b : ''} - ${u.eq.name}`;
         doc.addPage(); head(clean(title));
         doc.setFont('helvetica', 'bold'); doc.setFontSize(14);
-        doc.text(clean(`${title}${g.units.length > 1 ? ' (load ' + g.units.length + ' units the same way)' : ''}: finished load`), M, 26);
+        doc.text(clean(`${title}${g.units.length > 1 ? ' (load ' + g.units.length + ' units the same way)' : ''}: finished load`), M, 32);
         const img = view3d.snapshot(u, -1, 1500, 760, 'iso'); shots++;
-        doc.addImage(img, 'JPEG', M, 30, PW - 2 * M, (PW - 2 * M) * 760 / 1500);
+        doc.addImage(img, 'JPEG', M + 12, 36, PW - 2 * M - 24, (PW - 2 * M - 24) * 760 / 1500);
         // steps, 2 per page
         const st = u.steps;
         for (let k = 0; k < st.length; k++) {
           if (k % 2 === 0) { doc.addPage(); head(clean(title + ' - loading steps')); }
-          const top = k % 2 === 0 ? 22 : 22 + (PH - 30) / 2;
-          const iw = 150, ih = iw * 0.5;
+          const top = k % 2 === 0 ? 27 : 27 + 84;
+          const iw = 144, ih = 72;
           const im = view3d.snapshot(u, k, 1200, 600, 'iso'); shots++;
           doc.addImage(im, 'JPEG', M, top, iw, ih);
           const tx = M + iw + 6; let ty = top + 6;
@@ -802,6 +808,7 @@ ${n ? `<div class="lp-card">
         }
         if (shots > 120) break;
       }
+      if (window.YAMBrand) YAMBrand.finish(doc);
       doc.save(`YAM-load-plan-${r.units.length}-units.pdf`);
     } catch (e) {
       console.error(e); alertBox('Sorry, the PDF could not be created in this browser.');
