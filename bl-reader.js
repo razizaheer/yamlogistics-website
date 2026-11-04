@@ -119,5 +119,26 @@
     return new Promise(function (ok, no) { var im = new Image(); im.onload = function () { var s = Math.min(1, 3000 / Math.max(im.width, im.height)), cv = document.createElement('canvas'); cv.width = im.width * s; cv.height = im.height * s; cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height); ok(cv); }; im.onerror = no; im.src = URL.createObjectURL(file); })
       .then(function (cv) { return ocrCanvas(cv, onp); }).then(function (t) { var r = parse(t); r.method = 'ocr'; return r; });
   }
-  G.BLRead = { read: read, parse: parse, containers: containers, imoOk: imoOk, splitVessel: splitVessel };
+  // Plain text + positioned words of any document (up to 6 pages), for the document checker. OCR only page 1 of scans.
+  function readText(file, onp) {
+    onp = onp || function () { };
+    var isPdf = /pdf$/i.test(file.type) || /\.pdf$/i.test(file.name);
+    function ocrResult(r) { var it = []; (r.data.words || []).forEach(function (w) { it.push({ s: w.text, x: w.bbox.x0, y: -w.bbox.y0, w: w.bbox.x1 - w.bbox.x0, p: 1 }); }); return { text: r.data.text, items: it, method: 'ocr' }; }
+    function ocrCv(cv) { return tess(function (m) { if (m.status === 'recognizing text') onp({ stage: 'Reading the scan', p: 0.3 + 0.65 * m.progress }); }).then(function (w) { return w.recognize(cv); }).then(ocrResult); }
+    if (isPdf) {
+      onp({ stage: 'Opening the PDF', p: 0.05 });
+      return pdfjs().then(function (L) { return file.arrayBuffer().then(function (b) { return L.getDocument({ data: new Uint8Array(b), isEvalSupported: false }).promise; }); }).then(function (doc) {
+        var n = Math.min(doc.numPages, 6), ps = [], items = [];
+        for (var i = 1; i <= n; i++) ps.push(doc.getPage(i).then(function (p) { return p.getTextContent().then(function (tc) { var out = '', y0 = null; tc.items.forEach(function (it) { var y = Math.round(it.transform[5]); if (it.str && it.str.trim()) items.push({ s: it.str, x: it.transform[4], y: it.transform[5], w: it.width || 0, p: p.pageNumber }); if (y0 !== null && Math.abs(y - y0) > 2) out += '\n'; else if (out && !/\s$/.test(out)) out += ' '; out += it.str; y0 = y; }); return out; }); }));
+        return Promise.all(ps).then(function (a) {
+          var t = a.join('\n'); if (t.replace(/\s/g, '').length > 150) return { text: t, items: items, method: 'pdf-text' };
+          onp({ stage: 'Scanned PDF, reading the image', p: 0.2 });
+          return doc.getPage(1).then(function (page) { var vp = page.getViewport({ scale: 2.5 }), cv = document.createElement('canvas'); cv.width = vp.width; cv.height = vp.height; return page.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise.then(function () { return ocrCv(cv); }); });
+        });
+      });
+    }
+    onp({ stage: 'Reading the image', p: 0.1 });
+    return new Promise(function (ok, no) { var im = new Image(); im.onload = function () { var s = Math.min(1, 3000 / Math.max(im.width, im.height)), cv = document.createElement('canvas'); cv.width = im.width * s; cv.height = im.height * s; cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height); ok(cv); }; im.onerror = no; im.src = URL.createObjectURL(file); }).then(ocrCv);
+  }
+  G.BLRead = { read: read, parse: parse, containers: containers, ctrCheck: ctrCheck, imoOk: imoOk, splitVessel: splitVessel, readText: readText, lines: LINES };
 })(window);

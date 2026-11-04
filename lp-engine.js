@@ -22,7 +22,13 @@
     ['Pallets & air ULDs', 'pmc-ld', 'PMC air pallet – lower deck (160 cm)', 307, 233, 160, 4600, 0, 0, 'Usable base inside the net. The aircraft contour is not modelled, so confirm with the airline.'],
     ['Pallets & air ULDs', 'pmc-md', 'PMC air pallet – main deck (244 cm)', 307, 233, 244, 6800, 0, 0, 'Usable base inside the net. The aircraft contour is not modelled, so confirm with the airline.'],
     ['Pallets & air ULDs', 'pag-ld', 'PAG air pallet – lower deck (160 cm)', 307, 213, 160, 4600, 0, 0, 'Usable base inside the net. The aircraft contour is not modelled, so confirm with the airline.'],
-    ['Pallets & air ULDs', 'pag-md', 'PAG air pallet – main deck (244 cm)', 307, 213, 244, 6000, 0, 0, 'Usable base inside the net. The aircraft contour is not modelled, so confirm with the airline.']
+    ['Pallets & air ULDs', 'pag-md', 'PAG air pallet – main deck (244 cm)', 307, 213, 244, 6000, 0, 0, 'Usable base inside the net. The aircraft contour is not modelled, so confirm with the airline.'],
+    ['Trucks & trailers', 'in20', 'India 20 ft closed body truck', 610, 213, 213, 7000, 213, 213, 'Typical inner size. Body sizes vary by builder, so check the truck sent. Payload depends on the vehicle registration.'],
+    ['Trucks & trailers', 'in24', 'India 24 ft closed body truck', 732, 229, 229, 9000, 229, 229, 'Typical inner size. Body sizes vary by builder, so check the truck sent. Payload depends on the vehicle registration.'],
+    ['Trucks & trailers', 'in32s', 'India 32 ft container truck, single axle (SXL)', 975, 236, 244, 7000, 236, 244, 'Typical inner size. Single-axle 32 ft trucks carry light, bulky cargo. Payload depends on the vehicle registration.'],
+    ['Trucks & trailers', 'in32m', 'India 32 ft container truck, multi-axle (MXL)', 975, 236, 244, 15000, 236, 244, 'Typical inner size. Payload depends on the vehicle registration and the state rules for axle loads.'],
+    ['Trucks & trailers', 'eu136', 'EU 13.6 m curtainsider trailer', 1360, 248, 270, 24000, 248, 270, 'Typical standard trailer. Mega trailers are up to 300 cm high inside.'],
+    ['Trucks & trailers', 'us53', 'US 53 ft dry van trailer', 1600, 249, 270, 20400, 249, 265, 'Typical inner size. Road weight limits in the US are by axle and state.']
   ].map(([group, id, name, L, W, H, maxKg, doorW, doorH, note]) => ({ group, id, name, L, W, H, maxKg, doorW, doorH, note }));
 
   const EPS = 1e-6;
@@ -47,7 +53,12 @@
     const L = eq.L, W = eq.W, H = eq.H, maxKg = eq.maxKg;
     const boxes = [], walls = [];
     let x = 0, kg = 0;
-    const live = () => stock.filter((s) => s.left > 0);
+    const saved = stock.map((s) => s.oris);
+    for (const s of stock) s.oris = fitOris(s.allOris || s.oris, eq);
+    // loading priority: 'rear' items go in first (against the front wall), 'door' items last (at the doors)
+    const phaseOf = (s) => (s.type.prio === 'rear' ? 0 : s.type.prio === 'door' ? 2 : 1);
+    let phase = 0, pool = stock;
+    const live = () => stock.filter((s) => s.left > 0 && s.oris.length && phaseOf(s) === phase);
 
     // Fill one wall slice of depth d starting at x0; dryRun = evaluate only
     function fillWall(d, x0, dry, lead) {
@@ -62,7 +73,7 @@
       function bestBlock(cw, ch, onTopOf, dLim, only, onlyO) {
         const dd = dLim || d;
         let best = null;
-        for (const s of (only ? [only] : stock)) {
+        for (const s of (only ? [only] : pool)) {
           const n0 = left.get(s);
           if (n0 <= 0) continue;
           for (const o of (onlyO ? [onlyO] : s.oris)) {
@@ -72,6 +83,8 @@
             if (!s.type.stackable) ny = Math.min(ny, 1);
             if (s.type.maxLayers > 0) ny = onTopOf ? 0 : Math.min(ny, s.type.maxLayers); // layer-limited items stay on the floor
             if (s.type.onTop === false) { if (onTopOf) continue; ny = Math.min(ny, 1); } // floor only: may not sit on other cargo
+            // never put heavier cargo on lighter cargo (compare load per square cm; light loads under 80 kg/m² are always fine)
+            if (onTopOf && onTopOf.kg != null && s.type.kg > 25 && s.type.kg / (o.d * o.w) > Math.max(1.25 * onTopOf.kg / onTopOf.a, 0.008) + EPS) continue; // 0.008 kg/cm² = 80 kg/m²: light enough for any carton
             if (ny <= 0) continue;
             // one column (nd deep x ny high), possibly several across in the same width if cw allows (handled by outer loop)
             let n = Math.min(nd * ny, n0);
@@ -100,17 +113,17 @@
         }
         left.set(s, left.get(s) - k);
         kgW += k * s.type.kg; vol += k * o.d * o.w * o.h;
-        return { k, top: y0 + rows * o.h, fullTop: y0 + Math.floor(k / nd) * o.h, partial: k % nd !== 0 };
+        return { k, rows, top: y0 + rows * o.h, fullTop: y0 + Math.floor(k / nd) * o.h, partial: k % nd !== 0 };
       }
 
       function doColumn(b) {
         const colW = b.o.w;
         const r = placeColumn(b, z, 0);
-        blocks.push({ type: b.s.type, n: r.k, o: b.o, nd: b.nd });
+        blocks.push({ type: b.s.type, n: r.k, o: b.o, nd: b.nd, rows: r.rows });
         // top-up above a flat, stackable column
         if (!r.partial && b.s.type.stackable && r.fullTop < H - EPS) {
           const yTop = r.fullTop;
-          const t = bestBlock(colW, H - yTop, true, b.nd * b.o.d);
+          const t = bestBlock(colW, H - yTop, { kg: b.s.type.kg, a: b.o.d * b.o.w }, b.nd * b.o.d);
           if (t) {
             let zz = z;
             while (zz + t.o.w <= z + colW + EPS && left.get(t.s) > 0) {
@@ -118,7 +131,7 @@
               while (n > 0 && !canAdd(t.s, n)) n--;
               if (n <= 0) break;
               const rr = placeColumn({ ...t, n }, zz, yTop);
-              blocks.push({ type: t.s.type, n: rr.k, o: t.o, nd: t.nd, top: true });
+              blocks.push({ type: t.s.type, n: rr.k, o: t.o, nd: t.nd, rows: rr.rows, top: true });
               zz += t.o.w;
             }
           }
@@ -128,14 +141,14 @@
 
       // 1) plan the column widths across the wall with a small knapsack (value = cargo volume per column)
       const tmpls = [];
-      for (const st of stock) {
+      for (const st of pool) {
         if (left.get(st) <= 0) continue;
         for (const o of st.oris) {
           const b = bestBlock(W, H, false, 0, st, o);
           if (!b) continue;
           let v = b.n * o.d * o.w * o.h;
           if (b.s.type.stackable && b.n === b.nd * b.ny && b.ny * o.h < H - EPS) {
-            const t = bestBlock(o.w, H - b.ny * o.h, true, b.nd * o.d);
+            const t = bestBlock(o.w, H - b.ny * o.h, { kg: st.type.kg, a: o.d * o.w }, b.nd * o.d);
             if (t) v += t.n * t.o.d * t.o.w * t.o.h * Math.floor((o.w + EPS) / t.o.w);
           }
           if (lead && st === lead) v *= 3;
@@ -179,8 +192,10 @@
 
     let guard = 0;
     while (x < L - EPS && guard++ < 2000) {
+      if (kg >= maxKg - EPS) break;
       const avail = live();
-      if (!avail.length || kg >= maxKg - EPS) break;
+      if (!avail.length) { if (phase < 2) { phase++; continue; } break; }
+      pool = avail;
       // candidate depths: depths of orientations of the lead items (largest unit volume first), limited to length left
       const cands = new Set();
       const strat = (opts && opts.strategy) || 'dense';
@@ -202,7 +217,7 @@
         const score = (lead ? (r.leadVol / d) / (W * H) * 10 : 0) + dens + 0.0001 * r.n;
         if (!best || score > best.score) best = { d, score };
       }
-      if (!best) break;
+      if (!best) { if (phase < 2) { phase++; continue; } break; }
       const r = fillWall(best.d, x, false, lead);
       walls.push({ x0: x, d: best.d, from: boxes.length - r.n, to: boxes.length, blocks: r.blocks, kg: r.kgW });
       // compact: real depth used by this wall
@@ -210,8 +225,19 @@
       for (let i = boxes.length - r.n; i < boxes.length; i++) maxX = Math.max(maxX, boxes[i].x + boxes[i].dx);
       x = maxX;
     }
+    stock.forEach((s, i) => { s.oris = saved[i]; });
     const vol = boxes.reduce((a, b) => a + b.dx * b.dy * b.dz, 0);
     return { boxes, walls, kg, vol };
+  }
+
+  /** Orientations that fit inside the equipment and pass through its door (door opening = width x height at the rear end). */
+  function fitOris(oris, eq) {
+    return oris.filter((o) => o.d <= eq.L + EPS && o.w <= eq.W + EPS && o.h <= eq.H + EPS && (!eq.doorW || (o.w <= eq.doorW + EPS && o.h <= eq.doorH + EPS)));
+  }
+  function whyNot(s, eq) {
+    if (s.type.kg > eq.maxKg) return 'heavier than the payload limit';
+    const inside = s.oris.some((o) => o.d <= eq.L + EPS && o.w <= eq.W + EPS && o.h <= eq.H + EPS);
+    return inside ? 'will not pass through the door opening (' + Math.round(eq.doorW) + ' × ' + Math.round(eq.doorH) + ' cm)' : 'too large for this equipment';
   }
 
   /** Plan: items [{name,l,w,h,qty,kg,upright,stackable,maxLayers,color}], equipment id or object. */
@@ -230,11 +256,13 @@
     const stock = types.filter((t) => t.qty > 0 && t.l > 0 && t.w > 0 && t.h > 0).map((t) => ({
       type: t, left: Math.floor(t.qty), oris: orientations(t), unitVol: t.l * t.w * t.h
     }));
+    for (const s of stock) s.allOris = s.oris;
     // items that can never fit
     const tooBig = [];
     for (const s of stock) {
-      s.oris = s.oris.filter((o) => o.d <= eq.L + EPS && o.w <= eq.W + EPS && o.h <= eq.H + EPS);
-      if (!s.oris.length || s.type.kg > eq.maxKg) { tooBig.push({ type: s.type, n: s.left, why: !s.oris.length ? 'too large for this equipment' : 'heavier than the payload limit' }); s.left = 0; }
+      const f = fitOris(s.oris, eq);
+      if (!f.length || s.type.kg > eq.maxKg) { tooBig.push({ type: s.type, n: s.left, why: whyNot(s, eq) }); s.left = 0; }
+      s.oris = f;
     }
     const units = [];
     let guard = 0;
@@ -251,8 +279,11 @@
   }
 
   function finalize(u, eq, i) {
-    const cap = eq.L * eq.W * eq.H;
+    const F = eq.full || eq;
+    const cap = F.L * F.W * F.H;
     u.eq = eq; u.index = i;
+    // drums and rolls take a square space but hold only pi/4 of it
+    u.vol = u.boxes.reduce((a, b) => a + b.dx * b.dy * b.dz * (b.type.shape === 'drum' ? Math.PI / 4 : 1), 0);
     u.util = u.vol / cap;
     u.kgUtil = u.kg / eq.maxKg;
     const m = u.boxes.reduce((a, b) => a + b.type.kg, 0);
@@ -261,6 +292,21 @@
     u.counts = {};
     for (const b of u.boxes) u.counts[b.type.idx] = (u.counts[b.type.idx] || 0) + 1;
     u.usedL = u.boxes.reduce((a, b) => Math.max(a, b.x + b.dx), 0);
+    u.usedW = u.boxes.reduce((a, b) => Math.max(a, b.z + b.dz), 0);
+    u.usedH = u.boxes.reduce((a, b) => Math.max(a, b.y + b.dy), 0);
+    u.floor = u.boxes.reduce((a, b) => a + (b.y < EPS ? b.dx * b.dz : 0), 0);
+    // weight along the length in 10 equal slices (front wall to doors)
+    const bins = new Array(10).fill(0);
+    for (const b of u.boxes) {
+      const per = b.type.kg / b.dx;
+      for (let k = 0; k < 10; k++) {
+        const a0 = k * F.L / 10, a1 = (k + 1) * F.L / 10;
+        const ov = Math.min(a1, b.x + b.dx) - Math.max(a0, b.x);
+        if (ov > 0) bins[k] += per * ov;
+      }
+    }
+    u.bins = bins;
+    u.frontKg = bins.slice(0, 5).reduce((a, v) => a + v, 0);
     return u;
   }
 
@@ -272,10 +318,11 @@
     const stock = types.filter((t) => t.qty > 0 && t.l > 0 && t.w > 0 && t.h > 0).map((t) => ({
       type: t, left: Math.floor(t.qty), oris: orientations(t), unitVol: t.l * t.w * t.h
     }));
+    for (const s of stock) s.allOris = s.oris;
     const tooBig = [];
     for (const s of stock) {
-      const fitsSome = cands.some(({ eq }) => s.oris.some((o) => o.d <= eq.L + EPS && o.w <= eq.W + EPS && o.h <= eq.H + EPS) && s.type.kg <= eq.maxKg);
-      if (!fitsSome) { tooBig.push({ type: s.type, n: s.left, why: 'too large or too heavy for any of these units' }); s.left = 0; }
+      const fitsSome = cands.some(({ eq }) => fitOris(s.oris, eq).length && s.type.kg <= eq.maxKg);
+      if (!fitsSome) { tooBig.push({ type: s.type, n: s.left, why: whyNot(s, cands[cands.length - 1].eq).replace('this equipment', 'any of these units') }); s.left = 0; }
     }
     const snap = () => stock.map((x) => x.left);
     const restore = (v) => stock.forEach((x, i) => { x.left = v[i]; });
@@ -322,15 +369,73 @@
       const m = new Map();
       for (const w of st.walls) for (const b of w.blocks) {
         const k = b.type.idx + '|' + b.o.d + '|' + b.o.w + '|' + b.o.h + '|' + (b.top ? 1 : 0);
-        const e = m.get(k) || { type: b.type, o: b.o, top: !!b.top, n: 0, cols: 0 };
-        e.n += b.n; e.cols++; m.set(k, e);
+        const e = m.get(k) || { type: b.type, o: b.o, top: !!b.top, n: 0, cols: 0, rows: 0, nd: b.nd };
+        e.n += b.n; e.cols++; e.rows = Math.max(e.rows, b.rows || 1); m.set(k, e);
       }
       st.parts = [...m.values()];
       st.n = st.to - st.from;
+      st.kg = st.walls.reduce((a, w) => a + w.kg, 0);
     }
+    let pcs = 0, kg = 0;
+    for (const st of out) { pcs += st.n; kg += st.kg; st.cumN = pcs; st.cumKg = kg; }
     return out;
   }
 
-  const api = { EQUIPMENT, plan, planMix, steps, orientations };
+  /** Build pallets from loose cartons. pal = {l, w, deck (cm), maxH (cm, total incl. deck), maxKg (cargo), tare (kg), name}.
+      Each product gets its own full pallets; the part-pallets left over are combined on mixed pallets.
+      Returns {pallets: [{key, name, l, w, h, kg, qty, contents: {idx: n}, unit, eq}], loose: [items that do not fit a pallet]}. */
+  function palletise(items, pal) {
+    const peq = { group: 'Pallets & air ULDs', id: 'build', name: pal.name || 'Pallet', L: pal.l, W: pal.w, H: Math.max(1, pal.maxH - pal.deck), maxKg: pal.maxKg, doorW: 0, doorH: 0, note: '' };
+    const types = items.map((it, i) => ({ ...it, idx: i, kg: +it.kg || 0 }));
+    const out = new Map(), loose = [];
+    const add = (u, label) => {
+      const contents = {};
+      for (const b of u.boxes) contents[b.type.idx] = (contents[b.type.idx] || 0) + 1;
+      const h = u.boxes.reduce((a, b) => Math.max(a, b.y + b.dy), 0);
+      const key = Object.entries(contents).sort().map((e) => e.join(':')).join('|') + '#' + Math.round(h);
+      const e = out.get(key);
+      if (e) { e.qty++; return; }
+      const ks = Object.keys(contents);
+      if (ks.length === 1) label = types[+ks[0]].name;
+      out.set(key, { key, label, mixed: ks.length > 1, contents, h: Math.round(h + pal.deck), kg: u.kg + (pal.tare || 0), cargoKg: u.kg, qty: 1, unit: u });
+    };
+    const rest = [];
+    for (const t of types) {
+      if (!(t.qty > 0 && t.l > 0 && t.w > 0 && t.h > 0)) continue;
+      const st = [{ type: t, left: Math.floor(t.qty), oris: orientations(t), unitVol: t.l * t.w * t.h }];
+      st[0].allOris = st[0].oris;
+      if (!fitOris(st[0].oris, peq).length || t.kg > peq.maxKg) { loose.push(t); continue; }
+      let guard = 0;
+      while (st[0].left > 0 && guard++ < 500) {
+        const snap = st[0].left;
+        const u = packOne(peq, st, { strategy: 'dense' });
+        if (!u.boxes.length) break;
+        // a part-pallet (less than 85% of a full one) waits for the mixed round
+        if (st[0].left === 0 && guard > 1) {
+          const full = out.size ? [...out.values()].find((p) => p.contents[t.idx] && Object.keys(p.contents).length === 1) : null;
+          if (full && u.boxes.length < 0.85 * full.contents[t.idx]) { rest.push({ ...t, qty: snap }); break; }
+        }
+        add(u, t.name);
+      }
+    }
+    if (rest.length) {
+      const st = rest.map((t) => { const s = { type: t, left: Math.floor(t.qty), oris: orientations(t), unitVol: t.l * t.w * t.h }; s.allOris = s.oris; return s; });
+      let guard = 0;
+      while (st.some((s) => s.left > 0) && guard++ < 500) {
+        const u = packOne(peq, st, { strategy: 'hard' });
+        if (!u.boxes.length) break;
+        add(u, 'Mixed');
+      }
+    }
+    let k = 0;
+    const pallets = [...out.values()].map((p) => {
+      finalize(p.unit, peq, k);
+      p.unit.steps = steps(p.unit);
+      return { ...p, n: ++k, l: pal.l, w: pal.w, eq: peq };
+    });
+    return { pallets, loose, eq: peq };
+  }
+
+  const api = { EQUIPMENT, plan, planMix, steps, orientations, palletise };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.LPEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -94,3 +94,42 @@
 .lp-table select.lp-pt{max-width:none;min-width:165px}
 .lp-table select.lp-or{max-width:none;min-width:140px}
 .lp-linkbtn{background:none;border:0;padding:0;font:inherit;font-weight:600;color:#0A6CC2;text-decoration:underline;cursor:pointer}
+/* v3: pallets, trucks, rules, utilisation */
+.lp-seg.lp-wrap{flex-wrap:wrap;border-radius:22px}
+.lp-pb{margin-top:14px;background:#F6F9FC;border-radius:14px;padding:14px}
+.lp-pb .lp-row{align-items:flex-end}
+.lp-pb .lp-in,.lp-rules .lp-in{width:84px}
+.lp-pb p,.lp-rules p{margin:10px 0 0}
+.lp-rules{margin-top:16px;border-top:1px solid #E1EDF7;padding-top:14px}
+.lp-rules .lp-row{align-items:flex-end;gap:18px}
+.lp-chk{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#0B2A4A;min-height:44px;flex-wrap:wrap}
+.lp-chk input[type=checkbox]{width:20px;height:20px;accent-color:#0A6CC2}
+.lp-chk .lp-in{width:76px}
+.lp-lu,.lp-wu{font-style:normal}
+.lp-table select.lp-pr{max-width:none;min-width:130px}
+.lp-stats{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}
+.lp-ut{width:100%;border-collapse:collapse;font-size:14px}
+.lp-ut th{font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#5E7891;font-weight:500;text-align:left;padding:4px 8px 4px 0}
+.lp-ut td{padding:5px 8px 5px 0;border-top:1px solid #EEF3F8;vertical-align:middle}
+.lp-ut td:last-child{white-space:nowrap}
+.lp-ut .lp-bar{display:inline-block;width:70px;vertical-align:middle;margin-right:6px}
+.lp-stats>.lp-ut{background:#F6F9FC;border-radius:14px;padding:8px 14px}
+.lp-stats>.lp-wd{font-size:14px;line-height:1.45}
+.lp-wbars{position:relative;display:flex;align-items:flex-end;gap:3px;height:70px;background:#FFFFFF;border-radius:8px;padding:4px;margin-top:4px}
+.lp-wbars i{flex:1;background:#0A6CC2;border-radius:3px 3px 0 0;min-height:2px}
+.lp-cog{position:absolute;top:0;bottom:0;width:2px;background:#E2483A}
+.lp-cog::after{content:'CoG';position:absolute;top:-2px;left:4px;font-size:10px;color:#E2483A;font-weight:700}
+.lp-wends{display:flex;justify-content:space-between;font-size:11px;color:#5E7891;margin:2px 0 8px}
+.lp-tick{display:inline-block;width:14px;height:14px;border:1.5px solid #0B2A4A;border-radius:3px;vertical-align:-2px;margin-right:8px}
+.lp-step ul li{display:flex;gap:4px;align-items:flex-start}
+.lp-step ul li .lp-dot{margin-top:4px}
+.lp-ptab{border-style:dashed}
+.lp-pbsum{margin-top:16px;background:#F6F9FC;border-radius:14px;padding:12px 14px;overflow-x:auto}
+.lp-pbsum tr.lp-popen{cursor:pointer}
+.lp-pbsum tr.lp-popen:hover td{background:#EAF3FB}
+.lp-rulenote{margin-top:10px}
+@media (max-width:900px){.lp-stats{grid-template-columns:1fr}}
+
+.lp-nm{display:flex;align-items:center;gap:6px}
+.lp-drum{font-size:16px;color:#0A6CC2;font-weight:700;flex:0 0 auto}
+.lp-table input.lp-same{color:#5E7891;background:#F6F9FC;text-align:center}
