@@ -55,9 +55,10 @@ The free tools below are provided for guidance only; each page carries its own d
 - [Export benefit finder](https://www.yamlogistics.com/export-benefit-finder): Free export incentive calculator for India: enter your HS code and FOB value to see the duty drawback (AIR), RoDTEP or RoSCTL rate and cap, and DGFT export policy, from the latest CBIC and DGFT notifications.
 - [HSN code finder](https://www.yamlogistics.com/hsn-code-finder): Free HSN code finder for India: describe your product in plain words and see likely 8-digit HSN / ITC(HS) codes from the Customs Tariff, with basic customs duty and import and export policy for each.
 - [Incoterms 2020 chart](https://www.yamlogistics.com/incoterms): Free interactive Incoterms 2020 chart: see who pays and who carries the risk at every step for EXW, FCA, FAS, FOB, CFR, CIF, CPT, CIP, DAP, DPU and DDP, with tips for Indian importers and exporters.
+- [DG cargo checker](https://www.yamlogistics.com/dg-cargo-checker): Free checker that shows whether cargo is usually general cargo or dangerous goods (HAZ) by air and sea, from an HSN code, product name, UN number or uploaded MSDS, with likely UN numbers, documents, labels and carrier restrictions. Guidance only.
 - [Lithium battery checker](https://www.yamlogistics.com/lithium-battery-checker): Free lithium battery checker for air cargo: find the UN number, IATA packing instruction (PI 965–970), Section I or II, state-of-charge limit, documents and labels in 30 seconds.
 - [Shipment tracker](https://www.yamlogistics.com/track-shipment): Free container and air waybill tracking for 55+ shipping lines and 400 airlines, plus the Indian port, CFS, ICD and rail leg. Paste any container, AWB or B/L number.
-- [All free tools](https://www.yamlogistics.com/free-tools): Free tools from a licensed customs broker: import duty calculator, export benefit finder (drawback, RoDTEP), container load calculator, CBM calculator, lithium battery checker, DG labels, Incoterms chart and shipment tracking.
+- [All free tools](https://www.yamlogistics.com/free-tools): Free tools from a licensed customs broker: import duty calculator, export benefit finder (drawback, RoDTEP), container load calculator, CBM calculator, DG cargo checker, lithium battery checker, DG labels, Incoterms chart and shipment tracking.
 
 ## Tracking and news
 
