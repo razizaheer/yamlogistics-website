@@ -41,7 +41,7 @@
     ["Seaboard Marine", "https://www.seaboardmarine.com/", ["SMLU"], [], 0],
     ["Turkon Line", "https://www.turkon.com/", ["TRKU"], [], 0],
     ["Arkas Line", "https://www.arkasline.com.tr/", ["ARKU"], [], 0],
-    ["Sinokor", "https://www.sinokor.co.kr/", ["SKLU", "SKHU"], [], 0],
+    ["Sinokor", "https://www.sinokor.co.kr/", ["SKLU", "SKHU"], ["SNKO"], 0],
     ["CU Lines", "https://www.culines.com/", ["CULU"], [], 0],
     ["InterAsia Lines", "https://www.interasia.cc/", ["IAAU"], [], 0],
     ["SM Line", "https://www.smlines.com/", ["SMCU"], [], 0],
@@ -83,7 +83,7 @@
   if (ps) for (var pi = 0; pi < SEA.length; pi++) if (SEA[pi][0] === ps) PRE = SEA[pi];
   var css = '.tk-card{background:#fff;border:1px solid #E1EDF7;border-radius:24px;padding:28px}.tk-row{display:flex;gap:10px;flex-wrap:wrap}.tk-in{flex:1 1 360px;min-width:0;font:inherit;font-size:20px;padding:18px 20px;border:2px solid #CFE3F5;border-radius:16px;outline:none;letter-spacing:.02em}.tk-in:focus{border-color:#0A6CC2}.tk-go{background:#0A6CC2;color:#fff;border:0;border-radius:16px;padding:0 30px;font:inherit;font-weight:700;font-size:18px;cursor:pointer;min-height:62px}.tk-go:hover{background:#0B4F8F}.tk-hint{font-size:13px;color:#5E7891;margin-top:10px}.tk-hint button{background:none;border:0;color:#0A6CC2;font:inherit;cursor:pointer;padding:0 4px;text-decoration:underline}.tk-res{margin-top:18px}.tk-kind{font-family:"Geist Mono",monospace;font-size:12px;letter-spacing:.1em;color:#5E7891}.tk-h{font-family:Archivo,sans-serif;font-weight:900;font-size:28px;line-height:1.15;margin:6px 0 4px}.tk-num{font-family:"Geist Mono",monospace;font-size:16px;color:#17436B}.tk-ok{color:#0F7B3F;font-size:13px;margin-top:6px}.tk-bad{color:#B42318;font-size:13px;margin-top:6px}.tk-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-top:18px}.tk-b{display:block;text-align:left;border-radius:16px;padding:16px 18px;font:inherit;cursor:pointer;text-decoration:none;border:1px solid #CFE3F5;background:#F7FBFF;color:#0B2A4A}.tk-b b{display:block;font-size:16px;margin-bottom:3px}.tk-b span{font-size:13px;color:#5E7891}.tk-b.pri{background:#0A6CC2;border-color:#0A6CC2;color:#fff}.tk-b.pri span{color:#DDEBFA}.tk-b.wa{background:#25D366;border-color:#25D366;color:#06331A}.tk-b.wa span{color:#0B4D24}.tk-b:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(10,108,194,.14)}.tk-sel{font:inherit;font-size:15px;padding:12px 14px;border:1px solid #CFE3F5;border-radius:12px;margin-top:12px;max-width:100%}.tk-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0B2A4A;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.25)}.tk-rec{margin-top:14px;font-size:13px;color:#5E7891}.tk-up{display:flex;gap:12px;align-items:center;margin-top:14px;padding:12px 14px;border:1.5px dashed #9CC5EA;border-radius:14px;background:#F7FBFF;cursor:pointer}.tk-up:hover{border-color:#0A6CC2;background:#EEF5FC}.tk-up-i{flex:none;width:38px;height:38px;border-radius:10px;background:#0B2A4A;color:#FFC93C;display:flex;align-items:center;justify-content:center;font-size:20px}.tk-up b{display:block;font-size:15px;color:#0B2A4A}.tk-up i{display:block;font-style:normal;font-size:12.5px;color:#5E7891;margin-top:2px}.tk-upm{font-size:13.5px;color:#3D5873;margin-top:8px}.tk-upm .bar{height:5px;border-radius:9px;background:#E1EDF7;margin-top:6px;overflow:hidden}.tk-upm .bar i{display:block;height:100%;background:#0A6CC2;transition:width .3s}.tk-b.sum{background:#FFF8E6;border-color:#F5D58A}.tk-rec button{background:#EEF5FC;border:0;border-radius:999px;padding:5px 10px;margin:4px 4px 0 0;font:inherit;font-size:12px;color:#0B2A4A;cursor:pointer}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
-  root.innerHTML = '<div class="tk-card"><div class="tk-row"><input class="tk-in" id="tk-q" placeholder="Container, AWB or B/L number, e.g. MSKU 123456 5" autocomplete="off" spellcheck="false" aria-label="Tracking number"><button class="tk-go" id="tk-go">Track →</button></div><div class="tk-hint">Try: ' + (EX ? '<button data-x="' + h(EX) + '">' + h(EXL || EX) + '</button>' : '<button data-x="MSKU1234565">MSKU 123456 5</button><button data-x="176-12345675">176-1234 5675</button><button data-x="HLCUBO1251012345">Hapag-Lloyd B/L</button>') + '</div><label class="tk-up"><input type="file" id="tk-file" accept=".pdf,image/*" hidden><span class="tk-up-i">⇪</span><span><b>Or upload your air waybill copy</b><i>PDF, scan or phone photo · we read the AWB number for you · the file never leaves your device</i></span></label><div id="tk-upm" class="tk-upm"></div><div id="tk-rec" class="tk-rec"></div><div id="tk-res" class="tk-res"></div></div>';
+  root.innerHTML = '<div class="tk-card"><div class="tk-row"><input class="tk-in" id="tk-q" placeholder="Container, AWB or B/L number, e.g. MSKU 123456 5" autocomplete="off" spellcheck="false" aria-label="Tracking number"><button class="tk-go" id="tk-go">Track →</button></div><div class="tk-hint">Try: ' + (EX ? '<button data-x="' + h(EX) + '">' + h(EXL || EX) + '</button>' : '<button data-x="MSKU1234565">MSKU 123456 5</button><button data-x="176-12345675">176-1234 5675</button><button data-x="HLCUBO1251012345">Hapag-Lloyd B/L</button>') + '</div><label class="tk-up"><input type="file" id="tk-file" accept=".pdf,image/*" hidden><span class="tk-up-i">⇪</span><span><b>Or upload your B/L or air waybill copy</b><i>PDF, scan or phone photo · we read the B/L, container or AWB number for you · the file never leaves your device</i></span></label><div id="tk-upm" class="tk-upm"></div><div id="tk-rec" class="tk-rec"></div><div id="tk-res" class="tk-res"></div></div>';
   var q = document.getElementById('tk-q'), res = document.getElementById('tk-res');
   function h(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function toast(t) { var d = document.createElement('div'); d.className = 'tk-toast'; d.textContent = t; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 3500); }
@@ -164,16 +164,88 @@
   }
   var upm = document.getElementById('tk-upm');
   function msg(t, p) { upm.innerHTML = h(t) + (p != null ? '<div class="bar"><i style="width:' + Math.round(p * 100) + '%"></i></div>' : ''); }
-  document.getElementById('tk-file').addEventListener('change', function (e) {
-    var f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
-    msg('Reading ' + f.name + '…', 0.03); res.innerHTML = '';
-    reader().then(function (o) { return o.R.read(f, o.D, function (p) { msg(p.stage + '…', p.p); }); }).then(function (r) {
+  var BR = null;
+  function blReader() { if (!BR) BR = (window.BLRead ? Promise.resolve() : load('bl-reader.js?v=1')).then(function () { return window.BLRead; }); return BR; }
+  function lineByName(nm) { for (var i = 0; i < SEA.length; i++) if (SEA[i][0] === nm) return SEA[i]; return null; }
+  function showBL(r) {
+    var c = r.line ? lineByName(r.line) : null, n = r.bl || r.containers[0], H = '';
+    upm.innerHTML = '<span class="tk-ok" style="font-size:13.5px">✓ Read from your file' + (r.bl ? ': B/L ' + h(r.bl) : '') + (r.containers.length ? ' · ' + r.containers.length + ' container' + (r.containers.length > 1 ? 's' : '') : '') + (r.method === 'ocr' ? ' (read from a scan: please compare with your document)' : '') + '</span>';
+    H += '<div class="tk-kind">' + (r.house ? 'HOUSE BILL OF LADING' : 'BILL OF LADING / SEA WAYBILL') + '</div><div class="tk-h">' + (c ? h(c[0]) : 'Issued by a forwarder (NVOCC)') + '</div>' + (r.bl ? '<div class="tk-num">' + h(r.bl) + '</div>' : '');
+    if (r.containers.length) H += '<div style="font-size:14px;color:#3D5873;margin-top:10px">Containers on this B/L (tap one to track it):<div class="tk-rec" style="margin-top:6px">' + r.containers.map(function (x) { return '<button data-x="' + x + '">' + h(x.slice(0, 4) + ' ' + x.slice(4, 10) + ' ' + x[10]) + '</button>'; }).join('') + '</div></div>';
+    if (!c) H += '<div style="font-size:14px;color:#3D5873;margin-top:8px">' + (r.house ? 'This looks like a house B/L from a freight forwarder, so the shipping line\'s website won\'t know this B/L number. Track the container number instead, on the line that carries it.' : 'We couldn\'t tell the shipping line from this document.') + ' Choose the line below. The India leg link works for any line.</div>' + picker(r.containers[0] || n);
+    H += vesselPanel(r);
+    var bb = '';
+    if (c && r.bl) bb += carrierBtn([c[0], /maersk|msc\.com/.test(c[1]) ? c[1] : c[1].split('?')[0].replace('/{n}', ''), 0, 0, c[4]], r.bl).replace('<b>Track on ', '<b>Track B/L on ').replace('Official live tracking', 'B/L number');
+    if (c && r.containers.length) bb += carrierBtn(c, r.containers[0]).replace('<b>Track on ', '<b>Track container ' + r.containers[0] + ' on ');
+    if (r.containers.length) bb += '<a class="tk-b" target="_blank" rel="noopener" data-copy="' + r.containers[0] + '" href="' + LDB + '"><b>India leg: ports, CFS, ICD &amp; rail ↗</b><span>Logistics Data Bank · container number copied</span></a>';
+    bb += waBtn(r.bl || n, c && c[0]);
+    H += '<div class="tk-btns" id="tk-btns">' + bb + '<button class="tk-b sum" id="tk-sum" type="button"><b>Download tracking summary (PDF) ↓</b><span>Number, carrier and where to track it, to save or share</span></button></div>';
+    q.value = r.bl || n; res.innerHTML = H; res.setAttribute('data-n', r.containers[0] || n); remember(q.value.toUpperCase());
+    vesselStart(r);
+  }
+  // ---- live vessel position (free VesselFinder map by IMO; name -> IMO from our list, then the visitor) ----
+  function imoOk(n) { n = String(n); if (!/^\d{7}$/.test(n)) return false; var s = 0; for (var i = 0; i < 6; i++) s += (+n[i]) * (7 - i); return s % 10 === +n[6]; }
+  function vnorm(n) { return String(n || '').toUpperCase().replace(/^(M\.?V\.?|MV)\s+/, '').replace(/[^A-Z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+  var API = /(^|\.)yamlogistics\.(pages\.dev|com)$/.test(location.hostname) ? '/' : 'https://yamlogistics.pages.dev/';
+  function vesselPanel(r) {
+    var v = r.vessel || {}, nm = v.name || '';
+    return '<div id="tk-ves" style="margin-top:16px;background:#F2F8FD;border-radius:16px;padding:16px 18px">'
+      + '<div style="font-family:Geist Mono,monospace;font-size:11.5px;letter-spacing:.1em;color:#5E7891">WHERE IS THE VESSEL NOW?</div>'
+      + '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center"><input id="tk-vn" value="' + h(nm) + '" placeholder="Vessel name from your B/L" style="flex:1 1 220px;min-width:0;font:inherit;font-size:15px;padding:9px 12px;border:1px solid #CFE3F5;border-radius:10px">'
+      + '<input id="tk-vi" value="' + h(r.imo || '') + '" placeholder="IMO no. (7 digits)" inputmode="numeric" maxlength="7" style="width:150px;font:inherit;font-size:15px;padding:9px 12px;border:1px solid #CFE3F5;border-radius:10px"><button type="button" id="tk-vgo" class="tk-go" style="padding:10px 18px;font-size:14px">Show live map</button></div>'
+      + (v.voyage ? '<div style="font-size:13px;color:#5E7891;margin-top:6px">Voyage ' + h(v.voyage) + (v.guess ? ' · vessel name read from the document layout, please check it' : '') + '</div>' : (v.guess ? '<div style="font-size:13px;color:#5E7891;margin-top:6px">Vessel name read from the document layout, please check it.</div>' : ''))
+      + '<div id="tk-vlinks" style="font-size:13.5px;margin-top:8px"></div><div id="tk-vmap" style="margin-top:10px"></div>'
+      + '<div style="font-size:12.5px;line-height:1.5;color:#5E7891;margin-top:8px">This is the vessel named on the B/L. If the cargo is transshipped, the container may now be on another ship: check the line\'s container tracking. Ship positions come from AIS and can be hours old at sea, or missing if the signal is off.</div></div>';
+  }
+  function vLinks(nm) {
+    var e = encodeURIComponent(nm), el = document.getElementById('tk-vlinks'); if (!el) return;
+    el.innerHTML = nm ? 'Find ' + h(nm) + ' on: <a target="_blank" rel="noopener" href="https://www.vesselfinder.com/vessels?name=' + e + '">VesselFinder ↗</a> · <a target="_blank" rel="noopener" href="https://www.marinetraffic.com/en/ais/index/search/all/keyword:' + e + '">MarineTraffic ↗</a> · <a target="_blank" rel="noopener" href="https://www.myshiptracking.com/vessels?name=' + e + '">MyShipTracking ↗</a> <span style="color:#5E7891">(copy the 7-digit IMO number from there into the box above to see the map here)</span>' : '';
+  }
+  function vMap(imo, nm) {
+    var el = document.getElementById('tk-vmap'); if (!el) return;
+    var src = 'https://www.vesselfinder.com/aismap?zoom=undefined&lat=undefined&lon=undefined&width=100%25&height=420&names=true&imo=' + imo + '&track=true&fleet=false&fleet_name=false&fleet_hide_old_positions=false&clicktoact=false&store_pos=false&ra=' + encodeURIComponent(location.href);
+    el.innerHTML = '<div style="font-size:14px;font-weight:600;margin-bottom:6px">' + h(nm || 'Vessel') + ' · IMO ' + h(imo) + ' · <a target="_blank" rel="noopener" href="https://www.vesselfinder.com/vessels/details/' + imo + '">full details ↗</a></div><iframe title="Live vessel position" src="' + src + '" style="width:100%;height:420px;border:0;border-radius:12px;background:#E1EDF7" loading="lazy"></iframe><div style="font-size:11.5px;color:#5E7891;margin-top:4px">Live map by VesselFinder.</div>';
+  }
+  var VDB = null;
+  function vdb() { if (!VDB) VDB = fetch(TB + 'vessels.json?v=1').then(function (x) { return x.json(); }).catch(function () { return {}; }); return VDB; }
+  function vLookup(nm) {
+    var k = vnorm(nm); if (!k) return Promise.resolve(null);
+    return vdb().then(function (d) { if (d[k]) return d[k]; return fetch(API + 'api/vessel?name=' + encodeURIComponent(k)).then(function (x) { return x.json(); }).then(function (j) { return j && j.imo; }).catch(function () { return null; }); });
+  }
+  function vesselStart(r) {
+    var nm = (r.vessel && r.vessel.name) || ''; vLinks(nm);
+    if (r.imo && imoOk(r.imo)) { vMap(r.imo, nm); return; }
+    vLookup(nm).then(function (imo) { if (imo && imoOk(imo) && document.getElementById('tk-vi')) { document.getElementById('tk-vi').value = imo; vMap(imo, nm); } });
+  }
+  function vGo() {
+    var nm = (document.getElementById('tk-vn') || {}).value || '', imo = ((document.getElementById('tk-vi') || {}).value || '').replace(/\D/g, '');
+    vLinks(nm.trim());
+    if (imo) {
+      if (!imoOk(imo)) { document.getElementById('tk-vmap').innerHTML = '<span class="tk-bad" style="font-size:13.5px">That IMO number doesn\'t look right (7 digits with a check digit). Please check it.</span>'; return; }
+      vMap(imo, nm.trim());
+      if (vnorm(nm).length >= 3) vdb().then(function (d) { if (d[vnorm(nm)] !== imo) fetch(API + 'api/vessel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: nm, imo: imo }) }).catch(function () { }); });
+      return;
+    }
+    vLookup(nm).then(function (x) { if (x && imoOk(x)) { document.getElementById('tk-vi').value = x; vMap(x, nm.trim()); } else document.getElementById('tk-vmap').innerHTML = '<span style="font-size:13.5px;color:#3D5873">We don\'t have the IMO number for this vessel yet. Use the links above to find it, then paste it here.</span>'; });
+  }
+  root.addEventListener('click', function (e) { if (e.target.closest('#tk-vgo')) vGo(); });
+  root.addEventListener('keydown', function (e) { if ((e.target.id === 'tk-vn' || e.target.id === 'tk-vi') && e.key === 'Enter') { e.preventDefault(); vGo(); } });
+  function readAWB(f) {
+    return reader().then(function (o) { return o.R.read(f, o.D, function (p) { msg(p.stage + '…', p.p); }); }).then(function (r) {
       var a = r && r.fields && r.fields.awb;
-      if (!a) { upm.innerHTML = '<span class="tk-bad" style="font-size:13.5px">We couldn\'t find an air waybill number in this file. Please type it above, or WhatsApp us the copy and we\'ll track it for you.</span>'; return; }
+      if (!a) { upm.innerHTML = '<span class="tk-bad" style="font-size:13.5px">We couldn\'t find a B/L, container or air waybill number in this file. Please type it above, or WhatsApp us the copy and we\'ll track it for you.</span>'; return; }
       var ok = a.conf === 'ok';
       upm.innerHTML = (ok ? '<span class="tk-ok" style="font-size:13.5px">✓ Read from your file: AWB ' : '<span style="color:#8A5A00">Read from your file: AWB ') + h(a.v) + (r.isHouse ? ' (this looks like a house AWB; we used the airline\'s master AWB number on it)' : '') + (ok ? '' : '. ' + h(a.why || 'Please compare it with your document.')) + '</span>';
       q.value = a.v; run();
-    }).catch(function () { RD = null; upm.innerHTML = '<span class="tk-bad" style="font-size:13.5px">Sorry, this file could not be read here. Please type the number above.</span>'; });
+    });
+  }
+  document.getElementById('tk-file').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+    msg('Reading ' + f.name + '…', 0.03); res.innerHTML = '';
+    blReader().then(function (B) { return B.read(f, function (p) { msg(p.stage + '…', p.p); }); }).then(function (r) {
+      if (r && r.looksBL && (r.bl || r.containers.length)) { showBL(r); return; }
+      return readAWB(f);
+    }).catch(function () { RD = null; BR = null; upm.innerHTML = '<span class="tk-bad" style="font-size:13.5px">Sorry, this file could not be read here. Please type the number above.</span>'; });
   });
 
   // ---- branded one-page tracking summary (PDF) ----
