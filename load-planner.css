@@ -133,3 +133,6 @@
 .lp-nm{display:flex;align-items:center;gap:6px}
 .lp-drum{font-size:16px;color:#0A6CC2;font-weight:700;flex:0 0 auto}
 .lp-table input.lp-same{color:#5E7891;background:#F6F9FC;text-align:center}
+.lp-detail{margin:2px 0 8px}
+.lp-detail button{min-height:32px;font-size:13px}
+.lp-vid{background:#0B2A4A}

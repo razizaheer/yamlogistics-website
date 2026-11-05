@@ -1,0 +1,85 @@
+{
+ "id": "/?app=yam",
+ "name": "CargoKit: Load Planner & Shipping Tools",
+ "short_name": "CargoKit",
+ "description": "Free tools for importers and exporters: container load planner with 3D and loading videos, CBM calculator, document checker, DG and lithium battery checks, HS codes, import duty and tracking. By YAM Logistics, customs broker since 1992.",
+ "start_url": "/free-tools?source=app",
+ "scope": "/",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#FFFFFF",
+ "theme_color": "#0B2A4A",
+ "lang": "en",
+ "dir": "ltr",
+ "categories": [
+  "business",
+  "productivity",
+  "utilities"
+ ],
+ "icons": [
+  {
+   "src": "/app/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "/app/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "/app/icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "Container load planner",
+   "short_name": "Load planner",
+   "url": "/container-load-planner?source=app",
+   "icons": [
+    {
+     "src": "/app/icon-192.png",
+     "sizes": "192x192"
+    }
+   ]
+  },
+  {
+   "name": "CBM calculator",
+   "short_name": "CBM",
+   "url": "/cbm-calculator?source=app",
+   "icons": [
+    {
+     "src": "/app/icon-192.png",
+     "sizes": "192x192"
+    }
+   ]
+  },
+  {
+   "name": "Document checker",
+   "short_name": "Doc checker",
+   "url": "/document-checker?source=app",
+   "icons": [
+    {
+     "src": "/app/icon-192.png",
+     "sizes": "192x192"
+    }
+   ]
+  },
+  {
+   "name": "Track a shipment",
+   "short_name": "Track",
+   "url": "/track-shipment?source=app",
+   "icons": [
+    {
+     "src": "/app/icon-192.png",
+     "sizes": "192x192"
+    }
+   ]
+  }
+ ]
+}

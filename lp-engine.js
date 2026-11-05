@@ -118,8 +118,9 @@
 
       function doColumn(b) {
         const colW = b.o.w;
+        const i0 = placed.length;
         const r = placeColumn(b, z, 0);
-        blocks.push({ type: b.s.type, n: r.k, o: b.o, nd: b.nd, rows: r.rows });
+        blocks.push({ type: b.s.type, n: r.k, o: b.o, nd: b.nd, rows: r.rows, i0, z0: z, dz: b.o.w, y0: 0 });
         // top-up above a flat, stackable column
         if (!r.partial && b.s.type.stackable && r.fullTop < H - EPS) {
           const yTop = r.fullTop;
@@ -130,8 +131,9 @@
               let n = Math.min(t.nd * t.ny, left.get(t.s));
               while (n > 0 && !canAdd(t.s, n)) n--;
               if (n <= 0) break;
+              const i1 = placed.length;
               const rr = placeColumn({ ...t, n }, zz, yTop);
-              blocks.push({ type: t.s.type, n: rr.k, o: t.o, nd: t.nd, rows: rr.rows, top: true });
+              blocks.push({ type: t.s.type, n: rr.k, o: t.o, nd: t.nd, rows: rr.rows, top: true, i0: i1, z0: zz, dz: t.o.w, y0: yTop });
               zz += t.o.w;
             }
           }
@@ -381,6 +383,59 @@
     return out;
   }
 
+  /** Detailed loading steps: one step per block of one item in one place (floor blocks first, then the blocks on top),
+      across a group of identical rows. Each step lists the box index ranges it places. */
+  function detailSteps(unit) {
+    const out = [];
+    const MAXN = 36;
+    const push = (idx, b0, reps) => {
+      let z0 = Infinity, z1 = -Infinity, y0 = Infinity, y1 = -Infinity, x0 = Infinity, x1 = -Infinity, kg = 0;
+      for (const i of idx) { const bx = unit.boxes[i]; z0 = Math.min(z0, bx.z); z1 = Math.max(z1, bx.z + bx.dz); y0 = Math.min(y0, bx.y); y1 = Math.max(y1, bx.y + bx.dy); x0 = Math.min(x0, bx.x); x1 = Math.max(x1, bx.x + bx.dx); kg += bx.type.kg; }
+      const cnt = (f) => new Set(idx.map((i) => Math.round(f(unit.boxes[i])))).size;
+      // layout of one row of this block: across (z), high (y), deep (x)
+      const deep = Math.max(1, Math.round(cnt((b) => b.x) / reps));
+      out.push({ type: b0.type, o: b0.o, top: !!b0.top, n: idx.length, kg, idx, z0, z1, y0, y1, x0, x1, reps, across: cnt((b) => b.z), high: cnt((b) => b.y), deep });
+    };
+    // split one row's packages into slices from the front wall towards the doors
+    const slices = (idx) => {
+      const byX = new Map();
+      for (const i of idx) { const k = Math.round(unit.boxes[i].x); if (!byX.has(k)) byX.set(k, []); byX.get(k).push(i); }
+      const xs = [...byX.keys()].sort((a, b) => a - b), target = idx.length / Math.ceil(idx.length / MAXN), res = [];
+      let cur = [];
+      for (const x of xs) { const sl = byX.get(x); if (cur.length && cur.length + sl.length > target * 1.3) { res.push(cur); cur = []; } cur = cur.concat(sl); }
+      if (cur.length) res.push(cur);
+      return res;
+    };
+    for (const g of steps(unit)) {
+      const start = out.length;
+      const w0 = g.walls[0];
+      const order = w0.blocks.map((b, j) => j).sort((a, b) => (!!w0.blocks[a].top - !!w0.blocks[b].top) || (w0.blocks[a].y0 - w0.blocks[b].y0) || (w0.blocks[a].z0 - w0.blocks[b].z0));
+      const segs = [];
+      for (const j of order) {
+        const b = w0.blocks[j], last = segs[segs.length - 1];
+        const pb = last && w0.blocks[last[last.length - 1]];
+        if (pb && pb.type === b.type && !!pb.top === !!b.top && pb.o.d === b.o.d && pb.o.w === b.o.w && pb.o.h === b.o.h && Math.abs(pb.y0 - b.y0) < EPS) last.push(j);
+        else segs.push([j]);
+      }
+      for (const seg of segs) {
+        const rows = g.walls.map((w) => { const a = []; for (const j of seg) { const b = w.blocks[j]; if (b && b.n) for (let i = w.from + b.i0; i < w.from + b.i0 + b.n; i++) a.push(i); } return a; }).filter((a) => a.length);
+        if (!rows.length) continue;
+        const b0 = w0.blocks[seg[0]], perRow = rows[0].length, total = rows.reduce((a, r) => a + r.length, 0);
+        if (total <= MAXN) push([].concat(...rows), b0, rows.length);
+        else if (perRow <= MAXN) { // a few whole rows per step
+          const k = Math.max(1, Math.floor(MAXN / perRow));
+          for (let r = 0; r < rows.length; r += k) push([].concat(...rows.slice(r, r + k)), b0, Math.min(k, rows.length - r));
+        } else for (const r of rows) for (const sl of slices(r)) push(sl, b0, 1);
+      }
+      // within a row group: floor blocks from the front wall towards the doors (side by side), then the blocks on top
+      const part = out.splice(start).sort((a, b) => (a.top - b.top) || (a.top ? a.y0 - b.y0 : 0) || (a.x0 - b.x0) || (a.z0 - b.z0));
+      out.push(...part);
+    }
+    let pcs = 0, kg = 0;
+    for (const st of out) { pcs += st.n; kg += st.kg; st.cumN = pcs; st.cumKg = kg; }
+    return out;
+  }
+
   /** Build pallets from loose cartons. pal = {l, w, deck (cm), maxH (cm, total incl. deck), maxKg (cargo), tare (kg), name}.
       Each product gets its own full pallets; the part-pallets left over are combined on mixed pallets.
       Returns {pallets: [{key, name, l, w, h, kg, qty, contents: {idx: n}, unit, eq}], loose: [items that do not fit a pallet]}. */
@@ -436,6 +491,6 @@
     return { pallets, loose, eq: peq };
   }
 
-  const api = { EQUIPMENT, plan, planMix, steps, orientations, palletise };
+  const api = { EQUIPMENT, plan, planMix, steps, detailSteps, orientations, palletise };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.LPEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);

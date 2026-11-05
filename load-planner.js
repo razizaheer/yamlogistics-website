@@ -15,7 +15,7 @@
   const S = {
     unit: 'cm', wunit: 'kg', cat: 'dry', pal: false, deck: 'ld', opt: 0, options: null,
     truck: 'in', build: false, pb: { t: 'euro', l: 120, w: 80, deck: 15, maxH: 180, maxKg: 1000, tare: 25, stack: false },
-    heavy: true, heavyKg: 250, gapD: 0, gapR: 0, palSel: null,
+    heavy: true, heavyKg: 250, gapD: 0, gapR: 0, palSel: null, detail: 'block',
     items: [
       { name: 'Carton A', l: 60, w: 40, h: 40, qty: 200, kg: 12, orient: 'any', stackable: true, maxLayers: '', color: '' },
       { name: 'Carton B', l: 50, w: 50, h: 60, qty: 80, kg: 20, orient: 'upright', stackable: true, maxLayers: '', color: '' }
@@ -539,6 +539,15 @@
   }
   function palName() { const b = S.pb, p = PALLETS.find((x) => x[0] === b.t && x[2]); return p ? p[1] + ' pallet' : `Pallet ${showLen(b.l)} × ${showLen(b.w)} ${S.unit}`; }
   function show(i) { S.opt = i; S.result = S.options[i].res; S.unitSel = 0; S.palSel = null; S.step = -1; renderResult(); }
+  // the loading steps shown: one per block (detailed) or one per row (overview)
+  const stepList = (u) => (S.detail === 'row' ? u.steps : (u.dsteps || (u.dsteps = E.detailSteps(u))));
+  // step number of every package for a list of steps (packages of later steps are hidden while stepping)
+  function stepOf(u, list) {
+    if (list._so && list._so.length === u.boxes.length) return list._so;
+    const so = new Int32Array(u.boxes.length).fill(1e9);
+    list.forEach((st, k) => { if (st.idx) for (const i of st.idx) so[i] = k; else for (let i = st.from; i < st.to; i++) so[i] = k; });
+    list._so = so; return so;
+  }
   const curU = () => (S.palSel != null && S.result.pb ? S.result.pb.pallets[S.palSel].unit : S.result.units[S.unitSel]);
   const Fof = (eq) => eq.full || eq;
   function prep(res, items) {
@@ -572,11 +581,34 @@
       const grids = [`${across} across`]; if (p.rows > 1) grids.push(`${p.rows} high`); if (p.nd > 1) grids.push(`${p.nd} deep`);
       return { n: p.n, name: t.name, where: p.top ? 'on top of the stacks below' : 'on the floor', hows: hw, how: hw.join(', '), grids, grid: grids.join(' × '), dim: `Ø ${showLen(t.l)} × ${showLen(t.h)} ${S.unit}` };
     }
-    const hows = pallet ? [] : [up ? 'standing upright' : tall ? 'standing on its end' : 'turned on its side'];
+    const flat = t.h < 0.5 * Math.max(t.l, t.w);
+    const hows = pallet ? [] : [up ? (flat ? 'lying flat' : 'standing upright') : tall ? 'standing on its end' : 'turned on its side'];
     if (o.d !== o.w && up) hows.push(o.d === long ? 'long side along the ' + (curU().eq.group === 'Pallets & air ULDs' ? 'pallet' : 'length') : 'long side across');
     const across = Math.max(1, Math.round(p.cols / perRow));
     const grids = [`${across} across`]; if (p.rows > 1) grids.push(`${p.rows} high`); if (p.nd > 1) grids.push(`${p.nd} deep`);
     return { n: p.n, name: t.name, where: p.top ? 'on top of the stacks below' : 'on the floor', hows, how: hows.join(', '), grids, grid: grids.join(' × '), dim: `${showLen(o.d)} × ${showLen(o.w)} × ${showLen(o.h)} ${S.unit}` };
+  }
+  // where a block goes, in words a loading crew can follow (standing at the doors, facing the front wall)
+  function placeText(st, u) {
+    const F = Fof(u.eq), W = F.W, pal = u.eq.group === 'Pallets & air ULDs';
+    const fromL = W - st.z1, toL = W - st.z0, rg = (a, b) => `${showLen(a)}–${showLen(b)} ${S.unit}`, wall = pal ? 'edge' : 'wall';
+    let side;
+    if (st.z1 - st.z0 >= W - 15) side = 'across the full width';
+    else if (fromL < 10) side = `against the left-hand ${wall} (${rg(0, toL)})`;
+    else if (st.z0 < 10) side = `against the right-hand ${wall} (${rg(fromL, W)} from the left)`;
+    else side = `in the middle, ${rg(fromL, toL)} from the left ${wall}`;
+    const lvl = st.y0 < 1 ? 'on the floor' : `on top of the cargo below, from ${showLen(st.y0)} ${S.unit} up`;
+    const along = `${rg(st.x0, st.x1)} from the ${pal ? 'far edge' : 'front wall'}`;
+    return { side, lvl, along };
+  }
+  function dStepText(st, k, u, list) {
+    const p = placeText(st, u), x = partText({ ...st, cols: st.across, rows: st.high, nd: st.deep }, 1);
+    const grid = [`${st.across} across`]; if (st.high > 1) grid.push(`${st.high} high`); if (st.deep > 1) grid.push(`${st.deep} deep`);
+    return `<div class="lp-steptitle"><span class="lp-tick" aria-hidden="true"></span>Step ${k + 1} of ${list.length}</div>
+      <ul><li><span class="lp-dot" style="background:${itemColor(st.type)}"></span><span><b>${fmt(st.n)} × ${esc(st.type.name)}</b>${st.reps > 1 ? ` <span class="lp-muted">(${fmt(st.n / st.reps)} in each of ${st.reps} identical rows)</span>` : ''}<br>
+      <span>${p.lvl}</span>, <span>${p.side}</span><br>
+      <span class="lp-muted">${grid.map((g) => `<span>${g}</span>`).join(' × ')}${x.hows.length ? ' · ' + x.hows.map((h) => `<span>${h}</span>`).join(', ') : ''} · ${x.dim}</span><br>
+      <span class="lp-muted">${p.along} · running total ${fmt(st.cumN)} pcs, ${showWt(st.cumKg)} ${S.wunit}</span></span></li></ul>`;
   }
   function stepText(st, k, u) {
     const reps = st.walls.length;
@@ -635,6 +667,7 @@ ${n ? `<div class="lp-card">
   <div class="lp-row lp-share">
     <button class="lp-btn" id="lp-pdf">↓ Summary PDF</button>
     <button class="lp-btn" id="lp-pdf2">↓ Step-by-step PDF</button>
+    <button class="lp-btn lp-vid" id="lp-vid">▶ MP4 loading video for phones</button>
     <a class="lp-btn lp-wa" id="lp-wa" target="_blank" rel="noopener">Get a quote for this load on WhatsApp</a>
     <a class="lp-btn lp-ghost" id="lp-mail">Email this plan</a>
     <button class="lp-btn lp-ghost" id="lp-copy">Copy share link</button>
@@ -653,6 +686,7 @@ ${n ? `<div class="lp-card">
     shareLinks();
     $('lp-pdf').addEventListener('click', () => makePdf('summary'));
     $('lp-pdf2').addEventListener('click', () => makePdf('steps'));
+    $('lp-vid').addEventListener('click', makeVideo);
     $('lp-copy').addEventListener('click', () => { const u = location.href; (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(() => { $('lp-copy').textContent = 'Link copied ✓'; }).catch(() => { prompt('Copy this link', u); }); });
   }
 
@@ -698,16 +732,20 @@ ${n ? `<div class="lp-card">
         <div class="lp-wends"><span>${isPal ? 'Far edge' : 'Front wall'}</span><span>${isPal ? 'Near edge' : 'Doors'}</span></div>
         <div><b class="${bal.off ? 'lp-red' : ''}">Centre of gravity ${Math.round(u.cogX * 100)}% along, ${Math.round(u.cogZ * 100)}% across</b><br><span class="lp-muted">${bal.text}. Front half ${showWt(u.frontKg)} ${S.wunit}, rear half ${showWt(u.kg - u.frontKg)} ${S.wunit}.</span></div>
       </div>`;
-    const list = isPal ? r.cargo : r.items;
-    $('lp-legend').innerHTML = list.map((it, i) => { const c = u.counts[i]; return c ? `<span><span class="lp-dot" style="background:${it.color}"></span>${esc(it.name)} × ${fmt(c)}</span>` : ''; }).join('');
+    const legendList = isPal ? r.cargo : r.items;
+    $('lp-legend').innerHTML = legendList.map((it, i) => { const c = u.counts[i]; return c ? `<span><span class="lp-dot" style="background:${it.color}"></span>${esc(it.name)} × ${fmt(c)}</span>` : ''; }).join('');
+    const list = stepList(u);
     const intro = isPal ? `Build pallet P${r.pb.pallets[S.palSel].n} (make ${r.pb.pallets[S.palSel].qty}) · start at the far edge` : 'Loading sequence · start at the front wall, finish at the doors';
-    $('lp-steps').innerHTML = `<div class="lp-k">${intro}</div>` +
-      u.steps.map((st, k) => `<div class="lp-step ${S.step === k ? 'on' : ''}" data-s="${k}">${stepText(st, k, u)}</div>`).join('') +
+    $('lp-steps').innerHTML = `<div class="lp-k">${intro}</div><div class="lp-seg lp-detail" id="lp-detail"><button data-d="block" class="${S.detail === 'block' ? 'on' : ''}">Every block</button><button data-d="row" class="${S.detail === 'row' ? 'on' : ''}">Row by row</button></div>` +
+      list.map((st, k) => `<div class="lp-step ${S.step === k ? 'on' : ''}" data-s="${k}">${S.detail === 'row' ? stepText(st, k, u) : dStepText(st, k, u, list)}</div>`).join('') +
       `<div class="lp-step lp-final ${S.step === -1 ? 'on' : ''}" data-s="-1"><div class="lp-steptitle">Finished ${isPal ? 'pallet' : 'load'}</div><div class="lp-muted">${isPal ? 'Stretch-wrap the pallet, strap it if heavy and label it on two sides.' : 'Secure the load at the doors with lashing, airbags or a timber frame.'}</div></div>`;
-    $('lp-steps').onclick = (e) => { const d = e.target.closest('[data-s]'); if (!d) return; S.step = +d.dataset.s; stopPlay(); syncStep(); };
-    $('lp-prev').onclick = () => { stopPlay(); const m = u.steps.length; S.step = S.step === -1 ? m - 1 : Math.max(0, S.step - 1); syncStep(); };
-    $('lp-next').onclick = () => { stopPlay(); const m = u.steps.length; S.step = S.step === -1 ? 0 : S.step + 1 >= m ? -1 : S.step + 1; syncStep(); };
-    $('lp-play').onclick = () => { if (playT) return stopPlay(); S.step = 0; syncStep(); $('lp-play').textContent = '■ Stop'; playT = setInterval(() => { const m = u.steps.length; if (S.step === -1) return stopPlay(); S.step = S.step + 1 >= m ? -1 : S.step + 1; syncStep(); }, 1300); };
+    $('lp-steps').onclick = (e) => {
+      const dd = e.target.closest('[data-d]'); if (dd) { S.detail = dd.dataset.d; S.step = -1; stopPlay(); renderUnit(); return; }
+      const d = e.target.closest('[data-s]'); if (!d) return; S.step = +d.dataset.s; stopPlay(); syncStep();
+    };
+    $('lp-prev').onclick = () => { stopPlay(); const m = list.length; S.step = S.step === -1 ? m - 1 : Math.max(0, S.step - 1); syncStep(); };
+    $('lp-next').onclick = () => { stopPlay(); const m = list.length; S.step = S.step === -1 ? 0 : S.step + 1 >= m ? -1 : S.step + 1; syncStep(); };
+    $('lp-play').onclick = () => { if (playT) return stopPlay(); S.step = 0; syncStep(); $('lp-play').textContent = '■ Stop'; playT = setInterval(() => { const m = list.length; if (S.step === -1) return stopPlay(); S.step = S.step + 1 >= m ? -1 : S.step + 1; syncStep(); }, 1300); };
     $('lp-views').onclick = (e) => { const v = e.target.dataset.v; if (!v) return; document.querySelectorAll('#lp-views button').forEach((b) => b.classList.toggle('on', b === e.target)); view3d.setView(v); };
     ensure3d().then(() => { view3d.build(u, eq); syncStep(); }).catch(() => { $('lp-canvas').innerHTML = '<div class="lp-loading">The 3D view needs WebGL, which this browser has turned off. The loading steps are listed alongside.</div>'; });
   }
@@ -717,7 +755,8 @@ ${n ? `<div class="lp-card">
     const u = curU();
     document.querySelectorAll('.lp-step').forEach((d) => d.classList.toggle('on', +d.dataset.s === S.step));
     const on = document.querySelector('.lp-step.on'); if (on && playT) on.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    $('lp-stepl').textContent = S.step === -1 ? `All ${u.steps.length} steps` : `Step ${S.step + 1} of ${u.steps.length}`;
+    const n = stepList(u).length;
+    $('lp-stepl').textContent = S.step === -1 ? `All ${n} steps` : `Step ${S.step + 1} of ${n}`;
     if (view3d.ready) view3d.show(u, S.step);
   }
 
@@ -746,7 +785,7 @@ ${n ? `<div class="lp-card">
     scene.add(new THREE.AmbientLight(0xffffff, 0.62));
     const dl = new THREE.DirectionalLight(0xffffff, 0.55); dl.position.set(1, 2, 1.4); scene.add(dl);
     const dl2 = new THREE.DirectionalLight(0xffffff, 0.25); dl2.position.set(-1, 0.6, -1); scene.add(dl2);
-    let cyl = null;
+    let cyl = null, matB = null, matC = null, epos = null;
     let controls = null, group = null, inst = null, edges = null, eqDims = null, curUnit = null, view = 'iso', doorLbl = null, dims = null;
     const dimOff = (F) => Math.max(14, Math.min(F.W, F.H) * 0.14);
 
@@ -815,6 +854,8 @@ ${n ? `<div class="lp-card">
       // drums and rolls: a second instanced mesh of cylinders, same index as the box list (unused slots scaled to zero)
       const anyDrum = u.boxes.some((b) => isDrum(b.type));
       cyl = anyDrum ? new THREE.InstancedMesh(new THREE.CylinderGeometry(0.5, 0.5, 1, 28), new THREE.MeshLambertMaterial({ color: 0xffffff }), Math.max(1, N)) : null;
+      matB = new Float32Array(Math.max(1, N) * 16); matC = cyl ? new Float32Array(Math.max(1, N) * 16) : null;
+      const keep = (arr, i, mm) => { if (arr) arr.set(mm.elements, i * 16); };
       const zero = new THREE.Matrix4().makeScale(0, 0, 0), q = new THREE.Quaternion(), qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI / 2), qz = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2), one = new THREE.Quaternion();
       const m = new THREE.Matrix4(), col = new THREE.Color();
       const gap = 0.6; // visual gap between packages (cm)
@@ -827,14 +868,14 @@ ${n ? `<div class="lp-card">
           const ax = t.l === t.h || Math.abs(b.dy - t.h) < 0.01 ? 'y' : Math.abs(b.dx - t.h) < 0.01 ? 'x' : 'z';
           const len = ax === 'y' ? b.dy : ax === 'x' ? b.dx : b.dz, dia = ax === 'y' ? Math.min(b.dx, b.dz) : Math.min(b.dy, ax === 'x' ? b.dz : b.dx);
           m.compose(c, ax === 'y' ? one : ax === 'x' ? qx : qz, new THREE.Vector3(Math.max(0.5, dia - gap), Math.max(0.5, len - gap), Math.max(0.5, dia - gap)));
-          cyl.setMatrixAt(i, m); cyl.setColorAt(i, col); inst.setMatrixAt(i, zero); inst.setColorAt(i, col);
+          cyl.setMatrixAt(i, m); cyl.setColorAt(i, col); inst.setMatrixAt(i, zero); inst.setColorAt(i, col); keep(matC, i, m); keep(matB, i, zero);
           for (let j = 0; j < 24; j++) pos.set([c.x, c.y, c.z], (i * 24 + j) * 3);
           return;
         }
-        if (cyl) { cyl.setMatrixAt(i, zero); cyl.setColorAt(i, col); }
+        if (cyl) { cyl.setMatrixAt(i, zero); cyl.setColorAt(i, col); keep(matC, i, zero); }
         m.makeScale(Math.max(0.5, b.dx - gap), Math.max(0.5, b.dy - gap), Math.max(0.5, b.dz - gap));
         m.setPosition(b.x + b.dx / 2, b.y + b.dy / 2, b.z + b.dz / 2);
-        inst.setMatrixAt(i, m); inst.setColorAt(i, col);
+        inst.setMatrixAt(i, m); inst.setColorAt(i, col); keep(matB, i, m);
         // edges
         const x0 = b.x + gap / 2, x1 = b.x + b.dx - gap / 2, y0 = b.y + gap / 2, y1 = b.y + b.dy - gap / 2, z0 = b.z + gap / 2, z1 = b.z + b.dz - gap / 2;
         const P = [[x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0], [x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]];
@@ -844,6 +885,7 @@ ${n ? `<div class="lp-card">
       inst.instanceMatrix.needsUpdate = true; if (inst.instanceColor) inst.instanceColor.needsUpdate = true;
       group.add(inst);
       if (cyl) { cyl.instanceMatrix.needsUpdate = true; if (cyl.instanceColor) cyl.instanceColor.needsUpdate = true; group.add(cyl); }
+      epos = pos.slice();
       const eg = new THREE.BufferGeometry(); eg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
       edges = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x0B2A4A, transparent: true, opacity: 0.35 }));
       group.add(edges);
@@ -877,22 +919,28 @@ ${n ? `<div class="lp-card">
     }
     function show(u, step) {
       if (!inst || u !== curUnit) return;
-      const N = u.boxes.length;
-      let to = N, from = 0;
-      if (step >= 0) { const st = u.steps[step]; from = st.from; to = st.to; }
-      inst.count = to; if (cyl) cyl.count = to;
-      const col = new THREE.Color(), white = new THREE.Color(0xffffff);
-      for (let i = 0; i < to; i++) {
-        col.set(itemColor(u.boxes[i].type));
-        if (step >= 0 && i < from) col.lerp(white, 0.55);
-        inst.setColorAt(i, col); if (cyl) cyl.setColorAt(i, col);
+      const N = u.boxes.length, list = stepList(u), so = stepOf(u, list);
+      const col = new THREE.Color(), white = new THREE.Color(0xffffff), zero = new Float32Array(16);
+      const ea = edges.geometry.attributes.position.array;
+      for (let i = 0; i < N; i++) {
+        const k = so[i], vis = step < 0 || k <= step;
+        inst.instanceMatrix.array.set(vis ? matB.subarray(i * 16, i * 16 + 16) : zero, i * 16);
+        if (cyl) cyl.instanceMatrix.array.set(vis ? matC.subarray(i * 16, i * 16 + 16) : zero, i * 16);
+        if (vis) {
+          col.set(itemColor(u.boxes[i].type));
+          if (step >= 0 && k < step) col.lerp(white, 0.72);
+          inst.setColorAt(i, col); if (cyl) cyl.setColorAt(i, col);
+          ea.set(epos.subarray(i * 72, i * 72 + 72), i * 72);
+        } else ea.fill(0, i * 72, i * 72 + 72);
       }
+      inst.count = N; if (cyl) cyl.count = N;
+      inst.instanceMatrix.needsUpdate = true; if (cyl) cyl.instanceMatrix.needsUpdate = true;
       if (inst.instanceColor) inst.instanceColor.needsUpdate = true;
       if (cyl && cyl.instanceColor) cyl.instanceColor.needsUpdate = true;
-      edges.geometry.setDrawRange(0, to * 24);
+      edges.geometry.attributes.position.needsUpdate = true; edges.geometry.setDrawRange(0, N * 24);
       render();
     }
-    function snapshot(u, step, w, h, v) {
+    function snapshot(u, step, w, h, v, win) {
       // render offscreen at a fixed size for the PDF
       if (u !== curUnit) build(u, u.eq);
       // isometric-style orthographic camera, framed tightly around the container (and the DOORS label)
@@ -900,9 +948,10 @@ ${n ? `<div class="lp-card">
       const dir = new THREE.Vector3(0.95, 0.72, 1.15).normalize(), up = new THREE.Vector3(0, 1, 0);
       const right = new THREE.Vector3().crossVectors(up, dir).normalize(), upv = new THREE.Vector3().crossVectors(dir, right).normalize();
       const pts = [];
-      for (const sx of [-1, 1]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) pts.push(new THREE.Vector3(sx * L / 2, sy * H / 2, sz * W / 2));
-      if (doorLbl) pts.push(new THREE.Vector3(L / 2, H / 2 + Math.max(18, H * 0.1) + Math.max(22, W * 0.14) / 2, 0));
-      { const o = dimOff(F) * 2.6; for (const q of [[L / 2 + o, -H / 2, -W / 2], [L / 2 + o, -H / 2, W / 2], [-L / 2, -H / 2, W / 2 + o], [L / 2, -H / 2, W / 2 + o], [-L / 2 - o, H / 2, W / 2 + o], [-L / 2, H / 2 + o, W / 2]]) pts.push(new THREE.Vector3(...q)); }
+      const xa = win ? win[0] - L / 2 : -L / 2, xb = win ? win[1] - L / 2 : L / 2;
+      for (const px of [xa, xb]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) pts.push(new THREE.Vector3(px, sy * H / 2, sz * W / 2));
+      if (doorLbl && !win) pts.push(new THREE.Vector3(L / 2, H / 2 + Math.max(18, H * 0.1) + Math.max(22, W * 0.14) / 2, 0));
+      if (!win) { const o = dimOff(F) * 2.6; for (const q of [[L / 2 + o, -H / 2, -W / 2], [L / 2 + o, -H / 2, W / 2], [-L / 2, -H / 2, W / 2 + o], [L / 2, -H / 2, W / 2 + o], [-L / 2 - o, H / 2, W / 2 + o], [-L / 2, H / 2 + o, W / 2]]) pts.push(new THREE.Vector3(...q)); }
       let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
       for (const q of pts) { const a = q.dot(right), b = q.dot(upv); x0 = Math.min(x0, a); x1 = Math.max(x1, a); y0 = Math.min(y0, b); y1 = Math.max(y1, b); }
       const pad = 0.02 * Math.max(x1 - x0, y1 - y0);
@@ -950,7 +999,64 @@ ${n ? `<div class="lp-card">
       renderer.setPixelRatio(pr); resize(); setView(view);
       return { url, hw, hh, L, W, H };
     }
-    Object.assign(view3d, { build, show, setView, snapshot, snapOrtho, resize, cur: () => curUnit });
+    // ---- video frames: an isometric camera that follows the loading, and blocks that slide in from the doors
+    function isoCam(w, h, win) {
+      const F = eqDims, L = F.L, W = F.W, H = F.H;
+      const dir = new THREE.Vector3(0.95, 0.72, 1.15).normalize(), up = new THREE.Vector3(0, 1, 0);
+      const right = new THREE.Vector3().crossVectors(up, dir).normalize(), upv = new THREE.Vector3().crossVectors(dir, right).normalize();
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      for (const px of [win[0] - L / 2, win[1] - L / 2]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) {
+        const q = new THREE.Vector3(px, sy * H / 2, sz * W / 2), a = q.dot(right), b = q.dot(upv);
+        x0 = Math.min(x0, a); x1 = Math.max(x1, a); y0 = Math.min(y0, b); y1 = Math.max(y1, b);
+      }
+      const pad = 0.05 * Math.max(x1 - x0, y1 - y0);
+      let hw = (x1 - x0) / 2 + pad, hh = (y1 - y0) / 2 + pad;
+      const asp = w / h; if (hw / hh > asp) hh = hw / asp; else hw = hh * asp;
+      const ctr = right.clone().multiplyScalar((x0 + x1) / 2).add(upv.clone().multiplyScalar((y0 + y1) / 2));
+      const cam = new THREE.OrthographicCamera(-hw, hw, hh, -hh, 1, 100000);
+      cam.position.copy(ctr.clone().add(dir.clone().multiplyScalar(20000))); cam.up.copy(upv); cam.lookAt(ctr); cam.updateProjectionMatrix();
+      return cam;
+    }
+    let vprev = null;
+    function videoBegin(u, w, h) {
+      if (u !== curUnit) build(u, u.eq);
+      vprev = renderer.getPixelRatio();
+      renderer.setPixelRatio(1); renderer.setSize(w, h, false);
+      if (dims) dims.visible = false;
+      return renderer.domElement;
+    }
+    // draw step `step` with its blocks `t` (0..1) of the way in; step -1 = empty, step >= steps = all loaded
+    function videoFrame(u, list, step, t, win, w, h) {
+      const N = u.boxes.length, so = stepOf(u, list), F = eqDims;
+      const off = (1 - t) * Math.max(120, F.L * 0.12), lift = (1 - t) * 25;
+      const col = new THREE.Color(), white = new THREE.Color(0xffffff), zero = new Float32Array(16);
+      const ea = edges.geometry.attributes.position.array, ib = inst.instanceMatrix.array, ic = cyl ? cyl.instanceMatrix.array : null;
+      const all = step >= list.length;
+      for (let i = 0; i < N; i++) {
+        const k = so[i], vis = all || k <= step, cur = k === step && !all;
+        if (!vis) { ib.set(zero, i * 16); if (ic) ic.set(zero, i * 16); ea.fill(0, i * 72, i * 72 + 72); continue; }
+        ib.set(matB.subarray(i * 16, i * 16 + 16), i * 16); if (ic) ic.set(matC.subarray(i * 16, i * 16 + 16), i * 16);
+        ea.set(epos.subarray(i * 72, i * 72 + 72), i * 72);
+        if (cur && t < 1) {
+          if (ib[i * 16 + 15]) { ib[i * 16 + 12] += off; ib[i * 16 + 13] += lift; }
+          if (ic && ic[i * 16 + 15]) { ic[i * 16 + 12] += off; ic[i * 16 + 13] += lift; }
+          for (let j = 0; j < 24; j++) { ea[i * 72 + j * 3] += off; ea[i * 72 + j * 3 + 1] += lift; }
+        }
+        col.set(itemColor(u.boxes[i].type));
+        if (!all && k < step) col.lerp(white, 0.72);
+        inst.setColorAt(i, col); if (cyl) cyl.setColorAt(i, col);
+      }
+      inst.count = N; if (cyl) cyl.count = N;
+      inst.instanceMatrix.needsUpdate = true; if (cyl) cyl.instanceMatrix.needsUpdate = true;
+      if (inst.instanceColor) inst.instanceColor.needsUpdate = true; if (cyl && cyl.instanceColor) cyl.instanceColor.needsUpdate = true;
+      edges.geometry.attributes.position.needsUpdate = true; edges.geometry.setDrawRange(0, N * 24);
+      renderer.render(scene, isoCam(w, h, win));
+    }
+    function videoEnd() {
+      if (dims) dims.visible = true;
+      renderer.setPixelRatio(vprev || 1); resize(); setView(view);
+    }
+    Object.assign(view3d, { build, show, setView, snapshot, snapOrtho, resize, cur: () => curUnit, videoBegin, videoFrame, videoEnd, dimsL: () => eqDims });
   }
 
   // ---------------- PDF
@@ -1150,37 +1256,54 @@ ${n ? `<div class="lp-card">
         if (isPal || yy < BOT - 20) { /* contents fit in the right column on short loads */ }
         return yy;
       };
+      // every block as its own step: 6 per page, each with a picture of the working area, plain instructions and a floor plan
       const stepPages = async (u, title, isPal) => {
-        const st = u.steps, per = 3, rh = (BOT - TOP - 2 * 2.5) / per, ih = rh - 2, iw = Math.min(140, ih * 2.9);
-        for (let k = 0; k < st.length; k++) {
-          if (k % per === 0) { doc.addPage(); head(title + ' - steps'); }
-          const y0 = TOP - 1 + (k % per) * (rh + 2.5);
-          box(M, y0, PW - 2 * M, rh, [250, 252, 254]);
-          doc.addImage(view3d.snapshot(u, k, Math.round(iw * 9), Math.round(ih * 9), 'iso'), 'JPEG', M + 1, y0 + 1, iw, ih); isoDims(u, M + 1, y0 + 1, iw, ih, true); await shot(++n);
-          const x = M + iw + 5, tw = PW - M - x - 2;
-          let ty = y0 + 6;
-          tick(x, ty, 4.2);
-          const reps = st[k].walls.length;
-          T(`Step ${k + 1} of ${st.length}${reps > 1 ? ` - ${reps} identical rows` : ''}`, x + 6.5, ty, { b: true, s: 11 }); ty += 5;
-          T(`${showLen(st[k].x0)}-${showLen(st[k].x1)} ${S.unit} from the ${isPal ? 'far edge' : 'front wall'}   |   total after this step: ${fmt(st[k].cumN)} pcs, ${showWt(st[k].cumKg)} ${S.wunit}`, x, ty, { s: 8, c: muted }); ty += 5;
-          const compact = st[k].parts.length * 7.8 > y0 + rh - ty;
-          if (compact) for (const p of st[k].parts) {
-            if (ty > y0 + rh - 1.5) { T('...more in the 3D view on the website', x, ty, { s: 7, c: muted }); break; }
-            const t = partText(p, reps);
-            doc.setFillColor(...ink(itemColor(p.type))); doc.rect(x, ty - 2.5, 2.8, 2.8, 'F');
-            doc.setFontSize(7.4);
-            const l = doc.splitTextToSize(clean(`${fmt(t.n)} x ${t.name} ${t.where}${t.how ? ', ' + t.how : ''} | ${reps > 1 ? 'each row ' : ''}${t.grid}`), tw - 5);
-            T(l.slice(0, 2), x + 4.5, ty, { s: 7.4 }); ty += Math.min(2, l.length) * 3.1 + 0.7;
+        const list = stepList(u), F = Fof(u.eq), per = 6;
+        const cw = (PW - 2 * M - 4) / 2, chh = (BOT - TOP + 1 - 2 * 2) / 3;
+        const iw = cw * 0.6, ih = chh - 2;
+        for (let k = 0; k < list.length; k++) {
+          const st = list[k];
+          if (k % per === 0) { doc.addPage(); head(title + ' - loading steps'); }
+          const c = k % 2, r = Math.floor((k % per) / 2), x = M + c * (cw + 4), y0 = TOP - 1 + r * (chh + 2);
+          box(x, y0, cw, chh, [250, 252, 254]);
+          doc.setDrawColor(225, 236, 246); doc.setLineWidth(0.2); doc.rect(x, y0, cw, chh);
+          // picture: the loaded part plus the area being worked on
+          const a = Math.max(0, st.x0 - F.L * 0.35), b = Math.min(F.L, Math.max(st.x1 + F.L * 0.18, a + F.L * 0.45));
+          doc.addImage(view3d.snapshot(u, k, Math.round(iw * 8), Math.round(ih * 8), 'iso', [a, b]), 'JPEG', x + 1, y0 + 1, iw, ih); await shot(++n);
+          // text
+          const tx = x + iw + 3, tw = cw - iw - 5;
+          let ty = y0 + 5.5;
+          tick(tx, ty, 3.6);
+          T(`Step ${k + 1} of ${list.length}`, tx + 5, ty, { b: true, s: 9.5 }); ty += 4.6;
+          doc.setFillColor(...ink(itemColor(st.type))); doc.rect(tx, ty - 2.6, 3, 3, 'F');
+          const head1 = doc.splitTextToSize(clean(`${fmt(st.n)} x ${st.type.name}`), tw - 4.5);
+          T(head1.slice(0, 2), tx + 4.5, ty, { b: true, s: 8.2 }); ty += Math.min(2, head1.length) * 3.4 + 0.4;
+          const p = placeText(st, u), xt = partText({ ...st, cols: st.across, rows: st.high, nd: st.deep }, 1);
+          const grid = [`${st.across} across`]; if (st.high > 1) grid.push(`${st.high} high`); if (st.deep > 1) grid.push(`${st.deep} deep`);
+          const lines = [
+            p.lvl + ', ' + p.side,
+            grid.join(' x ') + (xt.hows.length ? ', ' + xt.hows.join(', ') : ''),
+            p.along + (st.reps > 1 ? ` (${fmt(st.n / st.reps)} in each of ${st.reps} identical rows)` : ''),
+            `Total so far: ${fmt(st.cumN)} pcs, ${showWt(st.cumKg)} ${S.wunit}`
+          ];
+          // floor plan at the bottom of the text column
+          const fpw = tw, fph = Math.min(12, Math.max(5, fpw * F.W / F.L)), fpy = y0 + chh - fph - 2.5;
+          doc.setFontSize(6.9);
+          for (const ln of lines) {
+            const wr = doc.splitTextToSize(clean(ln), tw);
+            for (const w of wr) { if (ty > fpy - 3) break; T(w, tx, ty, { s: 6.9, c: ln === lines[3] ? muted : undefined }); ty += 2.9; }
+            ty += 0.5;
           }
-          else for (const p of st[k].parts) {
-            if (ty > y0 + rh - 2) { T('...more in the 3D view on the website', x, ty, { s: 7.5, c: muted }); break; }
-            const t = partText(p, reps);
-            doc.setFillColor(...ink(itemColor(p.type))); doc.rect(x, ty - 2.7, 3.2, 3.2, 'F');
-            const l1 = doc.splitTextToSize(clean(`${fmt(t.n)} x ${t.name} ${t.where}${t.how ? ', ' + t.how : ''}`), tw - 5);
-            T(l1, x + 5, ty, { s: 8.3, b: true }); ty += l1.length * 3.6;
-            T(clean(`${reps > 1 ? 'Each row: ' : ''}${t.grid}  |  ${t.dim}`), x + 5, ty, { s: 7.8, c: muted }); ty += 4.8;
-          }
-          if (n > 160) break;
+          const sx = fpw / F.L, sz = fph / F.W, so = stepOf(u, list);
+          doc.setFillColor(255, 255, 255); doc.rect(tx, fpy, fpw, fph, 'F');
+          doc.setFillColor(214, 222, 230);
+          u.boxes.forEach((bx, i) => { if (so[i] < k && bx.y < 1) doc.rect(tx + bx.x * sx, fpy + (F.W - bx.z - bx.dz) * sz, bx.dx * sx, bx.dz * sz, 'F'); });
+          doc.setFillColor(...ink(itemColor(st.type)));
+          for (const i of st.idx) { const bx = u.boxes[i]; doc.rect(tx + bx.x * sx, fpy + (F.W - bx.z - bx.dz) * sz, bx.dx * sx, bx.dz * sz, 'F'); }
+          doc.setDrawColor(11, 42, 74); doc.setLineWidth(0.25); doc.rect(tx, fpy, fpw, fph);
+          T(isPal ? 'far edge' : 'front', tx, fpy + fph + 2.2, { s: 5.5, c: muted }); T(isPal ? 'near edge' : 'doors', tx + fpw, fpy + fph + 2.2, { s: 5.5, c: muted, a: 'right' });
+          T('left', tx - 0.6, fpy + 2, { s: 5.2, c: muted, a: 'right' });
+          if (n > 220) break;
         }
       };
       const signOff = (u, idx) => {
@@ -1205,6 +1328,7 @@ ${n ? `<div class="lp-card">
         ['Loaded by (name and signature)', 'Supervisor / shipper (name and signature)', S.cat === 'truck' ? 'Driver (name and signature)' : 'Transporter / driver (name and signature)'].forEach((t, i) => { const x = M + i * (fw + 3); doc.setDrawColor(11, 42, 74); doc.line(x, yy + 8, x + fw - 6, yy + 8); T(t, x, yy + 12, { s: 7.5, c: muted }); });
       };
 
+      const prevDetail = S.detail; S.detail = 'block';
       // ---- pallet builds
       if (r.pb) for (const [i, p] of r.pb.pallets.entries()) {
         const u = p.unit;
@@ -1219,6 +1343,7 @@ ${n ? `<div class="lp-card">
         if (mode === 'steps') await stepPages(u, unitTitle(g), false);
         if (n > 160) break;
       }
+      S.detail = prevDetail;
       // ---- stuffing records
       r.units.slice(0, 30).forEach((u, i) => signOff(u, i));
       if (window.YAMBrand) YAMBrand.finish(doc);
@@ -1228,6 +1353,129 @@ ${n ? `<div class="lp-card">
     } finally {
       btns.forEach((b) => { b.disabled = false; }); btn.textContent = old;
       const u = curU(); if (view3d.ready && view3d.cur() !== u) view3d.build(u, u.eq);
+      syncStep();
+    }
+  }
+  // ---------------- loading video (portrait MP4 for the phone of the person loading)
+  let muxerP = null;
+  const loadMuxer = () => muxerP || (muxerP = new Promise((res, rej) => { if (window.Mp4Muxer) return res(); const sc = document.createElement('script'); sc.src = 'vendor/mp4-muxer.js'; sc.onload = () => res(); sc.onerror = rej; document.head.appendChild(sc); }));
+  async function pickCodec(w, h) {
+    if (!window.VideoEncoder || !window.VideoFrame) return null;
+    for (const codec of ['avc1.4d401f', 'avc1.42001f', 'avc1.640028', 'avc1.4d4028']) {
+      try { const r = await VideoEncoder.isConfigSupported({ codec, width: w, height: h, bitrate: 1500000, framerate: 24 }); if (r && r.supported) return codec; } catch (e) { /* try next */ }
+    }
+    return null;
+  }
+  async function makeVideo() {
+    const btn = $('lp-vid');
+    if (!view3d.ready) { alertBox('The video needs the 3D view to load first.'); return; }
+    const VW = 720, VH = 1280, GH = 640, FPS = 24;
+    const codec = await pickCodec(VW, VH);
+    if (!codec) { alertBox('This browser cannot make MP4 videos. Please use Chrome, Edge or Safari (on a computer or phone) to make the loading video.'); return; }
+    const old = btn.textContent; btn.disabled = true; btn.textContent = 'Making video…';
+    const r = S.result, u = curU(), isPal = S.palSel != null;
+    const prevDetail = S.detail; S.detail = 'block';
+    const list = stepList(u);
+    try {
+      await loadMuxer();
+      const cv = document.createElement('canvas'); cv.width = VW; cv.height = VH;
+      const g = cv.getContext('2d');
+      const muxer = new Mp4Muxer.Muxer({ target: new Mp4Muxer.ArrayBufferTarget(), video: { codec: 'avc', width: VW, height: VH }, fastStart: 'in-memory' });
+      let encErr = null;
+      const enc = new VideoEncoder({ output: (chunk, meta) => muxer.addVideoChunk(chunk, meta), error: (e) => { encErr = e; } });
+      enc.configure({ codec, width: VW, height: VH, bitrate: 1500000, framerate: FPS });
+      const gl = view3d.videoBegin(u, VW, GH);
+      const F = view3d.dimsL(), L = F.L;
+      let ts = 0, nf = 0;
+      const emit = async (dur, key) => {
+        const fr = new VideoFrame(cv, { timestamp: Math.round(ts * 1e6), duration: Math.round(dur * 1e6) });
+        enc.encode(fr, { keyFrame: !!key }); fr.close(); ts += dur; nf++;
+        if (enc.encodeQueueSize > 8) await new Promise((res) => setTimeout(res, 0));
+        if (encErr) throw encErr;
+      };
+      const kn = KN[CATS[S.cat].kind];
+      const unitName = isPal ? `Pallet P${r.pb.pallets[S.palSel].n} (${r.pb.pallets[S.palSel].qty} to build)` : `${kn[0]} ${u.index + 1} of ${r.units.length} · ${u.eq.name.replace(/ \(.*\)$/, '')}`;
+      const wrap = (txt, maxW) => { const words = String(txt).split(' '), out = []; let line = ''; for (const w of words) { const t2 = line ? line + ' ' + w : w; if (g.measureText(t2).width > maxW && line) { out.push(line); line = w; } else line = t2; } if (line) out.push(line); return out; };
+      const header = (right) => {
+        g.fillStyle = '#0B2A4A'; g.fillRect(0, 0, VW, 112);
+        g.fillStyle = '#FFC93C'; g.fillRect(0, 112, VW, 6);
+        g.fillStyle = '#FFFFFF'; g.font = 'bold 34px Arial'; g.textAlign = 'left'; g.fillText('YAM Logistics', 28, 50);
+        g.fillStyle = '#CFE3F5'; g.font = '24px Arial'; g.fillText(unitName.slice(0, 44), 28, 88);
+        if (right) { g.fillStyle = '#FFC93C'; g.font = 'bold 30px Arial'; g.textAlign = 'right'; g.fillText(right, VW - 28, 50); g.textAlign = 'left'; }
+      };
+      const footer = () => { g.fillStyle = '#0B2A4A'; g.fillRect(0, VH - 56, VW, 56); g.fillStyle = '#FFFFFF'; g.font = '22px Arial'; g.textAlign = 'center'; g.fillText('yamlogistics.com · WhatsApp @YAMLOGISTICS', VW / 2, VH - 20); g.textAlign = 'left'; };
+      const plan = (k, y0) => {
+        const pw = VW - 56, ph = Math.max(60, Math.min(150, pw * F.W / F.L)), x0 = 28, so = stepOf(u, list), sx = pw / F.L, sz = ph / F.W;
+        g.fillStyle = '#FFFFFF'; g.fillRect(x0, y0, pw, ph);
+        u.boxes.forEach((bx, i) => { if (bx.y > 1 && so[i] !== k) return; if (k >= 0 && so[i] > k) return; g.fillStyle = so[i] === k ? itemColor(bx.type) : '#D6DEE6'; g.fillRect(x0 + bx.x * sx, y0 + (F.W - bx.z - bx.dz) * sz, Math.max(1, bx.dx * sx - 0.5), Math.max(1, bx.dz * sz - 0.5)); });
+        g.strokeStyle = '#0B2A4A'; g.lineWidth = 2; g.strokeRect(x0, y0, pw, ph);
+        g.fillStyle = '#5E7891'; g.font = '19px Arial'; g.fillText(isPal ? 'far edge' : 'front wall', x0, y0 + ph + 24); g.textAlign = 'right'; g.fillText(isPal ? 'near edge' : 'doors', x0 + pw, y0 + ph + 24); g.textAlign = 'left';
+        g.save(); g.translate(x0 - 6, y0 + 4); g.rotate(-Math.PI / 2); g.textAlign = 'right'; g.fillText('left', 0, 0); g.restore();
+      };
+      const win = (k) => { if (k < 0 || k >= list.length) return [0, L]; const st = list[k]; const a = Math.max(0, st.x0 - L * 0.35); return [a, Math.min(L, Math.max(st.x1 + L * 0.18, a + L * 0.45))]; };
+      const lerpW = (a, b, e) => [a[0] + (b[0] - a[0]) * e, a[1] + (b[1] - a[1]) * e];
+      const ease = (x) => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
+      const scene3d = (k, t, w) => { view3d.videoFrame(u, list, k, t, w, VW, GH); g.fillStyle = '#F4F8FC'; g.fillRect(0, 118, VW, GH); g.drawImage(gl, 0, 118, VW, GH); };
+      const panelTop = 118 + GH;
+      const progress = (k) => { g.fillStyle = '#E1EDF7'; g.fillRect(0, panelTop, VW, 8); g.fillStyle = '#0A6CC2'; g.fillRect(0, panelTop, VW * Math.max(0, Math.min(1, (k + 1) / list.length)), 8); };
+      // intro
+      g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, VW, VH);
+      header('Loading video'); scene3d(-1, 1, [0, L]); progress(-1);
+      g.fillStyle = '#0B2A4A'; g.font = 'bold 40px Arial'; g.fillText(`${list.length} loading steps`, 28, panelTop + 66);
+      g.fillStyle = '#3D5873'; g.font = '26px Arial'; g.fillText(`${fmt(u.boxes.length)} packages · ${showWt(u.kg)} ${S.wunit} · ${fmt(u.vol / 1e6, 1)} m³`, 28, panelTop + 106);
+      let ly = panelTop + 156;
+      (isPal ? r.cargo : r.items).forEach((it, i) => { const c = u.counts[i]; if (!c || ly > VH - 120) return; g.fillStyle = it.color; g.fillRect(28, ly - 24, 28, 28); g.fillStyle = '#0B2A4A'; g.font = '26px Arial'; g.fillText(`${fmt(c)} × ${it.name}`.slice(0, 40), 70, ly); ly += 42; });
+      g.fillStyle = '#5E7891'; g.font = '22px Arial'; g.fillText('Pause at any step. Left and right are as seen from the doors.', 28, VH - 80);
+      footer();
+      await emit(1, true); await emit(1); await emit(1);
+      // steps
+      for (let k = 0; k < list.length; k++) {
+        const st = list[k], wA = win(k - 1), wB = win(k), p = placeText(st, u), xt = partText({ ...st, cols: st.across, rows: st.high, nd: st.deep }, 1);
+        const grid = [`${st.across} across`]; if (st.high > 1) grid.push(`${st.high} high`); if (st.deep > 1) grid.push(`${st.deep} deep`);
+        const draw = (t) => {
+          g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, VW, VH);
+          header(`Step ${k + 1} / ${list.length}`);
+          scene3d(k, ease(t), lerpW(wA, wB, ease(t * 1.6)));
+          progress(k);
+          let y = panelTop + 58;
+          g.fillStyle = itemColor(st.type); g.fillRect(28, y - 30, 34, 34);
+          g.fillStyle = '#0B2A4A'; g.font = 'bold 34px Arial';
+          for (const ln of wrap(`${fmt(st.n)} × ${st.type.name}`, VW - 110).slice(0, 2)) { g.fillText(ln, 76, y); y += 42; }
+          g.font = '27px Arial'; g.fillStyle = '#0B2A4A';
+          const lines = [p.lvl[0].toUpperCase() + p.lvl.slice(1) + ', ' + p.side, grid.join(' × ') + (xt.hows.length ? ' · ' + xt.hows.join(', ') : ''), p.along + (st.reps > 1 ? ` (${fmt(st.n / st.reps)} in each of ${st.reps} rows)` : '')];
+          y += 6;
+          for (const L2 of lines) for (const ln of wrap(L2, VW - 56)) { if (y > VH - 270) break; g.fillText(ln, 28, y); y += 36; }
+          g.fillStyle = '#5E7891'; g.font = '24px Arial'; g.fillText(`Total so far: ${fmt(st.cumN)} pcs, ${showWt(st.cumKg)} ${S.wunit}`, 28, Math.min(y + 6, VH - 236));
+          plan(k, VH - 230);
+          footer();
+        };
+        const AN = 18;
+        for (let f = 0; f <= AN; f++) { draw(f / AN); await emit(1 / FPS, f === 0); }
+        for (let hd = 0; hd < 4; hd++) await emit(0.5);
+        btn.textContent = `Making video… ${Math.round((k + 1) / list.length * 100)}%`;
+      }
+      // finished load
+      g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, VW, VH);
+      header('Finished'); scene3d(list.length, 1, [0, L]); progress(list.length);
+      g.fillStyle = '#0B2A4A'; g.font = 'bold 40px Arial'; g.fillText(isPal ? 'Pallet finished' : 'Load finished', 28, panelTop + 66);
+      g.font = '27px Arial'; let fy = panelTop + 112;
+      for (const ln of wrap(isPal ? 'Stretch-wrap the pallet, strap it if heavy and label it on two sides.' : 'Secure the load at the doors with lashing, airbags or a timber frame. Note the seal number and take the photos on the stuffing record.', VW - 56)) { g.fillText(ln, 28, fy); fy += 38; }
+      g.fillStyle = '#3D5873'; g.font = '26px Arial'; g.fillText(`${fmt(u.boxes.length)} packages · ${showWt(u.kg)} ${S.wunit}`, 28, fy + 20);
+      footer();
+      await emit(1, true); await emit(1); await emit(1);
+      await enc.flush(); enc.close();
+      muxer.finalize();
+      const blob = new Blob([muxer.target.buffer], { type: 'video/mp4' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = `YAM-loading-video-${isPal ? 'pallet-P' + r.pb.pallets[S.palSel].n : kn[0].toLowerCase().replace(' ', '-') + '-' + (u.index + 1)}.mp4`;
+      document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    } catch (e) {
+      console.error(e); alertBox('Sorry, the video could not be made in this browser.');
+    } finally {
+      S.detail = prevDetail;
+      view3d.videoEnd();
+      btn.disabled = false; btn.textContent = old;
+      const cu = curU(); if (view3d.cur() !== cu) view3d.build(cu, cu.eq);
       syncStep();
     }
   }
