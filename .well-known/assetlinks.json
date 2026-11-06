@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "ai.cargokit.app",
+    "sha256_cert_fingerprints": ["D7:11:13:76:A7:C3:53:11:2A:B0:D1:18:E7:45:F1:7E:7F:5F:AC:49:74:0B:D4:69:B8:22:AD:5B:A0:DE:5B:A8"]
+  }
+}]
