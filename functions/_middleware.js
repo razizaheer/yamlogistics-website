@@ -39,10 +39,26 @@ async function cargoKitHome(ctx, url) {
   }
 }
 
+// 4) Live site: yamlogistics.com goes to https://www.yamlogistics.com (the address Google lists), and the
+//    Cloudflare test address (*.pages.dev) is kept out of search engines so it never competes with it.
 export async function onRequest(ctx) {
+  const res = await route(ctx);
+  const host = new URL(ctx.request.url).hostname.toLowerCase();
+  if (!host.endsWith('.pages.dev')) return res;
+  try {
+    const out = new Response(res.body, res);
+    out.headers.set('X-Robots-Tag', 'noindex, nofollow');
+    return out;
+  } catch (e) {
+    return res;
+  }
+}
+
+async function route(ctx) {
   const { request } = ctx;
   const url = new URL(request.url), p = url.pathname;
   const host = url.hostname.toLowerCase();
+  if (host === 'yamlogistics.com') return new Response(null, { status: 301, headers: { Location: 'https://www.yamlogistics.com' + p + url.search } });
   if (CK_HOST.test(host)) {
     if (host !== CK_MAIN) return new Response(null, { status: 301, headers: { Location: 'https://' + CK_MAIN + p + url.search } });
     if (request.method === 'GET' && (p === '/' || p === '/index' || p === '/index.html')) return cargoKitHome(ctx, url);
