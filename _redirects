@@ -1,0 +1,12 @@
+# Old yamlogistics.com pages (site before Nov 2026) -> matching new pages
+/about_us.html            /about                  301
+/services.html            /                       301
+/network.html             /india-logistics-partner 301
+/contact_us.html          /contact                301
+/enquiry.html             /contact                301
+/air_freight.html         /air-freight            301
+/sea_freight.html         /ocean-freight          301
+/custom_house.html        /customs-brokerage      301
+/exhibition_freight.html  /exhibition-ata-carnet  301
+/purchase_order.html      /buyers-consolidation   301
+/ware_housing.html        /bonded-warehousing     301

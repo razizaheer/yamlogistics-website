@@ -1,2 +1,26 @@
+# YAM Logistics: www.yamlogistics.com
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /api/
+
+# AI assistants and search engines are welcome to read and cite our guides and tools
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://www.yamlogistics.com/sitemap.xml
