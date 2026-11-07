@@ -414,6 +414,7 @@
       const items = toItems(P);
       const opts = (sel) => FIELDS.map(([v, t]) => `<option value="${v}"${v === sel ? ' selected' : ''}>${t}</option>`).join('');
       const rowsN = P.body.length, bad = P.bad || new Set();
+      const hasList = S.items.some((it) => it.l > 0 && it.w > 0 && it.h > 0);
       box.innerHTML = `<div class="lp-mapcard">
         <div class="lp-k">Check the columns</div>
         ${P.sheets && P.sheets.length > 1 ? `<label class="lp-f" style="margin:6px 0 10px"><span>Sheet</span><select class="lp-in" id="lp-msheet">${P.sheets.map((sh, i) => `<option value="${i}"${i === P.sheet ? ' selected' : ''}>${esc(sh.name)}</option>`).join('')}</select></label>` : ''}
@@ -426,23 +427,27 @@
           <label class="lp-f"><span>Weight in</span><select class="lp-in" id="lp-mwu">${['kg', 'lb'].map((u) => `<option${u === P.wtU ? ' selected' : ''}>${u}</option>`).join('')}</select></label>
           ${items.length ? '' : '<div class="lp-warn" style="flex:1 1 100%">We could not tell which columns hold the length, width and height. Choose them in the drop-downs above each column.</div>'}
           <span class="lp-muted" style="flex:1 1 200px">${items.length} package line${items.length === 1 ? '' : 's'} found · ${fmt(items.reduce((a, it) => a + it.qty, 0))} pcs · ${fmt(items.reduce((a, it) => a + unitVol(it) * it.qty, 0) / 1e6, 2)} m³</span>
-          <button class="lp-btn" id="lp-madd" ${items.length ? '' : 'disabled'}>Add to list</button>
-          <button class="lp-btn lp-ghost" id="lp-mrep" ${items.length ? '' : 'disabled'}>Replace list</button>
+          <button class="lp-btn" id="lp-madd" ${items.length ? '' : 'disabled'}${hasList ? '' : ' hidden'}>Add to list</button>
+          <button class="lp-btn${hasList ? ' lp-ghost' : ''}" id="lp-mrep" ${items.length ? '' : 'disabled'}>${hasList ? 'Replace list' : `Use these ${items.length} package line${items.length === 1 ? '' : 's'} →`}</button>
         </div></div>`;
       box.querySelectorAll('select[data-c]').forEach((s) => s.addEventListener('change', () => { P.map[+s.dataset.c] = s.value; showMap(); }));
       document.getElementById('lp-mlu').onchange = (e) => { P.lenU = e.target.value; showMap(); };
       const shSel = document.getElementById('lp-msheet');
       if (shSel) shSel.onchange = (e) => { const i = +e.target.value, np = analyze(P.sheets[i].rows) || { header: [], body: [], map: [], width: 0, lenU: S.unit, wtU: S.wunit }; np.sheets = P.sheets; np.sheet = i; parsed = np; showMap(); };
       document.getElementById('lp-mwu').onchange = (e) => { P.wtU = e.target.value; showMap(); };
-      const done = (replace) => {
-        const add = toItems(P);
-        S.items = (replace ? [] : S.items.filter((it) => it.l && it.w && it.h)).concat(add);
-        parsed = null; box.innerHTML = ''; document.getElementById('lp-paste-ta').value = ''; document.getElementById('lp-paste').hidden = true;
-        renderRows();
-      };
       document.getElementById('lp-madd').onclick = () => done(false);
       document.getElementById('lp-mrep').onclick = () => done(true);
     }
+    // put the checked rows into the package list
+    function done(replace) {
+      if (!parsed) return 0;
+      const add = toItems(parsed);
+      S.items = (replace ? [] : S.items.filter((it) => it.l && it.w && it.h)).concat(add);
+      parsed = null; document.getElementById('lp-map').innerHTML = ''; document.getElementById('lp-paste-ta').value = ''; document.getElementById('lp-paste').hidden = true;
+      renderRows();
+      return add.length;
+    }
+    const pending = () => (parsed ? toItems(parsed).length : 0);
     async function readFile(f) {
       const box = document.getElementById('lp-map');
       box.innerHTML = '<div class="lp-muted">Reading ' + esc(f.name) + '…</div>';
@@ -472,7 +477,7 @@
       });
     }
     function fromText(text) { document.getElementById('lp-paste').hidden = false; document.getElementById('lp-paste-ta').value = text; parsed = analyze(csvRows(text)); showMap(); document.getElementById('lp-map').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
-    return { init, analyze, toItems, csvRows, fromText };
+    return { init, analyze, toItems, csvRows, fromText, pending, done };
   })();
 
 
@@ -644,6 +649,15 @@
   // the planner tries many loading orders, which can take a few seconds: show that it is working
   $('lp-go').addEventListener('click', () => {
     const b = $('lp-go'); if (b.disabled) return;
+    if (LPImport.pending()) {
+      const has = S.items.some((it) => it.l > 0 && it.w > 0 && it.h > 0);
+      if (has) { // a list is already there: ask which way, instead of guessing
+        const box = $('lp-map'); box.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        $('lp-out').innerHTML = '<div class="lp-card lp-warn">Your pasted table has not been added yet. Click <b>Add to list</b> or <b>Replace list</b> under the table, then calculate.</div>';
+        return;
+      }
+      LPImport.done(true);
+    }
     const label = b.innerHTML; b.disabled = true; b.innerHTML = '<span>Working out the best plan…</span>';
     setTimeout(() => { try { calc(); } finally { b.disabled = false; b.innerHTML = label; } }, 40);
   });
