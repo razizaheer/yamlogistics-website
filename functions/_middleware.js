@@ -11,12 +11,19 @@ const PAGES = { es: new Set(COMMON), pt: new Set(COMMON) };
 const BOT = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|whatsapp|telegram|linkedin|preview|lighthouse|headless/i;
 const APP_TAGS = '<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/app/icon-180.png"><script src="/app/pwa.js" defer></script>';
 
+// WhatsApp: every chat button opens the business short link (until the @CARGOKIT username is live).
+const WA_LINK = 'https://wa.me/message/6YB7I76DV6UJL1';
+const waFix = {
+  element(el) { if (/wa\.me\/(YAMLOGISTICS|CARGOKIT)/i.test(el.getAttribute('href') || '')) el.setAttribute('href', WA_LINK); },
+  text(t) { if (/WhatsApp @YAMLOGISTICS/.test(t.text)) t.replace(t.text.replace(/WhatsApp @YAMLOGISTICS/g, 'WhatsApp @CARGOKIT')); }
+};
+
 async function withAppTags(ctx) {
   const res = await ctx.next();
   try {
     const ct = res.headers.get('Content-Type') || '';
     if (!ct.includes('text/html') || typeof HTMLRewriter === 'undefined') return res;
-    return new HTMLRewriter().on('head', { element(el) { el.append(APP_TAGS, { html: true }); } }).transform(res);
+    return new HTMLRewriter().on('head', { element(el) { el.append(APP_TAGS, { html: true }); } }).on('a[href*="wa.me/"]', waFix).transform(res);
   } catch (e) {
     return res;
   }
