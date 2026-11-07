@@ -193,7 +193,7 @@
     return sc.filter(function (x) { return x[0] >= Math.min(top, 10) || x[0] >= top - 3; }).slice(0, 200).map(function (x) { return x[1]; });
   }
 
-  function wa(t) { return 'https://wa.me/YAMLOGISTICS?text=' + encodeURIComponent('Hello YAM, please help me confirm the HSN code for: ' + t); }
+  function wa(t) { return 'https://wa.me/message/6YB7I76DV6UJL1'; }
   function chapters() {
     var have = {};
     D.rows.forEach(function (x) { have[x[0].slice(0, 2)] = 1; });

@@ -212,7 +212,7 @@
       '• <b>Advance Authorisation</b>: import inputs duty-free against an export obligation.<br>' +
       '• <b>EPCG</b>: import capital goods at zero duty against an export obligation of six times the duty saved.<br>' +
       '• <b>MEIS</b> ended on 31 December 2020 and was replaced by RoDTEP.</div></div>';
-    H += '<div class="eb-cta"><a href="https://wa.me/YAMLOGISTICS?text=' + encodeURIComponent('Hi YAM, I export ' + x[1] + ' (HS ' + code + '). Please help me claim drawback / RoDTEP.') + '" style="background:#25D366;color:#06331A">Ask our export desk on WhatsApp</a><a href="contact.html" style="background:#0A6CC2;color:#fff">Get a quote</a></div>';
+    H += '<div class="eb-cta"><a href="https://wa.me/message/6YB7I76DV6UJL1' + '" style="background:#25D366;color:#06331A">Ask our export desk on WhatsApp</a><a href="contact.html" style="background:#0A6CC2;color:#fff">Get a quote</a></div>';
     H += '<div class="eb-src">Sources: ' + h(D.v) + '. Estimates exclude conditions such as realisation of export proceeds, value-addition rules and items on the RoDTEP ineligible list. Please verify before you rely on them.</div>';
     out.innerHTML = H;
   }

@@ -190,9 +190,10 @@
     T(53, 129.6, 'OTHER INFORMATION', 6); T(53, 134.8, d.oi, d.oi.length > 22 ? 7.5 : 9.5, true);
     // branding strip
     L(1, 137, 99, 137, 0.3);
-    O.push({ t: 'i', x: 3.5, y: 138.2, w: 20, h: 10.4 });
+    O.push({ t: 'i', x: 3.5, y: 138.2, w: 10.4, h: 10.4 });
+    T(16, 144.6, 'CargoKit', 10, true);
     T(96, 142.4, 'Free air cargo labels at', 7, false, 'right');
-    T(96, 146.6, 'www.yamlogistics.com', 10, true, 'right');
+    T(96, 146.6, 'www.CargoKit.ai', 10, true, 'right');
     return O;
   }
 
@@ -239,7 +240,7 @@
     var sz = SIZES[$('al-sz').value];
     return loadPdf().then(function (J) {
       var doc = new J.jsPDF({ unit: 'mm', format: [sz.w, sz.h], orientation: 'portrait', compress: true });
-      doc.setProperties({ title: 'Air cargo labels ' + d.prefix + '-' + d.serial, creator: 'YAM Logistics free label generator (www.yamlogistics.com)' });
+      doc.setProperties({ title: 'Air cargo labels ' + d.prefix + '-' + d.serial, creator: 'CargoKit free label generator (www.CargoKit.ai) by YAM Logistics' });
       var per = sz.slots.length, n = 0;
       for (var p = d.from; p <= d.to; p++) {
         var slot = n % per;
@@ -360,7 +361,7 @@
       g.putImageData(px, 0, 0);
       LOGOPNG = c.toDataURL('image/png'); LOGO = LOGOPNG; refresh();
     } catch (e) {}
-  }; im.src = 'yam-logo.svg';
+  }; im.src = 'cargokit-logo.svg';
 
   fetch('awb-data.json?v=1').then(function (x) { return x.json(); }).then(function (j) {
     D = j;

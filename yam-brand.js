@@ -1,12 +1,14 @@
-/* YAM Logistics: shared branding for every PDF the site's tools create (jsPDF, mm units).
+/* Shared branding for every PDF the site's tools create (jsPDF, mm units). The tools are published as CargoKit
+   (www.CargoKit.ai), a free tool by YAM Logistics, which is named in the footer.
    YAMBrand.ready() loads the logo and QR code; header()/footer() draw the bands; finish() adds page numbers. */
 (function (G) {
   'use strict';
   var B = G.YAMBrand = {
-    name: 'YAM Logistics Pvt. Ltd.',
-    tag: 'Licensed customs broker since 1992  |  New Delhi  |  Mumbai  |  Mundra',
-    web: 'www.yamlogistics.com',
-    contacts: '+91 11 4160 3301   |   info@yamlogistics.com   |   WhatsApp & Telegram @YAMLOGISTICS',
+    name: 'CargoKit',
+    tag: 'Free container load planner and shipping tools',
+    web: 'www.CargoKit.ai',
+    contacts: '+91 11 4160 3301   |   info@yamlogistics.com   |   WhatsApp @CARGOKIT',
+    by: 'CargoKit by YAM Logistics Pvt. Ltd.',
     HEAD: 22, FOOT: 15
   };
   var P = null;
@@ -24,7 +26,7 @@
     });
   }
   B.ready = function () {
-    if (!P) P = Promise.all([load(B.logoSrc || 'yam-logo.svg', 1000, 0.52), load(B.qrSrc || 'yam-qr.png', 420, 1)]).then(function (a) { B.logo = a[0]; B.qr = a[1]; return B; });
+    if (!P) P = Promise.all([load(B.logoSrc || 'cargokit-logo.svg', 512, 1), load(B.qrSrc || 'cargokit-qr.png', 420, 1)]).then(function (a) { B.logo = a[0]; B.qr = a[1]; return B; });
     return P;
   };
   function size(doc) { var s = doc.internal.pageSize; return { W: s.getWidth(), H: s.getHeight() }; }
@@ -34,9 +36,9 @@
     var z = size(doc), M = 10, h = B.HEAD;
     doc.setFillColor(255, 255, 255); doc.rect(0, 0, z.W, h, 'F');
     var lw = 0;
-    if (B.logo) { var lh = 16; lw = lh / B.logo.r; doc.addImage(B.logo.d, 'PNG', M, 3, lw, lh); }
+    if (B.logo) { var lh = 15; lw = lh / B.logo.r; doc.addImage(B.logo.d, 'PNG', M, 3.5, lw, lh); }
     var tx = M + lw + 4;
-    doc.setTextColor(11, 42, 74); doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.text(B.name, tx, 10);
+    doc.setTextColor(11, 42, 74); doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text(B.name, tx, 10.2);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(94, 120, 145); doc.text(B.tag, tx, 15);
     doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(10, 108, 194); doc.text(B.web, tx, 19.2);
     if (title) {
@@ -59,8 +61,8 @@
     if (B.qr) { doc.setFillColor(255, 255, 255); doc.rect(qx - 0.6, y0 + 1.4, 13.2, 13.2, 'F'); doc.addImage(B.qr.d, 'PNG', qx, y0 + 2, 12, 12); }
     doc.setTextColor(255, 201, 60); doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.text(B.web, M, y0 + 6.6);
     doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.text(B.contacts, M, y0 + 11.6);
-    doc.setFontSize(7); doc.setTextColor(200, 214, 230); doc.text('Free tool by YAM Logistics. Scan for more', qx - 3, y0 + 6.6, { align: 'right' });
-    doc.text('free tools, quotes and tracking', qx - 3, y0 + 10, { align: 'right' });
+    doc.setFontSize(7); doc.setTextColor(200, 214, 230); doc.text(B.by, qx - 3, y0 + 6.6, { align: 'right' });
+    doc.text('Scan for more free tools and tracking', qx - 3, y0 + 10, { align: 'right' });
     doc.setTextColor(11, 42, 74);
   };
 
@@ -70,12 +72,12 @@
     doc.setFillColor(234, 243, 252); doc.roundedRect(x, y, w, h, 2, 2, 'F');
     doc.setFillColor(10, 108, 194); doc.rect(x, y, 1.6, h, 'F');
     doc.setTextColor(11, 42, 74); doc.setFont('helvetica', 'bold'); doc.setFontSize(13);
-    doc.text(head || 'Ready to ship it? YAM Logistics can handle the whole move.', x + 7, y + 8.5);
+    doc.text(head || 'Ready to ship it? The team behind CargoKit can handle the whole move.', x + 7, y + 8.5);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(43, 66, 92);
     doc.text('Licensed customs broker since 1992, with our own offices in New Delhi, Mumbai (sea and air) and Mundra.', x + 7, y + 15);
     doc.text('Container and air freight booking, customs clearance, trucking to and from ICDs, insurance, and DG and project cargo.', x + 7, y + 20);
     doc.setFont('helvetica', 'bold'); doc.setTextColor(10, 108, 194);
-    doc.text('Get a quote: www.yamlogistics.com   |   +91 11 4160 3301   |   WhatsApp or Telegram @YAMLOGISTICS', x + 7, y + 26);
+    doc.text('Get a quote: www.CargoKit.ai   |   +91 11 4160 3301   |   info@yamlogistics.com   |   WhatsApp @CARGOKIT', x + 7, y + 26);
     doc.setTextColor(11, 42, 74); doc.setFont('helvetica', 'normal');
     return h;
   };
@@ -87,6 +89,6 @@
       doc.setPage(i); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(94, 120, 145);
       doc.text('Page ' + i + ' of ' + n, z.W - 10, 19.2, { align: 'right' });
     }
-    doc.setProperties({ author: B.name, creator: B.name + ' (' + B.web + ')' });
+    doc.setProperties({ author: B.by, creator: B.name + ' (' + B.web + ')' });
   };
 })(window);

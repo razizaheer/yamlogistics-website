@@ -1,4 +1,5 @@
-/* YAM branding on paper: every page prints with the YAM header and contact footer (Ctrl+P or the Print button). */
+/* Branding on paper: every tool page prints with the CargoKit header and contact footer (Ctrl+P or the Print button).
+   CargoKit is a free tool by YAM Logistics, named in the footer. */
 (function () {
   if (typeof document === 'undefined' || window.__yamPrint) return; window.__yamPrint = 1;
   if (/dg-labels/.test(location.pathname)) return; // IATA/UN regulated label artwork: printed exactly as published, no branding
@@ -15,10 +16,10 @@
     var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
     var t = (document.title || '').split(/\s[|–-]\s/)[0];
     var h = document.createElement('div'); h.className = 'yam-pp yam-ph'; h.setAttribute('data-notr', '');
-    h.innerHTML = '<img src="' + BASE + 'yam-logo.svg" alt="YAM Logistics"><div class="n"><b>YAM Logistics Pvt. Ltd.</b><span>Licensed customs broker since 1992 &nbsp;|&nbsp; New Delhi &nbsp;|&nbsp; Mumbai &nbsp;|&nbsp; Mundra</span><i>www.yamlogistics.com</i></div><div class="t"></div>';
+    h.innerHTML = '<img src="' + BASE + 'cargokit-logo.svg" alt="CargoKit"><div class="n"><b>CargoKit</b><span>Free container load planner and shipping tools</span><i>www.CargoKit.ai</i></div><div class="t"></div>';
     h.querySelector('.t').textContent = t;
     var f = document.createElement('div'); f.className = 'yam-pp yam-pf'; f.setAttribute('data-notr', '');
-    f.innerHTML = '<div class="c"><b>www.yamlogistics.com</b><span>+91 11 4160 3301 &nbsp;|&nbsp; info@yamlogistics.com &nbsp;|&nbsp; WhatsApp &amp; Telegram @YAMLOGISTICS</span></div><div class="s">Printed from www.yamlogistics.com<br>Scan for free tools, quotes and tracking</div><img src="' + BASE + 'yam-qr.png" alt="">';
+    f.innerHTML = '<div class="c"><b>www.CargoKit.ai</b><span>+91 11 4160 3301 &nbsp;|&nbsp; info@yamlogistics.com &nbsp;|&nbsp; WhatsApp @CARGOKIT</span></div><div class="s">CargoKit by YAM Logistics Pvt. Ltd.<br>Scan for more free tools and tracking</div><img src="' + BASE + 'cargokit-qr.png" alt="">';
     var T = null;
     // Chrome repeats a table's head and foot on every printed page, so the page is wrapped in one while printing.
     function wrap() {

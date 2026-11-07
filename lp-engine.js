@@ -50,6 +50,7 @@
 
   /** Pack one equipment unit. `stock` = [{type, left}] (mutated). Returns {boxes, walls, kg, vol}. */
   function packOne(eq, stock, opts) {
+    if (opts && /^ep/.test(opts.strategy || '')) return packEP(eq, stock, opts);
     const L = eq.L, W = eq.W, H = eq.H, maxKg = eq.maxKg;
     const boxes = [], walls = [];
     let x = 0, kg = 0;
@@ -61,7 +62,7 @@
     const live = () => stock.filter((s) => s.left > 0 && s.oris.length && phaseOf(s) === phase);
 
     // Fill one wall slice of depth d starting at x0; dryRun = evaluate only
-    function fillWall(d, x0, dry, lead) {
+    function fillWall(d, x0, dry, lead, forced) {
       const left = new Map(stock.map((s) => [s, s.left]));
       let kgW = 0, vol = 0;
       const placed = [];
@@ -141,6 +142,16 @@
         z += colW;
       }
 
+      // 0) long pieces (that only fit lengthways) go in first, so they are never left over for a wall too short for them
+      if (forced && forced.length) {
+        for (const st of forced) {
+          while (z < W - EPS && left.get(st) > 0) {
+            const b = bestBlock(W - z, H, false, 0, st);
+            if (!b) break;
+            doColumn(b);
+          }
+        }
+      }
       // 1) plan the column widths across the wall with a small knapsack (value = cargo volume per column)
       const tmpls = [];
       for (const st of pool) {
@@ -203,16 +214,23 @@
       const strat = (opts && opts.strategy) || 'dense';
       let sorted = avail.slice().sort((a, b) => b.unitVol - a.unitVol);
       if (strat === 'hard') sorted = avail.slice().sort((a, b) => ((a.type.stackable && !a.type.maxLayers) - (b.type.stackable && !b.type.maxLayers)) || (b.unitVol - a.unitVol));
-      const leadN = strat === 'dense' ? 3 : 1;
-      const lead = strat === 'dense' ? null : sorted[0];
+      const leadN = strat === 'wide' || strat === 'long' ? 99 : strat === 'dense' ? 3 : 1;
+      const lead = strat === 'dense' || strat === 'wide' || strat === 'long' ? null : sorted[0];
       for (const s of sorted.slice(0, leadN)) for (const o of s.oris) if (o.d <= L - x + EPS) cands.add(o.d);
       if (!cands.size) {
         for (const s of avail) for (const o of s.oris) if (o.d <= L - x + EPS) cands.add(o.d);
         if (!cands.size) break;
       }
+      // 'long' strategy: pieces that can only lie lengthways and need a deep wall are loaded first
+      let forced = null;
+      if (strat === 'long') {
+        const minD = (s) => Math.min(...s.oris.map((o) => o.d));
+        forced = avail.filter((s) => minD(s) >= 0.35 * L && minD(s) <= L - x + EPS).sort((a, b) => minD(b) - minD(a));
+        if (forced.length) { cands.clear(); cands.add(minD(forced[0])); }
+      }
       let best = null;
       for (const d of cands) {
-        const r = fillWall(d, x, true, lead);
+        const r = fillWall(d, x, true, lead, forced);
         if (!r.n) continue;
         const dens = r.vol / (d * W * H);
         // prefer dense walls; small bonus for walls that place the biggest items
@@ -220,16 +238,297 @@
         if (!best || score > best.score) best = { d, score };
       }
       if (!best) { if (phase < 2) { phase++; continue; } break; }
-      const r = fillWall(best.d, x, false, lead);
+      const r = fillWall(best.d, x, false, lead, forced);
       walls.push({ x0: x, d: best.d, from: boxes.length - r.n, to: boxes.length, blocks: r.blocks, kg: r.kgW });
       // compact: real depth used by this wall
       let maxX = x;
       for (let i = boxes.length - r.n; i < boxes.length; i++) maxX = Math.max(maxX, boxes[i].x + boxes[i].dx);
       x = maxX;
     }
+    kg = fillHoles(eq, stock, boxes, walls, kg);
     stock.forEach((s, i) => { s.oris = saved[i]; });
     const vol = boxes.reduce((a, b) => a + b.dx * b.dy * b.dz, 0);
     return { boxes, walls, kg, vol };
+  }
+
+  /** Second pass: put pieces that are left over into the empty spaces between and above the walls
+      (corner-point search, full support underneath, heavier never on lighter). Each piece joins the loading
+      step of the wall it sits in (or of the cargo it rests on, if that is loaded later), so the loading order stays real. */
+  function fillHoles(eq, stock, boxes, walls, kg) {
+    const L = eq.L, W = eq.W, H = eq.H;
+    const rem = stock.filter((s) => s.left > 0 && s.oris.length && s.type.kg <= eq.maxKg);
+    if (!rem.length || !walls.length || rem.reduce((a, s) => a + s.left, 0) > 80 || boxes.length > 1500) return kg;
+    const wallOf = new Int32Array(boxes.length + 200);
+    walls.forEach((w, k) => { for (let i = w.from; i < w.to; i++) wallOf[i] = k; });
+    const all = boxes.slice(), extra = walls.map(() => []);
+    let pts = [[0, 0, 0]];
+    const addPts = (b) => { pts.push([b.x + b.dx, b.y, b.z], [b.x, b.y + b.dy, b.z], [b.x, b.y, b.z + b.dz]); };
+    for (const b of all) addPts(b);
+    const overlaps = (x, y, z, d, h, w) => {
+      for (const b of all) if (x < b.x + b.dx - EPS && b.x < x + d - EPS && y < b.y + b.dy - EPS && b.y < y + h - EPS && z < b.z + b.dz - EPS && b.z < z + w - EPS) return true;
+      return false;
+    };
+    rem.sort((a, b) => b.unitVol - a.unitVol);
+    for (const s of rem) {
+      const t = s.type;
+      while (s.left > 0 && kg + t.kg <= eq.maxKg + EPS) {
+        let best = null;
+        for (const [px, py, pz] of pts) {
+          if (best && px * 1e6 + py * 1e3 + pz >= best.key) continue;
+          for (const o of s.oris) {
+            if (px + o.d > L + EPS || py + o.h > H + EPS || pz + o.w > W + EPS) continue;
+            let sup = [];
+            if (py > EPS) {
+              if (t.onTop === false || t.maxLayers > 0) continue;
+              let area = 0, ok = true;
+              for (const b of all) {
+                if (Math.abs(b.y + b.dy - py) > 0.5) continue;
+                const ox = Math.min(px + o.d, b.x + b.dx) - Math.max(px, b.x), oz = Math.min(pz + o.w, b.z + b.dz) - Math.max(pz, b.z);
+                if (ox <= EPS || oz <= EPS) continue;
+                if (!b.type.stackable || (t.kg > 25 && t.kg / (o.d * o.w) > Math.max(1.25 * b.type.kg / (b.dx * b.dz), 0.008) + EPS)) { ok = false; break; }
+                area += ox * oz; sup.push(b);
+              }
+              if (!ok || area < 0.8 * o.d * o.w - EPS) continue;
+            }
+            if (overlaps(px, py, pz, o.d, o.h, o.w)) continue;
+            best = { key: px * 1e6 + py * 1e3 + pz, x: px, y: py, z: pz, o, sup };
+            break;
+          }
+        }
+        if (!best) break;
+        const o = best.o;
+        const box = { type: t, x: best.x, y: best.y, z: best.z, dx: o.d, dy: o.h, dz: o.w, upright: o.upright };
+        // the loading step: the wall where it stands, or later if it rests on cargo of a later wall
+        let k = 0;
+        for (let j = 0; j < walls.length; j++) if (walls[j].x0 <= box.x + EPS) k = j;
+        for (const b of best.sup) { const bi = all.indexOf(b); if (bi >= 0 && bi < boxes.length) k = Math.max(k, wallOf[bi]); else if (b._wall != null) k = Math.max(k, b._wall); }
+        box._wall = k;
+        all.push(box); extra[k].push(box); addPts(box);
+        s.left--; kg += t.kg;
+      }
+    }
+    if (!extra.some((e) => e.length)) return kg;
+    // rebuild the box list wall by wall, with the extra pieces at the end of their wall
+    const out = [];
+    walls.forEach((w, k) => {
+      const own = boxes.slice(w.from, w.to), from = out.length;
+      out.push(...own);
+      for (const b of extra[k]) {
+        w.blocks.push({ type: b.type, n: 1, o: { d: b.dx, w: b.dz, h: b.dy, upright: b.upright }, nd: 1, rows: 1, top: b.y > EPS, i0: out.length - from, z0: b.z, dz: b.dz, y0: b.y, fill: true });
+        w.kg += b.type.kg;
+        delete b._wall; out.push(b);
+      }
+      w.from = from; w.to = out.length;
+    });
+    boxes.length = 0; boxes.push(...out);
+    return kg;
+  }
+
+  /** Corner-point packing, piece by piece (good for mixed cargo and long pieces). Pieces are taken in one of
+      several orders (opts.strategy ep-vol / ep-len / ep-area / ep-h), each placed where it ends nearest the
+      front wall, on the floor or fully supported. The loading order is then rebuilt so that every piece is
+      reachable from the doors and never loaded before the cargo it stands on. */
+  function packEP(eq, stock, opts) {
+    const L = eq.L, W = eq.W, H = eq.H, maxKg = eq.maxKg;
+    const saved = stock.map((s) => s.oris);
+    for (const s of stock) s.oris = fitOris(s.allOris || s.oris, eq);
+    const live = stock.filter((s) => s.left > 0 && s.oris.length);
+    const mode = opts.strategy;
+    const maxDim = (s) => Math.max(s.type.l, s.type.w, s.type.h);
+    const key = {
+      'ep-vol': (s) => s.unitVol,
+      'ep-len': (s) => maxDim(s) * 1e7 + s.unitVol,
+      'ep-area': (s) => Math.max(...s.oris.map((o) => o.d * o.w)) * 1e7 + s.unitVol,
+      'ep-h': (s) => Math.min(...s.oris.map((o) => o.h)) * 1e7 + s.unitVol
+    }[mode] || ((s) => s.unitVol);
+    // optional seeded jitter, so several slightly different orders can be tried and the best one kept
+    let seed = opts.seed || 0;
+    const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    const jit = new Map(stock.map((s) => [s, opts.jit ? (opts.jit[s.type.idx] || 1) : opts.seed ? 1 + (rnd() - 0.5) * 0.3 : 1]));
+    if (opts.jitOut) stock.forEach((s) => { opts.jitOut[s.type.idx] = jit.get(s); });
+    // load-order phases first ('rear' items at the front wall, 'door' items last), then heavy floor-only cargo, then the chosen order
+    const ph = (s) => (s.type.prio === 'rear' ? 0 : s.type.prio === 'door' ? 2 : 1);
+    // pieces that only fit lengthways and are long go in first, before the space they need is cut up
+    const isLong = (s) => Math.min(...s.oris.map((o) => o.d)) >= 0.35 * L;
+    live.sort((a, b) => ph(a) - ph(b) || (isLong(b) - isLong(a)) || ((b.type.onTop === false) - (a.type.onTop === false)) || key(b) * jit.get(b) - key(a) * jit.get(a));
+    const boxes = [];
+    let kg = 0;
+    let pts = [[0, 0, 0]];
+    // boxes indexed by 25 cm slices along the length, so overlap and support checks only look nearby
+    const BS = 25, nb = Math.ceil(L / BS) + 1, bins = Array.from({ length: nb }, () => []);
+    let stamp = 0; const tmp = [];
+    const near = (x0, x1) => { const a = Math.max(0, Math.floor(x0 / BS)), c = Math.min(nb - 1, Math.floor((x1 - EPS) / BS)); if (a === c) return bins[a]; stamp++; tmp.length = 0; for (let k = a; k <= c; k++) for (const b of bins[k]) if (b._st !== stamp) { b._st = stamp; tmp.push(b); } return tmp; };
+    const index = (b) => { const a = Math.max(0, Math.floor(b.x / BS)), c = Math.min(nb - 1, Math.floor((b.x + b.dx - EPS) / BS)); for (let k = a; k <= c; k++) bins[k].push(b); };
+    const free = (x, y, z, d, h, w) => {
+      // look straight in the slices the piece covers (no de-duplication needed to find an overlap)
+      const a = Math.max(0, Math.floor(x / BS)), c = Math.min(nb - 1, Math.floor((x + d - EPS) / BS));
+      for (let k = a; k <= c; k++) {
+        const bin = bins[k];
+        for (let i = 0; i < bin.length; i++) {
+          const b = bin[i];
+          if (x < b.x + b.dx - EPS && b.x < x + d - EPS && y < b.y + b.dy - EPS && b.y < y + h - EPS && z < b.z + b.dz - EPS && b.z < z + w - EPS) return false;
+        }
+      }
+      return true;
+    };
+    const supportOk = (t, x, y, z, o) => {
+      if (y < EPS) return true;
+      if (t.onTop === false || t.maxLayers > 0) return false;
+      let area = 0;
+      for (const b of near(x, x + o.d)) {
+        if (Math.abs(b.y + b.dy - y) > 0.5) continue;
+        const ox = Math.min(x + o.d, b.x + b.dx) - Math.max(x, b.x), oz = Math.min(z + o.w, b.z + b.dz) - Math.max(z, b.z);
+        if (ox <= EPS || oz <= EPS) continue;
+        if (!b.type.stackable) return false;
+        if (t.kg > 25 && t.kg / (o.d * o.w) > Math.max(1.25 * b.type.kg / (b.dx * b.dz), 0.008) + EPS) return false;
+        area += ox * oz;
+      }
+      return area >= 0.8 * o.d * o.w - EPS;
+    };
+    // after packing: the pieces at the very back (with nothing on top of them) are moved into any gap further
+    // forward where they fit and are fully supported, as long as that shortens the load
+    const unindex = (b) => { for (const bin of bins) { const i = bin.indexOf(b); if (i >= 0) bin.splice(i, 1); } };
+    const hasOnTop = (b) => near(b.x, b.x + b.dx).some((q) => q !== b && Math.abs(q.y - (b.y + b.dy)) < 0.5 && Math.min(b.x + b.dx, q.x + q.dx) - Math.max(b.x, q.x) > EPS && Math.min(b.z + b.dz, q.z + q.dz) - Math.max(b.z, q.z) > EPS);
+    function compactTail() {
+      for (let round = 0; round < 60; round++) {
+        let end = 0;
+        for (const b of boxes) end = Math.max(end, b.x + b.dx);
+        const back = boxes.filter((b) => b.x + b.dx > end - EPS);
+        if (back.some(hasOnTop)) return;
+        let moved = 0;
+        for (const b of back) {
+          unindex(b);
+          const st = stock.find((q) => q.type === b.type);
+          const oris = st ? st.oris : [{ d: b.dx, w: b.dz, h: b.dy, upright: b.upright }];
+          const cps = [[0, 0, 0]];
+          for (const q of boxes) if (q !== b) cps.push([q.x + q.dx, q.y, q.z], [q.x, q.y + q.dy, q.z], [q.x, q.y, q.z + q.dz], [q.x + q.dx, 0, q.z], [q.x, 0, q.z + q.dz]);
+          let best = null;
+          for (const [px, py, pz] of cps) for (const o of oris) {
+            const e = px + o.d;
+            if (e > end - 1 || py + o.h > H + EPS || pz + o.w > W + EPS) continue;
+            const sc = e * 1e6 + py * 1e3 + pz;
+            if (best && sc >= best.sc) continue;
+            if (!free(px, py, pz, o.d, o.h, o.w) || !supportOk(b.type, px, py, pz, o)) continue;
+            best = { sc, px, py, pz, o };
+          }
+          if (best) { b.x = best.px; b.y = best.py; b.z = best.pz; b.dx = best.o.d; b.dy = best.o.h; b.dz = best.o.w; b.upright = best.o.upright; moved++; }
+          index(b);
+        }
+        if (moved < back.length) return;
+      }
+    }
+    let fails = 0;
+    for (const s of live) {
+      const t = s.type;
+      while (s.left > 0) {
+        if (kg + t.kg > maxKg + EPS) break;
+        let best = null;
+        const minD = s.minD || (s.minD = Math.min(...s.oris.map((o) => o.d)));
+        for (const [px, py, pz] of pts) {
+          // points are sorted along the length: once no orientation can beat the best, stop looking
+          if (best && (opts.front ? px * 1e6 : (px + minD) * 1e6) > best.sc) break;
+          for (const o of s.oris) {
+            const end = px + o.d;
+            if (end > L + EPS || py + o.h > H + EPS || pz + o.w > W + EPS) continue;
+            // score: how far the piece reaches towards the doors, then height, then across
+            const sc = opts.front ? px * 1e6 + py * 1e3 + pz + end * 1e-3 : opts.low ? end * 1e6 + py * 1e3 + pz : end * 1e6 + (py + o.h) * 1e3 + pz;
+            if (best && sc >= best.sc) continue;
+            if (!free(px, py, pz, o.d, o.h, o.w) || !supportOk(t, px, py, pz, o)) continue;
+            best = { sc, x: px, y: py, z: pz, o };
+          }
+        }
+        if (!best) { fails++; break; }
+        const o = best.o, b = { type: t, x: best.x, y: best.y, z: best.z, dx: o.d, dy: o.h, dz: o.w, upright: o.upright };
+        boxes.push(b); index(b); s.left--; kg += t.kg;
+        pts.push([b.x + b.dx, b.y, b.z], [b.x, b.y + b.dy, b.z], [b.x, b.y, b.z + b.dz]);
+        if (opts.proj) { // also the same corners dropped to the floor / cargo below and slid to the side wall
+          const down = (x, y, z) => { let t = 0; for (const q of near(x, x + 1)) if (q.y + q.dy <= y + EPS && x >= q.x - EPS && x < q.x + q.dx - EPS && z >= q.z - EPS && z < q.z + q.dz - EPS) t = Math.max(t, q.y + q.dy); return t; };
+          const side = (x, y, z) => { let t = 0; for (const q of near(x, x + 1)) if (q.z + q.dz <= z + EPS && x >= q.x - EPS && x < q.x + q.dx - EPS && y >= q.y - EPS && y < q.y + q.dy - EPS) t = Math.max(t, q.z + q.dz); return t; };
+          for (const [x, y, z] of [[b.x + b.dx, b.y, b.z], [b.x, b.y, b.z + b.dz], [b.x + b.dx, b.y, b.z]]) { pts.push([x, down(x, y, z), z]); pts.push([x, y, side(x, y, z)]); }
+        }
+        // drop points that are now inside a piece or outside the space
+        if (pts.length > 60) { const seen = new Set(); pts = pts.filter(([x, y, z]) => { const k = (Math.round(x * 10) * 30000 + Math.round(y * 10)) * 30000 + Math.round(z * 10); if (seen.has(k)) return false; seen.add(k); return true; }); }
+        if (pts.length > 60) pts = pts.filter(([x, y, z]) => x < L - EPS && y < H - EPS && z < W - EPS && !near(x, x + 1).some((q) => x >= q.x - EPS && x < q.x + q.dx - EPS && y >= q.y - EPS && y < q.y + q.dy - EPS && z >= q.z - EPS && z < q.z + q.dz - EPS));
+        pts.sort((a, c) => a[0] - c[0] || a[1] - c[1] || a[2] - c[2]);
+      }
+    }
+    if (opts.tail !== false) compactTail();
+    const { ordered, walls } = epSteps(boxes, L);
+    for (const b of ordered) delete b._st;
+    stock.forEach((s, i) => { s.oris = saved[i]; });
+    const vol = ordered.reduce((a, b) => a + b.dx * b.dy * b.dz, 0);
+    return { boxes: ordered, walls, kg, vol };
+  }
+
+  /** Loading steps for a piece-by-piece plan. The crew always works from the front wall (the far end) towards the
+      doors and from the floor up: a piece is never loaded after anything it stands on, and never after a piece
+      that sits between it and the doors in its way (overlapping it seen from the doors). Within those rules the
+      deepest reachable pieces go first; pieces of the same kind next to each other are loaded together.
+      Returns the boxes in loading order and one "wall" per section of about 1.2 m, with one block per group. */
+  function epSteps(boxes, L) {
+    const n = boxes.length;
+    if (!n) return { ordered: [], walls: [] };
+    const SEC = 120, BAND = 45;
+    const ov = (a0, a1, b0, b1) => Math.min(a1, b1) - Math.max(a0, b0) > EPS;
+    // what must be loaded before each piece: what it stands on, and the deeper pieces it would block
+    const need = boxes.map(() => []);
+    for (let i = 0; i < n; i++) {
+      const b = boxes[i];
+      for (let j = 0; j < n; j++) {
+        if (j === i) continue;
+        const q = boxes[j];
+        if (!ov(b.z, b.z + b.dz, q.z, q.z + q.dz)) continue;
+        const onIt = b.y > EPS && Math.abs(q.y + q.dy - b.y) < 0.5 && ov(b.x, b.x + b.dx, q.x, q.x + q.dx);
+        const deeper = q.x + q.dx <= b.x + EPS && ov(b.y, b.y + b.dy, q.y, q.y + q.dy);
+        if (onIt || deeper) need[i].push(j);
+      }
+    }
+    const left = new Int32Array(n); need.forEach((a, i) => { left[i] = a.length; });
+    const after = boxes.map(() => []); need.forEach((a, i) => a.forEach((j) => after[j].push(i)));
+    const kind = (b) => b.type.idx + '|' + b.dx + '|' + b.dy + '|' + b.dz;
+    const done = new Uint8Array(n), order = [];
+    let ready = []; for (let i = 0; i < n; i++) if (!left[i]) ready.push(i);
+    let last = null;
+    while (order.length < n) {
+      if (!ready.length) { // cannot happen with a valid plan; fall back to the deepest piece left
+        let k = -1; for (let i = 0; i < n; i++) if (!done[i] && (k < 0 || boxes[i].x < boxes[k].x)) k = i;
+        ready.push(k);
+      }
+      // only pieces near the deepest reachable one are candidates, so the load never jumps back
+      let xmin = Infinity; for (const i of ready) xmin = Math.min(xmin, boxes[i].x);
+      let pick = -1, pk = null;
+      for (const i of ready) {
+        const b = boxes[i];
+        if (b.x > xmin + BAND) continue;
+        const k = [last && kind(b) === kind(last) ? 0 : 1, Math.round(b.y), Math.round(b.x), Math.round(b.z)];
+        if (!pk || k[0] < pk[0] || (k[0] === pk[0] && (k[1] < pk[1] || (k[1] === pk[1] && (k[2] < pk[2] || (k[2] === pk[2] && k[3] < pk[3])))))) { pick = i; pk = k; }
+      }
+      ready = ready.filter((i) => i !== pick);
+      done[pick] = 1; order.push(pick); last = boxes[pick];
+      for (const j of after[pick]) if (--left[j] === 0 && !done[j]) ready.push(j);
+    }
+    // sections (overview steps) and blocks (detailed steps)
+    const ordered = [], walls = [];
+    let wall = null, prev = null;
+    for (const i of order) {
+      const b = boxes[i];
+      if (!wall || b.x >= wall.x0 + SEC) {
+        wall = { x0: b.x, d: 0, from: ordered.length, to: ordered.length, blocks: [], kg: 0, ep: true };
+        walls.push(wall); prev = null;
+      }
+      const blk = wall.blocks[wall.blocks.length - 1];
+      if (blk && prev && kind(b) === kind(prev)) { blk.n++; blk._b.push(b); }
+      else wall.blocks.push({ type: b.type, n: 1, o: { d: b.dx, w: b.dz, h: b.dy, upright: b.upright }, i0: ordered.length - wall.from, _b: [b] });
+      ordered.push(b); wall.kg += b.type.kg; prev = b; wall.to = ordered.length;
+      wall.x0 = Math.min(wall.x0, b.x); wall.d = Math.max(wall.d, b.x + b.dx - wall.x0);
+    }
+    for (const w of walls) for (const blk of w.blocks) {
+      const bs = blk._b, cnt = (f) => new Set(bs.map((q) => Math.round(f(q)))).size;
+      blk.nd = cnt((q) => q.x); blk.rows = cnt((q) => q.y); blk.top = bs[0].y > EPS;
+      blk.z0 = Math.min(...bs.map((q) => q.z)); blk.dz = Math.max(...bs.map((q) => q.z + q.dz)) - blk.z0; blk.y0 = Math.min(...bs.map((q) => q.y));
+      delete blk._b;
+    }
+    return { ordered, walls };
   }
 
   /** Orientations that fit inside the equipment and pass through its door (door opening = width x height at the rear end). */
@@ -245,11 +544,38 @@
   /** Plan: items [{name,l,w,h,qty,kg,upright,stackable,maxLayers,color}], equipment id or object. */
   function plan(items, eqIn, opts = {}) {
     if (!opts.strategy) {
+      // try every method and keep the best: most packages placed, then fewest units, then the shortest load.
+      // Wall-by-wall plans give simpler loading steps, so a piece-by-piece plan must save real length to win.
+      const eq0 = typeof eqIn === 'string' ? EQUIPMENT.find((e) => e.id === eqIn) : eqIn;
+      const pcs = items.reduce((a, it) => a + (Math.floor(+it.qty) || 0), 0);
       let best = null;
-      for (const strategy of ['dense', 'big', 'hard']) {
-        const r = plan(items, eqIn, { ...opts, strategy });
-        const key = [r.totalBoxes, -r.units.length, r.units.reduce((a, u) => a + u.util * u.util, 0)];
+      const consider = (r, ep) => {
+        const len = r.units.reduce((a, u) => a + (u.usedL || 0) * (u.usedL ? 1 : 0), 0) + (ep ? 0.03 * eq0.L * r.units.length : 0);
+        const key = [r.totalBoxes, -r.units.length, -len];
         if (!best || key[0] > best.key[0] || (key[0] === best.key[0] && (key[1] > best.key[1] || (key[1] === best.key[1] && key[2] > best.key[2] + 1e-9)))) best = { r, key };
+      };
+      for (const strategy of ['dense', 'wide', 'big', 'hard', 'long']) consider(plan(items, eqIn, { ...opts, strategy }), false);
+      if (pcs <= (opts.epMax || 600) && !opts.noEP) {
+        // piece-by-piece plans: four loading orders, a few random variations, then small changes to the best
+        // order found so far (kept when the load gets shorter), until the time budget is used
+        const t0 = Date.now(), budget = opts.budget == null ? 1500 : opts.budget;
+        const epKey = (r) => r.units.length * 1e7 - r.totalBoxes * 1e4 + r.units.reduce((a, u) => a + (u.usedL || 0), 0);
+        let top = null;
+        const tryEP = (o) => {
+          const jo = [], r = plan(items, eqIn, { ...opts, proj: 1, jitOut: jo, ...o });
+          consider(r, true);
+          const k = epKey(r);
+          if (!top || k < top.k) top = { k, jit: jo, strategy: o.strategy };
+        };
+        for (const strategy of ['ep-h', 'ep-vol', 'ep-area', 'ep-len']) tryEP({ strategy });
+        let rs = 987654321;
+        const rnd = () => { rs = (rs * 1103515245 + 12345) & 0x7fffffff; return rs / 0x7fffffff; };
+        for (let k = 1; k < 400 && Date.now() - t0 < budget; k++) {
+          if (k <= 4) { tryEP({ strategy: k % 2 ? 'ep-h' : 'ep-vol', seed: k }); continue; }
+          const j = top.jit.slice(), m = 1 + Math.floor(rnd() * 3);
+          for (let q = 0; q < m; q++) { const i = Math.floor(rnd() * j.length); j[i] = (j[i] || 1) * (1 + (rnd() - 0.5) * 0.4); }
+          tryEP({ strategy: top.strategy, jit: j });
+        }
       }
       return best.r;
     }
@@ -336,9 +662,10 @@
       const remKg = stock.reduce((a, x) => a + x.left * x.type.kg, 0);
       let best = null;
       for (const c of cands) {
-        for (const strategy of ['dense', 'big', 'hard']) {
+        const left0 = before.reduce((a, v) => a + v, 0);
+        for (const strategy of ['dense', 'wide', 'big', 'hard', 'long'].concat(left0 <= 600 ? ['ep-h', 'ep-vol'] : [])) {
           restore(before);
-          const u = packOne(c.eq, stock, { strategy });
+          const u = packOne(c.eq, stock, { strategy, proj: 1 });
           if (!u.boxes.length) continue;
           const all = stock.every((x) => x.left === 0);
           const share = Math.max(u.vol / Math.max(1, remVol), remKg > 0 ? u.kg / remKg : 0);
@@ -348,7 +675,7 @@
       }
       restore(before);
       if (!best) break;
-      const u = packOne(best.c.eq, stock, { strategy: best.strategy });
+      const u = packOne(best.c.eq, stock, { strategy: best.strategy, proj: 1 });
       units.push(finalize(u, best.c.eq, units.length));
     }
     const notPlaced = stock.filter((x) => x.left > 0).map((x) => ({ type: x.type, n: x.left, why: 'limit of units reached' }));
@@ -394,7 +721,10 @@
       const cnt = (f) => new Set(idx.map((i) => Math.round(f(unit.boxes[i])))).size;
       // layout of one row of this block: across (z), high (y), deep (x)
       const deep = Math.max(1, Math.round(cnt((b) => b.x) / reps));
-      out.push({ type: b0.type, o: b0.o, top: !!b0.top, n: idx.length, kg, idx, z0, z1, y0, y1, x0, x1, reps, across: cnt((b) => b.z), high: cnt((b) => b.y), deep });
+      const across = cnt((b) => b.z), high = cnt((b) => b.y);
+      // is the block a plain grid (so "3 across x 4 high" describes it), or an irregular group best shown in the picture?
+      const grid = across * high * deep * reps === idx.length;
+      out.push({ type: b0.type, o: b0.o, top: !!b0.top, n: idx.length, kg, idx, z0, z1, y0, y1, x0, x1, reps, across, high, deep, grid });
     };
     // split one row's packages into slices from the front wall towards the doors
     const slices = (idx) => {
@@ -406,6 +736,17 @@
       if (cur.length) res.push(cur);
       return res;
     };
+    // piece-by-piece plans: the blocks are already in a safe loading order (section by section, nothing before
+    // what it stands on), so keep that order and only split very large blocks
+    if (unit.walls.length && unit.walls[0].ep) {
+      for (const w of unit.walls) for (const b of w.blocks) {
+        const a = []; for (let i = w.from + b.i0; i < w.from + b.i0 + b.n; i++) a.push(i);
+        for (let k = 0; k < a.length; k += MAXN) push(a.slice(k, k + MAXN), b, 1);
+      }
+      let pcs = 0, kg = 0;
+      for (const st of out) { pcs += st.n; kg += st.kg; st.cumN = pcs; st.cumKg = kg; }
+      return out;
+    }
     for (const g of steps(unit)) {
       const start = out.length;
       const w0 = g.walls[0];

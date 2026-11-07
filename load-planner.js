@@ -5,8 +5,10 @@
   const root = document.getElementById('lp-root');
   if (!root || !E) return;
 
-  const PALETTE = ['#0A6CC2', '#F59E0B', '#16A34A', '#E2483A', '#7C3AED', '#0891B2', '#DB2777', '#65A30D', '#EA580C', '#4F46E5', '#0D9488', '#A16207', '#BE123C', '#2563EB', '#9333EA', '#059669'];
-  const WA = 'YAMLOGISTICS';
+  // strong colours that are easy to tell apart, the most different ones first (no pastels)
+  const PALETTE = ['#1F6FEB', '#F97316', '#16A34A', '#DC2626', '#9333EA', '#EAB308', '#0891B2', '#DB2777', '#78350F', '#65A30D', '#1E3A8A', '#F43F5E', '#0F766E', '#A21CAF', '#525252', '#C2410C'];
+    // CargoKit logo for the loading video's header (loaded early so it is ready when a video is made)
+  const CK_ICON = new Image(); CK_ICON.src = 'cargokit-logo.svg';
   const EMAIL = 'info@yamlogistics.com';
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const fmt = (n, d = 0) => (isFinite(n) ? n : 0).toLocaleString('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -15,10 +17,10 @@
   const S = {
     unit: 'cm', wunit: 'kg', cat: 'dry', pal: false, deck: 'ld', opt: 0, options: null,
     truck: 'in', build: false, pb: { t: 'euro', l: 120, w: 80, deck: 15, maxH: 180, maxKg: 1000, tare: 25, stack: false },
-    heavy: true, heavyKg: 250, gapD: 0, gapR: 0, palSel: null, detail: 'block',
+    heavy: true, heavyKg: 250, gapD: 12.7, gapR: 2.54, palSel: null, detail: 'block', adv: false,
+    // the form starts empty (the example sizes show as grey hints); "Load example" fills in sample cargo
     items: [
-      { name: 'Carton A', l: 60, w: 40, h: 40, qty: 200, kg: 12, orient: 'any', stackable: true, maxLayers: '', color: '' },
-      { name: 'Carton B', l: 50, w: 50, h: 60, qty: 80, kg: 20, orient: 'upright', stackable: true, maxLayers: '', color: '' }
+      { name: '', l: 0, w: 0, h: 0, qty: 1, kg: 0, orient: 'any', stackable: true, maxLayers: '', color: '' }
     ],
     result: null, unitSel: 0, step: -1
   };
@@ -44,7 +46,7 @@
   function encodeState() {
     const b = S.pb;
     const o = { u: S.unit, wu: S.wunit, c: S.cat, p: S.pal ? 1 : 0, d: S.deck, t: S.truck, b: S.build ? [b.t, b.l, b.w, b.deck, b.maxH, b.maxKg, b.tare, b.stack ? 1 : 0] : 0, r: [S.heavy ? 1 : 0, S.heavyKg, S.gapD, S.gapR],
-      i: S.items.map((it) => [it.name, it.l, it.w, it.h, it.qty, it.kg, ({ any: 0, upright: 1, fixed: 2 })[it.orient] || 0, it.stackable ? 1 : 0, it.maxLayers || 0, it.color || '', it.onTop === false ? 0 : 1, ({ auto: 0, rear: 1, door: 2 })[it.prio] || 0, isDrum(it) ? 1 : 0]) };
+      i: S.items.map((it) => [it.name, it.l, it.w, it.h, it.qty, it.kg, ({ any: 0, upright: 1, fixed: 2 })[it.orient] || 0, it.stackable ? 1 : 0, it.maxLayers || 0, it.color || '', it.onTop === false ? 0 : 1, ({ auto: 0, rear: 1, door: 2 })[it.prio] || 0, isDrum(it) ? 1 : 0, it.marks || '']) };
     return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/=+$/, '');
   }
   function decodeHash() {
@@ -56,7 +58,7 @@
         S.truck = ['in', 'eu', 'us'].includes(o.t) ? o.t : 'in';
         if (Array.isArray(o.b)) { const b = o.b; S.build = true; S.pb = { t: b[0], l: +b[1], w: +b[2], deck: +b[3], maxH: +b[4], maxKg: +b[5], tare: +b[6], stack: !!b[7] }; }
         if (Array.isArray(o.r)) { S.heavy = !!o.r[0]; S.heavyKg = +o.r[1] || 250; S.gapD = +o.r[2] || 0; S.gapR = +o.r[3] || 0; }
-        S.items = (o.i || []).map((r) => ({ name: r[0], l: r[1], w: r[2], h: r[3], qty: r[4], kg: r[5], orient: ['any', 'upright', 'fixed'][r[6]] || 'any', stackable: !!r[7], maxLayers: r[8] || '', color: r[9] || '', onTop: r[10] !== 0, prio: ['auto', 'rear', 'door'][r[11]] || 'auto', shape: r[12] ? 'drum' : 'box' }));
+        S.items = (o.i || []).map((r) => ({ name: r[0], l: r[1], w: r[2], h: r[3], qty: r[4], kg: r[5], orient: ['any', 'upright', 'fixed'][r[6]] || 'any', stackable: !!r[7], maxLayers: r[8] || '', color: r[9] || '', onTop: r[10] !== 0, prio: ['auto', 'rear', 'door'][r[11]] || 'auto', shape: r[12] ? 'drum' : 'box', marks: r[13] || '' }));
         return true;
       }
       if (h.startsWith('c=')) { // from the CBM calculator
@@ -97,7 +99,12 @@
       <p class="lp-muted">We stack your cartons on pallets first, one product per pallet where we can, and combine the part-pallets left over. Then we load the pallets.</p>
     </div>
     <div class="lp-eqinfo" id="lp-eqinfo"></div>
-    <div class="lp-q">3 · Your packages <span class="lp-muted">type them, paste from Excel or upload a file. We work out which containers you need.</span></div>
+    <div class="lp-q">3 · Your packages <span class="lp-muted">type them, or upload your packing list (Excel or CSV). We work out which containers you need.</span></div>
+    <div class="lp-row lp-actions lp-actions-top">
+      <button class="lp-btn lp-xl lp-upl" id="lp-paste-t">⇪ Upload or paste your packing list</button>
+      <button class="lp-btn lp-ghost" id="lp-example">Load example</button>
+      <label class="lp-chk lp-advl"><input type="checkbox" id="lp-advt"> <span>Show handling options (orientation, stacking, load order)</span></label>
+    </div>
     <div class="lp-tablewrap"><table class="lp-table">
       <thead id="lp-head"></thead>
       <tbody id="lp-rows"></tbody>
@@ -105,15 +112,13 @@
     <div class="lp-row lp-actions">
       <button class="lp-btn lp-ghost" id="lp-add">+ Add package</button>
       <button class="lp-btn lp-ghost" id="lp-adddrum">+ Add drum / roll</button>
-      <button class="lp-btn lp-ghost lp-xl" id="lp-paste-t">⇪ Upload or paste Excel</button>
-      <button class="lp-btn lp-ghost" id="lp-example">Load example</button>
-      <button class="lp-btn lp-ghost" id="lp-clear">Clear</button>
+      <button class="lp-btn lp-ghost" id="lp-clear">Clear list</button>
       <span class="lp-totals" id="lp-totals"></span>
     </div>
     <div class="lp-paste" id="lp-paste" hidden>
       <div class="lp-drop" id="lp-drop">
         <b>Drop your Excel or CSV file here</b> or <label class="lp-link">choose a file<input type="file" id="lp-file" accept=".xlsx,.xlsm,.csv,.txt,.tsv" hidden></label>
-        <div class="lp-muted">.xlsx or .csv · first sheet is read · nothing is uploaded, the file stays in your browser</div>
+        <div class="lp-muted">.xlsx or .csv · we find the right sheet and columns · nothing is uploaded, the file stays in your browser</div>
       </div>
       <p>Or copy the whole table in Excel (headers included) and paste it here:</p>
       <textarea id="lp-paste-ta" rows="5" placeholder="Description	Length	Width	Height	Qty	Weight&#10;Carton A	60	40	40	200	12"></textarea>
@@ -139,11 +144,11 @@
   // ---------------- Excel / CSV import
   const LPImport = (function () {
     const FIELDS = [
-      ['skip', '— ignore —'], ['name', 'Package name'], ['dims', 'L × W × H in one cell'], ['l', 'Length'], ['w', 'Width'], ['h', 'Height'],
+      ['skip', '— ignore —'], ['name', 'Package name'], ['marks', 'Carton numbers (e.g. 1-5)'], ['dims', 'L × W × H in one cell'], ['l', 'Length'], ['w', 'Width'], ['h', 'Height'],
       ['qty', 'Quantity'], ['kg', 'Weight per piece'], ['kgTotal', 'Total weight (all pieces)'], ['orient', 'Orientation / this side up'], ['rotate', 'Allow rotation (yes / no)'], ['stack', 'Others on top (yes / no)'], ['under', 'Can sit on others (yes / no)'], ['layers', 'Max layers']
     ];
     const RX = {
-      dims: /dimension|measurement|\bsize\b|l\s*[x×*]\s*w|lxwxh/i,
+      dims: /dimension|measu?re?ment|\bmeas\b|\bsize\b|\bdims?\b|l\s*[x×*]\s*w|lxwxh/i,
       l: /^\s*l\b|length|lenght|\blen\b|long/i,
       w: /^\s*w\b|width|breadth|wide/i,
       h: /^\s*h\b|height|\bhigh\b|\bht\b/i,
@@ -155,7 +160,7 @@
       rotate: /rotat|turn/i,
       orient: /orient|upright|this side|side up/i,
       layers: /layer|tier/i,
-      name: /desc|name|item|package|product|sku|article|goods|marks|type|commodity/i
+      name: /desc|name|item|package|product|sku|article|goods|particular|type|commodity|content/i
     };
     let parsed = null; // {rows, header, map, lenU, wtU}
 
@@ -175,7 +180,7 @@
       return rows;
     }
 
-    // minimal .xlsx reader: unzip with the browser's DecompressionStream, read the first worksheet
+    // minimal .xlsx reader: unzip with the browser's DecompressionStream; returns every worksheet as {name, rows}
     async function xlsxRows(buf) {
       const dv = new DataView(buf), u8 = new Uint8Array(buf);
       let eocd = -1;
@@ -202,33 +207,54 @@
         return await new Response(ds).text();
       }
       const xml = (s) => new DOMParser().parseFromString(s, 'application/xml');
-      let sheetPath = 'xl/worksheets/sheet1.xml';
+      let list = [{ name: 'Sheet1', path: 'xl/worksheets/sheet1.xml' }];
       try {
         const wb = xml(await read('xl/workbook.xml')), rels = xml(await read('xl/_rels/workbook.xml.rels'));
-        const first = wb.getElementsByTagName('sheet')[0];
-        const rid = first.getAttribute('r:id') || first.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id');
-        for (const r of rels.getElementsByTagName('Relationship')) if (r.getAttribute('Id') === rid) { const t = r.getAttribute('Target'); sheetPath = t.startsWith('/') ? t.slice(1) : 'xl/' + t.replace(/^\.\//, ''); }
+        const tgt = {};
+        for (const r of rels.getElementsByTagName('Relationship')) { const t = r.getAttribute('Target'); tgt[r.getAttribute('Id')] = t.startsWith('/') ? t.slice(1) : 'xl/' + t.replace(/^\.\//, ''); }
+        const found = [...wb.getElementsByTagName('sheet')].map((sh) => {
+          const rid = sh.getAttribute('r:id') || sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id');
+          return { name: sh.getAttribute('name') || 'Sheet', path: tgt[rid], hidden: /hidden/i.test(sh.getAttribute('state') || '') };
+        }).filter((x) => x.path && !x.hidden);
+        if (found.length) list = found;
       } catch (e) { /* fall back to sheet1 */ }
       const ssx = await read('xl/sharedStrings.xml');
       const shared = ssx ? [...xml(ssx).getElementsByTagName('si')].map((si) => [...si.getElementsByTagName('t')].map((t) => t.textContent).join('')) : [];
-      const sx = await read(sheetPath); if (!sx) throw new Error('no sheet');
-      const rows = [];
-      for (const r of xml(sx).getElementsByTagName('row')) {
-        const ri = (+r.getAttribute('r') || rows.length + 1) - 1, row = [];
-        for (const c of r.getElementsByTagName('c')) {
-          const ref = c.getAttribute('r') || ''; let col = 0;
-          for (const ch of ref.replace(/\d+/g, '')) col = col * 26 + ch.charCodeAt(0) - 64;
-          col = col ? col - 1 : row.length;
-          const t = c.getAttribute('t'), v = c.getElementsByTagName('v')[0];
-          let val = '';
-          if (t === 's') val = shared[+(v && v.textContent)] || '';
-          else if (t === 'inlineStr') val = [...c.getElementsByTagName('t')].map((x) => x.textContent).join('');
-          else val = v ? v.textContent : '';
-          row[col] = val;
+      const out = [];
+      for (const sh of list.slice(0, 12)) {
+        const sx = await read(sh.path); if (!sx) continue;
+        const rows = [];
+        for (const r of xml(sx).getElementsByTagName('row')) {
+          const ri = (+r.getAttribute('r') || rows.length + 1) - 1, row = [];
+          for (const c of r.getElementsByTagName('c')) {
+            const ref = c.getAttribute('r') || ''; let col = 0;
+            for (const ch of ref.replace(/\d+/g, '')) col = col * 26 + ch.charCodeAt(0) - 64;
+            col = col ? col - 1 : row.length;
+            const t = c.getAttribute('t'), v = c.getElementsByTagName('v')[0];
+            let val = '';
+            if (t === 's') val = shared[+(v && v.textContent)] || '';
+            else if (t === 'inlineStr') val = [...c.getElementsByTagName('t')].map((x) => x.textContent).join('');
+            else val = v ? v.textContent : '';
+            row[col] = val;
+          }
+          rows[ri] = row;
         }
-        rows[ri] = row;
+        out.push({ name: sh.name, rows: rows.map((r) => (r || []).map((x) => (x == null ? '' : String(x)))) });
       }
-      return rows.map((r) => (r || []).map((x) => (x == null ? '' : String(x))));
+      if (!out.length) throw new Error('no sheet');
+      return out;
+    }
+    // read every sheet and keep the one with the most package lines (the user can switch)
+    function bestSheet(sheets) {
+      let pick = null;
+      sheets.forEach((sh, i) => {
+        const P = analyze(sh.rows); if (!P) return;
+        const n = toItems(P).length;
+        if (!pick || n > pick.n) pick = { P, n, i };
+      });
+      if (!pick) return null;
+      pick.P.sheets = sheets; pick.P.sheet = pick.i;
+      return pick.P;
     }
 
     const num = (s) => { const v = parseFloat(String(s).replace(/[, ](?=\d{3}\b)/g, '').replace(/[^\d.\-eE]/g, '')); return isFinite(v) ? v : NaN; };
@@ -237,6 +263,16 @@
       if (kind === 'len') { if (/\bmm\b|millim/.test(s)) return 'mm'; if (/\binch|\(in\)|\bins?\b|"/.test(s)) return 'in'; if (/\bcm\b|centim/.test(s)) return 'cm'; if (/\(m\)|\bmtrs?\b|\bmeters?\b|\bmetres?\b/.test(s)) return 'm'; return ''; }
       if (/\blbs?\b|pound/.test(s)) return 'lb'; if (/\bkgs?\b|kilo/.test(s)) return 'kg'; return '';
     }
+    // carton numbers such as "1-5", "6 - 47", "50", "C/NO 12 TO 20"
+    const RANGE = /^\D{0,12}?(\d{1,6})\s*(?:-|–|—|to|~)\s*(\d{1,6})\s*$/i, SINGLE = /^\D{0,12}?(\d{1,6})\s*$/;
+    function marksOf(v) {
+      const t = String(v == null ? '' : v).trim();
+      let m = t.match(RANGE);
+      if (m && +m[2] >= +m[1]) return { a: +m[1], b: +m[2], range: true };
+      m = t.match(SINGLE);
+      return m ? { a: +m[1], b: +m[1], range: false } : null;
+    }
+    const isNet = (h) => /\bnet\b|\bnt\.?\s*w/i.test(h), isGross = (h) => /gr[o0]ss|\bg\.?\s*w/i.test(h);
     function analyze(rows) {
       rows = rows.filter((r) => r && r.some((c) => String(c).trim() !== ''));
       if (!rows.length) return null;
@@ -248,21 +284,59 @@
         if (hits > best) { best = hits; hi = i; }
       });
       const header = hi >= 0 ? rows[hi].map((c) => String(c || '').trim()) : [];
-      const body = rows.slice(hi + 1);
+      let body = rows.slice(hi + 1);
       const map = new Array(width).fill('skip');
       const used = new Set();
+      const LWH = { l: /^\s*(l|len|length|lenght|long)\b/i, w: /^\s*(w|wd|wid|width|breadth|b)\b/i, h: /^\s*(h|ht|hgt|height|high)\b/i };
       if (hi >= 0) {
+        // a second header line with L / W / H under a merged "Measurement" cell
+        const sub = (body[0] || []).map((c) => String(c || '').trim());
+        if (sub.filter((c) => c && isNaN(num(c)) && (LWH.l.test(c) || LWH.w.test(c) || LWH.h.test(c))).length >= 2) {
+          sub.forEach((c, i) => { for (const f of ['l', 'w', 'h']) if (c && !used.has(f) && LWH[f].test(c)) { map[i] = f; used.add(f); header[i] = header[i] ? header[i] + ' ' + c : c; } });
+          body = body.slice(1);
+        }
+        const nums = (c) => body.filter((r) => !isNaN(num(r[c])) && String(r[c]).trim() !== '').length;
+        // carton numbers: a "carton / ctn / case no." column whose cells look like 1-5, 6-47, 50
+        for (let c = 0; c < width; c++) {
+          if (map[c] !== 'skip' || !/carton|ctn|\bcase|\bc\s*\/\s*no|\bpkg\s*no|package\s*no|box\s*no|marks?\b/i.test(header[c] || '')) continue;
+          const vals = body.map((r) => String(r[c] || '').trim()).filter(Boolean);
+          const ok = vals.filter((v) => marksOf(v)).length, ranges = vals.filter((v) => (marksOf(v) || {}).range).length;
+          if (vals.length && ok >= 0.6 * vals.length && ranges >= 1) { map[c] = 'marks'; used.add('marks'); break; }
+        }
+        // a "Measurement" / "Dimensions" header over three columns of numbers (the cell is merged in Excel)
+        for (let c = 0; c + 2 < width; c++) {
+          if (map[c] !== 'skip' || used.has('l') || !RX.dims.test(header[c] || '')) continue;
+          if (!(header[c + 1] || '') && !(header[c + 2] || '') && nums(c) && nums(c) === nums(c + 1) && nums(c) === nums(c + 2)) {
+            map[c] = 'l'; map[c + 1] = 'w'; map[c + 2] = 'h'; ['l', 'w', 'h'].forEach((f) => used.add(f));
+          }
+        }
         const serial = /^\s*(s\.?\s*no|sr\.?\s*no|sl\.?\s*no|serial|#|item\s*no|line\s*no)\.?\s*$/i;
-        for (const f of ['dims', 'kgTotal', 'l', 'w', 'h', 'qty', 'kg', 'under', 'stack', 'rotate', 'orient', 'layers', 'name']) {
+        // weights: the gross weight is what goes in the container, so prefer it to the net weight
+        const wcols = [];
+        for (let c = 0; c < width; c++) if (map[c] === 'skip' && /weight|\bwt\b|\bkgs?\b|\blbs?\b|mass|gr[o0]ss/i.test(header[c] || '')) wcols.push(c);
+        const tot = (c) => RX.kgTotal.test(header[c] || '') || /\btotal\b|\btot\.?\b/i.test(header[c] || '');
+        const pick = (list) => list.find((c) => isGross(header[c])) ?? list.find((c) => !isNet(header[c])) ?? list[0];
+        const per = pick(wcols.filter((c) => !tot(c))), all = pick(wcols.filter((c) => tot(c)));
+        if (per != null) { map[per] = 'kg'; used.add('kg'); }
+        if (all != null) { map[all] = 'kgTotal'; used.add('kgTotal'); }
+        for (const f of ['dims', 'l', 'w', 'h', 'qty', 'under', 'stack', 'rotate', 'orient', 'layers', 'name']) {
           for (let c = 0; c < width; c++) {
             if (map[c] !== 'skip' || serial.test(header[c] || '')) continue;
             if (RX[f].test(header[c] || '') && !(f !== 'dims' && used.has(f))) {
               if ((f === 'l' || f === 'w' || f === 'h') && RX.dims.test(header[c])) continue;
+              if (f === 'dims' && used.has('l')) continue;
               map[c] = f; used.add(f); break;
             }
           }
         }
-        // a lone "weight" next to a quantity is usually per piece; "gross" alone could be total — leave to the user
+        // with carton numbers like 1-5, the number of cartons comes from them; a "quantity" column then
+        // usually counts the pieces inside each carton, so it is not used (the user can still choose it)
+        const mc = map.indexOf('marks'), qc = map.indexOf('qty');
+        if (mc >= 0 && qc >= 0) {
+          const rowsBoth = body.filter((r) => marksOf(r[mc]) && !isNaN(num(r[qc])));
+          const same = rowsBoth.filter((r) => { const m = marksOf(r[mc]); return Math.floor(num(r[qc])) === m.b - m.a + 1; }).length;
+          if (rowsBoth.length && same < 0.8 * rowsBoth.length) map[qc] = 'skip';
+        }
       } else {
         const firstNum = !isNaN(num((body[0] || [])[0]));
         (firstNum ? ['l', 'w', 'h', 'qty', 'kg'] : ['name', 'l', 'w', 'h', 'qty', 'kg']).forEach((f, i) => { if (i < width) map[i] = f; });
@@ -278,17 +352,24 @@
     function toItems(P) {
       const lf = { cm: 1, mm: 0.1, m: 100, in: 2.54 }[P.lenU] || 1, wf = P.wtU === 'lb' ? 0.45359237 : 1;
       const out = [], col = (f) => P.map.indexOf(f);
+      const mc = col('marks');
+      const ranged = mc >= 0 && P.body.some((r) => (marksOf(r[mc]) || {}).range);
       for (const r of P.body) {
         const g = (f) => { const c = col(f); return c >= 0 ? r[c] : ''; };
         let l = num(g('l')), w = num(g('w')), h = num(g('h'));
         if (col('dims') >= 0) { const m = String(g('dims')).split(/\s*[x×*X\/]\s*|\s+/).map(num).filter((v) => !isNaN(v)); if (m.length >= 3) [l, w, h] = m; }
         if (!(l > 0 && w > 0 && h > 0)) continue;
-        let qty = col('qty') >= 0 ? Math.floor(num(g('qty'))) : 1; if (!(qty > 0)) qty = 1;
-        let kg = num(g('kg')); if (col('kgTotal') >= 0 && isNaN(kg)) kg = num(g('kgTotal')) / qty;
+        const mk = mc >= 0 ? marksOf(g('marks')) : null;
+        let qty = col('qty') >= 0 ? Math.floor(num(g('qty'))) : 1;
+        if (mk && ranged && col('qty') < 0) qty = mk.b - mk.a + 1;
+        if (!(qty > 0)) qty = 1;
+        let kg = num(g('kg'));
+        if (col('kgTotal') >= 0 && isNaN(kg)) kg = num(g('kgTotal')) / qty;
         const o = String(g('orient')).toLowerCase(), st = String(g('stack')).toLowerCase(), ro = String(g('rotate')).trim().toLowerCase(), un = String(g('under')).trim().toLowerCase();
         const NO = /^(no|n|false|0|non.*|not allowed)$/;
         out.push({
-          name: String(g('name') || '').trim().slice(0, 40) || 'Package ' + (S.items.length + out.length + 1),
+          name: String(g('name') || '').replace(/\s+/g, ' ').trim().slice(0, 60) || (mk ? (mk.range ? 'Cartons ' + mk.a + '–' + mk.b : 'Carton ' + mk.a) : 'Package ' + (S.items.length + out.length + 1)),
+          marks: mk ? (mk.range ? mk.a + '-' + mk.b : String(mk.a)) : '',
           l: l * lf, w: w * lf, h: h * lf, qty, kg: isNaN(kg) ? 0 : kg * wf,
           orient: /fix|no.?turn|no.?rot/.test(o) ? 'fixed' : /up|side|yes|true|^y$|^1$/.test(o) ? 'upright' : NO.test(ro) ? 'upright' : 'any',
           stackable: !NO.test(st.trim()), onTop: !NO.test(un), maxLayers: Math.floor(num(g('layers'))) || '', color: ''
@@ -298,23 +379,27 @@
     }
     function showMap() {
       const P = parsed, box = document.getElementById('lp-map');
-      if (!P) { box.innerHTML = '<div class="lp-warn">We could not find any rows in that file. Check that the sizes are in the first sheet.</div>'; return; }
+      if (!P) { box.innerHTML = '<div class="lp-warn">We could not find any rows in that file. Check that it holds a table with the package sizes.</div>'; return; }
       const items = toItems(P);
       const opts = (sel) => FIELDS.map(([v, t]) => `<option value="${v}"${v === sel ? ' selected' : ''}>${t}</option>`).join('');
       const sample = P.body.slice(0, 4);
       box.innerHTML = `<div class="lp-mapcard">
         <div class="lp-k">Check the columns</div>
+        ${P.sheets && P.sheets.length > 1 ? `<label class="lp-f" style="margin:6px 0 10px"><span>Sheet</span><select class="lp-in" id="lp-msheet">${P.sheets.map((sh, i) => `<option value="${i}"${i === P.sheet ? ' selected' : ''}>${esc(sh.name)}</option>`).join('')}</select></label>` : ''}
         <div class="lp-tablewrap"><table class="lp-maptable"><thead><tr>${Array.from({ length: P.width }, (_, c) => `<th><select class="lp-in" data-c="${c}">${opts(P.map[c])}</select><div class="lp-muted">${esc(P.header[c] || 'Column ' + (c + 1))}</div></th>`).join('')}</tr></thead>
         <tbody>${sample.map((r) => `<tr>${Array.from({ length: P.width }, (_, c) => `<td>${esc(r[c] || '')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
         <div class="lp-row" style="margin-top:10px;align-items:center">
           <label class="lp-f"><span>Sizes in</span><select class="lp-in" id="lp-mlu">${['cm', 'mm', 'm', 'in'].map((u) => `<option${u === P.lenU ? ' selected' : ''}>${u}</option>`).join('')}</select></label>
           <label class="lp-f"><span>Weight in</span><select class="lp-in" id="lp-mwu">${['kg', 'lb'].map((u) => `<option${u === P.wtU ? ' selected' : ''}>${u}</option>`).join('')}</select></label>
+          ${items.length ? '' : '<div class="lp-warn" style="flex:1 1 100%">We could not tell which columns hold the length, width and height. Choose them in the drop-downs above each column.</div>'}
           <span class="lp-muted" style="flex:1 1 200px">${items.length} package line${items.length === 1 ? '' : 's'} found · ${fmt(items.reduce((a, it) => a + it.qty, 0))} pcs · ${fmt(items.reduce((a, it) => a + unitVol(it) * it.qty, 0) / 1e6, 2)} m³</span>
           <button class="lp-btn" id="lp-madd" ${items.length ? '' : 'disabled'}>Add to list</button>
           <button class="lp-btn lp-ghost" id="lp-mrep" ${items.length ? '' : 'disabled'}>Replace list</button>
         </div></div>`;
       box.querySelectorAll('select[data-c]').forEach((s) => s.addEventListener('change', () => { P.map[+s.dataset.c] = s.value; showMap(); }));
       document.getElementById('lp-mlu').onchange = (e) => { P.lenU = e.target.value; showMap(); };
+      const shSel = document.getElementById('lp-msheet');
+      if (shSel) shSel.onchange = (e) => { const i = +e.target.value, np = analyze(P.sheets[i].rows) || { header: [], body: [], map: [], width: 0, lenU: S.unit, wtU: S.wunit }; np.sheets = P.sheets; np.sheet = i; parsed = np; showMap(); };
       document.getElementById('lp-mwu').onchange = (e) => { P.wtU = e.target.value; showMap(); };
       const done = (replace) => {
         const add = toItems(P);
@@ -330,7 +415,7 @@
       box.innerHTML = '<div class="lp-muted">Reading ' + esc(f.name) + '…</div>';
       try {
         let rows;
-        if (/\.(xlsx|xlsm)$/i.test(f.name)) rows = await xlsxRows(await f.arrayBuffer());
+        if (/\.(xlsx|xlsm)$/i.test(f.name)) { parsed = bestSheet(await xlsxRows(await f.arrayBuffer())); showMap(); return; }
         else if (/\.xls$/i.test(f.name)) { box.innerHTML = '<div class="lp-warn">Old .xls files can’t be read here. In Excel use File › Save As › Excel Workbook (.xlsx) or CSV, or simply copy the table and paste it below.</div>'; return; }
         else rows = csvRows(await f.text());
         parsed = analyze(rows); showMap();
@@ -350,7 +435,7 @@
       document.getElementById('lp-paste-ta').addEventListener('paste', () => setTimeout(() => { parsed = analyze(csvRows(document.getElementById('lp-paste-ta').value)); showMap(); }, 30));
       document.getElementById('lp-tpl').addEventListener('click', (e) => {
         e.preventDefault();
-        const a = document.createElement('a'); a.href = 'YAM-load-planner-template.xlsx'; a.download = 'YAM-load-planner-template.xlsx'; document.body.appendChild(a); a.click(); a.remove();
+        const a = document.createElement('a'); a.href = 'YAM-load-planner-template.xlsx'; a.download = 'CargoKit-load-planner-template.xlsx'; document.body.appendChild(a); a.click(); a.remove();
       });
     }
     function fromText(text) { document.getElementById('lp-paste').hidden = false; document.getElementById('lp-paste-ta').value = text; parsed = analyze(csvRows(text)); showMap(); document.getElementById('lp-map').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
@@ -422,32 +507,52 @@
   $('lp-wunits').addEventListener('click', (e) => { const w = e.target.dataset.w; if (w) { S.wunit = w; segs(); renderRows(); renderEqInfo(); if (S.result) renderResult(); } });
 
   // rows (stored internally in cm/kg)
+  // handling columns (orientation, stacking, load order) are hidden until asked for, or when a row uses them
+  const usesRules = (it) => (it.orient && it.orient !== 'any') || it.stackable === false || it.onTop === false || +it.maxLayers > 0 || (it.prio && it.prio !== 'auto');
+  const blankRow = (it) => !it.name && !it.l && !it.w && !it.h && !it.kg && !it.marks;
   function renderRows() {
     const u = S.unit === 'in' ? 'in' : 'cm';
-    $('lp-head').innerHTML = `<tr><th title="Colour in the 3D plan">Colour</th><th>${S.pal ? 'Pallet name' : 'Package name'}</th>${S.pal ? '<th>Pallet size</th>' : ''}<th>${S.items.some(isDrum) ? 'Length / Ø' : 'Length'} (${u})</th><th>Width (${u})</th><th>${S.pal ? 'Height incl. pallet' : 'Height'} (${u})</th><th>Qty</th><th>Weight / pc (${S.wunit})</th><th title="How the package may be turned when loading">Orientation</th><th title="Other packages may be placed on top of this one">${S.pal ? 'Double-stack' : 'Others on top'}</th><th title="This package may be placed on top of other cargo (untick to keep it on the floor)">Can sit on others</th><th title="Max layers of this item, optional">Max layers</th><th title="Put this item in first (against the front wall) or last (at the doors)">Load order</th><th></th></tr>`;
+    const adv = S.adv || S.pal || S.items.some((it) => !isDrum(it) && usesRules(it));
+    $('lp-advt').checked = adv;
+    $('lp-advt').disabled = S.items.some((it) => !isDrum(it) && usesRules(it));
+    const tbl = document.querySelector('.lp-table'); tbl.classList.toggle('lp-simple', !adv);
+    const H = {
+      color: 'Colour', name: S.pal ? 'Pallet name' : 'Package name', marks: S.pal ? 'Pallet nos.' : 'Carton nos.', pal: 'Pallet size',
+      l: `${S.items.some(isDrum) ? 'Length / Ø' : 'Length'} (${u})`, w: `Width (${u})`, h: `${S.pal ? 'Height incl. pallet' : 'Height'} (${u})`, qty: 'Qty', kg: `Weight / pc (${S.wunit})`,
+      or: 'Orientation', st: S.pal ? 'Double-stack' : 'Others on top', ot: 'Can sit on others', ml: 'Max layers', pr: 'Load order'
+    };
+    const TT = { color: 'Colour in the 3D plan', marks: 'Carton or package numbers from your packing list, e.g. 1-5. They are used in the loading steps and the video.', or: 'How the package may be turned when loading', st: 'Other packages may be placed on top of this one', ot: 'This package may be placed on top of other cargo (untick to keep it on the floor)', ml: 'Max layers of this item, optional', pr: 'Put this item in first (against the front wall) or last (at the doors)' };
+    const ADV = { or: 1, st: 1, ot: 1, ml: 1, pr: 1 };
+    const cols = ['color', 'name', 'marks'].concat(S.pal ? ['pal'] : [], ['l', 'w', 'h', 'qty', 'kg', 'or', 'st', 'ot', 'ml', 'pr']);
+    $('lp-head').innerHTML = `<tr>${cols.map((c) => `<th class="lp-c-${c}${ADV[c] ? ' lp-adv' : ''}"${TT[c] ? ` title="${TT[c]}"` : ''}>${H[c]}</th>`).join('')}<th></th></tr>`;
+    // each cell also carries its label, shown when the rows turn into cards on a phone
+    const td = (c, inner, cls = '') => `<td class="lp-c-${c}${ADV[c] ? ' lp-adv' : ''}${cls ? ' ' + cls : ''}"><span class="lp-ml">${H[c]}</span>${inner}</td>`;
+    const ph = (i, v) => (i === 0 ? ` placeholder="${v}"` : '');
     $('lp-rows').innerHTML = S.items.map((it, i) => `<tr data-i="${i}">
-      <td class="lp-c"><input type="color" class="lp-color" data-k="color" value="${it.color || PALETTE[i % PALETTE.length]}" aria-label="Colour"></td>
-      <td><div class="lp-nm">${isDrum(it) ? '<span class="lp-drum" title="Drum or roll (round)">◯</span>' : ''}<input class="lp-in lp-name" data-k="name" value="${esc(it.name)}" maxlength="40"></div></td>
-      ${S.pal ? `<td><select class="lp-in lp-pt" data-k="pallet" aria-label="Pallet size">${PALLETS.map(([v, t]) => `<option value="${v}"${palletOf(it) === v ? ' selected' : ''}>${t}</option>`).join('')}</select></td>` : ''}
-      <td><input class="lp-in" data-k="l" inputmode="decimal" ${isDrum(it) ? 'aria-label="Diameter" placeholder="Ø"' : ''} value="${it.l ? +(it.l / lenF()).toFixed(2) : ''}"></td>
-      <td>${isDrum(it) ? `<input class="lp-in lp-same" value="= Ø" disabled aria-label="Width equals the diameter">` : `<input class="lp-in" data-k="w" inputmode="decimal" value="${it.w ? +(it.w / lenF()).toFixed(2) : ''}">`}</td>
-      <td><input class="lp-in" data-k="h" inputmode="decimal" value="${it.h ? +(it.h / lenF()).toFixed(2) : ''}"></td>
-      <td><input class="lp-in" data-k="qty" inputmode="numeric" value="${it.qty || ''}"></td>
-      <td><input class="lp-in" data-k="kg" inputmode="decimal" value="${it.kg ? +(it.kg / wtF()).toFixed(2) : ''}"></td>
-      <td><select class="lp-in lp-or" data-k="orient" aria-label="Orientation">${(isDrum(it) ? [['upright', 'Standing only'], ['any', 'Can lie down']] : [['any', 'Any way'], ['upright', 'This side up'], ['fixed', 'Fixed, no turning']]).map(([v, t]) => `<option value="${v}"${(it.orient || 'any') === v ? ' selected' : ''}>${t}</option>`).join('')}</select></td>
-      <td class="lp-c"><input type="checkbox" data-k="stackable" ${it.stackable ? 'checked' : ''} aria-label="Others on top"></td>
-      <td class="lp-c"><input type="checkbox" data-k="onTop" ${it.onTop === false ? '' : 'checked'} aria-label="Can sit on other cargo"></td>
-      <td><input class="lp-in lp-small" data-k="maxLayers" inputmode="numeric" placeholder="any" value="${it.maxLayers || ''}"></td>
-      <td><select class="lp-in lp-pr" data-k="prio" aria-label="Load order">${PRIO.map(([v, t]) => `<option value="${v}"${(it.prio || 'auto') === v ? ' selected' : ''}>${t}</option>`).join('')}</select></td>
-      <td><button class="lp-x" data-del="${i}" aria-label="Remove">×</button></td></tr>`).join('');
+      ${td('color', `<input type="color" class="lp-color" data-k="color" value="${it.color || PALETTE[i % PALETTE.length]}" aria-label="Colour">`, 'lp-c')}
+      ${td('name', `<div class="lp-nm">${isDrum(it) ? '<span class="lp-drum" title="Drum or roll (round)">◯</span>' : ''}<input class="lp-in lp-name" data-k="name" value="${esc(it.name)}" maxlength="60" placeholder="${i === 0 ? 'e.g. Carton A' : 'Package ' + String.fromCharCode(65 + (i % 26))}"></div>`)}
+      ${td('marks', `<input class="lp-in lp-small" data-k="marks" placeholder="e.g. 1-5" value="${esc(it.marks || '')}" maxlength="20" aria-label="Carton numbers">`)}
+      ${S.pal ? td('pal', `<select class="lp-in lp-pt" data-k="pallet" aria-label="Pallet size">${PALLETS.map(([v, t]) => `<option value="${v}"${palletOf(it) === v ? ' selected' : ''}>${t}</option>`).join('')}</select>`) : ''}
+      ${td('l', `<input class="lp-in" data-k="l" inputmode="decimal" ${isDrum(it) ? 'aria-label="Diameter" placeholder="Ø"' : ph(i, S.unit === 'in' ? 24 : 60)} value="${it.l ? +(it.l / lenF()).toFixed(2) : ''}">`)}
+      ${td('w', isDrum(it) ? `<input class="lp-in lp-same" value="= Ø" disabled aria-label="Width equals the diameter">` : `<input class="lp-in" data-k="w" inputmode="decimal"${ph(i, S.unit === 'in' ? 16 : 40)} value="${it.w ? +(it.w / lenF()).toFixed(2) : ''}">`)}
+      ${td('h', `<input class="lp-in" data-k="h" inputmode="decimal"${ph(i, S.unit === 'in' ? 16 : 40)} value="${it.h ? +(it.h / lenF()).toFixed(2) : ''}">`)}
+      ${td('qty', `<input class="lp-in" data-k="qty" inputmode="numeric" value="${it.qty || ''}">`)}
+      ${td('kg', `<input class="lp-in" data-k="kg" inputmode="decimal"${ph(i, S.wunit === 'lb' ? 26 : 12)} value="${it.kg ? +(it.kg / wtF()).toFixed(2) : ''}">`)}
+      ${td('or', `<select class="lp-in lp-or" data-k="orient" aria-label="Orientation">${(isDrum(it) ? [['upright', 'Standing only'], ['any', 'Can lie down']] : [['any', 'Any way'], ['upright', 'This side up'], ['fixed', 'Fixed, no turning']]).map(([v, t]) => `<option value="${v}"${(it.orient || 'any') === v ? ' selected' : ''}>${t}</option>`).join('')}</select>`)}
+      ${td('st', `<input type="checkbox" data-k="stackable" ${it.stackable ? 'checked' : ''} aria-label="Others on top">`, 'lp-c')}
+      ${td('ot', `<input type="checkbox" data-k="onTop" ${it.onTop === false ? '' : 'checked'} aria-label="Can sit on other cargo">`, 'lp-c')}
+      ${td('ml', `<input class="lp-in lp-small" data-k="maxLayers" inputmode="numeric" placeholder="any" value="${it.maxLayers || ''}">`)}
+      ${td('pr', `<select class="lp-in lp-pr" data-k="prio" aria-label="Load order">${PRIO.map(([v, t]) => `<option value="${v}"${(it.prio || 'auto') === v ? ' selected' : ''}>${t}</option>`).join('')}</select>`)}
+      <td class="lp-c-del"><button class="lp-x" data-del="${i}" aria-label="Remove">×</button></td></tr>`).join('');
     totals();
+    if (window.YAM_TR) try { window.YAM_TR($('lp-head')); window.YAM_TR($('lp-rows')); } catch (err) { /* translation is optional */ }
   }
   $('lp-rows').addEventListener('input', (e) => {
     const tr = e.target.closest('tr'); if (!tr) return;
     const it = S.items[+tr.dataset.i], k = e.target.dataset.k;
     if (k === 'stackable' || k === 'onTop') it[k] = e.target.checked;
     else if (k === 'pallet') { const p = PALLETS.find((x) => x[0] === e.target.value); if (p && p[2]) { it.l = p[2]; it.w = p[3]; renderRows(); return; } }
-    else if (k === 'name' || k === 'orient' || k === 'color' || k === 'prio') it[k] = e.target.value;
+    else if (k === 'name' || k === 'orient' || k === 'color' || k === 'prio' || k === 'marks') it[k] = e.target.value;
     else {
       const v = parseFloat(e.target.value);
       it[k] = !(v > 0) ? 0 : (k === 'qty' || k === 'maxLayers') ? Math.floor(v) : k === 'kg' ? v * wtF() : v * lenF();
@@ -460,11 +565,19 @@
   function addRow() {
     const L = String.fromCharCode(65 + (S.items.length % 26));
     S.items.push(S.pal ? { name: 'Pallet ' + L, l: 120, w: 80, h: 0, qty: 1, kg: 0, orient: 'upright', stackable: false, maxLayers: '', color: '' }
-      : { name: 'Package ' + L, l: 0, w: 0, h: 0, qty: 1, kg: 0, orient: 'any', stackable: true, maxLayers: '', color: '' });
+      : { name: '', l: 0, w: 0, h: 0, qty: 1, kg: 0, orient: 'any', stackable: true, maxLayers: '', color: '' });
   }
-  $('lp-add').addEventListener('click', () => { addRow(); renderRows(); });
+  $('lp-add').addEventListener('click', () => {
+    // an empty last row is used first, rather than adding another one
+    const last = S.items[S.items.length - 1];
+    if (!(last && !S.pal && blankRow(last))) { addRow(); renderRows(); }
+    const rows = document.querySelectorAll('#lp-rows tr'), inp = rows[rows.length - 1] && rows[rows.length - 1].querySelector('[data-k="name"]');
+    if (inp) inp.focus();
+  });
+  $('lp-advt').addEventListener('change', (e) => { S.adv = e.target.checked; renderRows(); });
   $('lp-adddrum').addEventListener('click', () => {
     const n = S.items.filter(isDrum).length + 1;
+    S.items = S.items.filter((it) => !blankRow(it));
     S.items.push({ name: 'Drum ' + n, shape: 'drum', l: 58, w: 58, h: 88, qty: 1, kg: 0, orient: 'upright', stackable: true, maxLayers: 2, color: '' });
     renderRows();
   });
@@ -495,13 +608,18 @@
   }
 
   // ---------------- calculate
-  $('lp-go').addEventListener('click', calc);
+  // the planner tries many loading orders, which can take a few seconds: show that it is working
+  $('lp-go').addEventListener('click', () => {
+    const b = $('lp-go'); if (b.disabled) return;
+    const label = b.innerHTML; b.disabled = true; b.innerHTML = '<span>Working out the best plan…</span>';
+    setTimeout(() => { try { calc(); } finally { b.disabled = false; b.innerHTML = label; } }, 40);
+  });
   function calc() {
     const raw = S.items.filter((it) => it.l > 0 && it.w > 0 && it.h > 0 && +it.qty > 0)
       .map((it) => {
         const heavy = S.heavy && S.heavyKg > 0 && (it.kg || 0) >= S.heavyKg;
         if (isDrum(it)) it.w = it.l;
-        return { ...it, heavy, upright: it.orient === 'upright' || it.orient === 'fixed' || heavy, onTop: heavy ? false : it.onTop, maxLayers: +it.maxLayers || 0, qty: Math.floor(+it.qty), prio: it.prio || 'auto', color: it.color || PALETTE[S.items.indexOf(it) % PALETTE.length] };
+        return { ...it, name: String(it.name || '').trim() || (S.pal ? 'Pallet ' : 'Package ') + String.fromCharCode(65 + (S.items.indexOf(it) % 26)), heavy, upright: it.orient === 'upright' || it.orient === 'fixed' || heavy, onTop: heavy ? false : it.onTop, maxLayers: +it.maxLayers || 0, qty: Math.floor(+it.qty), prio: it.prio || 'auto', color: it.color || PALETTE[S.items.indexOf(it) % PALETTE.length] };
       });
     if (!raw.length) { $('lp-out').innerHTML = '<div class="lp-card lp-warn">Enter at least one package with length, width, height and quantity.</div>'; return; }
     let items = raw, pb = null;
@@ -522,15 +640,21 @@
     const opts = [];
     const mix = E.planMix(items, cands);
     opts.push({ label: 'Recommended', res: mix });
-    for (const c of cands) {
-      const r1 = E.plan(items, c.eq);
+    cands.forEach((c, ci) => {
+      // the smallest unit gets the longest search: fitting everything in it saves the most money
+      const r1 = E.plan(items, c.eq, { budget: ci === 0 ? 2000 : 400 });
       r1.cost = r1.units.length * c.cost;
       if (!r1.tooBig.length) opts.push({ label: 'Only ' + c.eq.name.replace(/ \(.*\)$/, ''), res: r1 });
-    }
+    });
     // if a single-type plan is cheaper than the mix, recommend it instead
     let bi = 0;
-    opts.forEach((o, i) => { if (o.res.totalBoxes >= opts[bi].res.totalBoxes && o.res.cost < opts[bi].res.cost - 1e-9) bi = i; });
+    // (at the same cost, the plan with the shorter load wins: it leaves room for more and the plan search behind it is more thorough)
+    const lenOf = (r) => r.units.reduce((a, u) => a + (u.usedL || 0), 0);
+    opts.forEach((o, i) => { const a = o.res, c = opts[bi].res; if (a.totalBoxes >= c.totalBoxes && (a.cost < c.cost - 1e-9 || (Math.abs(a.cost - c.cost) < 1e-9 && a.units.length === c.units.length && lenOf(a) < lenOf(c) - 1))) bi = i; });
     if (bi) { const b = opts.splice(bi, 1)[0]; b.label = 'Recommended'; opts[0].label = 'Mixed sizes'; opts.unshift(b); }
+    // drop options that use exactly the same containers as one already listed
+    const eqSig = (r) => r.units.map((u) => u.eq.id).sort().join(',');
+    for (let i = opts.length - 1; i > 0; i--) if (opts.slice(0, i).some((o) => eqSig(o.res) === eqSig(opts[i].res))) opts.splice(i, 1);
     for (const o of opts) { prep(o.res, items); o.res.cargo = raw; o.res.pb = pb; }
     S.options = opts; S.opt = 0;
     show(0);
@@ -560,6 +684,17 @@
       if (g && sig(g.units[0]) === sig(u)) g.units.push(u); else res.groups.push({ units: [u] });
     }
     for (const u of res.units) u.steps = E.steps(u);
+    // carton numbers from the packing list (e.g. 1-5): number every package in the order it is loaded
+    const start = (t) => { const m = String(t.marks || '').match(/\d+/); return m ? +m[0] : 0; };
+    const next = new Map();
+    for (const u of res.units) {
+      if (!u.boxes.some((b) => start(b.type))) continue;
+      u.no = new Int32Array(u.boxes.length);
+      const seen = new Uint8Array(u.boxes.length);
+      const take = (i) => { if (seen[i]) return; seen[i] = 1; const t = u.boxes[i].type, s0 = start(t); if (!s0) return; const v = next.has(t.idx) ? next.get(t.idx) : s0; u.no[i] = v; next.set(t.idx, v + 1); };
+      for (const st of (u.dsteps || (u.dsteps = E.detailSteps(u)))) stepIdx(st).forEach(take);
+      for (let i = 0; i < u.boxes.length; i++) take(i);
+    }
   }
   function composition(r) {
     const m = new Map();
@@ -568,6 +703,30 @@
   }
 
   function itemColor(type) { return type.color || PALETTE[type.idx % PALETTE.length]; }
+  // every package type gets a letter (A, B, C … Z, AA, AB …), shown on the packages and next to its colour everywhere
+  function letterOf(i) { let s = '', n = i; do { s = String.fromCharCode(65 + (n % 26)) + s; n = Math.floor(n / 26) - 1; } while (n >= 0); return s; }
+  // black or white text, whichever reads better on a colour
+  function inkOn(hex) { const c = String(hex || '#000').replace('#', ''), v = parseInt(c.length === 3 ? c.replace(/./g, '$&$&') : c, 16); const r = (v >> 16) & 255, g = (v >> 8) & 255, b = v & 255; return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#111111' : '#FFFFFF'; }
+  const badge = (idx, color) => `<span class="lp-code" style="background:${color};color:${inkOn(color)}">${letterOf(idx)}</span>`;
+  // "3 across × 4 high" for a regular block; an irregular group (piece-by-piece plans) is shown in the picture instead
+  function gridOf(st) {
+    if (st.grid === false) return ['placed as shown in the picture'];
+    const g = [`${st.across} across`]; if (st.high > 1) g.push(`${st.high} high`); if (st.deep > 1) g.push(`${st.deep} deep`);
+    return g;
+  }
+  // carton numbers from the packing list (e.g. "cartons 6–20") for the packages of one type in a list of box indexes
+  function ctnText(u, idxs, type) {
+    if (!u || !u.no) return '';
+    const v = [];
+    for (const i of idxs) if (u.no[i] > 0 && (!type || u.boxes[i].type.idx === type.idx)) v.push(u.no[i]);
+    if (!v.length) return '';
+    v.sort((a, b) => a - b);
+    const parts = [];
+    for (let k = 0; k < v.length;) { let j = k; while (j + 1 < v.length && v[j + 1] === v[j] + 1) j++; parts.push(j > k ? v[k] + '–' + v[j] : String(v[k])); k = j + 1; }
+    const txt = parts.length > 6 ? parts.slice(0, 6).join(', ') + ' …' : parts.join(', ');
+    return (v.length === 1 ? 'carton no. ' : 'carton nos. ') + txt;
+  }
+  const stepIdx = (st) => { if (st.idx) return st.idx; const a = []; for (let i = st.from; i < st.to; i++) a.push(i); return a; };
   // plain-language description of one block of a loading step
   function partText(p, perRow) {
     const t = p.type, o = p.o;
@@ -603,9 +762,9 @@
   }
   function dStepText(st, k, u, list) {
     const p = placeText(st, u), x = partText({ ...st, cols: st.across, rows: st.high, nd: st.deep }, 1);
-    const grid = [`${st.across} across`]; if (st.high > 1) grid.push(`${st.high} high`); if (st.deep > 1) grid.push(`${st.deep} deep`);
+    const grid = gridOf(st), ctn = ctnText(u, stepIdx(st), st.type);
     return `<div class="lp-steptitle"><span class="lp-tick" aria-hidden="true"></span>Step ${k + 1} of ${list.length}</div>
-      <ul><li><span class="lp-dot" style="background:${itemColor(st.type)}"></span><span><b>${fmt(st.n)} × ${esc(st.type.name)}</b>${st.reps > 1 ? ` <span class="lp-muted">(${fmt(st.n / st.reps)} in each of ${st.reps} identical rows)</span>` : ''}<br>
+      <ul><li>${badge(st.type.idx, itemColor(st.type))}<span><b>${fmt(st.n)} × ${esc(st.type.name)}</b>${ctn ? ` <span class="lp-ctn">(${esc(ctn)})</span>` : ''}${st.reps > 1 ? ` <span class="lp-muted">(${fmt(st.n / st.reps)} in each of ${st.reps} identical rows)</span>` : ''}<br>
       <span>${p.lvl}</span>, <span>${p.side}</span><br>
       <span class="lp-muted">${grid.map((g) => `<span>${g}</span>`).join(' × ')}${x.hows.length ? ' · ' + x.hows.map((h) => `<span>${h}</span>`).join(', ') : ''} · ${x.dim}</span><br>
       <span class="lp-muted">${p.along} · running total ${fmt(st.cumN)} pcs, ${showWt(st.cumKg)} ${S.wunit}</span></span></li></ul>`;
@@ -614,7 +773,8 @@
     const reps = st.walls.length;
     const parts = st.parts.map((p) => {
       const x = partText(p, reps);
-      return `<li><span class="lp-dot" style="background:${itemColor(p.type)}"></span><span><b>${fmt(x.n)} × ${esc(x.name)}</b> ${[x.where, ...x.hows].map((h) => `<span>${h}</span>`).join(', ')}<br><span class="lp-muted">${reps > 1 ? '<span>each row:</span> ' : ''}${x.grids.map((g) => `<span>${g}</span>`).join(' × ')} · ${x.dim}</span></span></li>`;
+      const ctn = ctnText(u, stepIdx(st), p.type);
+      return `<li>${badge(p.type.idx, itemColor(p.type))}<span><b>${fmt(x.n)} × ${esc(x.name)}</b>${ctn ? ` <span class="lp-ctn">(${esc(ctn)})</span>` : ''} ${[x.where, ...x.hows].map((h) => `<span>${h}</span>`).join(', ')}<br><span class="lp-muted">${reps > 1 ? '<span>each row:</span> ' : ''}${x.grids.map((g) => `<span>${g}</span>`).join(' × ')} · ${x.dim}</span></span></li>`;
     }).join('');
     const end = u.eq.group === 'Pallets & air ULDs' ? 'from the far edge' : 'from the front wall';
     return `<div class="lp-steptitle"><span class="lp-tick" aria-hidden="true"></span>Step ${k + 1} of ${u.steps.length}${reps > 1 ? ` · ${reps} identical rows` : ''}</div><div class="lp-muted">${showLen(st.x0)}–${showLen(st.x1)} ${S.unit} ${end} · running total ${fmt(st.cumN)} pcs, ${showWt(st.cumKg)} ${S.wunit}</div><ul>${parts}</ul>`;
@@ -699,7 +859,7 @@ ${n ? `<div class="lp-card">
   }
   function shareLinks() {
     const txt = 'Hello YAM Logistics, please quote for this shipment.\n' + summaryText();
-    $('lp-wa').href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(txt);
+    $('lp-wa').href = 'https://wa.me/message/6YB7I76DV6UJL1';
     $('lp-mail').href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Load plan – quote request') + '&body=' + encodeURIComponent(txt);
   }
 
@@ -733,7 +893,7 @@ ${n ? `<div class="lp-card">
         <div><b class="${bal.off ? 'lp-red' : ''}">Centre of gravity ${Math.round(u.cogX * 100)}% along, ${Math.round(u.cogZ * 100)}% across</b><br><span class="lp-muted">${bal.text}. Front half ${showWt(u.frontKg)} ${S.wunit}, rear half ${showWt(u.kg - u.frontKg)} ${S.wunit}.</span></div>
       </div>`;
     const legendList = isPal ? r.cargo : r.items;
-    $('lp-legend').innerHTML = legendList.map((it, i) => { const c = u.counts[i]; return c ? `<span><span class="lp-dot" style="background:${it.color}"></span>${esc(it.name)} × ${fmt(c)}</span>` : ''; }).join('');
+    $('lp-legend').innerHTML = legendList.map((it, i) => { const c = u.counts[i]; return c ? `<span>${badge(i, it.color)}${esc(it.name)} × ${fmt(c)}</span>` : ''; }).join('');
     const list = stepList(u);
     const intro = isPal ? `Build pallet P${r.pb.pallets[S.palSel].n} (make ${r.pb.pallets[S.palSel].qty}) · start at the far edge` : 'Loading sequence · start at the front wall, finish at the doors';
     $('lp-steps').innerHTML = `<div class="lp-k">${intro}</div><div class="lp-seg lp-detail" id="lp-detail"><button data-d="block" class="${S.detail === 'block' ? 'on' : ''}">Every block</button><button data-d="row" class="${S.detail === 'row' ? 'on' : ''}">Row by row</button></div>` +
@@ -787,6 +947,70 @@ ${n ? `<div class="lp-card">
     const dl2 = new THREE.DirectionalLight(0xffffff, 0.25); dl2.position.set(-1, 0.6, -1); scene.add(dl2);
     let cyl = null, matB = null, matC = null, epos = null;
     let controls = null, group = null, inst = null, edges = null, eqDims = null, curUnit = null, view = 'iso', doorLbl = null, dims = null;
+    // the package type's letter, printed on the top, the door side and the right-hand side of every package
+    let decals = [];
+    // the packages of the step being loaded get a thick dark outline (a slightly larger dark shell drawn behind them)
+    let hull = null, cylHull = null, matH = null, matHC = null;
+    const texCache = new Map();
+    function letterTex(t) {
+      const c = document.createElement('canvas'); c.width = c.height = 128;
+      const g = c.getContext('2d'), fs = t.length > 2 ? 52 : t.length > 1 ? 70 : 104;
+      g.font = `900 ${fs}px Arial, Helvetica, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.lineJoin = 'round'; g.lineWidth = fs * 0.16; g.strokeStyle = '#FFFFFF'; g.strokeText(t, 64, 68);
+      g.fillStyle = '#111111'; g.fillText(t, 64, 68);
+      const tx = new THREE.CanvasTexture(c); tx.anisotropy = 4; return tx;
+    }
+    function buildDecals(u) {
+      decals = [];
+      const N = u.boxes.length; if (N > 2500) return;
+      const byL = new Map();
+      u.boxes.forEach((b, i) => { const L = letterOf(b.type.idx); if (!byL.has(L)) byL.set(L, []); byL.get(L).push(i); });
+      const pg = new THREE.PlaneGeometry(1, 1), m = new THREE.Matrix4();
+      const qTop = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+      const qDoor = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2), qSide = new THREE.Quaternion();
+      const sz = (a, b) => Math.max(3, Math.min(48, Math.min(a, b) * 0.62));
+      for (const [L, idxs] of byL) {
+        const mat = new THREE.MeshBasicMaterial({ map: letterTex(L), transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+        const mesh = new THREE.InstancedMesh(pg, mat, idxs.length * 3), owner = new Int32Array(idxs.length * 3), mats = new Float32Array(idxs.length * 48);
+        let k = 0;
+        const put = (i, x, y, z, q, s) => { m.compose(new THREE.Vector3(x, y, z), q, new THREE.Vector3(s, s, 1)); mesh.setMatrixAt(k, m); mats.set(m.elements, k * 16); owner[k] = i; k++; };
+        for (const i of idxs) {
+          const b = u.boxes[i];
+          put(i, b.x + b.dx / 2, b.y + b.dy + 0.25, b.z + b.dz / 2, qTop, sz(b.dx, b.dz));
+          if (!isDrum(b.type)) { put(i, b.x + b.dx + 0.25, b.y + b.dy / 2, b.z + b.dz / 2, qDoor, sz(b.dy, b.dz)); put(i, b.x + b.dx / 2, b.y + b.dy / 2, b.z + b.dz + 0.25, qSide, sz(b.dx, b.dy)); }
+        }
+        mesh.count = k; mesh.instanceMatrix.needsUpdate = true; mesh.renderOrder = 2;
+        group.add(mesh); decals.push({ mesh, owner, mats, n: k });
+      }
+    }
+    // outline only the packages of the current step (cur(i) true), moved with them while they slide in
+    function syncHull(cur, shift) {
+      if (!hull) return;
+      const N = curUnit ? curUnit.boxes.length : 0, ha = hull.instanceMatrix.array, hc = cylHull ? cylHull.instanceMatrix.array : null;
+      let k = 0;
+      for (let i = 0; i < N; i++) {
+        if (!cur(i)) continue;
+        ha.set(matH.subarray(i * 16, i * 16 + 16), k * 16); if (hc) hc.set(matHC.subarray(i * 16, i * 16 + 16), k * 16);
+        const sh = shift && shift(i); if (sh) { ha[k * 16 + 12] += sh[0]; ha[k * 16 + 13] += sh[1]; if (hc) { hc[k * 16 + 12] += sh[0]; hc[k * 16 + 13] += sh[1]; } }
+        k++;
+      }
+      hull.count = k; hull.instanceMatrix.needsUpdate = true;
+      if (cylHull) { cylHull.count = k; cylHull.instanceMatrix.needsUpdate = true; }
+    }
+    // show / hide / slide the letters with their packages
+    function syncDecals(vis, shift) {
+      const zero = new Float32Array(16);
+      for (const d of decals) {
+        const a = d.mesh.instanceMatrix.array;
+        for (let k = 0; k < d.n; k++) {
+          const i = d.owner[k];
+          if (!vis(i)) { a.set(zero, k * 16); continue; }
+          a.set(d.mats.subarray(k * 16, k * 16 + 16), k * 16);
+          const sh = shift && shift(i); if (sh) { a[k * 16 + 12] += sh[0]; a[k * 16 + 13] += sh[1]; }
+        }
+        d.mesh.instanceMatrix.needsUpdate = true;
+      }
+    }
     const dimOff = (F) => Math.max(14, Math.min(F.W, F.H) * 0.14);
 
     function attach() {
@@ -855,6 +1079,10 @@ ${n ? `<div class="lp-card">
       const anyDrum = u.boxes.some((b) => isDrum(b.type));
       cyl = anyDrum ? new THREE.InstancedMesh(new THREE.CylinderGeometry(0.5, 0.5, 1, 28), new THREE.MeshLambertMaterial({ color: 0xffffff }), Math.max(1, N)) : null;
       matB = new Float32Array(Math.max(1, N) * 16); matC = cyl ? new Float32Array(Math.max(1, N) * 16) : null;
+      const hullM = new THREE.MeshBasicMaterial({ color: 0x0B2A4A, side: THREE.BackSide });
+      hull = new THREE.InstancedMesh(geo, hullM, Math.max(1, N)); matH = new Float32Array(Math.max(1, N) * 16);
+      cylHull = anyDrum ? new THREE.InstancedMesh(cyl.geometry, hullM, Math.max(1, N)) : null; matHC = anyDrum ? new Float32Array(Math.max(1, N) * 16) : null;
+      const T = Math.max(4, Math.min(10, (eq.full || eq).L / 80)); // outline thickness, cm
       const keep = (arr, i, mm) => { if (arr) arr.set(mm.elements, i * 16); };
       const zero = new THREE.Matrix4().makeScale(0, 0, 0), q = new THREE.Quaternion(), qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI / 2), qz = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2), one = new THREE.Quaternion();
       const m = new THREE.Matrix4(), col = new THREE.Color();
@@ -869,10 +1097,12 @@ ${n ? `<div class="lp-card">
           const len = ax === 'y' ? b.dy : ax === 'x' ? b.dx : b.dz, dia = ax === 'y' ? Math.min(b.dx, b.dz) : Math.min(b.dy, ax === 'x' ? b.dz : b.dx);
           m.compose(c, ax === 'y' ? one : ax === 'x' ? qx : qz, new THREE.Vector3(Math.max(0.5, dia - gap), Math.max(0.5, len - gap), Math.max(0.5, dia - gap)));
           cyl.setMatrixAt(i, m); cyl.setColorAt(i, col); inst.setMatrixAt(i, zero); inst.setColorAt(i, col); keep(matC, i, m); keep(matB, i, zero);
+          m.compose(c, ax === 'y' ? one : ax === 'x' ? qx : qz, new THREE.Vector3(dia + T, len + T, dia + T)); keep(matHC, i, m); keep(matH, i, zero);
           for (let j = 0; j < 24; j++) pos.set([c.x, c.y, c.z], (i * 24 + j) * 3);
           return;
         }
-        if (cyl) { cyl.setMatrixAt(i, zero); cyl.setColorAt(i, col); keep(matC, i, zero); }
+        if (cyl) { cyl.setMatrixAt(i, zero); cyl.setColorAt(i, col); keep(matC, i, zero); keep(matHC, i, zero); }
+        m.makeScale(b.dx + T, b.dy + T, b.dz + T); m.setPosition(b.x + b.dx / 2, b.y + b.dy / 2, b.z + b.dz / 2); keep(matH, i, m);
         m.makeScale(Math.max(0.5, b.dx - gap), Math.max(0.5, b.dy - gap), Math.max(0.5, b.dz - gap));
         m.setPosition(b.x + b.dx / 2, b.y + b.dy / 2, b.z + b.dz / 2);
         inst.setMatrixAt(i, m); inst.setColorAt(i, col); keep(matB, i, m);
@@ -885,10 +1115,12 @@ ${n ? `<div class="lp-card">
       inst.instanceMatrix.needsUpdate = true; if (inst.instanceColor) inst.instanceColor.needsUpdate = true;
       group.add(inst);
       if (cyl) { cyl.instanceMatrix.needsUpdate = true; if (cyl.instanceColor) cyl.instanceColor.needsUpdate = true; group.add(cyl); }
+      hull.count = 0; group.add(hull); if (cylHull) { cylHull.count = 0; group.add(cylHull); }
       epos = pos.slice();
       const eg = new THREE.BufferGeometry(); eg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-      edges = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x0B2A4A, transparent: true, opacity: 0.35 }));
+      edges = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x0B2A4A, transparent: true, opacity: 0.5 }));
       group.add(edges);
+      buildDecals(u);
       setView(view, true);
       if (!view3d.ready) { view3d.ready = true; loop(); }
     }
@@ -927,8 +1159,7 @@ ${n ? `<div class="lp-card">
         inst.instanceMatrix.array.set(vis ? matB.subarray(i * 16, i * 16 + 16) : zero, i * 16);
         if (cyl) cyl.instanceMatrix.array.set(vis ? matC.subarray(i * 16, i * 16 + 16) : zero, i * 16);
         if (vis) {
-          col.set(itemColor(u.boxes[i].type));
-          if (step >= 0 && k < step) col.lerp(white, 0.72);
+          col.set(itemColor(u.boxes[i].type)); // every package keeps its own colour; the current step is outlined instead
           inst.setColorAt(i, col); if (cyl) cyl.setColorAt(i, col);
           ea.set(epos.subarray(i * 72, i * 72 + 72), i * 72);
         } else ea.fill(0, i * 72, i * 72 + 72);
@@ -938,6 +1169,8 @@ ${n ? `<div class="lp-card">
       if (inst.instanceColor) inst.instanceColor.needsUpdate = true;
       if (cyl && cyl.instanceColor) cyl.instanceColor.needsUpdate = true;
       edges.geometry.attributes.position.needsUpdate = true; edges.geometry.setDrawRange(0, N * 24);
+      syncDecals((i) => step < 0 || so[i] <= step);
+      syncHull((i) => step >= 0 && so[i] === step);
       render();
     }
     function snapshot(u, step, w, h, v, win) {
@@ -1043,13 +1276,14 @@ ${n ? `<div class="lp-card">
           for (let j = 0; j < 24; j++) { ea[i * 72 + j * 3] += off; ea[i * 72 + j * 3 + 1] += lift; }
         }
         col.set(itemColor(u.boxes[i].type));
-        if (!all && k < step) col.lerp(white, 0.72);
         inst.setColorAt(i, col); if (cyl) cyl.setColorAt(i, col);
       }
       inst.count = N; if (cyl) cyl.count = N;
       inst.instanceMatrix.needsUpdate = true; if (cyl) cyl.instanceMatrix.needsUpdate = true;
       if (inst.instanceColor) inst.instanceColor.needsUpdate = true; if (cyl && cyl.instanceColor) cyl.instanceColor.needsUpdate = true;
       edges.geometry.attributes.position.needsUpdate = true; edges.geometry.setDrawRange(0, N * 24);
+      syncDecals((i) => all || so[i] <= step, (i) => (!all && so[i] === step && t < 1 ? [off, lift] : null));
+      syncHull((i) => !all && step >= 0 && so[i] === step, (i) => (t < 1 ? [off, lift] : null));
       renderer.render(scene, isoCam(w, h, win));
     }
     function videoEnd() {
@@ -1083,7 +1317,7 @@ ${n ? `<div class="lp-card">
       const clean = (x) => String(x).replace(/[′’]/g, "'").replace(/[″]/g, '"').replace(/[–—]/g, '-').replace(/[×]/g, 'x').replace(/[·]/g, '-').replace(/m³/g, 'm3').replace(/m²/g, 'm2').replace(/[^\x20-\x7E]/g, '');
       const head = (sub) => {
         if (window.YAMBrand) { YAMBrand.header(doc, docTitle, clean(sub)); YAMBrand.footer(doc, clean(`Plan ${ref}, ${date}. Computer-generated plan for guidance: allow for dunnage, lashing and the carrier's rules. Check weights and the actual equipment before loading.`)); return; }
-        doc.setFillColor(10, 108, 194); doc.rect(0, 0, PW, 16, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.text('YAM Logistics - ' + docTitle, M, 10.5); doc.setTextColor(11, 42, 74);
+        doc.setFillColor(10, 108, 194); doc.rect(0, 0, PW, 16, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.text('CargoKit - ' + docTitle, M, 10.5); doc.setTextColor(11, 42, 74);
       };
       const ink = (c) => { const k = new THREE.Color(c); return [Math.round(k.r * 255), Math.round(k.g * 255), Math.round(k.b * 255)]; };
       const T = (txt, x, y, o = {}) => {
@@ -1093,6 +1327,8 @@ ${n ? `<div class="lp-card">
       };
       const muted = [94, 120, 145], blue = [10, 108, 194], red = [226, 72, 58];
       const box = (x, y, w, h, fill) => { if (fill) { doc.setFillColor(...fill); doc.rect(x, y, w, h, 'F'); } };
+      // a coloured square with the package type's letter in it
+      const pdfBadge = (x, y, sz, idx, color, fs) => { doc.setFillColor(...ink(color)); doc.rect(x, y, sz, sz, 'F'); const tc = inkOn(color) === '#FFFFFF' ? [255, 255, 255] : [17, 17, 17]; T(letterOf(idx), x + sz / 2, y + sz * 0.74, { b: true, s: fs, c: tc, a: 'center' }); };
       const tick = (x, y, sz = 3.6) => { doc.setDrawColor(11, 42, 74); doc.setLineWidth(0.3); doc.rect(x, y - sz + 0.6, sz, sz); };
       const shot = async (n) => { if (n % 4 === 0) { btn.textContent = `Preparing PDF… ${n}`; await new Promise((res) => setTimeout(res, 0)); } };
       const unitTitle = (g) => { const a = g.units[0].index + 1, b = g.units[g.units.length - 1].index + 1; return `${kn[0]} ${a}${b > a ? '-' + b : ''} - ${g.units[0].eq.name}`; };
@@ -1109,15 +1345,23 @@ ${n ? `<div class="lp-card">
       const kw = (PW - 2 * M - (kp.length - 1) * 3) / kp.length;
       kp.forEach(([v, l], i) => { const x = M + i * (kw + 3); box(x, TOP + 16, kw, 17, [234, 243, 252]); box(x, TOP + 16, 1.2, 17, blue); T(v, x + 5, TOP + 25.5, { s: 15, b: true }); T(l, x + 5, TOP + 30.5, { s: 8, c: muted }); });
       let y = TOP + 41;
-      const cx = [M, M + 6, M + 78, M + 128, M + 143, M + 166, M + 190, M + 210];
-      const hdr = () => { box(M, y - 4.2, PW - 2 * M, 6, [11, 42, 74]); ['', 'Cargo', `L x W x H (${S.unit})`, 'Qty', `Wt/pc (${S.wunit})`, `Total (${S.wunit})`, 'm3', 'Handling'].forEach((t, i) => T(t, cx[i] + 1, y, { s: 8, b: true, c: [255, 255, 255] })); y += 6.5; };
+      // with carton numbers from the packing list, they get their own column
+      const hasNo = cargo.some((it) => it.marks);
+      const cx = hasNo ? [M, M + 6, M + 72, M + 96, M + 138, M + 152, M + 173, M + 194, M + 212] : [M, M + 6, M + 78, M + 128, M + 143, M + 166, M + 190, M + 210];
+      const cols = ['', 'Cargo'].concat(hasNo ? ['Carton nos.'] : [], [`L x W x H (${S.unit})`, 'Qty', `Wt/pc (${S.wunit})`, `Total (${S.wunit})`, 'm3', 'Handling']);
+      const hdr = () => { box(M, y - 4.2, PW - 2 * M, 6, [11, 42, 74]); cols.forEach((t, i) => T(t, cx[i] + 1, y, { s: 8, b: true, c: [255, 255, 255] })); y += 6.5; };
       hdr();
       cargo.forEach((it, i) => {
-        if (y > BOT - 6) { doc.addPage(); head('Cargo list'); y = TOP + 4; hdr(); }
-        if (i % 2) box(M, y - 4.2, PW - 2 * M, 6, [246, 249, 252]);
-        doc.setFillColor(...ink(it.color)); doc.rect(cx[0] + 1, y - 3.1, 3.6, 3.6, 'F');
-        [clean(it.name).slice(0, 44), isDrum(it) ? `dia ${showLen(it.l)} x ${showLen(it.h)}` : `${showLen(it.l)} x ${showLen(it.w)} x ${showLen(it.h)}`, fmt(it.qty), showWt(it.kg), showWt(it.kg * it.qty), fmt(unitVol(it) * it.qty / 1e6, 2), rules(it)].forEach((t, j) => T(t, cx[j + 1] + 1, y, { s: 8.5 }));
-        y += 6;
+        // long names wrap onto a second line rather than being cut off (two lines can differ only at the end)
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5);
+        const nml = doc.splitTextToSize(clean(it.name), cx[2] - cx[1] - 2).slice(0, 2), rh = 6 + (nml.length - 1) * 3.6;
+        if (y + rh - 6 > BOT - 6) { doc.addPage(); head('Cargo list'); y = TOP + 4; hdr(); }
+        if (i % 2) box(M, y - 4.2, PW - 2 * M, rh, [246, 249, 252]);
+        if (r.pb) { doc.setFillColor(...ink(it.color)); doc.rect(cx[0] + 1, y - 3.1, 3.6, 3.6, 'F'); } else pdfBadge(cx[0] + 0.6, y - 3.4, 4.2, i, it.color, 6.6);
+        if (nml.length > 1) T(nml[1], cx[1] + 1, y + 3.6, { s: 8.5 });
+        const nm = nml[0] || '';
+        [nm].concat(hasNo ? [clean(it.marks || '-')] : [], [isDrum(it) ? `dia ${showLen(it.l)} x ${showLen(it.h)}` : `${showLen(it.l)} x ${showLen(it.w)} x ${showLen(it.h)}`, fmt(it.qty), showWt(it.kg), showWt(it.kg * it.qty), fmt(unitVol(it) * it.qty / 1e6, 2), rules(it)]).forEach((t, j) => T(t, cx[j + 1] + 1, y, { s: 8.5 }));
+        y += rh;
       });
       y += 4;
       if (r.pb) {
@@ -1141,7 +1385,7 @@ ${n ? `<div class="lp-card">
       });
       if (r.tooBig.length || r.notPlaced.length) { y += 2; [...r.tooBig, ...r.notPlaced].forEach((t) => { T(`Not loaded: ${t.n} x ${t.type.name} - ${t.why}`, M, y, { c: red, s: 9 }); y += 5; }); }
       if (S.gapD || S.gapR) { T(`Space kept free: ${showLen(S.gapD)} ${S.unit} at the doors, ${showLen(S.gapR)} ${S.unit} under the roof.`, M, y + 2, { c: muted, s: 8.5 }); y += 6; }
-      if (window.YAMBrand && y < BOT - 34) YAMBrand.promo(doc, M, BOT - 32, PW - 2 * M, 'Ready to ship this load? YAM Logistics can handle the whole move.');
+      if (window.YAMBrand && y < BOT - 34) YAMBrand.promo(doc, M, BOT - 32, PW - 2 * M, 'Ready to ship this load? The team behind CargoKit can handle the whole move.');
 
       // ---- drawing helpers for measured views
       const dimLine = (x1, y1, x2, y2, label, o = {}) => {
@@ -1233,10 +1477,10 @@ ${n ? `<div class="lp-card">
         list.forEach((it, i) => {
           const c = u.counts[i]; if (!c) return;
           const t = clean(`${fmt(c)} x ${it.name}`).slice(0, 46); doc.setFontSize(7.5);
-          const tw = doc.getTextWidth(t) + 9;
-          if (lx + tw > M + iw) { lx = M; ly += 4.2; }
+          const tw = doc.getTextWidth(t) + 11;
+          if (lx + tw > M + iw) { lx = M; ly += 4.6; }
           if (ly > TOP + 7 + ih + 9) return;
-          doc.setFillColor(...ink(it.color)); doc.rect(lx, ly - 2.6, 3, 3, 'F'); T(t, lx + 4, ly, { s: 7.5 }); lx += tw;
+          pdfBadge(lx, ly - 3, 3.8, i, it.color, 6.2); T(t, lx + 5, ly, { s: 7.5 }); lx += tw;
         });
         const rx = M + iw + 6, rw = PW - M - rx;
         let yy = utilBlock(u, rx, TOP + 8, rw);
@@ -1275,11 +1519,14 @@ ${n ? `<div class="lp-card">
           let ty = y0 + 5.5;
           tick(tx, ty, 3.6);
           T(`Step ${k + 1} of ${list.length}`, tx + 5, ty, { b: true, s: 9.5 }); ty += 4.6;
-          doc.setFillColor(...ink(itemColor(st.type))); doc.rect(tx, ty - 2.6, 3, 3, 'F');
-          const head1 = doc.splitTextToSize(clean(`${fmt(st.n)} x ${st.type.name}`), tw - 4.5);
-          T(head1.slice(0, 2), tx + 4.5, ty, { b: true, s: 8.2 }); ty += Math.min(2, head1.length) * 3.4 + 0.4;
+          pdfBadge(tx - 0.3, ty - 3, 4, st.type.idx, itemColor(st.type), 6.4);
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(8.2);
+          const head1 = doc.splitTextToSize(clean(`${fmt(st.n)} x ${st.type.name}`), tw - 6);
+          T(head1.slice(0, 3), tx + 5, ty, { b: true, s: 8.2 }); ty += Math.min(3, head1.length) * 3.4 + 0.4;
+          const ctn = ctnText(u, stepIdx(st), st.type);
+          if (ctn) { const cl = doc.splitTextToSize(clean(ctn[0].toUpperCase() + ctn.slice(1)), tw - 4.5); T(cl.slice(0, 2), tx + 4.5, ty, { b: true, s: 7.4, c: [180, 83, 9] }); ty += Math.min(2, cl.length) * 3.1 + 0.6; }
           const p = placeText(st, u), xt = partText({ ...st, cols: st.across, rows: st.high, nd: st.deep }, 1);
-          const grid = [`${st.across} across`]; if (st.high > 1) grid.push(`${st.high} high`); if (st.deep > 1) grid.push(`${st.deep} deep`);
+          const grid = gridOf(st);
           const lines = [
             p.lvl + ', ' + p.side,
             grid.join(' x ') + (xt.hows.length ? ', ' + xt.hows.join(', ') : ''),
@@ -1318,7 +1565,7 @@ ${n ? `<div class="lp-card">
         const lists = [
           ['Before loading', [S.cat === 'truck' ? 'Truck body clean, dry, no holes, roof and floor sound' : 'Container clean, dry, no holes (no daylight inside with doors shut)', 'Doors, hinges and locking bars work', 'No old labels, smells or nails on the floor', 'Lashing, dunnage and airbags ready', 'DG labels and documents ready, if any']],
           ['Photos to take', ['Empty, inside, before loading', 'Half loaded', 'Fully loaded, before closing', 'Doors closed with the seal fitted', 'Seal number close-up', 'Container number and the CSC plate']],
-          ['After loading', ['Load secured at the doors', 'Weights checked against the plan', 'Seal number written on the documents', 'Copy of this record to YAM Logistics']]
+          ['After loading', ['Load secured at the doors', 'Weights checked against the plan', 'Seal number written on the documents', 'Copy of this record kept with the documents']]
         ];
         lists.forEach(([h, items], i) => { const x = M + i * (fw + 3); let ly = yy; T(h, x, ly, { b: true, s: 10 }); ly += 6; items.forEach((t) => { tick(x, ly); T(t, x + 5.5, ly, { s: 8.2 }); ly += 6; }); });
         yy += 46;
@@ -1347,7 +1594,7 @@ ${n ? `<div class="lp-card">
       // ---- stuffing records
       r.units.slice(0, 30).forEach((u, i) => signOff(u, i));
       if (window.YAMBrand) YAMBrand.finish(doc);
-      doc.save(`YAM-load-plan-${mode === 'steps' ? 'step-by-step' : 'summary'}-${r.units.length}-${kn[1].replace(' ', '-')}.pdf`);
+      doc.save(`CargoKit-load-plan-${mode === 'steps' ? 'step-by-step' : 'summary'}-${r.units.length}-${kn[1].replace(' ', '-')}.pdf`);
     } catch (e) {
       console.error(e); alertBox('Sorry, the PDF could not be created in this browser.');
     } finally {
@@ -1395,15 +1642,18 @@ ${n ? `<div class="lp-card">
       };
       const kn = KN[CATS[S.cat].kind];
       const unitName = isPal ? `Pallet P${r.pb.pallets[S.palSel].n} (${r.pb.pallets[S.palSel].qty} to build)` : `${kn[0]} ${u.index + 1} of ${r.units.length} · ${u.eq.name.replace(/ \(.*\)$/, '')}`;
+      // coloured square with the package type's letter, in bold
+      const vBadge = (x, y, sz, idx, color) => { g.fillStyle = color; g.fillRect(x, y, sz, sz); g.fillStyle = inkOn(color); g.font = `bold ${Math.round(sz * 0.62)}px Arial`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(letterOf(idx), x + sz / 2, y + sz / 2 + 1); g.textAlign = 'left'; g.textBaseline = 'alphabetic'; };
       const wrap = (txt, maxW) => { const words = String(txt).split(' '), out = []; let line = ''; for (const w of words) { const t2 = line ? line + ' ' + w : w; if (g.measureText(t2).width > maxW && line) { out.push(line); line = w; } else line = t2; } if (line) out.push(line); return out; };
       const header = (right) => {
         g.fillStyle = '#0B2A4A'; g.fillRect(0, 0, VW, 112);
         g.fillStyle = '#FFC93C'; g.fillRect(0, 112, VW, 6);
-        g.fillStyle = '#FFFFFF'; g.font = 'bold 34px Arial'; g.textAlign = 'left'; g.fillText('YAM Logistics', 28, 50);
+        let hx = 28; if (CK_ICON.complete && CK_ICON.naturalWidth) { g.drawImage(CK_ICON, 28, 18, 44, 44); hx = 84; }
+        g.fillStyle = '#FFFFFF'; g.font = 'bold 34px Arial'; g.textAlign = 'left'; g.fillText('CargoKit', hx, 52);
         g.fillStyle = '#CFE3F5'; g.font = '24px Arial'; g.fillText(unitName.slice(0, 44), 28, 88);
         if (right) { g.fillStyle = '#FFC93C'; g.font = 'bold 30px Arial'; g.textAlign = 'right'; g.fillText(right, VW - 28, 50); g.textAlign = 'left'; }
       };
-      const footer = () => { g.fillStyle = '#0B2A4A'; g.fillRect(0, VH - 56, VW, 56); g.fillStyle = '#FFFFFF'; g.font = '22px Arial'; g.textAlign = 'center'; g.fillText('yamlogistics.com · WhatsApp @YAMLOGISTICS', VW / 2, VH - 20); g.textAlign = 'left'; };
+      const footer = () => { g.fillStyle = '#0B2A4A'; g.fillRect(0, VH - 56, VW, 56); g.fillStyle = '#FFFFFF'; g.font = '22px Arial'; g.textAlign = 'center'; g.fillText('www.CargoKit.ai · WhatsApp @CARGOKIT', VW / 2, VH - 30); g.fillStyle = '#9FB6CC'; g.font = '15px Arial'; g.fillText('CargoKit by YAM Logistics Pvt. Ltd.', VW / 2, VH - 9); g.textAlign = 'left'; };
       const plan = (k, y0) => {
         const pw = VW - 56, ph = Math.max(60, Math.min(150, pw * F.W / F.L)), x0 = 28, so = stepOf(u, list), sx = pw / F.L, sz = ph / F.W;
         g.fillStyle = '#FFFFFF'; g.fillRect(x0, y0, pw, ph);
@@ -1424,23 +1674,24 @@ ${n ? `<div class="lp-card">
       g.fillStyle = '#0B2A4A'; g.font = 'bold 40px Arial'; g.fillText(`${list.length} loading steps`, 28, panelTop + 66);
       g.fillStyle = '#3D5873'; g.font = '26px Arial'; g.fillText(`${fmt(u.boxes.length)} packages · ${showWt(u.kg)} ${S.wunit} · ${fmt(u.vol / 1e6, 1)} m³`, 28, panelTop + 106);
       let ly = panelTop + 156;
-      (isPal ? r.cargo : r.items).forEach((it, i) => { const c = u.counts[i]; if (!c || ly > VH - 120) return; g.fillStyle = it.color; g.fillRect(28, ly - 24, 28, 28); g.fillStyle = '#0B2A4A'; g.font = '26px Arial'; g.fillText(`${fmt(c)} × ${it.name}`.slice(0, 40), 70, ly); ly += 42; });
+      (isPal ? r.cargo : r.items).forEach((it, i) => { const c = u.counts[i]; if (!c || ly > VH - 120) return; vBadge(28, ly - 28, 34, i, it.color); g.fillStyle = '#0B2A4A'; g.font = '26px Arial'; g.textAlign = 'left'; g.fillText(`${fmt(c)} × ${it.name}`.slice(0, 40), 74, ly); ly += 44; });
       g.fillStyle = '#5E7891'; g.font = '22px Arial'; g.fillText('Pause at any step. Left and right are as seen from the doors.', 28, VH - 80);
       footer();
       await emit(1, true); await emit(1); await emit(1);
       // steps
       for (let k = 0; k < list.length; k++) {
         const st = list[k], wA = win(k - 1), wB = win(k), p = placeText(st, u), xt = partText({ ...st, cols: st.across, rows: st.high, nd: st.deep }, 1);
-        const grid = [`${st.across} across`]; if (st.high > 1) grid.push(`${st.high} high`); if (st.deep > 1) grid.push(`${st.deep} deep`);
+        const grid = gridOf(st), ctn = ctnText(u, stepIdx(st), st.type);
         const draw = (t) => {
           g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, VW, VH);
           header(`Step ${k + 1} / ${list.length}`);
           scene3d(k, ease(t), lerpW(wA, wB, ease(t * 1.6)));
           progress(k);
           let y = panelTop + 58;
-          g.fillStyle = itemColor(st.type); g.fillRect(28, y - 30, 34, 34);
+          vBadge(24, y - 36, 44, st.type.idx, itemColor(st.type));
           g.fillStyle = '#0B2A4A'; g.font = 'bold 34px Arial';
           for (const ln of wrap(`${fmt(st.n)} × ${st.type.name}`, VW - 110).slice(0, 2)) { g.fillText(ln, 76, y); y += 42; }
+          if (ctn) { g.fillStyle = '#B45309'; g.font = 'bold 28px Arial'; for (const ln of wrap(ctn[0].toUpperCase() + ctn.slice(1), VW - 110).slice(0, 2)) { g.fillText(ln, 76, y); y += 36; } }
           g.font = '27px Arial'; g.fillStyle = '#0B2A4A';
           const lines = [p.lvl[0].toUpperCase() + p.lvl.slice(1) + ', ' + p.side, grid.join(' × ') + (xt.hows.length ? ' · ' + xt.hows.join(', ') : ''), p.along + (st.reps > 1 ? ` (${fmt(st.n / st.reps)} in each of ${st.reps} rows)` : '')];
           y += 6;
@@ -1467,7 +1718,7 @@ ${n ? `<div class="lp-card">
       muxer.finalize();
       const blob = new Blob([muxer.target.buffer], { type: 'video/mp4' });
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-      a.download = `YAM-loading-video-${isPal ? 'pallet-P' + r.pb.pallets[S.palSel].n : kn[0].toLowerCase().replace(' ', '-') + '-' + (u.index + 1)}.mp4`;
+      a.download = `CargoKit-loading-video-${isPal ? 'pallet-P' + r.pb.pallets[S.palSel].n : kn[0].toLowerCase().replace(' ', '-') + '-' + (u.index + 1)}.mp4`;
       document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
     } catch (e) {
       console.error(e); alertBox('Sorry, the video could not be made in this browser.');

@@ -136,3 +136,40 @@
 .lp-detail{margin:2px 0 8px}
 .lp-detail button{min-height:32px;font-size:13px}
 .lp-vid{background:#0B2A4A}
+.lp-ctn{color:#B45309;font-weight:600;white-space:normal}
+.lp-go:disabled{opacity:.75;cursor:progress}
+/* simple table: handling columns only when asked for */
+.lp-table.lp-simple{min-width:640px}
+.lp-table.lp-simple .lp-adv{display:none}
+.lp-table .lp-ml{display:none}
+.lp-table input[data-k="qty"]{min-width:64px}
+.lp-table input[data-k="marks"]{min-width:78px}
+.lp-table .lp-in::placeholder{color:#A9BCCF}
+.lp-actions-top{margin:10px 0 2px;align-items:center}
+.lp-upl{background:#0A6CC2;color:#FFFFFF;border-color:#0A6CC2}
+.lp-upl:hover{background:#085aa3}
+.lp-advl{font-size:14px;color:#3D5873;margin-left:auto}
+/* phones: every package becomes a card with labelled fields */
+@media (max-width:720px){
+  .lp-tablewrap{overflow:visible;margin:10px 0 0;padding:0}
+  .lp-table,.lp-table.lp-simple{min-width:0;display:block;border-spacing:0}
+  .lp-table thead{display:none}
+  .lp-table tbody{display:block}
+  .lp-table tr{display:grid;grid-template-columns:repeat(6,1fr);gap:8px 8px;background:#F6FAFE;border:1px solid #E1EDF7;border-radius:14px;padding:12px 12px 12px;margin-bottom:10px;position:relative}
+  .lp-table td{display:flex;flex-direction:column;gap:3px;padding:0;min-width:0;grid-column:span 2}
+  .lp-table .lp-ml{display:block;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#5E7891;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lp-table td.lp-c-color{grid-column:span 1;align-items:flex-start}
+  .lp-table td.lp-c-color .lp-ml{visibility:hidden}
+  .lp-table td.lp-c-name{grid-column:span 4}
+  .lp-table td.lp-c-pal{grid-column:span 6}
+  .lp-table td.lp-c-or,.lp-table td.lp-c-st,.lp-table td.lp-c-ot,.lp-table td.lp-c-ml{grid-column:span 3}
+  .lp-table td.lp-c-pr{grid-column:span 4}
+  .lp-table td.lp-c-st input,.lp-table td.lp-c-ot input{align-self:flex-start;width:22px;height:22px}
+  .lp-table td.lp-c-del{grid-column:span 2;align-items:flex-end;justify-content:flex-end}
+  .lp-table.lp-simple td.lp-c-del{position:absolute;top:8px;right:8px}
+  .lp-table .lp-in,.lp-table .lp-name,.lp-table .lp-small{max-width:none;min-width:0;width:100%}
+  .lp-table.lp-simple .lp-adv{display:none}
+  .lp-advl{margin-left:0}
+}
+.lp-code{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 4px;border-radius:5px;font:800 13px/1 Geist,system-ui,sans-serif;margin-right:7px;flex:0 0 auto;vertical-align:middle}
+.lp-step ul li .lp-code{margin-top:1px}

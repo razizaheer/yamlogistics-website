@@ -3,8 +3,7 @@
   var root = document.getElementById('dc-root');
   if (!root) return;
   var D = null, sel = null;
-  var WA = 'YAMLOGISTICS';
-  var FTA = {
+    var FTA = {
     'United Arab Emirates': { a: 'India–UAE CEPA' },
     'United Kingdom': { a: 'India–UK CETA' }, 'Oman': { a: 'India–Oman CEPA' }, 'New Zealand': { a: 'India–New Zealand FTA' },
     'Japan': { a: 'India–Japan CEPA' }, 'South Korea': { a: 'India–Korea CEPA' },
@@ -260,7 +259,7 @@
     }
     H += '<div class="dc-note"><b>Not included:</b> anti-dumping, safeguard or countervailing duty; agriculture cess (AIDC) where it is not shown in the table; compensation cess on tobacco; concessions under other end-use or manufacturing notifications; and port, freight forwarding and clearance charges.</div>';
     var msg = 'Hello YAM, please confirm the import duty for HSN ' + fc(code) + ' (' + x[1].slice(0, 60) + ')' + (country ? ', origin ' + country : '') + (val ? ', ' + (t === 'CNF' ? 'C&F' : t) + ' ' + cur.value + ' ' + val : '') + '. Calculator estimate (indicative): ' + (av > 0 ? inr(tot) : 'BCD ' + (bcd != null ? pct(bcd) : bcdTxt) + ', IGST ' + pct(igRate)) + '.';
-    H += '<div class="dc-cta"><a href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener" style="background:#25D366;color:#06331A">Confirm with a broker on WhatsApp</a><a href="contact.html" style="background:#0A6CC2;color:#fff">Get a clearance quote →</a></div>';
+    H += '<div class="dc-cta"><a href="https://wa.me/message/6YB7I76DV6UJL1' + '" target="_blank" rel="noopener" style="background:#25D366;color:#06331A">Confirm with a broker on WhatsApp</a><a href="contact.html" style="background:#0A6CC2;color:#fff">Get a clearance quote →</a></div>';
     H += '<div class="dc-legal"><b>Disclaimer:</b> indicative estimate for guidance only. Not a customs assessment, classification ruling or legal advice. Duty is finally assessed by Customs, and classification and declarations remain the importer’s responsibility. YAM Logistics Pvt. Ltd. accepts no liability for any loss, duty, interest, penalty or cost arising from use of or reliance on this result. <a href="#disclaimer" style="color:#7A3E00;font-weight:600">Full disclaimer</a>.</div>';
     H += '<div class="dc-src">Source: ' + h(D.v) + '. Includes Budget 2025 and Budget 2026 changes.</div>';
     out.innerHTML = H;

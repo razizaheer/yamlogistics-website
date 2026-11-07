@@ -1,8 +1,7 @@
 /* YAM Logistics — free multi-carrier tracker (container / AWB / B/L router) */
 (function () {
   var root = document.getElementById('trk-root'); if (!root) return;
-  var WA = 'YAMLOGISTICS';
-  // Ocean carriers: name, url template ({n} = number) or plain page (number copied), owner prefixes, B/L prefixes
+    // Ocean carriers: name, url template ({n} = number) or plain page (number copied), owner prefixes, B/L prefixes
   var SEA = [
     ["Maersk", "https://www.maersk.com/tracking/{n}", ["MAEU", "MSKU", "MRKU", "MRSU", "MCRU", "MSWU", "MCAU", "MCHU", "MCIU", "MCPU", "MIEU", "MMAU", "MSAU", "MSFU", "MSVU", "MVIU", "MWCU", "MWMU", "MNBU", "MGBU", "MHHU", "MALU", "APMU", "KNLU", "TORU", "NDLU", "PONU"], ["MAEU", "MAEI"], 1],
     ["MSC", "https://www.msc.com/en/track-a-shipment?agencyPath=msc&trackingNumber={n}", ["MSCU", "MEDU", "MSDU", "MSMU", "MSNU", "MSBU"], ["MEDU"], 0],
@@ -102,7 +101,7 @@
   }
   function waBtn(n, who) {
     var msg = 'Hello YAM, I need help with shipment ' + n + (who ? ' (' + who + ')' : '') + '.';
-    return '<a class="tk-b wa" target="_blank" rel="noopener" href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '"><b>Need it cleared? WhatsApp a broker</b><span>Customs, delivery or a stuck shipment: we reply fast</span></a>';
+    return '<a class="tk-b wa" target="_blank" rel="noopener" href="https://wa.me/message/6YB7I76DV6UJL1' + '"><b>Need it cleared? WhatsApp a broker</b><span>Customs, delivery or a stuck shipment: we reply fast</span></a>';
   }
   function picker(n) {
     return '<select class="tk-sel" id="tk-pick"><option value="">Choose the shipping line…</option>' + SEA.map(function (c, i) { return '<option value="' + i + '">' + h(c[0]) + '</option>'; }).join('') + '</select>';
@@ -268,12 +267,12 @@
       doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(43, 66, 92);
       doc.text(doc.splitTextToSize(lt || 'On the carrier\'s own tracking page', W - 2 * M - 12), M + 6, y + 16);
       if (lh) { doc.setTextColor(10, 108, 194); doc.textWithLink(doc.splitTextToSize(lh, W - 2 * M - 12)[0], M + 6, y + 23, { url: lh }); }
-      doc.setTextColor(94, 120, 145); doc.setFontSize(9); doc.text('Track it again any time at www.yamlogistics.com/track-shipment', M + 6, y + 30); y += 44;
-      BR.promo(doc, M, y, W - 2 * M, 'Need this shipment cleared or delivered? Talk to YAM.'); y += 38;
+      doc.setTextColor(94, 120, 145); doc.setFontSize(9); doc.text('Track it again any time at www.CargoKit.ai/track-shipment', M + 6, y + 30); y += 44;
+      BR.promo(doc, M, y, W - 2 * M, 'Need this shipment cleared or delivered? Talk to the team behind CargoKit.'); y += 38;
       doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(94, 120, 145);
-      doc.text(doc.splitTextToSize('YAM Logistics Pvt. Ltd. is a licensed customs broker (since 1992) with offices in New Delhi, Mumbai (sea and air) and Mundra. Customs clearance, sea and air freight, ICD trucking, insurance and project cargo.', W - 2 * M), M, y);
+      doc.text(doc.splitTextToSize('CargoKit is a free tool by YAM Logistics Pvt. Ltd., a licensed customs broker (since 1992) with offices in New Delhi, Mumbai (sea and air) and Mundra. Customs clearance, sea and air freight, ICD trucking, insurance and project cargo.', W - 2 * M), M, y);
       BR.finish(doc);
-      doc.save('YAM-tracking-' + (res.getAttribute('data-n') || 'summary').replace(/[^A-Z0-9-]/gi, '') + '.pdf');
+      doc.save('CargoKit-tracking-' + (res.getAttribute('data-n') || 'summary').replace(/[^A-Z0-9-]/gi, '') + '.pdf');
     }).catch(function () { toast('Sorry, the PDF could not be created in this browser.'); }).then(function () { if (b) b.disabled = false; });
   }
   var u = new URLSearchParams(location.search).get('n'); if (u) { q.value = u; run(); }
