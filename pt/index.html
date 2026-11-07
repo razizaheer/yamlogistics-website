@@ -1045,7 +1045,7 @@ input{font:inherit}
 <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #FFC93C; letter-spacing: 0.1em; margin-bottom: 4px">FALE CONOSCO</span>
 <a href="tel:+911141603301">+91 11 4160 3301 / 02</a>
 <a href="mailto:info@yamlogistics.com">info@yamlogistics.com</a>
-<a href="https://wa.me/message/6YB7I76DV6UJL1">WhatsApp @YAMLOGISTICS</a> <a href="https://t.me/YAMLOGISTICS">Telegram @YAMLOGISTICS</a>
+<a href="https://wa.me/message/6YB7I76DV6UJL1">WhatsApp @CARGOKIT</a> <a href="https://t.me/YAMLOGISTICS">Telegram @YAMLOGISTICS</a>
 <a href="YAM-Logistics-Corporate-Profile.pdf" download="YAM-Logistics-Corporate-Profile.pdf" style="color: #FFC93C; font-weight: 600">↓ Perfil da empresa (PDF)</a>
 </div>
 </div>
@@ -1111,7 +1111,7 @@ er().catch(function(){return ecb()}).catch(function(){var el=document.getElement
 </script>
 <script src="i18n/tr-core.js"></script><script src="i18n/pt.js"></script><script src="yam-runtime.js"></script>
 <script>
-window.yamQuote=function(){try{var q=document.getElementById('quote');var t=q.querySelector('[role=tab][aria-selected=true]');var data={},lines=[],em='';q.querySelectorAll('label').forEach(function(l){var e=l.querySelector('input,select');var n=(l.childNodes[0].textContent||'').trim();if(e&&e.value){lines.push(n+': '+e.value);data[n]=e.value;if(e.name==='email')em=e.value}});if(!lines.length){var f=q.querySelector('input');f&&f.focus();return}var svc=t?t.textContent.trim():'';var msg='Quote request ('+svc+')\n'+lines.join('\n')+'\n— sent from yamlogistics.com';window.open('https://wa.me/YAMLOGISTICS?text='+encodeURIComponent(msg),'_blank');data._subject='Website quote request: '+svc;data.Service=svc;data.Page=location.href;if(em)data._replyto=em;data._template='table';data._cc='yamlogisticsdelhi@gmail.com';var btn=q.querySelector('button.go');fetch('https://formsubmit.co/ajax/info@yamlogistics.com',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}).then(function(r){if(btn)btn.textContent='Sent ✓'}).catch(function(){window.location.href='mailto:info@yamlogistics.com?subject='+encodeURIComponent(data._subject)+'&body='+encodeURIComponent(msg)})}catch(e){}};
+window.yamQuote=function(){try{var q=document.getElementById('quote');var t=q.querySelector('[role=tab][aria-selected=true]');var data={},lines=[],em='';q.querySelectorAll('label').forEach(function(l){var e=l.querySelector('input,select');var n=(l.childNodes[0].textContent||'').trim();if(e&&e.value){lines.push(n+': '+e.value);data[n]=e.value;if(e.name==='email')em=e.value}});if(!lines.length){var f=q.querySelector('input');f&&f.focus();return}var svc=t?t.textContent.trim():'';var msg='Quote request ('+svc+')\n'+lines.join('\n')+'\n— sent from yamlogistics.com';window.open('https://wa.me/message/6YB7I76DV6UJL1','_blank');data._subject='Website quote request: '+svc;data.Service=svc;data.Page=location.href;if(em)data._replyto=em;data._template='table';data._cc='yamlogisticsdelhi@gmail.com';var btn=q.querySelector('button.go');fetch('https://formsubmit.co/ajax/info@yamlogistics.com',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}).then(function(r){if(btn)btn.textContent='Sent ✓'}).catch(function(){window.location.href='mailto:info@yamlogistics.com?subject='+encodeURIComponent(data._subject)+'&body='+encodeURIComponent(msg)})}catch(e){}};
 (function(){const DCLogic=YAMDC.DCLogic;class Component extends DCLogic {
   constructor(props) { super(props); this.state = { mode: 'customs', lang: 'EN', menu: false }; }
   renderVals() {
@@ -1257,7 +1257,7 @@ window.yamQuote=function(){try{var q=document.getElementById('quote');var t=q.qu
 ;fetch('index.tpl.json?v=20261029').then(function(r){return r.json()}).then(function(j){const d=document.createElement('div');d.innerHTML=j.h;YAMDC.mount(document.getElementById('app'),d,Component);});})();
 </script>
 
-<script src="yam-print.js?v=1" defer></script>
+<script src="yam-print.js?v=2" defer></script>
 <script src="/desk-home.js" defer></script>
 </body>
 </html>
