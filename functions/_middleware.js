@@ -58,6 +58,11 @@ async function route(ctx) {
   const { request } = ctx;
   const url = new URL(request.url), p = url.pathname;
   const host = url.hostname.toLowerCase();
+  // Never serve a page over plain http: send every http request to the secure address.
+  if (url.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(host)) {
+    const h = host === 'yamlogistics.com' ? 'www.yamlogistics.com' : host;
+    return new Response(null, { status: 301, headers: { Location: 'https://' + h + p + url.search } });
+  }
   if (host === 'yamlogistics.com') return new Response(null, { status: 301, headers: { Location: 'https://www.yamlogistics.com' + p + url.search } });
   if (CK_HOST.test(host)) {
     if (host !== CK_MAIN) return new Response(null, { status: 301, headers: { Location: 'https://' + CK_MAIN + p + url.search } });
