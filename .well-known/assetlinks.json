@@ -1,8 +1,15 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "ai.cargokit.app",
-    "sha256_cert_fingerprints": ["D7:11:13:76:A7:C3:53:11:2A:B0:D1:18:E7:45:F1:7E:7F:5F:AC:49:74:0B:D4:69:B8:22:AD:5B:A0:DE:5B:A8"]
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "ai.cargokit.app",
+      "sha256_cert_fingerprints": [
+        "D7:11:13:76:A7:C3:53:11:2A:B0:D1:18:E7:45:F1:7E:7F:5F:AC:49:74:0B:D4:69:B8:22:AD:5B:A0:DE:5B:A8",
+        "7C:99:18:7E:1A:B7:A6:33:C4:C3:15:31:81:0F:3B:C4:D3:61:1A:90:BD:7F:F9:31:DF:80:11:AA:D4:43:31:A7"
+      ]
+    }
   }
-}]
+]
