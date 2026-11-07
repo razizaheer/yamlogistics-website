@@ -72,7 +72,12 @@
 .lp-drop.on{background:#EAF3FB;border-color:#0A6CC2}
 .lp-link{color:#0A6CC2;font-weight:600;cursor:pointer;text-decoration:underline}
 .lp-mapcard{background:#FFFFFF;border:1px solid #DCEAF6;border-radius:14px;padding:14px;margin-top:12px}
+.lp-mapwrap{overflow:auto;max-height:420px;margin:10px 0 0;border:1px solid #E3EDF6;border-radius:10px;-webkit-overflow-scrolling:touch}
 .lp-maptable{border-collapse:collapse;font-size:13px;min-width:100%}
+.lp-maptable thead th{position:sticky;top:0;background:#FFFFFF;z-index:1;box-shadow:0 1px 0 #DCEAF6}
+.lp-maptable .lp-mn{min-width:0;width:34px;color:#8BA3BA;text-align:right;font-size:12px}
+.lp-maptable select.lp-skip{color:#8BA3BA;background:#F6F9FC}
+.lp-maptable tr.lp-bad td{background:#FEF2F2;color:#B91C1C}
 .lp-maptable th{vertical-align:top;padding:4px;text-align:left;font-weight:500;min-width:130px}
 .lp-maptable th select{width:100%;font-size:13px;padding:6px}
 .lp-maptable td{padding:5px 6px;border-top:1px solid #EEF3F8;color:#3D5873;white-space:nowrap}

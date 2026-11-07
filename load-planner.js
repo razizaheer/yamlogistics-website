@@ -144,7 +144,7 @@
   // ---------------- Excel / CSV import
   const LPImport = (function () {
     const FIELDS = [
-      ['skip', '— ignore —'], ['name', 'Package name'], ['marks', 'Carton numbers (e.g. 1-5)'], ['dims', 'L × W × H in one cell'], ['l', 'Length'], ['w', 'Width'], ['h', 'Height'],
+      ['skip', '— not used —'], ['name', 'Package name'], ['marks', 'Carton numbers (e.g. 1-5)'], ['dims', 'L × W × H in one cell'], ['l', 'Length'], ['w', 'Width'], ['h', 'Height'],
       ['qty', 'Quantity'], ['kg', 'Weight per piece'], ['kgTotal', 'Total weight (all pieces)'], ['orient', 'Orientation / this side up'], ['rotate', 'Allow rotation (yes / no)'], ['stack', 'Others on top (yes / no)'], ['under', 'Can sit on others (yes / no)'], ['layers', 'Max layers']
     ];
     const RX = {
@@ -273,10 +273,37 @@
       return m ? { a: +m[1], b: +m[1], range: false } : null;
     }
     const isNet = (h) => /\bnet\b|\bnt\.?\s*w/i.test(h), isGross = (h) => /gr[o0]ss|\bg\.?\s*w/i.test(h);
+    // No header row: work out each column from what is in it. Text = package name (the longest text column),
+    // numbers = length, width, height, then weight and quantity, Yes/No = rotation, stacking on top, stacking under
+    // (the standard cargo-list order, the same as our Excel template).
+    const YN = /^(yes|no|y|n|true|false)$/i;
+    function guess(body, map, width) {
+      const kind = [], avg = [], dec = [];
+      for (let c = 0; c < width; c++) {
+        const vals = body.map((r) => String(r[c] == null ? '' : r[c]).trim()).filter(Boolean);
+        const n = vals.length || 1;
+        const isN = vals.filter((v) => !isNaN(num(v)) && /^[\d.,\s]+$/.test(v)).length / n, isY = vals.filter((v) => YN.test(v)).length / n;
+        kind[c] = !vals.length ? 'empty' : isN >= 0.7 ? 'num' : isY >= 0.7 ? 'yn' : 'text';
+        avg[c] = vals.reduce((a, v) => a + v.length, 0) / n;
+        dec[c] = vals.some((v) => /\.\d*[1-9]|\.\d{2,}/.test(v) || /\.\d+$/.test(v));
+      }
+      let nameCol = -1;
+      for (let c = 0; c < width; c++) if (kind[c] === 'text' && (nameCol < 0 || avg[c] > avg[nameCol])) nameCol = c;
+      if (nameCol >= 0) map[nameCol] = 'name';
+      const numCols = [], ynCols = [];
+      for (let c = 0; c < width; c++) { if (kind[c] === 'num') numCols.push(c); else if (kind[c] === 'yn') ynCols.push(c); }
+      ['l', 'w', 'h'].forEach((f, i) => { if (numCols[i] != null) map[numCols[i]] = f; });
+      const a = numCols[3], b = numCols[4];
+      if (a != null && b != null) {
+        // whole numbers are the quantity; with no clue, weight comes first (standard order)
+        if (dec[b] && !dec[a]) { map[a] = 'qty'; map[b] = 'kg'; } else { map[a] = 'kg'; map[b] = 'qty'; }
+      } else if (a != null) map[a] = dec[a] ? 'kg' : 'qty';
+      ['rotate', 'stack', 'under'].forEach((f, i) => { if (ynCols[i] != null) map[ynCols[i]] = f; });
+    }
     function analyze(rows) {
       rows = rows.filter((r) => r && r.some((c) => String(c).trim() !== ''));
       if (!rows.length) return null;
-      const width = Math.max(...rows.map((r) => r.length));
+      let width = Math.max(...rows.map((r) => r.length));
       // header row: the row (in the first 15) with the most keyword hits
       let hi = -1, best = 1;
       rows.slice(0, 15).forEach((r, i) => {
@@ -285,6 +312,10 @@
       });
       const header = hi >= 0 ? rows[hi].map((c) => String(c || '').trim()) : [];
       let body = rows.slice(hi + 1);
+      if (hi < 0) {
+        body = body.map((r) => r.map((c) => String(c == null ? '' : c).trim()).filter((c) => c !== ''));
+        width = Math.max(...body.map((r) => r.length));
+      }
       const map = new Array(width).fill('skip');
       const used = new Set();
       const LWH = { l: /^\s*(l|len|length|lenght|long)\b/i, w: /^\s*(w|wd|wid|width|breadth|b)\b/i, h: /^\s*(h|ht|hgt|height|high)\b/i };
@@ -338,8 +369,7 @@
           if (rowsBoth.length && same < 0.8 * rowsBoth.length) map[qc] = 'skip';
         }
       } else {
-        const firstNum = !isNaN(num((body[0] || [])[0]));
-        (firstNum ? ['l', 'w', 'h', 'qty', 'kg'] : ['name', 'l', 'w', 'h', 'qty', 'kg']).forEach((f, i) => { if (i < width) map[i] = f; });
+        guess(body, map, width);
       }
       const lenCol = map.findIndex((f) => f === 'l' || f === 'dims'), wtCol = map.findIndex((f) => f === 'kg' || f === 'kgTotal');
       let lenU = (lenCol >= 0 && unitOf(header[lenCol], 'len')) || '';
@@ -347,18 +377,19 @@
         const big = Math.max(0, ...body.map((r) => ['l', 'w', 'h'].map((f) => num(r[map.indexOf(f)])).filter((v) => !isNaN(v))).flat());
         lenU = big > 1400 ? 'mm' : S.unit;
       }
-      return { header, body, map, width, lenU, wtU: (wtCol >= 0 && unitOf(header[wtCol], 'wt')) || S.wunit };
+      return { header, body, map, width, lenU, noHeader: hi < 0, wtU: (wtCol >= 0 && unitOf(header[wtCol], 'wt')) || S.wunit };
     }
     function toItems(P) {
       const lf = { cm: 1, mm: 0.1, m: 100, in: 2.54 }[P.lenU] || 1, wf = P.wtU === 'lb' ? 0.45359237 : 1;
       const out = [], col = (f) => P.map.indexOf(f);
       const mc = col('marks');
       const ranged = mc >= 0 && P.body.some((r) => (marksOf(r[mc]) || {}).range);
+      P.bad = new Set();
       for (const r of P.body) {
         const g = (f) => { const c = col(f); return c >= 0 ? r[c] : ''; };
         let l = num(g('l')), w = num(g('w')), h = num(g('h'));
         if (col('dims') >= 0) { const m = String(g('dims')).split(/\s*[x×*X\/]\s*|\s+/).map(num).filter((v) => !isNaN(v)); if (m.length >= 3) [l, w, h] = m; }
-        if (!(l > 0 && w > 0 && h > 0)) continue;
+        if (!(l > 0 && w > 0 && h > 0)) { P.bad.add(r); continue; }
         const mk = mc >= 0 ? marksOf(g('marks')) : null;
         let qty = col('qty') >= 0 ? Math.floor(num(g('qty'))) : 1;
         if (mk && ranged && col('qty') < 0) qty = mk.b - mk.a + 1;
@@ -382,12 +413,14 @@
       if (!P) { box.innerHTML = '<div class="lp-warn">We could not find any rows in that file. Check that it holds a table with the package sizes.</div>'; return; }
       const items = toItems(P);
       const opts = (sel) => FIELDS.map(([v, t]) => `<option value="${v}"${v === sel ? ' selected' : ''}>${t}</option>`).join('');
-      const sample = P.body.slice(0, 4);
+      const rowsN = P.body.length, bad = P.bad || new Set();
       box.innerHTML = `<div class="lp-mapcard">
         <div class="lp-k">Check the columns</div>
         ${P.sheets && P.sheets.length > 1 ? `<label class="lp-f" style="margin:6px 0 10px"><span>Sheet</span><select class="lp-in" id="lp-msheet">${P.sheets.map((sh, i) => `<option value="${i}"${i === P.sheet ? ' selected' : ''}>${esc(sh.name)}</option>`).join('')}</select></label>` : ''}
-        <div class="lp-tablewrap"><table class="lp-maptable"><thead><tr>${Array.from({ length: P.width }, (_, c) => `<th><select class="lp-in" data-c="${c}">${opts(P.map[c])}</select><div class="lp-muted">${esc(P.header[c] || 'Column ' + (c + 1))}</div></th>`).join('')}</tr></thead>
-        <tbody>${sample.map((r) => `<tr>${Array.from({ length: P.width }, (_, c) => `<td>${esc(r[c] || '')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+        <p class="lp-muted" style="margin:4px 0 0">${P.noHeader ? 'Your table has no heading row, so we worked out each column from what is in it. Check the drop-down above each column; “not used” columns are left out.' : 'We matched the columns to your headings. Check the drop-down above each column; “not used” columns are left out.'}</p>
+        <div class="lp-mapwrap"><table class="lp-maptable"><thead><tr><th class="lp-mn">#</th>${Array.from({ length: P.width }, (_, c) => `<th><select class="lp-in${P.map[c] === 'skip' ? ' lp-skip' : ''}" data-c="${c}">${opts(P.map[c])}</select>${P.header[c] ? `<div class="lp-muted">${esc(P.header[c])}</div>` : ''}</th>`).join('')}</tr></thead>
+        <tbody>${P.body.map((r, i) => `<tr${bad.has(r) ? ' class="lp-bad" title="Left out: no length, width and height in this row"' : ''}><td class="lp-mn">${i + 1}</td>${Array.from({ length: P.width }, (_, c) => `<td>${esc(r[c] || '')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+        <div class="lp-muted" style="margin-top:6px">${rowsN} row${rowsN === 1 ? '' : 's'} read${bad.size ? ` · <b style="color:#B91C1C">${bad.size} left out (shown in red)</b>` : ' · all rows used'}</div>
         <div class="lp-row" style="margin-top:10px;align-items:center">
           <label class="lp-f"><span>Sizes in</span><select class="lp-in" id="lp-mlu">${['cm', 'mm', 'm', 'in'].map((u) => `<option${u === P.lenU ? ' selected' : ''}>${u}</option>`).join('')}</select></label>
           <label class="lp-f"><span>Weight in</span><select class="lp-in" id="lp-mwu">${['kg', 'lb'].map((u) => `<option${u === P.wtU ? ' selected' : ''}>${u}</option>`).join('')}</select></label>
