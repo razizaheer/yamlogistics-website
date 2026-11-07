@@ -26,6 +26,21 @@
       '#yam-tabs a svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}' +
       '#yam-tabs a.on{color:#0A6CC2}#yam-tabs a.on svg{fill:#E1EDF7}' +
       '#yam-tabs a:active{background:#F2F8FD}' +
+      'html.yam-app header.site .util{display:none!important}' +
+      'html.yam-app header.site .logo{height:38px!important}' +
+      'html.yam-app header.site .nav-in{min-height:0!important;padding-top:6px!important;padding-bottom:6px!important}' +
+      'html.yam-app .ft-hero{background:#FFFFFF!important}' +
+      'html.yam-app .ft-hero>div{padding:14px 16px 2px!important}' +
+      'html.yam-app .ft-hero>div>div:first-child{display:none!important}' +
+      'html.yam-app .ft-hero h1{font-size:24px!important;line-height:1.15!important;margin:0!important}' +
+      'html.yam-app .ft-hero p{display:none!important}' +
+      
+      'html.yam-app .ft-gw{padding:12px 12px 20px!important}' +
+      'html.yam-app .ft-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}' +
+      'html.yam-app .ft-grid .ftc{padding:14px!important;border-radius:16px!important;gap:6px!important;min-height:92px}' +
+      'html.yam-app .ft-grid .ftc span:nth-child(2){font-size:16px!important;line-height:1.2!important}' +
+      'html.yam-app .ft-grid .ftc span:nth-child(3),html.yam-app .ft-grid .ftc span:nth-child(4){display:none!important}' +
+      'html.yam-app .ft-more{display:none!important}' +
       '#yam-slim{padding:18px 16px 8px;text-align:center;font:13px/1.5 Geist,system-ui,sans-serif;color:#5E7891}#yam-slim a{color:#0A6CC2;text-decoration:none}';
     document.head.appendChild(css);
     var lang = (location.pathname.match(/^\/(ar|de|es|fr|hi|ja|ko|pt|ru|zh)\//) || [])[1];
