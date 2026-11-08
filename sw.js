@@ -14,7 +14,7 @@ const PRECACHE = [
 "/landed-cost-calculator",
 "/document-generator",
 "/my-shipments",
-"/my-shipments.js?v=1",
+"/my-shipments.js?v=2",
 "/doc-gen.js?v=1",
 "/landed-cost.js?v=1",
 "/saved",

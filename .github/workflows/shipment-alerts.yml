@@ -1,0 +1,17 @@
+name: Shipment alerts
+# Runs the daily alert job at 08:00 India time (02:30 UTC). Needs the repository secret ALERT_CRON_SECRET,
+# the same value as the ALERT_CRON_SECRET variable on the Cloudflare Pages project.
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send due alerts
+        env:
+          SECRET: ${{ secrets.ALERT_CRON_SECRET }}
+        run: |
+          if [ -z "$SECRET" ]; then echo "ALERT_CRON_SECRET is not set; skipping"; exit 0; fi
+          curl -fsS --retry 3 -X POST "https://www.yamlogistics.com/api/alerts-run" -H "x-cron-secret: $SECRET"
