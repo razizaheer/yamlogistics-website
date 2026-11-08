@@ -57,7 +57,7 @@
       ['plan', pre + '/container-load-planner', 'Planner', /container-load-planner/],
       ['cbm', pre + '/cbm-calculator', 'CBM', /cbm-calculator/],
       ['docs', '/document-checker', 'Documents', /document-checker/],
-      ['track', '/track-shipment', 'Track', /track-shipment|^\/tracking\//]
+      ['track', '/track-shipment', 'Track', /track-shipment|my-shipments|^\/tracking\//]
     ];
     function build() {
       if (document.getElementById('yam-tabs')) return;

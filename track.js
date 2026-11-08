@@ -138,6 +138,7 @@
     }
     if (H.indexOf('tk-btns') >= 0) H = H.replace(/<\/div>$/, '') + '<button class="tk-b sum" id="tk-sum" type="button"><b>Download tracking summary (PDF) ↓</b><span>Number, carrier and where to track it, to save or share</span></button></div>';
     res.innerHTML = H; res.setAttribute('data-n', n); if (H.indexOf('doesn\'t look like') < 0) remember(raw.toUpperCase());
+    if (H.indexOf('doesn\'t look like') < 0 && res.querySelector('.tk-btns')) res.querySelector('.tk-btns').insertAdjacentHTML('beforeend', '<button class="tk-b" id="tk-save" type="button"><b>★ Save to My shipments</b><span>Keep it on this phone, add an ETA and label</span></button>');
   }
   document.getElementById('tk-go').addEventListener('click', run);
   q.addEventListener('keydown', function (e) { if (e.key === 'Enter') run(); });
@@ -275,6 +276,39 @@
       doc.save('CargoKit-tracking-' + (res.getAttribute('data-n') || 'summary').replace(/[^A-Z0-9-]/gi, '') + '.pdf');
     }).catch(function () { toast('Sorry, the PDF could not be created in this browser.'); }).then(function () { if (b) b.disabled = false; });
   }
+  // ---- shared with My shipments (saved list) ----
+  function detect(raw) {
+    var n = String(raw || '').toUpperCase().replace(/[\s\-\.\/]/g, ''), o = null;
+    if (/^[A-Z]{3}[UJZ]\d{7}$/.test(n)) {
+      var c = seaBy(n.slice(0, 4)); o = { kind: 'Container', num: n, pretty: n.slice(0, 4) + ' ' + n.slice(4, 10) + ' ' + n[10], carrier: c ? c[0] : '', ok: ctrCheck(n), url: c && c[1] ? c[1].split('{n}').join(encodeURIComponent(n)) : LDB, direct: !!(c && c[4] === 1) };
+    } else if (/^\d{11}$/.test(n)) {
+      var pf = n.slice(0, 3), s = n.slice(3), a = AIRT[pf], al = AIR[pf] || '';
+      o = { kind: 'AWB', num: pf + '-' + s, pretty: pf + '-' + s.slice(0, 4) + ' ' + s.slice(4), carrier: al, ok: awbCheck(n), direct: !!(a && a[1] === 1),
+        url: a ? a[0].replace('{p}', pf).replace('{s}', s) : 'https://www.google.com/search?q=' + encodeURIComponent((al || 'airline ' + pf) + ' cargo AWB tracking ' + pf + '-' + s) };
+    } else if (/^[A-Z]{4}[A-Z0-9]{4,16}$/.test(n) && seaBy(n.slice(0, 4), true)) {
+      var cb = seaBy(n.slice(0, 4), true);
+      o = { kind: 'B/L', num: n, pretty: n, carrier: cb[0], ok: true, url: /maersk|msc\.com/.test(cb[1]) ? cb[1].split('{n}').join(encodeURIComponent(n)) : cb[1].split('?')[0].replace('/{n}', ''), direct: cb[4] === 1 };
+    } else if (/^[A-Z0-9]{6,20}$/.test(n)) {
+      o = { kind: 'Booking / B/L', num: n, pretty: n, carrier: '', ok: true, url: '', direct: false };
+    }
+    return o;
+  }
+  window.YAMTrack = { detect: detect };
+  function shipKey() { return 'ck_ship_v1'; }
+  function saveShip(raw) {
+    var d = detect(raw); if (!d) return false;
+    try {
+      var L = JSON.parse(localStorage.getItem(shipKey()) || '[]');
+      if (!L.some(function (x) { return x.num === d.num; })) L.unshift({ id: Date.now().toString(36), num: d.num, label: '', eta: '', note: '', done: false, t: Date.now() });
+      localStorage.setItem(shipKey(), JSON.stringify(L.slice(0, 200)));
+    } catch (e) { return false; }
+    return true;
+  }
+  root.insertAdjacentHTML('afterbegin', '<div style="display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap"><span style="background:#0A6CC2;color:#fff;border-radius:999px;padding:9px 16px;font-weight:600;font-size:14px">Track a number</span><a href="my-shipments.html" style="background:#EEF6FD;color:#0B2A4A;border-radius:999px;padding:9px 16px;font-weight:600;font-size:14px;text-decoration:none">★ My shipments</a></div>');
+  root.addEventListener('click', function (e) {
+    var b = e.target.closest('#tk-save'); if (!b) return;
+    if (saveShip(res.getAttribute('data-n'))) { b.innerHTML = '<b>✓ Saved to My shipments</b><span>Open My shipments to add an ETA or label</span>'; b.onclick = function () { location.href = 'my-shipments.html'; }; }
+  });
   var u = new URLSearchParams(location.search).get('n'); if (u) { q.value = u; run(); }
   showRec();
 })();
