@@ -9,7 +9,7 @@
   var BASE = (function () { var s = D.currentScript; return s ? s.src.replace(/[^\/]*\/[^\/]*$/, '') : '/'; })();
   var TOOLS = {
     '/cbm-calculator': 'CBM calculator', '/customs-duty-calculator': 'Import duty calculator', '/hsn-code-finder': 'HSN code finder',
-    '/container-number-checker': 'Container number checker', '/landed-cost-calculator': 'Landed cost calculator', '/freight-compare': 'Freight comparison', '/world-duty-calculator': 'Import duty and tax'
+    '/container-number-checker': 'Container number checker', '/landed-cost-calculator': 'Landed cost calculator', '/freight-compare': 'Freight comparison'
   };
 
   // ---------- storage ----------
@@ -83,7 +83,6 @@
     return { title: 'HSN code suggestions', lines: out };
   };
   EX['/freight-compare'] = function () { return G.CK_FC ? G.CK_FC() : null; };
-  EX['/world-duty-calculator'] = function () { return G.CK_WORLD ? G.CK_WORLD() : null; };
   EX['/landed-cost-calculator'] = function () { return G.CK_LANDED ? G.CK_LANDED() : null; };
   EX['/container-number-checker'] = function () { return G.CK_RESULT ? G.CK_RESULT() : null; };
 

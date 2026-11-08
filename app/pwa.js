@@ -81,7 +81,7 @@
   // Share / save / PDF for results (CBM, duty, HSN, container number) and the My saved page.
   (function () {
     var pth = location.pathname.replace(/^\/(ar|de|es|fr|hi|ja|ko|pt|ru|zh)(?=\/)/, '').replace(/\.html$/, '').replace(/\/$/, '');
-    if (/^\/(cbm-calculator|customs-duty-calculator|hsn-code-finder|container-number-checker|landed-cost-calculator|freight-compare|world-duty-calculator)$/.test(pth)) {
+    if (/^\/(cbm-calculator|customs-duty-calculator|hsn-code-finder|container-number-checker|landed-cost-calculator|freight-compare)$/.test(pth)) {
       var k = document.createElement('script'); k.src = '/app/ck-kit.js?v=4'; k.defer = true; document.head.appendChild(k);
     }
   })();
@@ -146,6 +146,6 @@
     document.addEventListener('yam-dc', function () { if (window.YAM_DC_LAST && !seen.dc) { seen.dc = 1; ok(); } });
     document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('#ck-pill, .ck-share, [data-ck-ok]'); if (b) ok(); });
     // one count per visit to a tool page that has produced a result
-    setTimeout(function () { if (/container-number|freight-compare|world-duty|cbm|hsn/.test(location.pathname) && !seen.p) { seen.p = 1; ok(); } }, 20000);
+    setTimeout(function () { if (/container-number|freight-compare|cbm|hsn/.test(location.pathname) && !seen.p) { seen.p = 1; ok(); } }, 20000);
   })();
 })();
