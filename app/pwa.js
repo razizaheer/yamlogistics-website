@@ -78,6 +78,13 @@
     }
     if (document.body) build(); else document.addEventListener('DOMContentLoaded', build);
   }
+  // Share / save / PDF for results (CBM, duty, HSN, container number) and the My saved page.
+  (function () {
+    var pth = location.pathname.replace(/^\/(ar|de|es|fr|hi|ja|ko|pt|ru|zh)(?=\/)/, '').replace(/\.html$/, '').replace(/\/$/, '');
+    if (/^\/(cbm-calculator|customs-duty-calculator|hsn-code-finder|container-number-checker)$/.test(pth)) {
+      var k = document.createElement('script'); k.src = '/app/ck-kit.js?v=1'; k.defer = true; document.head.appendChild(k);
+    }
+  })();
   if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
   var KEY = 'yam_install_dismissed', deferred = null;
   function dismissedRecently() { try { var t = +localStorage.getItem(KEY) || 0; return Date.now() - t < 30 * 864e5; } catch (e) { return false; } }
