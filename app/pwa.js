@@ -82,7 +82,7 @@
   (function () {
     var pth = location.pathname.replace(/^\/(ar|de|es|fr|hi|ja|ko|pt|ru|zh)(?=\/)/, '').replace(/\.html$/, '').replace(/\/$/, '');
     if (/^\/(cbm-calculator|customs-duty-calculator|hsn-code-finder|container-number-checker)$/.test(pth)) {
-      var k = document.createElement('script'); k.src = '/app/ck-kit.js?v=1'; k.defer = true; document.head.appendChild(k);
+      var k = document.createElement('script'); k.src = '/app/ck-kit.js?v=2'; k.defer = true; document.head.appendChild(k);
     }
   })();
   if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });

@@ -103,22 +103,40 @@
   function fallbackCopy(t) { var a = D.createElement('textarea'); a.value = t; a.style.cssText = 'position:fixed;opacity:0'; D.body.appendChild(a); a.select(); try { D.execCommand('copy'); } catch (e) {} a.remove(); }
   var jsP = null;
   function jspdf() { if (!jsP) jsP = new Promise(function (ok, no) { var s = D.createElement('script'); s.src = BASE + 'vendor/jspdf.umd.min.js'; s.onload = function () { ok(G.jspdf); }; s.onerror = no; D.head.appendChild(s); }); return jsP; }
+  function img(u) { return fetch(BASE + u).then(function (r) { return r.blob(); }).then(function (b) { return new Promise(function (ok) { var f = new FileReader(); f.onload = function () { ok(f.result); }; f.onerror = function () { ok(null); }; f.readAsDataURL(b); }); }).catch(function () { return null; }); }
   function pdf(it) {
     toast('Making the PDF…');
-    return jspdf().then(function (lib) {
+    return Promise.all([jspdf(), img('app/icon-192.png'), img('cargokit-qr.png')]).then(function (r) {
+      var lib = r[0], imgs = { logo: r[1], qr: r[2] };
       var doc = new lib.jsPDF({ unit: 'pt', format: 'a4' }), W = doc.internal.pageSize.getWidth(), y = 56, m = 48;
-      doc.setFillColor(10, 108, 194); doc.rect(0, 0, W, 34, 'F');
-      doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.text('CargoKit  ·  by YAM Logistics', m, 22);
-      doc.setTextColor(11, 42, 74); doc.setFontSize(20); doc.text(clean(it.title), m, y += 30);
+      var H = 64;
+      doc.setFillColor(10, 108, 194); doc.rect(0, 0, W, H, 'F');
+      doc.setFillColor(255, 201, 60); doc.rect(0, H, W, 4, 'F');
+      if (imgs.logo) { try { doc.addImage(imgs.logo, 'PNG', m, 12, 40, 40); } catch (e) {} }
+      doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(18); doc.text('CargoKit', m + 50, 33);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.text('Free tools for importers and exporters  |  by YAM Logistics', m + 50, 49);
+      y = H + 4 + 40;
+      doc.setTextColor(11, 42, 74); doc.setFont('helvetica', 'bold'); doc.setFontSize(20); doc.text(clean(it.title), m, y);
       doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(94, 120, 145);
       doc.text(new Date(it.t || Date.now()).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' }), m, y += 16);
-      doc.setFontSize(12); doc.setTextColor(11, 42, 74); y += 12;
+      doc.setDrawColor(225, 237, 247); doc.line(m, y += 12, W - m, y);
+      doc.setFontSize(12); doc.setTextColor(11, 42, 74); y += 8;
       it.lines.forEach(function (ln) {
-        doc.splitTextToSize(clean(ln), W - m * 2).forEach(function (part) { if (y > 780) { doc.addPage(); y = 56; } doc.text(part, m, y += 18); });
+        doc.splitTextToSize(clean(ln), W - m * 2).forEach(function (part) { if (y > 720) { doc.addPage(); y = 56; } doc.text(part, m, y += 18); });
         y += 4;
       });
-      doc.setFontSize(9); doc.setTextColor(94, 120, 145);
-      doc.text('YAM Logistics Pvt. Ltd. · licensed customs broker R-7/92 · cargokit.ai · For guidance only.', m, 810);
+      var n = doc.getNumberOfPages();
+      for (var i = 1; i <= n; i++) {
+        doc.setPage(i);
+        doc.setFillColor(243, 248, 253); doc.rect(0, 752, W, 90, 'F');
+        doc.setFillColor(255, 201, 60); doc.rect(0, 752, W, 2, 'F');
+        if (imgs.qr) { try { doc.addImage(imgs.qr, 'PNG', W - m - 56, 764, 56, 56); } catch (e) {} }
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(10, 108, 194); doc.text('Get the free CargoKit app  |  cargokit.ai', m, 780);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(94, 120, 145);
+        doc.text('YAM Logistics Pvt. Ltd.  |  Licensed customs broker (CHA)  |  yamlogistics.com', m, 794);
+        doc.text('Indicative result for guidance only. Verify with Customs and a licensed customs broker.', m, 807);
+        doc.text('Page ' + i + ' of ' + n, W - m - 56, 832);
+      }
       var blob = doc.output('blob'), name = 'cargokit-' + slug(it.title) + '.pdf';
       var f = null; try { f = new File([blob], name, { type: 'application/pdf' }); } catch (e) {}
       if (f && navigator.canShare && navigator.canShare({ files: [f] })) return navigator.share({ files: [f], title: it.title }).catch(function () {});
