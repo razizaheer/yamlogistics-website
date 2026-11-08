@@ -120,4 +120,32 @@
   });
   window.addEventListener('appinstalled', function () { deferred = null; hideBar(); setButtons(); });
   document.addEventListener('DOMContentLoaded', setButtons);
+
+  // Ask for a Play Store rating once, after a few successful results (app mode only)
+  if (standalone) (function () {
+    var K = 'ck_rate_v1';
+    function get() { try { return JSON.parse(localStorage.getItem(K) || '{}'); } catch (e) { return {}; } }
+    function set(o) { try { localStorage.setItem(K, JSON.stringify(o)); } catch (e) {} }
+    function ask() {
+      var s = get(); if (s.done || document.getElementById('ck-rate')) return;
+      var es = /^es/.test(document.documentElement.lang), pt = /^pt/.test(document.documentElement.lang);
+      var tx = es ? ['¿Te sirve CargoKit?', 'Calificar', 'Ahora no'] : pt ? ['Gostando do CargoKit?', 'Avaliar', 'Agora não'] : ['Finding CargoKit useful?', 'Rate it', 'Not now'];
+      var d = document.createElement('div'); d.id = 'ck-rate';
+      d.style.cssText = 'position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:9999;background:#0a5fc4;color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:center;font:600 15px Inter,system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.3)';
+      d.innerHTML = '<span style="flex:1">' + tx[0] + '</span><a href="https://play.google.com/store/apps/details?id=ai.cargokit.app" style="background:#ffc72c;color:#111;padding:8px 14px;border-radius:10px;text-decoration:none">' + tx[1] + '</a><button style="background:none;border:0;color:#fff;font:inherit;opacity:.85">' + tx[2] + '</button>';
+      d.querySelector('a').onclick = function () { set({ done: 1 }); d.remove(); };
+      d.querySelector('button').onclick = function () { set({ n: -5, later: 1 }); if (get().later2) set({ done: 1 }); d.remove(); };
+      document.body.appendChild(d);
+    }
+    function ok() {
+      var s = get(); if (s.done) return;
+      s.n = (s.n || 0) + 1; set(s);
+      if (s.n === 6) setTimeout(ask, 1500);
+    }
+    var seen = {};
+    document.addEventListener('yam-dc', function () { if (window.YAM_DC_LAST && !seen.dc) { seen.dc = 1; ok(); } });
+    document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('#ck-pill, .ck-share, [data-ck-ok]'); if (b) ok(); });
+    // one count per visit to a tool page that has produced a result
+    setTimeout(function () { if (/container-number|freight-compare|cbm|hsn/.test(location.pathname) && !seen.p) { seen.p = 1; ok(); } }, 20000);
+  })();
 })();
