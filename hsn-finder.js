@@ -1,7 +1,8 @@
 (function () {
   var root = document.getElementById('hf-root');
   if (!root) return;
-  var D = null, idx = null, chFilter = null, lastIds = [];
+  var BASE = (function () { var s = document.currentScript; return s ? s.src.replace(/[^\/]*$/, '') : ''; })();
+  var D = null, idx = null, chFilter = null, lastIds = [], VOC = null;
   var CH = {
     '01': 'Live animals', '02': 'Meat and edible offal', '03': 'Fish and seafood', '04': 'Dairy, eggs and honey', '05': 'Other animal products',
     '06': 'Plants and cut flowers', '07': 'Vegetables', '08': 'Fruit and nuts', '09': 'Coffee, tea and spices', '10': 'Cereals',
@@ -94,6 +95,7 @@
     '<div class="hf-card">' +
     '<label class="hf-l" for="hf-q">Describe your product, or type an HSN code</label>' +
     '<input id="hf-q" class="hf-in" placeholder="e.g. “cotton t-shirts”, “solar panel”, “basmati rice”, or 8517" autocomplete="off">' +
+    '<div class="hf-ph"><button type="button" id="hf-cam" class="hf-chip" style="padding:10px 16px;font-size:14px">📷 Read a product label</button><input type="file" id="hf-file" accept="image/*" capture="environment" style="display:none"><div id="hf-phm" style="font-size:13px;color:#5E7891;margin-top:8px;line-height:1.5">Photograph the label, box or data plate that says what the product is. The photo is read on your phone and never uploaded.</div><div id="hf-phc" style="margin-top:8px"></div></div>' +
     '<div class="hf-ex">Try: <button data-q="mobile phone">mobile phone</button><button data-q="cotton t-shirt">cotton t-shirt</button><button data-q="solar panel">solar panel</button><button data-q="basmati rice">basmati rice</button><button data-q="lithium battery">lithium battery</button><button data-q="led bulb">LED bulb</button><button data-q="stainless steel bolts">stainless steel bolts</button></div>' +
     '<label class="hf-ack"><input type="checkbox" id="hf-ack"' + (ackd ? ' checked' : '') + '><span>I understand these are <b>suggested codes for guidance only</b>, not a classification ruling, that I am responsible for the code I declare, and that YAM Logistics Pvt. Ltd. accepts <b>no liability</b> for their use. I have read the <a href="#disclaimer">disclaimer</a>.</span></label>' +
     '<div class="hf-res" id="hf-res"><div class="hf-empty">Loading the Customs Tariff…</div></div>' +
@@ -236,6 +238,58 @@
     res.innerHTML = H;
   }
 
+
+  // ---- photo of a label: read the words on the phone, keep the ones the tariff knows, search with them ----
+  var NOISE = 'from away that this your have will with into over under about each every please made india china mrp net weight batch pack pcs piece pieces manufactured marketed mfg exp date ltd pvt limited company model size colour color warning keep children store storage open here brand use only contains contain ingredients best before after www com www email phone tel customer care price rs inr usd product products quality premium original genuine new made in the of and for with'.split(' ').reduce(function (o, w) { o[w] = 1; return o; }, {});
+  var tessP = null;
+  function loadScript(src) { return new Promise(function (ok, no) { var s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
+  function tess() {
+    if (!tessP) tessP = loadScript(BASE + 'vendor/ocr/tesseract.min.js?v=5').then(function () {
+      return window.Tesseract.createWorker('eng', 1, { workerPath: BASE + 'vendor/ocr/worker.min.js?v=5', corePath: BASE + 'vendor/ocr/', langPath: BASE + 'vendor/ocr/lang', gzip: true });
+    });
+    return tessP;
+  }
+  function prep(f) { // shrink and boost contrast so the reader copes with phone photos
+    return new Promise(function (ok) {
+      var im = new Image(), u = URL.createObjectURL(f);
+      im.onload = function () {
+        var s = Math.min(1, 1800 / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = Math.round(im.width * s); c.height = Math.round(im.height * s);
+        var x = c.getContext('2d'); x.drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(u);
+        try { var d = x.getImageData(0, 0, c.width, c.height), p = d.data; for (var i = 0; i < p.length; i += 4) { var g = p[i] * .3 + p[i + 1] * .59 + p[i + 2] * .11; g = Math.max(0, Math.min(255, (g - 110) * 1.5 + 128)); p[i] = p[i + 1] = p[i + 2] = g; } x.putImageData(d, 0, 0); } catch (e) {}
+        c.toBlob(function (b) { ok(b || f); }, 'image/png');
+      };
+      im.onerror = function () { URL.revokeObjectURL(u); ok(f); }; im.src = u;
+    });
+  }
+  function vocab() { if (!VOC) { VOC = {}; idx.forEach(function (r) { (r.d + r.p).split(' ').forEach(function (w) { if (w.length > 2) VOC[w] = 1; }); }); } return VOC; }
+  function words(txt) {
+    var V = vocab(), cnt = {}, first = {}, n = 0;
+    String(txt).toLowerCase().replace(/[^a-z\s\-]/g, ' ').split(/[\s\-]+/).forEach(function (w) {
+      if (w.length < 4 || NOISE[w] || STOP[w]) return; var s = stem(w); if (!V[s] || V[s] === undefined) return;
+      if (!(w in cnt)) { cnt[w] = 0; first[w] = n++; } cnt[w]++;
+    });
+    return Object.keys(cnt).sort(function (a, b) { return (cnt[b] - cnt[a]) || (b.length - a.length) || (first[a] - first[b]); }).slice(0, 8);
+  }
+  var phSel = {};
+  function phChips(ws) {
+    var box = document.getElementById('hf-phc');
+    box.innerHTML = '<div style="font-size:13px;color:#3D5873;margin-bottom:6px">Words found on the label. Tap to add or remove, then check the codes below.</div>' + ws.map(function (w) { return '<button type="button" class="hf-chip' + (phSel[w] ? ' on' : '') + '" data-ph="' + h(w) + '">' + h(w) + '</button>'; }).join('');
+  }
+  function phApply() { q.value = Object.keys(phSel).filter(function (w) { return phSel[w]; }).join(' '); chFilter = null; render(); }
+  document.getElementById('hf-cam').addEventListener('click', function () { if (!idx) { document.getElementById('hf-phm').textContent = 'Please wait, the tariff is still loading.'; return; } var f = document.getElementById('hf-file'); f.value = ''; f.click(); });
+  document.getElementById('hf-file').addEventListener('change', function () {
+    var f = this.files && this.files[0], m = document.getElementById('hf-phm'); if (!f) return;
+    m.textContent = 'Reading the photo on your phone… the first one takes a few seconds.'; document.getElementById('hf-phc').innerHTML = '';
+    prep(f).then(function (b) { return tess().then(function (w) { return w.recognize(b); }); }).then(function (r) {
+      var txt = (r && r.data && r.data.text) || '', ws = words(txt); phSel = {};
+      if (!ws.length) { m.textContent = 'We could not find product words in that photo. Get closer, keep the label flat and well lit, or type what it is above.'; return; }
+      ws.slice(0, 3).forEach(function (w) { phSel[w] = 1; }); phChips(ws); phApply();
+      m.innerHTML = 'Found ' + ws.length + ' product word' + (ws.length > 1 ? 's' : '') + '. A photo of a plain product with no text cannot be recognised, so type what it is instead.';
+    }).catch(function () { m.textContent = 'The photo reader could not run here. Please type what the product is.'; });
+  });
+  document.getElementById('hf-phc').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-ph]'); if (!b) return; var w = b.getAttribute('data-ph'); phSel[w] = !phSel[w]; b.classList.toggle('on', !!phSel[w]); phApply();
+  });
   var tm;
   q.addEventListener('input', function () { chFilter = null; clearTimeout(tm); tm = setTimeout(render, 180); });
   ack.addEventListener('change', function () { try { sessionStorage.setItem('hf-ack', ack.checked ? '1' : '0'); } catch (e) {} render(); });
