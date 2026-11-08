@@ -9,7 +9,7 @@
   var BASE = (function () { var s = D.currentScript; return s ? s.src.replace(/[^\/]*\/[^\/]*$/, '') : '/'; })();
   var TOOLS = {
     '/cbm-calculator': 'CBM calculator', '/customs-duty-calculator': 'Import duty calculator', '/hsn-code-finder': 'HSN code finder',
-    '/container-number-checker': 'Container number checker'
+    '/container-number-checker': 'Container number checker', '/landed-cost-calculator': 'Landed cost calculator'
   };
 
   // ---------- storage ----------
@@ -82,6 +82,7 @@
     out.push('Suggested codes for guidance only, not a classification ruling.');
     return { title: 'HSN code suggestions', lines: out };
   };
+  EX['/landed-cost-calculator'] = function () { return G.CK_LANDED ? G.CK_LANDED() : null; };
   EX['/container-number-checker'] = function () { return G.CK_RESULT ? G.CK_RESULT() : null; };
 
   // ---------- compose / share ----------

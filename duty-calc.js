@@ -147,6 +147,7 @@
   q.addEventListener('input', function () { clearTimeout(tm); tm = setTimeout(function () { if (!D) return; var t = q.value.trim(); if (!t) { list.innerHTML = '<div class="dc-empty">Start typing an HSN code or a product name.</div>'; return; } renderList(search(t)); }, 160); });
 
   function recalc() {
+    window.YAM_DC_LAST = null; setTimeout(function () { try { document.dispatchEvent(new Event('yam-dc')); } catch (e) {} }, 0);
     if (!D || sel == null) return;
     if (!ack.checked) { out.innerHTML = '<div class="dc-empty" style="color:#7A3E00">Please tick the box confirming you understand the results are for guidance only, then the estimate will appear here.</div>'; return; }
     var x = D.rows[sel], code = x[0], country = o.value.replace(/ \(trade agreement\)$/, ''), fta = FTA[country];
@@ -201,6 +202,7 @@
     if (noRate) av = 0;
     var bcdAmt = bcd != null ? av * bcd / 100 : 0, sws = swsNo != null ? 0 : bcdAmt * 0.10, aidcAmt = av * aidcR / 100, igst = (av + bcdAmt + sws + aidcAmt) * igRate / 100, tot = bcdAmt + sws + aidcAmt + igst;
     var pol = POL[x[8]] || POL['?'];
+    if (av > 0) window.YAM_DC_LAST = { code: code, name: x[1], country: country, terms: t, cur: cur.value, rate: rate, val: val * rate, fr: fr * rate, ins: ins * rate, frDef: frDef, insDef: insDef, cif: cifR, bcdPct: bcd, bcd: bcdAmt, sws: sws, aidc: aidcAmt, igstPct: igRate, igst: igst, tot: tot, alco: !!alco, pol: pol[0] };
     var H = '';
     H += '<div class="dc-c" style="font-size:15px">' + fc(code) + '</div><div style="font-family:Archivo,sans-serif;font-weight:800;font-size:24px;line-height:1.15;margin:4px 0 6px">' + h(x[1]) + '</div><div class="dc-p" style="font-size:13px">' + h(D.paths[x[2]]) + '</div>';
     H += '<div style="margin-top:12px"><span class="dc-pill" style="background:' + pol[2] + ';color:' + pol[3] + '">DGFT import policy: ' + pol[0] + '</span> <span class="s" style="font-size:13px;color:#5E7891">' + pol[1] + '</span></div>';
