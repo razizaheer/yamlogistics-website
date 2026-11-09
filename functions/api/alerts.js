@@ -24,8 +24,7 @@ async function getRec(env, id) { const o = await env.MSDS.get('alerts/' + id + '
 async function putRec(env, rec) { await env.MSDS.put('alerts/' + rec.id + '.json', JSON.stringify(rec), { httpMetadata: { contentType: 'application/json' } }); }
 
 export async function sendEmail(env, to, subject, text, html, stopUrl) {
-  var from = String(env.ALERT_FROM || '').replace(/[\u200b\u00a0]/g, ' ').replace(/^[\s"']+|[\s"']+$/g, '');
-  if (!/^([^<>"]*<[^<>@\s]+@[^<>\s]+>|[^<>@\s]+@[^<>\s]+)$/.test(from)) from = 'CargoKit <alerts@yamlogistics.com>';
+  var m = String(env.ALERT_FROM || '').match(/[^<>\s"']+@[^<>\s"']+/), from = 'CargoKit.ai <' + (m ? m[0] : 'alerts@yamlogistics.com') + '>';
   const r = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({ from: from, to: [to], subject, text, html, headers: stopUrl ? { 'List-Unsubscribe': '<' + stopUrl + '>' } : undefined }) });
   if (!r.ok) { let t = ''; try { t = (await r.text()).slice(0, 220); } catch (e) {} sendEmail.lastErr = r.status + ' ' + t; }
