@@ -45,6 +45,7 @@
     return { title: 'CBM and chargeable weight', lines: out };
   };
   EX['/customs-duty-calculator'] = function () {
+    if (G.CK_TAB && G.CK_TAB !== 'IN') return G.CK_WORLD ? G.CK_WORLD() : null;
     var r = D.getElementById('dc-root'); if (!r) return null;
     var L = lines(r.innerText), k = -1, i;
     for (i = 0; i < L.length; i++) if (/^INDICATIVE ESTIMATE/.test(L[i])) { k = i; break; }

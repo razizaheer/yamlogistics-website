@@ -136,9 +136,10 @@
   function curOf() { return C[S.cn].cur; }
   function render() {
     var c = C[S.cn], H = '', sl = sel();
-    H += '<div class="wd-card"><h2 class="wd-h">1. Where are you importing to?</h2><p class="wd-s">Choose the destination. The tool uses that country\'s official tariff, valuation base, taxes and fees.</p><div class="wd-cn" id="wd-cn">';
-    ORDER.forEach(function (k) { H += '<button data-cn="' + k + '"' + (k === S.cn ? ' class="on"' : '') + '>' + C[k].flag + ' ' + C[k].n + '</button>'; });
-    H += '</div><div class="wd-note">' + c.note + '</div></div>';
+    if (window.CK_EMBED) H += '<div class="wd-card"><h2 class="wd-h">' + c.flag + ' Importing to ' + c.n + '</h2><div class="wd-note" style="margin-top:0">' + c.note + '</div></div>';
+    else H += '<div class="wd-card"><h2 class="wd-h">1. Where are you importing to?</h2><p class="wd-s">Choose the destination. The tool uses that country\'s official tariff, valuation base, taxes and fees.</p><div class="wd-cn" id="wd-cn">';
+    if (!window.CK_EMBED) { ORDER.forEach(function (k) { H += '<button data-cn="' + k + '"' + (k === S.cn ? ' class="on"' : '') + '>' + C[k].flag + ' ' + C[k].n + '</button>'; });
+    H += '</div><div class="wd-note">' + c.note + '</div></div>'; }
     H += '<div class="wd-card"><h2 class="wd-h">2. Your product</h2><p class="wd-s">' + (S.cn === 'SG' ? 'Singapore is a free port, so most goods have no customs duty.' : 'Type what you are importing (for example <i>mobile phone</i>, <i>cotton t-shirt</i>) or an HS code (for example <i>8517</i>). Pick the line that matches and the duty rate fills in from the ' + c.find[0] + '.') + '</p>';
     if (S.cn === 'SG') {
       H += '<div class="wd-note">Duty applies only to liquor, tobacco, motor vehicles and petroleum. For those goods this calculator cannot give an accurate figure, so ask a broker. For all other goods the duty is zero and GST of 9% is charged on the CIF value.</div>';
@@ -244,5 +245,6 @@
     save(); calc();
   });
   window.CK_WORLD = function () { return last; };
+  window.CK_WORLD_SET = function (cc) { if (C[cc]) { S.cn = cc; save(); render(); } };
   render();
 })();

@@ -130,7 +130,11 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <div class="ft-c"><div class="mh">CUSTOMS &amp; DUTY</div>
 <a href="trade-notifications.html"><b>Notifications Library</b><span>CBIC, DGFT and custom house notices, searchable</span></a><a href="document-checker.html"><b>Document Checker</b><span>Match invoice, packing list and B/L or AWB</span></a>
 <a href="hsn-code-finder.html"><b>HSN Code Finder</b><span>Describe your product, get the likely 8-digit code</span></a>
-<a href="customs-duty-calculator.html"><b>Import Duty Calculator</b><span>BCD, SWS and IGST for any HSN code, with landed cost</span></a>
+<a href="landed-cost-calculator.html"><b>Landed Cost Calculator</b><span>Cost per unit with duty, IGST, freight and your margin</span></a>
+<a href="document-generator.html"><b>Invoice and Packing List Maker</b><span>Clean PDFs, plus an export and import checklist</span></a>
+<a href="my-shipments.html"><b>My Shipments</b><span>Saved containers, AWB and B/L numbers with ETA</span></a>
+<a href="freight-compare.html"><b>LCL vs FCL, Sea vs Air</b><span>Which option is cheaper and where the break-even is</span></a>
+<a href="customs-duty-calculator.html"><b>Import Duty Calculator</b><span>India, US, EU, UK, Japan, Australia, Singapore, with landed cost</span></a>
 <a href="export-benefit-finder.html"><b>Export Benefit Finder</b><span>Drawback, RoDTEP and RoSCTL rates by HS code</span></a>
 <a href="incoterms.html"><b>Incoterms 2020 Chart</b><span>Who pays and who carries the risk, for all 11 rules</span></a></div>
 <div class="ft-c"><div class="mh">CARGO &amp; CONTAINERS</div>
@@ -140,6 +144,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="cbm-calculator.html"><b>CBM &amp; Volumetric Weight Calculator</b><span>Total volume, air chargeable weight and LCL W/M</span></a>
 <a href="track-shipment.html"><b>Track a Shipment</b><span>55+ shipping lines and 400 airlines, plus the Indian port leg</span></a></div>
 <div class="ft-c"><div class="mh">DANGEROUS GOODS</div>
+<a href="container-number-checker.html"><b>Container Number Checker</b><span>ISO 6346 check digit, type code decoder and camera scan</span></a>
 <a href="dg-cargo-checker.html"><b>DG Cargo Checker</b><span>Is it dangerous goods? Check by HSN, product or MSDS</span></a>
 <a href="lithium-battery-checker.html"><b>Lithium Battery Checker</b><span>UN number, packing instruction and labels in 30 seconds</span></a>
 <a href="dg-labels.html"><b>Dangerous Goods Labels</b><span>51 printable PDF labels: hazard classes, lithium marks, CAO</span></a></div>
@@ -160,7 +165,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 
 <div style="background: linear-gradient(135deg, #DDF0FF 0%, #F7FBFF 55%, #FFF4D6 100%)">
 <div style="max-width: 1400px; margin: 0 auto; padding: 84px 32px 40px">
-<div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.08em; margin-bottom: 22px">FREE TOOL · INDIA IMPORT DUTY · 12,000+ TARIFF LINES</div>
+<div style="display: inline-block; background: #FFC93C; color: #0B2A4A; border-radius: 999px; padding: 7px 14px; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.08em; margin-bottom: 22px">FREE TOOL · IMPORT DUTY · INDIA, US, EU, UK, JAPAN, AUSTRALIA, SINGAPORE</div>
 <h1 style="font-family: 'Archivo', sans-serif; font-weight: 900; font-stretch: 110%; font-size: clamp(46px, 5.6vw, 86px); line-height: 0.96; letter-spacing: -0.03em; margin: 0 0 22px; max-width: 1100px">Customs duty calculator. <span style="color: #0A6CC2">Know the duty before you ship.</span></h1>
 <p style="font-size: 20px; line-height: 1.55; color: #17436B; margin: 0; max-width: 820px">Type an HSN code or describe your goods, pick the country of origin and enter the invoice value on FOB, C&amp;F or CIF terms. See basic customs duty, social welfare surcharge, IGST and the total landed cost, plus any DGFT import restrictions, in seconds.</p>
 <p style="font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.04em; color: #3D5873; margin: 14px 0 0">Data last updated: 18 October 2026</p>
@@ -170,7 +175,10 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 
 <div style="background: #F7FBFF">
 <div style="max-width: 1400px; margin: 0 auto; padding: 24px 32px 88px">
+<style>.ctabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.ctabs button{display:flex;align-items:center;gap:8px;border:1px solid #C9DCEC;background:#fff;border-radius:999px;padding:10px 16px;font:inherit;font-size:15px;font-weight:600;color:#3D5873;cursor:pointer}.ctabs button .fl{font-size:22px;line-height:1}.ctabs button.on{background:#0A6CC2;border-color:#0A6CC2;color:#fff}@media(max-width:560px){.ctabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}.ctabs button{flex:0 0 auto}}</style>
+<div class="ctabs" id="ctabs" role="tablist" aria-label="Choose the destination country"><button role="tab" data-t="IN" class="on"><span class="fl">🇮🇳</span>India</button><button role="tab" data-t="US"><span class="fl">🇺🇸</span>United States</button><button role="tab" data-t="EU"><span class="fl">🇪🇺</span>European Union</button><button role="tab" data-t="GB"><span class="fl">🇬🇧</span>United Kingdom</button><button role="tab" data-t="JP"><span class="fl">🇯🇵</span>Japan</button><button role="tab" data-t="AU"><span class="fl">🇦🇺</span>Australia</button><button role="tab" data-t="SG"><span class="fl">🇸🇬</span>Singapore</button></div>
 <div id="dc-root"><div style="background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 24px; padding: 40px; text-align: center; color: #5E7891">Loading the Indian customs tariff…</div></div>
+<div id="wd-root" style="display:none"><div style="background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 24px; padding: 40px; text-align: center; color: #5E7891">Loading…</div></div>
 </div>
 </div>
 
@@ -366,6 +374,12 @@ er().catch(function(){return ecb()}).catch(function(){var el=document.getElement
 </script>
 
 <script src="duty-calc.js?v=15"></script>
+<script>window.CK_EMBED=1;</script>
+<script src="world-duty.js?v=3"></script>
+<script>(function(){var bar=document.getElementById('ctabs'),dc=document.getElementById('dc-root'),wd=document.getElementById('wd-root');if(!bar||!dc||!wd)return;window.CK_TAB='IN';
+function show(t,push){window.CK_TAB=t;[].forEach.call(bar.children,function(b){var on=b.dataset.t===t;b.className=on?'on':'';b.setAttribute('aria-selected',on)});if(t==='IN'){dc.style.display='';wd.style.display='none'}else{dc.style.display='none';wd.style.display='';if(window.CK_WORLD_SET)CK_WORLD_SET(t)}try{if(push)history.replaceState(null,'','#'+t.toLowerCase())}catch(e){}}
+bar.addEventListener('click',function(e){var b=e.target.closest('button[data-t]');if(b)show(b.dataset.t,1)});
+var h=(location.hash||'').replace('#','').toUpperCase();show(/^(IN|US|EU|GB|JP|AU|SG)$/.test(h)?h:'IN',0)})();</script>
 <script src="yam-print.js?v=2" defer></script>
 </body>
 </html>
