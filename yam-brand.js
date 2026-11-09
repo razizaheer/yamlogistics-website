@@ -1,5 +1,5 @@
-/* Shared branding for every PDF the site's tools create (jsPDF, mm units). The tools are published as CargoKit
-   (www.CargoKit.ai), a free tool by YAM Logistics, which is named in the footer.
+/* Shared branding for every PDF the site's tools create (jsPDF, mm units). The PDFs promote CargoKit
+   (www.CargoKit.ai) only: no YAM contacts or sales pitch, so other forwarders and agents can use them freely.
    YAMBrand.ready() loads the logo and QR code; header()/footer() draw the bands; finish() adds page numbers. */
 (function (G) {
   'use strict';
@@ -7,8 +7,8 @@
     name: 'CargoKit',
     tag: 'Free container load planner and shipping tools',
     web: 'www.CargoKit.ai',
-    contacts: '+91 11 4160 3301   |   info@yamlogistics.com   |   WhatsApp @CARGOKIT',
-    by: 'CargoKit by YAM Logistics Pvt. Ltd.',
+    contacts: 'Free tools for shippers, forwarders and agents. No sign-up. On the web and on Android.',
+    by: 'Made free with CargoKit',
     HEAD: 22, FOOT: 15
   };
   var P = null;
@@ -26,7 +26,7 @@
     });
   }
   B.ready = function () {
-    if (!P) P = Promise.all([load(B.logoSrc || 'cargokit-logo.svg', 512, 1), load(B.qrSrc || 'cargokit-qr.png', 420, 1)]).then(function (a) { B.logo = a[0]; B.qr = a[1]; return B; });
+    if (!P) P = Promise.all([load((B.base || '') + 'cargokit-logo.svg', 512, 1), load((B.base || '') + 'cargokit-qr.png', 420, 1)]).then(function (a) { B.logo = a[0]; B.qr = a[1]; return B; });
     return P;
   };
   function size(doc) { var s = doc.internal.pageSize; return { W: s.getWidth(), H: s.getHeight() }; }
@@ -63,21 +63,23 @@
     doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.text(B.contacts, M, y0 + 11.6);
     doc.setFontSize(7); doc.setTextColor(200, 214, 230); doc.text(B.by, qx - 3, y0 + 6.6, { align: 'right' });
     doc.text('Scan for more free tools and tracking', qx - 3, y0 + 10, { align: 'right' });
+    doc.link(0, y0, z.W, h, { url: 'https://cargokit.ai/' });
     doc.setTextColor(11, 42, 74);
   };
 
   // Call-to-action panel for spare space on a page. Returns the height used.
-  B.promo = function (doc, x, y, w, head) {
+  B.promo = function (doc, x, y, w) {
     var h = 30;
     doc.setFillColor(234, 243, 252); doc.roundedRect(x, y, w, h, 2, 2, 'F');
     doc.setFillColor(10, 108, 194); doc.rect(x, y, 1.6, h, 'F');
     doc.setTextColor(11, 42, 74); doc.setFont('helvetica', 'bold'); doc.setFontSize(13);
-    doc.text(head || 'Ready to ship it? The team behind CargoKit can handle the whole move.', x + 7, y + 8.5);
+    doc.text('More free tools on CargoKit', x + 7, y + 8.5);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(43, 66, 92);
-    doc.text('Licensed customs broker since 1992, with our own offices in New Delhi, Mumbai (sea and air) and Mundra.', x + 7, y + 15);
-    doc.text('Container and air freight booking, customs clearance, trucking to and from ICDs, insurance, and DG and project cargo.', x + 7, y + 20);
+    doc.text('3D container and truck load planner, pallet and CBM calculator, HSN code finder, import duty calculator,', x + 7, y + 15);
+    doc.text('B/L and AWB draft maker, invoice and packing list maker, DG and lithium battery checks, and tracking.', x + 7, y + 20);
     doc.setFont('helvetica', 'bold'); doc.setTextColor(10, 108, 194);
-    doc.text('Get a quote: www.CargoKit.ai   |   +91 11 4160 3301   |   info@yamlogistics.com   |   WhatsApp @CARGOKIT', x + 7, y + 26);
+    doc.text('Free, no sign-up: www.CargoKit.ai   |   on the web and on Android', x + 7, y + 26);
+    doc.link(x, y, w, h, { url: 'https://cargokit.ai/' });
     doc.setTextColor(11, 42, 74); doc.setFont('helvetica', 'normal');
     return h;
   };

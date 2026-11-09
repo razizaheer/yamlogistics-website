@@ -107,6 +107,8 @@
   }
   function inWords(v, c) { var w = Math.floor(v + 1e-9), ct = Math.round((v - w) * 100); if (ct === 100) { w++; ct = 0; } return (CNAME[c] || c) + ' ' + words(w) + (ct ? ' AND ' + words(ct) + ' CENTS' : '') + ' ONLY'; }
   var jsP = null;
+  var LOGO = null, lgP;
+  function logo() { if (!lgP) lgP = new Promise(function (ok) { var im = new Image(); im.onload = function () { try { var c = D.createElement('canvas'); c.width = (im.naturalWidth || 100) * 4; c.height = (im.naturalHeight || 100) * 4; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); LOGO = { d: c.toDataURL('image/png'), r: c.height / c.width }; } catch (e) {} ok(); }; im.onerror = function () { ok(); }; im.src = 'cargokit-logo.svg'; }); return lgP; }
   function jspdf() { if (!jsP) jsP = new Promise(function (ok, no) { var s = D.createElement('script'); s.src = 'vendor/jspdf.umd.min.js'; s.onload = function () { ok(window.jspdf); }; s.onerror = no; D.head.appendChild(s); }); return jsP; }
   var M = 40, W = 595, PH = 842, BOT = 770;
   function head(doc, title, f) {
@@ -172,7 +174,10 @@
   function footers(doc) {
     var n = doc.getNumberOfPages();
     for (var i = 1; i <= n; i++) { doc.setPage(i); doc.setDrawColor(255, 201, 60); doc.setLineWidth(1.5); doc.line(M, 800, W - M, 800); doc.setLineWidth(0.5); doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(94, 120, 145);
-      doc.text('Made with CargoKit by YAM Logistics - cargokit.ai. A convenience draft: check every detail before use.', M, 814); doc.text('Page ' + i + ' of ' + n, W - M, 814, { align: 'right' }); }
+      var tx = M; if (LOGO) { doc.addImage(LOGO.d, 'PNG', M, 805, 14 / LOGO.r, 14, undefined, 'FAST'); tx = M + 14 / LOGO.r + 6; }
+      doc.setFont('helvetica', 'bold'); doc.setTextColor(11, 42, 74); doc.text('Made free with CargoKit', tx, 811); doc.setFont('helvetica', 'normal'); doc.setTextColor(10, 108, 194); doc.text('www.CargoKit.ai · free tools for shippers and forwarders', tx, 821);
+      doc.link(M, 803, 260, 22, { url: 'https://cargokit.ai/' }); doc.setTextColor(94, 120, 145);
+      doc.text('A convenience draft: check every detail before use.', W - M, 811, { align: 'right' }); doc.text('Page ' + i + ' of ' + n, W - M, 821, { align: 'right' }); }
   }
   function invoice(doc, f, first) {
     if (!first) doc.addPage(); head(doc, 'COMMERCIAL INVOICE', f);
@@ -204,7 +209,7 @@
   }
   function make(kind) {
     if (!check()) return; toast('Making the PDF…');
-    jspdf().then(function (lib) {
+    Promise.all([jspdf(), logo()]).then(function (r) { var lib = r[0];
       var doc = new lib.jsPDF({ unit: 'pt', format: 'a4' }), f = S.f;
       if (kind === 'inv') invoice(doc, f, true); else if (kind === 'pl') packing(doc, f, true); else { invoice(doc, f, true); packing(doc, f, false); }
       footers(doc);

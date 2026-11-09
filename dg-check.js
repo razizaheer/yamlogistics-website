@@ -206,7 +206,7 @@
   function loadS(src) { return new Promise(function (ok, no) { var s = document.createElement('script'); s.src = TB + src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
   function pdf() {
     if (!last) return; var b = $('dg-pdf'); b.disabled = true;
-    Promise.all([window.jspdf ? 0 : loadS('vendor/jspdf.umd.min.js'), window.YAMBrand ? 0 : loadS('yam-brand.js?v=2')]).then(function () { var BR = window.YAMBrand; BR.logoSrc = TB + 'yam-logo.svg'; BR.qrSrc = TB + 'yam-qr.png'; return BR.ready(); }).then(function (BR) {
+    Promise.all([window.jspdf ? 0 : loadS('vendor/jspdf.umd.min.js'), window.YAMBrand ? 0 : loadS('yam-brand.js?v=4')]).then(function () { var BR = window.YAMBrand; BR.base = TB; return BR.ready(); }).then(function (BR) {
       var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' }), W = 210, M = 16, y = 40, r = last.r, R = RISK[r.risk], H = doc.internal.pageSize.getHeight();
       var when = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
       function page(need) { if (y + need > H - 30) { doc.addPage(); BR.header(doc, 'DG cargo check', when); BR.footer(doc, 'Guidance only. The shipper is responsible for classification.'); y = 40; } }
@@ -217,12 +217,12 @@
       doc.setFillColor(rc[0], rc[1], rc[2]); doc.roundedRect(M, y, W - 2 * M, 22, 3, 3, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text(R.t, M + 6, y + 9); doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.text(doc.splitTextToSize(r.title, W - 2 * M - 12)[0], M + 6, y + 16); y += 30;
       para('By air', 11, [11, 42, 74], true); para(last.V.air, 10, [43, 66, 92]); y += 2;
       para('By sea', 11, [11, 42, 74], true); para(last.V.sea, 10, [43, 66, 92]); y += 2;
-      para('What YAM says', 11, [11, 42, 74], true); para(r.note, 10, [43, 66, 92]); y += 2;
+      para('Our guidance', 11, [11, 42, 74], true); para(r.note, 10, [43, 66, 92]); y += 2;
       if (last.V.rows.length) { para('Possible UN entries', 11, [11, 42, 74], true); last.V.rows.slice(0, 10).forEach(function (x) { para('UN' + x[0] + '  ' + x[1] + '  |  Class ' + x[2] + (x[3] ? ' (' + x[3] + ')' : '') + (x[4] ? '  |  PG ' + x[4] : '') + '  |  Air: ' + airOf(x)[0], 9, [43, 66, 92]); }); y += 2; }
       var fl = (r.flags || []).filter(function (k) { return FLAG[k]; });
       if (fl.length) { para('Watch out for', 11, [11, 42, 74], true); fl.forEach(function (k) { para('• ' + FLAG[k][0] + ': ' + FLAG[k][1], 9.5, [43, 66, 92]); }); y += 2; }
       para('Documents to prepare', 11, [11, 42, 74], true); last.D.forEach(function (d) { para('• ' + d, 9.5, [43, 66, 92]); }); y += 4;
-      page(40); BR.promo(doc, M, y, W - 2 * M, 'Shipping DG or special cargo? Talk to YAM’s DG desk.'); y += 38;
+      page(40); BR.promo(doc, M, y, W - 2 * M); y += 38;
       para('IMPORTANT — GUIDANCE ONLY. This summary reflects YAM Logistics’ own knowledge and experience and is provided free for general guidance. It is not the IATA Dangerous Goods Regulations, the IMDG Code or any official classification, and is not endorsed by IATA, IMO, ICAO or any carrier. Classification of dangerous goods is the legal responsibility of the shipper and must be based on the product’s current Safety Data Sheet (MSDS, Section 14) and the applicable regulations. Airlines, shipping lines, ports and authorities may apply stricter rules. YAM Logistics accepts no liability for any loss, delay, penalty or damage arising from use of this summary. Always confirm with a certified dangerous goods professional before booking.', 8, [120, 75, 0]);
       BR.finish(doc);
       doc.save('CargoKit-DG-check-' + last.q.replace(/[^A-Z0-9]+/gi, '-').slice(0, 30) + '.pdf');

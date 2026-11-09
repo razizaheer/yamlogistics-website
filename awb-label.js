@@ -240,7 +240,7 @@
     var sz = SIZES[$('al-sz').value];
     return loadPdf().then(function (J) {
       var doc = new J.jsPDF({ unit: 'mm', format: [sz.w, sz.h], orientation: 'portrait', compress: true });
-      doc.setProperties({ title: 'Air cargo labels ' + d.prefix + '-' + d.serial, creator: 'CargoKit free label generator (www.CargoKit.ai) by YAM Logistics' });
+      doc.setProperties({ title: 'Air cargo labels ' + d.prefix + '-' + d.serial, creator: 'CargoKit free label generator (www.CargoKit.ai)' });
       var per = sz.slots.length, n = 0;
       for (var p = d.from; p <= d.to; p++) {
         var slot = n % per;

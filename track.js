@@ -251,8 +251,8 @@
   // ---- branded one-page tracking summary (PDF) ----
   function summary() {
     var b = document.getElementById('tk-sum'); if (b) b.disabled = true;
-    var need = [window.jspdf ? 0 : load('vendor/jspdf.umd.min.js'), window.YAMBrand ? 0 : load('yam-brand.js?v=2')];
-    Promise.all(need).then(function () { var BR = window.YAMBrand; BR.logoSrc = TB + 'yam-logo.svg'; BR.qrSrc = TB + 'yam-qr.png'; return BR.ready(); }).then(function (BR) {
+    var need = [window.jspdf ? 0 : load('vendor/jspdf.umd.min.js'), window.YAMBrand ? 0 : load('yam-brand.js?v=4')];
+    Promise.all(need).then(function () { var BR = window.YAMBrand; BR.base = TB; return BR.ready(); }).then(function (BR) {
       var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' }), W = 210, M = 16, y = 40;
       var kind = (res.querySelector('.tk-kind') || {}).textContent || '', who = (res.querySelector('.tk-h') || {}).textContent || '', num = (res.querySelector('.tk-num') || {}).textContent || '';
       var chk = res.querySelector('.tk-ok') ? 'Check digit valid' : res.querySelector('.tk-bad') ? 'Check digit does not match: please re-check the number' : '';
@@ -269,9 +269,7 @@
       doc.text(doc.splitTextToSize(lt || 'On the carrier\'s own tracking page', W - 2 * M - 12), M + 6, y + 16);
       if (lh) { doc.setTextColor(10, 108, 194); doc.textWithLink(doc.splitTextToSize(lh, W - 2 * M - 12)[0], M + 6, y + 23, { url: lh }); }
       doc.setTextColor(94, 120, 145); doc.setFontSize(9); doc.text('Track it again any time at www.CargoKit.ai/track-shipment', M + 6, y + 30); y += 44;
-      BR.promo(doc, M, y, W - 2 * M, 'Need this shipment cleared or delivered? Talk to the team behind CargoKit.'); y += 38;
-      doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(94, 120, 145);
-      doc.text(doc.splitTextToSize('CargoKit is a free tool by YAM Logistics Pvt. Ltd., a licensed customs broker (since 1992) with offices in New Delhi, Mumbai (sea and air) and Mundra. Customs clearance, sea and air freight, ICD trucking, insurance and project cargo.', W - 2 * M), M, y);
+      BR.promo(doc, M, y, W - 2 * M); y += 38;
       BR.finish(doc);
       doc.save('CargoKit-tracking-' + (res.getAttribute('data-n') || 'summary').replace(/[^A-Z0-9-]/gi, '') + '.pdf');
     }).catch(function () { toast('Sorry, the PDF could not be created in this browser.'); }).then(function () { if (b) b.disabled = false; });

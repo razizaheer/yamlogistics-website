@@ -1435,7 +1435,7 @@ ${n ? `<div class="lp-card">
       });
       if (r.tooBig.length || r.notPlaced.length) { y += 2; [...r.tooBig, ...r.notPlaced].forEach((t) => { T(`Not loaded: ${t.n} x ${t.type.name} - ${t.why}`, M, y, { c: red, s: 9 }); y += 5; }); }
       if (S.gapD || S.gapR) { T(`Space kept free: ${showLen(S.gapD)} ${S.unit} at the doors, ${showLen(S.gapR)} ${S.unit} under the roof.`, M, y + 2, { c: muted, s: 8.5 }); y += 6; }
-      if (window.YAMBrand && y < BOT - 34) YAMBrand.promo(doc, M, BOT - 32, PW - 2 * M, 'Ready to ship this load? The team behind CargoKit can handle the whole move.');
+      if (window.YAMBrand && y < BOT - 34) YAMBrand.promo(doc, M, BOT - 32, PW - 2 * M);
 
       // ---- drawing helpers for measured views
       const dimLine = (x1, y1, x2, y2, label, o = {}) => {
@@ -1703,7 +1703,7 @@ ${n ? `<div class="lp-card">
         g.fillStyle = '#CFE3F5'; g.font = '24px Arial'; g.fillText(unitName.slice(0, 44), 28, 88);
         if (right) { g.fillStyle = '#FFC93C'; g.font = 'bold 30px Arial'; g.textAlign = 'right'; g.fillText(right, VW - 28, 50); g.textAlign = 'left'; }
       };
-      const footer = () => { g.fillStyle = '#0B2A4A'; g.fillRect(0, VH - 56, VW, 56); g.fillStyle = '#FFFFFF'; g.font = '22px Arial'; g.textAlign = 'center'; g.fillText('www.CargoKit.ai · WhatsApp @CARGOKIT', VW / 2, VH - 30); g.fillStyle = '#9FB6CC'; g.font = '15px Arial'; g.fillText('CargoKit by YAM Logistics Pvt. Ltd.', VW / 2, VH - 9); g.textAlign = 'left'; };
+      const footer = () => { g.fillStyle = '#0B2A4A'; g.fillRect(0, VH - 56, VW, 56); g.fillStyle = '#FFFFFF'; g.font = '22px Arial'; g.textAlign = 'center'; g.fillText('www.CargoKit.ai · free shipping tools, no sign-up', VW / 2, VH - 30); g.fillStyle = '#9FB6CC'; g.font = '15px Arial'; g.fillText('Made free with CargoKit', VW / 2, VH - 9); g.textAlign = 'left'; };
       const plan = (k, y0) => {
         const pw = VW - 56, ph = Math.max(60, Math.min(150, pw * F.W / F.L)), x0 = 28, so = stepOf(u, list), sx = pw / F.L, sz = ph / F.W;
         g.fillStyle = '#FFFFFF'; g.fillRect(x0, y0, pw, ph);
