@@ -13,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 .links summary.nbf,summary.nbf{background:#FFF4D6;color:#5A4310!important;box-shadow:inset 0 0 0 1.5px #FFC93C}.nbf:hover{background:#FFEDB8}
-.ft-in{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 32px}.mega .ft-in{padding-top:24px;padding-bottom:26px}
+.ft-in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 28px}@media (max-width:1180px){.ft-in{grid-template-columns:repeat(2,minmax(0,1fr))}}.ft-star{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:2px 0 8px}.ft-sh{grid-column:1/-1;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;color:#B45309}.ft-sh small{font-family:Geist,system-ui,sans-serif;letter-spacing:0;font-size:12.5px;color:#5E7891;margin-left:8px}.ft-sh small.warn{color:#B91C1C;font-weight:600}.ft-star a{display:block;padding:12px 14px;border-radius:14px;background:#FFF8E6;box-shadow:inset 0 0 0 1.5px #FFE3A0;text-decoration:none;color:#0B2A4A}.ft-star a:hover{background:#FFF1CC}.ft-star a b{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:16px}.ft-star a span{display:block;font-size:13px;line-height:1.4;color:#3D5873;margin-top:2px}.ft-star .ft-none{grid-column:1/-1;font-size:14px;color:#5E7891;padding:6px 0}.ft-c a{position:relative;padding-right:40px!important}.ft-pin{position:absolute;right:2px;top:6px;width:32px;height:32px;border:0;border-radius:50%;background:none;font-size:19px;line-height:32px;text-align:center;color:#9FB3C8;cursor:pointer;padding:0}.ft-pin:hover{background:#FFF4D6;color:#D97706}.ft-pin.on{color:#D97706}html.navc .ft-star{grid-template-columns:1fr;gap:6px}html.navc .ft-star a span{display:none}html.navc .ft-sh small{display:block;margin:2px 0 0}@media (max-width:900px){.ft-star{grid-template-columns:1fr;gap:6px}.ft-star a span{display:none}.ft-sh small{display:block;margin:2px 0 0}}/*ftm-end*/.mega .ft-in{padding-top:24px;padding-bottom:26px}
 .ft-h{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;font-size:11px;letter-spacing:.1em;color:#0A6CC2}.ft-h a{font-family:'Archivo',sans-serif;font-weight:700;font-size:14px;letter-spacing:0;color:#0A6CC2!important;text-decoration:none}
 .ft-c .mh{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;color:#5E7891;margin:4px 0 6px}
 .ft-c a{display:block;padding:9px 12px;margin:0 -12px;border-radius:12px;text-decoration:none;color:#0B2A4A;white-space:normal}.ft-c a:hover{background:#F2F8FD}
@@ -142,21 +142,15 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 </div></div></details>
 <details class="sol ftm"><summary class="nb nbf">免费工具 ▾</summary><div class="mega"><div class="wrap ft-in">
 <div class="ft-h"><span class="mono">免费工具 · 无需注册</span><a href="free-tools.html">查看全部免费工具 →</a></div>
+<div class="ft-star" data-full="最多可标星3个工具,请先取消一个。" data-empty="点按工具旁的☆即可固定到这里。"><div class="ft-sh">★ 我的前3个<small>点按任一工具旁的☆即可自选</small></div><a data-k="load" href="zh/container-load-planner.html"><b>3D集装箱装载规划</b><span>需要多少集装箱、卡车或ULD,附3D装载图</span></a><a data-k="hsn" href="hsn-code-finder.html"><b>HSN编码查询</b><span>描述您的产品,获取可能的8位编码</span></a><a data-k="duty" href="customs-duty-calculator.html"><b>进口关税计算器</b><span>印度、美国、欧盟、英国、日本、澳大利亚、新加坡</span></a></div>
+<div class="ft-c"><div class="mh">规划与装载</div>
+<a data-k="load" href="zh/container-load-planner.html"><b>3D集装箱装载规划</b><span>需要多少集装箱、卡车或ULD,附3D装载图</span></a><a data-k="pallet" href="zh/container-load-planner.html#pallets"><b>托盘计算器</b><span>先把纸箱码成托盘,再装入集装箱</span></a><a data-k="cbm" href="zh/cbm-calculator.html"><b>体积与体积重量</b><span>总体积、空运计费重量和拼箱W/M</span></a><a data-k="fc" href="freight-compare.html"><b>拼箱还是整箱 · 海运还是空运</b><span>哪种更便宜,盈亏平衡点在哪里</span></a><a data-k="sizes" href="container-sizes.html"><b>集装箱与ULD尺寸指南</b><span>集装箱、航空托盘和航空集装箱,附PDF</span></a></div>
 <div class="ft-c"><div class="mh">海关与关税</div>
-<a href="hsn-code-finder.html"><b>HSN编码查询</b><span>描述产品，查找可能的8位编码</span></a>
-<a href="customs-duty-calculator.html"><b>进口关税计算器</b><span>任意HSN编码的基本关税、SWS和IGST及到岸成本</span></a>
-<a href="export-benefit-finder.html"><b>出口优惠查询</b><span>按HS编码查退税、RoDTEP和RoSCTL费率</span></a>
-<a href="incoterms.html"><b>2020国际贸易术语图表</b><span>11条规则下谁付费、谁承担风险</span></a></div>
-<div class="ft-c"><div class="mh">货物与集装箱</div>
-<a href="awb-label-generator.html"><b>空运标签生成器</b><span>每件货物的IATA条码标签，PDF格式</span></a>
-<a href="zh/container-load-planner.html"><b>集装箱装载计算器</b><span>需要几个20′、40′或40′高柜，附3D装箱图</span></a>
-<a href="container-sizes.html"><b>集装箱尺寸指南</b><span>11 种集装箱的尺寸、重量和载重，附 PDF</span></a>
-<a href="zh/cbm-calculator.html"><b>立方数与体积重量计算器</b><span>总体积、空运计费重量和拼箱W/M</span></a>
-<a href="track-shipment.html"><b>追踪货物</b><span>55+家船公司和400家航空公司，含印度港口段</span></a></div>
+<a data-k="hsn" href="hsn-code-finder.html"><b>HSN编码查询</b><span>描述您的产品,获取可能的8位编码</span></a><a data-k="duty" href="customs-duty-calculator.html"><b>进口关税计算器</b><span>印度、美国、欧盟、英国、日本、澳大利亚、新加坡</span></a><a data-k="landed" href="landed-cost-calculator.html"><b>到岸成本计算器</b><span>含关税、税费、运费和利润的单位成本</span></a><a data-k="export" href="export-benefit-finder.html"><b>出口优惠查询</b><span>按HS编码查询退税、RoDTEP和RoSCTL税率</span></a><a data-k="notif" href="trade-notifications.html"><b>通告库</b><span>可搜索的CBIC、DGFT和印度海关通告</span></a><a data-k="inco" href="incoterms.html"><b>2020国际贸易术语图表</b><span>11条规则中谁付费、谁承担风险</span></a></div>
+<div class="ft-c"><div class="mh">单证与核查</div>
+<a data-k="inv" href="document-generator.html"><b>发票和装箱单生成器</b><span>整洁的PDF,另附进出口核对清单</span></a><a data-k="awb" href="awb-label-generator.html"><b>AWB标签生成器</b><span>每件货物的IATA条码标签,PDF格式</span></a><a data-k="doc" href="document-checker.html"><b>单证核对</b><span>核对发票、装箱单与提单或空运单</span></a><a data-k="cnum" href="container-number-checker.html"><b>集装箱号核验</b><span>ISO 6346校验位、箱型代码和相机扫描</span></a></div>
 <div class="ft-c"><div class="mh">危险品</div>
-<a href="dg-cargo-checker.html"><b>危险品货物检查工具</b><span>是否属于危险品？按HS编码、品名或MSDS查询</span></a>
-<a href="lithium-battery-checker.html"><b>锂电池检查工具</b><span>30秒查UN编号、包装说明和标签</span></a>
-<a href="dg-labels.html"><b>危险品标签</b><span>51种可打印PDF标签：危险类别、锂电池标记、CAO</span></a></div>
+<a data-k="dgc" href="dg-cargo-checker.html"><b>危险品核查</b><span>是否属于危险品?按HSN、产品或MSDS核查</span></a><a data-k="li" href="lithium-battery-checker.html"><b>锂电池核查</b><span>30秒得出UN编号、包装说明和标签</span></a><a data-k="dgl" href="dg-labels.html"><b>危险品标签</b><span>51种可打印PDF标签:危险类别、锂电池标记、CAO</span></a></div>
 <div class="ft-f"><a href="trade-desk.html">Trade Desk：印度海关与航运动态 →</a><a href="https://wa.me/message/6YB7I76DV6UJL1">对结果有疑问？WhatsApp联系我们 →</a></div>
 </div></div></details>
 <a href="trade-desk.html" class="nb nb5 ntd"><i aria-hidden="true"></i><span>Trade Desk</span></a><details class="sol abm"><summary class="nb nb2">关于我们 ▾</summary><div class="mega"><div class="wrap ab-in"><a href="zh/about.html"><b>关于 YAM</b><span>始于 1968 年 · 报关行执照 R-7/92 · 新德里、孟买、蒙德拉</span></a><a class="ai" href="how-we-use-ai.html"><b>我们如何使用 AI <em>→</em></b><span>AI 负责速度，持证报关员负责判断。</span></a><a href="zh/contact.html"><b>联系方式</b><span>办公室、电话、WhatsApp 和 Telegram</span></a></div></div></details><a href="zh/mobile-phone-exports.html" class="nb nb3"><span>手机出口</span></a>
@@ -318,7 +312,7 @@ Kachchh, Gujarat 370421</span>
 </div>
 
 </div>
-</main>
+<!--rio-card--><div style="max-width:1000px;margin:28px auto;padding:0 22px"><a href="latin-america.html" style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;background:#FFFFFF;border:1px solid #DCEAF6;border-radius:20px;padding:18px 22px;text-decoration:none;box-shadow:0 14px 34px -24px rgba(11,42,74,.4)"><img src="ricardo-uzeda.jpg" alt="" width="72" height="72" loading="lazy" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:4px solid #FFF4D6"><span style="flex:1 1 260px"><b style="display:block;font-family:'Archivo',sans-serif;font-weight:900;font-stretch:108%;color:#0B2A4A;font-size:19px">Latin America? Talk to our partnerships head in Rio</b><span style="display:block;font-size:15px;color:#3D5873;margin-top:3px">Ricardo Uzeda, our Head of Latin America Partnerships, speaks Portuguese, Spanish and English.</span></span><span style="background:#25D366;color:#06331A;border-radius:999px;padding:11px 18px;font-weight:600;font-size:15px">Meet Ricardo →</span></a></div><!--/rio-card--></main>
 <footer>
 <div class="ft" style="background: #0B4F8F; color: #CFE3F5; font-size: 14px; position: relative">
 <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="display: block; width: 100%; height: 60px; background: #FFFFFF" aria-hidden="true"><path d="M0 30 Q 120 0 240 30 T 480 30 T 720 30 T 960 30 T 1200 30 T 1440 30 V60 H0 Z" fill="#0B4F8F" /></svg>
