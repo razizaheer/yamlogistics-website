@@ -11,6 +11,14 @@
   } catch (e) {}
   if (standalone) { document.documentElement.classList.add('yam-app'); appShell(); }
   if (standalone) {
+    var band = function () {
+      // CargoKit banner instead of the YAM sales banner at the foot of each tool page (English pages)
+      if (/^\/(ar|de|es|fr|hi|ja|ko|pt|ru|zh)\//.test(location.pathname)) return;
+      var b = document.querySelector('main div[style="background: #0A6CC2; color: #FFFFFF"]');
+      if (!b || b.getAttribute('data-ck')) return;
+      b.setAttribute('data-ck', '1'); b.innerHTML = "<div style=\"max-width: 1400px; margin: 0 auto; padding: 56px 32px; display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between\"><div style=\"max-width: 720px\"><div style=\"font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: #FFE3A0; margin-bottom: 10px\">CARGOKIT \u00b7 FREE, NO SIGN-UP</div><div style=\"font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 26px; line-height: 1.15\">Every CargoKit tool is free for shippers, forwarders and agents.</div><div style=\"font-size: 15px; line-height: 1.55; opacity: .9; margin-top: 8px\">3D load planner, HSN finder, duty calculator, B/L and AWB drafts, DG checks and tracking. On the web and on Android.</div></div><div style=\"display: flex; flex-wrap: wrap; gap: 10px\"><a href=\"/free-tools\" style=\"background:#FFC93C;color:#0B2A4A;text-decoration:none;font-weight:700;border-radius:999px;padding:14px 26px\">All free tools \u2192</a><a href=\"https://wa.me/?text=Free%20shipping%20tools%3A%20load%20planner%2C%20HSN%20finder%2C%20B%2FL%20and%20AWB%20drafts%20%E2%80%93%20https%3A%2F%2Fcargokit.ai\" target=\"_blank\" rel=\"noopener\" style=\"background:rgba(255,255,255,.14);color:#FFFFFF;text-decoration:none;font-weight:700;border-radius:999px;padding:14px 26px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.5)\">Share CargoKit</a></div></div>";
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', band); else band();
     var brand = function () {
       // the app is CargoKit: its own name and icon in the header instead of the YAM logo
       var a = document.querySelector('header .brand, nav .brand');
