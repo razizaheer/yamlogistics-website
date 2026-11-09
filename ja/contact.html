@@ -408,7 +408,7 @@ function ecb(){return fetch('https://api.frankfurter.dev/v1/latest?base=INR&symb
 er().catch(function(){return ecb()}).catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'});
 })();
 </script>
-<script src="i18n/tr-core.js"></script><script src="i18n/ja.js?v=5"></script><script src="yam-runtime.js"></script>
+<script src="i18n/tr-core.js"></script><script src="i18n/ja.js?v=6"></script><script src="yam-runtime.js"></script>
 <script>
 window.yamSendEnquiry=function(st){try{const f=[...document.querySelectorAll('#app .fld')].map(e=>{const l=e.closest('label');const n=l?l.childNodes[0].textContent.trim():'';return n+': '+e.value}).filter(x=>!/: $/.test(x)).join('\n');const t=document.querySelector('#app [role=radio][aria-checked=true]');const subj='Website enquiry: '+(t?t.textContent:'General')+' — '+st.name;window.location.href='mailto:info@yamlogistics.com?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(f);}catch(e){}};
 (function(){const DCLogic=YAMDC.DCLogic;class Component extends DCLogic {
