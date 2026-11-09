@@ -6,7 +6,7 @@
 //    can be installed as the YAM Logistics app.
 const PT = new Set(['BR']);
 const ES = new Set(['AR', 'BO', 'CL', 'CO', 'CR', 'CU', 'DO', 'EC', 'SV', 'GT', 'HN', 'MX', 'NI', 'PA', 'PY', 'PE', 'PR', 'UY', 'VE']);
-const COMMON = ['index', 'container-load-planner', 'cbm-calculator', 'contact', 'about', 'customs-brokerage', 'ocean-freight', 'air-freight', 'mobile-phone-exports', 'third-country-trade', 'india-logistics-partner', 'india-latin-america-trade'];
+const COMMON = ['index', 'container-load-planner', 'cbm-calculator', 'contact', 'about', 'customs-brokerage', 'ocean-freight', 'air-freight', 'mobile-phone-exports', 'third-country-trade', 'india-logistics-partner', 'india-latin-america-trade', 'latin-america'];
 const PAGES = { es: new Set(COMMON), pt: new Set(COMMON) };
 const BOT = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|whatsapp|telegram|linkedin|preview|lighthouse|headless/i;
 const APP_TAGS = '<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/app/icon-180.png"><script src="/app/pwa.js" defer></script>';
@@ -18,12 +18,39 @@ const waFix = {
   text(t) { if (/WhatsApp @YAMLOGISTICS/.test(t.text)) t.replace(t.text.replace(/WhatsApp @YAMLOGISTICS/g, 'WhatsApp @CARGOKIT')); }
 };
 
+// Free Tools menu: one file per language (/menus/ftm-<lang>.txt) is put into every page here, so a menu
+// change never needs all 780 pages re-uploaded. If the file can't be read, the page keeps its own menu.
+const MENU_LANGS = /^\/(ar|de|es|fr|hi|ja|ko|pt|ru|zh)\//;
+const menuCache = new Map();
+async function menuFor(ctx, url) {
+  const lg = (url.pathname.match(MENU_LANGS) || [])[1] || 'en';
+  const hit = menuCache.get(lg);
+  if (hit && Date.now() - hit.t < 300000) return hit.html;
+  try {
+    const r = await ctx.env.ASSETS.fetch(new Request(new URL('/menus/ftm-' + lg + '.txt', url)));
+    const html = r.ok ? await r.text() : '';
+    const ok = html.includes('class="ft-c"') ? html : '';
+    menuCache.set(lg, { html: ok, t: Date.now() });
+    return ok;
+  } catch (e) {
+    return '';
+  }
+}
+
 async function withAppTags(ctx) {
   const res = await ctx.next();
   try {
     const ct = res.headers.get('Content-Type') || '';
     if (!ct.includes('text/html') || typeof HTMLRewriter === 'undefined') return res;
-    return new HTMLRewriter().on('head', { element(el) { el.append(APP_TAGS, { html: true }); } }).on('a[href*="wa.me/"]', waFix).transform(res);
+    const menu = await menuFor(ctx, new URL(ctx.request.url));
+    const lg = (new URL(ctx.request.url).pathname.match(/^\/(es|pt)\//) || [])[1] || 'en';
+    const desk = { en: ['latin-america.html', 'Latin America Desk · Rio'], es: ['es/latin-america.html', 'Oficina América Latina · Río'], pt: ['pt/latin-america.html', 'Escritório América Latina · Rio'] }[lg];
+    let added = false;
+    return new HTMLRewriter().on('head', { element(el) { el.append(APP_TAGS, { html: true }); } }).on('a[href*="wa.me/"]', waFix)
+      // footer: a link to the Latin America desk right after "India–Latin America Corridor"
+      .on('footer a[href*="india-latin-america-trade"]', { element(el) { if (added) return; added = true; el.after('<a href="/' + desk[0].replace(/\.html$/, '') + '">' + desk[1] + '</a>', { html: true }); } })
+      .on('details.ftm', { element(el) { if (menu) el.setInnerContent(menu, { html: true }); } })
+      .transform(res);
   } catch (e) {
     return res;
   }
@@ -40,7 +67,9 @@ async function cargoKitHome(ctx, url) {
   out.headers.set('Cache-Control', 'public, max-age=300');
   try {
     if (typeof HTMLRewriter === 'undefined') return out;
-    return new HTMLRewriter().on('head', { element(el) { el.append(APP_TAGS, { html: true }); } }).transform(out);
+    const menu = await menuFor(ctx, url);
+    return new HTMLRewriter().on('head', { element(el) { el.append(APP_TAGS, { html: true }); } })
+      .on('details.ftm', { element(el) { if (menu) el.setInnerContent(menu, { html: true }); } }).transform(out);
   } catch (e) {
     return out;
   }
