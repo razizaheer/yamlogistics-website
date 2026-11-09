@@ -10,6 +10,26 @@
     if (standalone) sessionStorage.setItem('yam_app', '1');
   } catch (e) {}
   if (standalone) { document.documentElement.classList.add('yam-app'); appShell(); }
+  if (standalone) {
+    var brand = function () {
+      // the app is CargoKit: its own name and icon in the header instead of the YAM logo
+      var a = document.querySelector('header .brand, nav .brand');
+      if (!a || a.querySelector('.ck-brand')) return;
+      a.innerHTML = '<span class="ck-brand"><img src="/cargokit-logo.svg" alt="">CargoKit</span>';
+      a.setAttribute('href', '/free-tools');
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', brand); else brand();
+    var addTrk = function () {
+      var top = document.getElementById('ft-top');
+      if (!top || document.getElementById('ck-trk')) return;
+      var f = document.createElement('form');
+      f.id = 'ck-trk';
+      f.innerHTML = '<input name="n" placeholder="Track container, AWB or B/L" autocomplete="off" aria-label="Container, AWB or B/L number"><button type="submit">Track</button>';
+      f.addEventListener('submit', function (e) { e.preventDefault(); var v = f.n.value.trim(); location.href = '/track-shipment.html' + (v ? '?n=' + encodeURIComponent(v) : ''); });
+      var h = top.previousElementSibling; (h || top).parentNode.insertBefore(f, h || top);
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addTrk); else addTrk();
+  }
 
   // App look: compact header, slim footer and a bottom tab bar, like a normal phone app.
   function appShell() {
@@ -40,6 +60,24 @@
       'html.yam-app .ft-grid .ftc{padding:14px!important;border-radius:16px!important;gap:6px!important;min-height:92px}' +
       'html.yam-app .ft-grid .ftc span:nth-child(2){font-size:16px!important;line-height:1.2!important}' +
       'html.yam-app .ft-grid .ftc span:nth-child(3),html.yam-app .ft-grid .ftc span:nth-child(4){display:none!important}' +
+      // tools page in the app: icon tiles like the big carrier apps (3 per row: coloured icon, name under it),
+      // your top 3 as wide tiles on top, and a track box first
+      'html.yam-app .ft-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}' +
+      'html.yam-app .ft-grid .ftc{min-height:0!important;padding:14px 6px 12px!important;align-items:center!important;text-align:center;gap:8px!important;border-radius:18px!important;box-shadow:0 4px 14px rgba(11,42,74,.06)}' +
+      'html.yam-app .ft-grid .ftc span:nth-child(1){display:none!important}' +
+      'html.yam-app .ft-grid .ftc span:nth-child(2){font-family:Geist,system-ui,sans-serif!important;font-weight:600!important;font-size:13px!important;line-height:1.25!important}' +
+      'html.yam-app .ft-grid .ftc .fti{width:48px;height:48px;border-radius:15px}' +
+      'html.yam-app .ft-grid .ftc .ft-pin{top:2px!important;right:2px!important;width:26px;height:26px;font-size:15px;line-height:26px}' +
+      'html.yam-app #ft-top{grid-template-columns:repeat(3,minmax(0,1fr))!important}' +
+      'html.yam-app #ft-top .ftc{padding:14px 6px!important;background:linear-gradient(160deg,#0B4F8F,#0A6CC2)!important;border:0!important}' +
+      'html.yam-app #ft-top .ftc span:nth-child(2){color:#FFFFFF!important}' +
+      'html.yam-app #ft-top .ftc .fti{background:rgba(255,255,255,.16)!important;color:#FFC93C!important}' +
+      'html.yam-app h2.ft-gh{font-size:17px!important;margin:22px 2px 10px!important}html.yam-app h2.ft-gh small{display:block;margin:2px 0 0!important;font-size:12.5px!important}' +
+      'html.yam-app .ft-hero{display:none!important}' +
+      'html.yam-app .ck-brand{display:inline-flex;align-items:center;gap:9px;font:800 21px Archivo,Geist,system-ui,sans-serif;color:#0B2A4A;letter-spacing:-.01em}html.yam-app .ck-brand img{width:34px;height:34px;border-radius:9px}' +
+      '#ck-trk{display:flex;gap:8px;background:#FFFFFF;border-radius:18px;padding:8px;box-shadow:0 8px 24px rgba(11,42,74,.10);margin:4px 0 6px}' +
+      '#ck-trk input{flex:1;min-width:0;border:0;outline:0;font:500 15px Geist,system-ui,sans-serif;padding:10px 8px;color:#0B2A4A;background:transparent}' +
+      '#ck-trk button{border:0;border-radius:12px;background:#0A6CC2;color:#FFFFFF;font:700 14px Geist,system-ui,sans-serif;padding:0 16px}' +
       'html.yam-app .ft-more{display:none!important}' +
       '#yam-slim{padding:18px 16px 8px;text-align:center;font:13px/1.5 Geist,system-ui,sans-serif;color:#5E7891}#yam-slim a{color:#0A6CC2;text-decoration:none}';
     document.head.appendChild(css);
