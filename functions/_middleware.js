@@ -37,6 +37,18 @@ async function menuFor(ctx, url) {
   }
 }
 
+// Top bar: the Import Duty Calculator button is gone (it is in the Free Tools menu); a My Shipments button
+// sits next to Track Shipment instead.
+const MYSHIP = { en: 'My Shipments', es: 'Mis envíos', pt: 'Meus embarques', fr: 'Mes envois', de: 'Meine Sendungen', ar: 'شحناتي', hi: 'मेरे शिपमेंट', ja: 'マイ貨物', ko: '내 화물', ru: 'Мои отправки', zh: '我的货物' };
+function topBar(url) {
+  const lg = (url.pathname.match(MENU_LANGS) || [])[1] || 'en';
+  let done = false;
+  return [
+    ['.links > a.nb4', { element(el) { el.remove(); } }],
+    ['.links > a.btn-o', { element(el) { if (done) return; done = true; el.after('<a href="/my-shipments.html" class="btn-o">★ ' + MYSHIP[lg] + '</a>', { html: true }); } }]
+  ];
+}
+
 async function withAppTags(ctx) {
   const res = await ctx.next();
   try {
@@ -46,11 +58,12 @@ async function withAppTags(ctx) {
     const lg = (new URL(ctx.request.url).pathname.match(/^\/(es|pt)\//) || [])[1] || 'en';
     const desk = { en: ['latin-america.html', 'Latin America Desk · Rio'], es: ['es/latin-america.html', 'Oficina América Latina · Río'], pt: ['pt/latin-america.html', 'Escritório América Latina · Rio'] }[lg];
     let added = false;
-    return new HTMLRewriter().on('head', { element(el) { el.append(APP_TAGS, { html: true }); } }).on('a[href*="wa.me/"]', waFix)
+    const rw = new HTMLRewriter().on('head', { element(el) { el.append(APP_TAGS, { html: true }); } }).on('a[href*="wa.me/"]', waFix)
       // footer: a link to the Latin America desk right after "India–Latin America Corridor"
       .on('footer a[href*="india-latin-america-trade"]', { element(el) { if (added) return; added = true; el.after('<a href="/' + desk[0].replace(/\.html$/, '') + '">' + desk[1] + '</a>', { html: true }); } })
-      .on('details.ftm', { element(el) { if (menu) el.setInnerContent(menu, { html: true }); } })
-      .transform(res);
+      .on('details.ftm', { element(el) { if (menu) el.setInnerContent(menu, { html: true }); } });
+    for (const [sel, h] of topBar(new URL(ctx.request.url))) rw.on(sel, h);
+    return rw.transform(res);
   } catch (e) {
     return res;
   }
@@ -67,9 +80,10 @@ async function cargoKitHome(ctx, url) {
   out.headers.set('Cache-Control', 'public, max-age=300');
   try {
     if (typeof HTMLRewriter === 'undefined') return out;
-    const menu = await menuFor(ctx, url);
+    const menu = await menuFor(ctx, url), tb = topBar(url);
     return new HTMLRewriter().on('head', { element(el) { el.append(APP_TAGS, { html: true }); } })
-      .on('details.ftm', { element(el) { if (menu) el.setInnerContent(menu, { html: true }); } }).transform(out);
+      .on('details.ftm', { element(el) { if (menu) el.setInnerContent(menu, { html: true }); } })
+      .on(tb[0][0], tb[0][1]).on(tb[1][0], tb[1][1]).transform(out);
   } catch (e) {
     return out;
   }
