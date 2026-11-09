@@ -65,6 +65,13 @@ function build(lang, slug, I18V) {
     p.textContent = dict[PREVAILS];
     if (h) h.after(p); else disc.prepend(p);
   }
+  else if (slug === 'privacy' && dict[PREVAILS]) {
+    const h1 = document.querySelector('main h1');
+    const p = document.createElement('p');
+    p.setAttribute('style', 'font-size: 14px; line-height: 1.55; color: #5E7891; margin: 10px 0 18px; font-style: italic');
+    p.textContent = dict[PREVAILS];
+    if (h1) h1.after(p);
+  }
   // runtime translation before the first tool script
   const first = [...document.body.querySelectorAll('script[src]')][0];
   const mk = (src, code) => { const s = document.createElement('script'); if (src) s.setAttribute('src', src); if (code) s.textContent = code; return s; };
