@@ -9,7 +9,12 @@ const ES = new Set(['AR', 'BO', 'CL', 'CO', 'CR', 'CU', 'DO', 'EC', 'SV', 'GT', 
 const COMMON = ['index', 'container-load-planner', 'cbm-calculator', 'contact', 'about', 'customs-brokerage', 'ocean-freight', 'air-freight', 'mobile-phone-exports', 'third-country-trade', 'india-logistics-partner', 'india-latin-america-trade', 'latin-america'];
 const PAGES = { es: new Set(COMMON), pt: new Set(COMMON) };
 const BOT = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|whatsapp|telegram|linkedin|preview|lighthouse|headless/i;
-const APP_TAGS = '<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/app/icon-180.png"><script src="/app/pwa.js?v=4" defer></script>';
+const APP_TAGS = '<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/app/icon-180.png"><script src="/app/pwa.js?v=5" defer></script>';
+
+// On cargokit.ai the blue YAM banner at the foot of each free tool page promotes CargoKit instead, so other
+// forwarders and agents can use the tools without a YAM sales pitch (yamlogistics.com keeps the YAM banner).
+const CK_BAND_SEL = 'main div[style="background: #0A6CC2; color: #FFFFFF"]';
+const CK_BAND = "<div style=\"max-width: 1400px; margin: 0 auto; padding: 56px 32px; display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between\"><div style=\"max-width: 720px\"><div style=\"font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: #FFE3A0; margin-bottom: 10px\">CARGOKIT \u00b7 FREE, NO SIGN-UP</div><div style=\"font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 26px; line-height: 1.15\">Every CargoKit tool is free for shippers, forwarders and agents.</div><div style=\"font-size: 15px; line-height: 1.55; opacity: .9; margin-top: 8px\">3D load planner, HSN finder, duty calculator, B/L and AWB drafts, DG checks and tracking. On the web and on Android.</div></div><div style=\"display: flex; flex-wrap: wrap; gap: 10px\"><a href=\"/free-tools\" style=\"background:#FFC93C;color:#0B2A4A;text-decoration:none;font-weight:700;border-radius:999px;padding:14px 26px\">All free tools \u2192</a><a href=\"https://wa.me/?text=Free%20shipping%20tools%3A%20load%20planner%2C%20HSN%20finder%2C%20B%2FL%20and%20AWB%20drafts%20%E2%80%93%20https%3A%2F%2Fcargokit.ai\" target=\"_blank\" rel=\"noopener\" style=\"background:rgba(255,255,255,.14);color:#FFFFFF;text-decoration:none;font-weight:700;border-radius:999px;padding:14px 26px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.5)\">Share CargoKit</a></div></div>";
 
 // WhatsApp: every chat button opens the business short link (until the @CARGOKIT username is live).
 const WA_LINK = 'https://wa.me/message/6YB7I76DV6UJL1';
@@ -62,6 +67,8 @@ async function withAppTags(ctx) {
       // footer: a link to the Latin America desk right after "India–Latin America Corridor"
       .on('footer a[href*="india-latin-america-trade"]', { element(el) { if (added) return; added = true; el.after('<a href="/' + desk[0].replace(/\.html$/, '') + '">' + desk[1] + '</a>', { html: true }); } })
       .on('details.ftm', { element(el) { if (menu) el.setInnerContent(menu, { html: true }); } });
+    const u = new URL(ctx.request.url);
+    if (CK_HOST.test(u.hostname) && !MENU_LANGS.test(u.pathname)) rw.on(CK_BAND_SEL, { element(el) { el.setAttribute('data-ck', '1'); el.setInnerContent(CK_BAND, { html: true }); } });
     for (const [sel, h] of topBar(new URL(ctx.request.url))) rw.on(sel, h);
     return rw.transform(res);
   } catch (e) {
