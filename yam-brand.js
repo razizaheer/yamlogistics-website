@@ -54,6 +54,7 @@
   // Bottom band: navy strip with contacts, website and a QR code to the site.
   B.footer = function (doc, note) {
     var z = size(doc), M = 10, h = B.FOOT, y0 = z.H - h;
+    if (!note && G.CK_CALC) note = G.CK_CALC;
     if (note) { doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(94, 120, 145); doc.text(String(note), M, y0 - 2); }
     doc.setFillColor(11, 42, 74); doc.rect(0, y0, z.W, h, 'F');
     doc.setFillColor(255, 201, 60); doc.rect(0, y0, z.W, 0.6, 'F');
