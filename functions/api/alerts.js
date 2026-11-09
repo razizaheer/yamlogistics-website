@@ -26,6 +26,7 @@ async function putRec(env, rec) { await env.MSDS.put('alerts/' + rec.id + '.json
 export async function sendEmail(env, to, subject, text, html, stopUrl) {
   const r = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({ from: env.ALERT_FROM, to: [to], subject, text, html, headers: stopUrl ? { 'List-Unsubscribe': '<' + stopUrl + '>' } : undefined }) });
+  if (!r.ok) { let t = ''; try { t = (await r.text()).slice(0, 220); } catch (e) {} sendEmail.lastErr = r.status + ' ' + t; }
   return r.ok;
 }
 export async function sendWA(env, to, template, params) {
@@ -67,7 +68,7 @@ export async function onRequestPost({ request, env }) {
     let sent = false;
     if (ch === 'email') sent = await sendEmail(env, to, 'Your CargoKit code: ' + r.code, 'Your CargoKit verification code is ' + r.code + '. It works for 15 minutes. If you did not ask for it, ignore this email.', '<p>Your CargoKit verification code is <b style="font-size:20px">' + r.code + '</b>.</p><p>It works for 15 minutes. If you did not ask for it, ignore this email.</p>');
     else sent = await sendWA(env, to, env.WA_TPL_CODE, [r.code]);
-    if (!sent) return json({ ok: false, error: 'send-failed' }, 502);
+    if (!sent) return json({ ok: false, error: 'send-failed', detail: ch === 'email' ? (sendEmail.lastErr || '') : '' }, 502);
     await putRec(env, r); return json({ ok: true, id });
   }
   const r = await getRec(env, id);
