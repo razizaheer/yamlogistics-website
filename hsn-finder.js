@@ -205,12 +205,12 @@
   var UN = { kg: 'kg', kgs: 'kg', u: 'pieces', nos: 'pieces', m2: 'sq. metres', m: 'metres', m3: 'cubic metres', pa: 'pairs', l: 'litres', 'c/k': 'carats' };
   function card(i) {
     var x = D.rows[i], common = TAG[i], path = x[2] >= 0 ? D.paths[x[2]] : '', ch = x[0].slice(0, 2), b = [];
-    if (x[4]) b.push('<span>Basic duty ' + h(x[4]) + '</span>');
+    if (x[4]) b.push('<span>Basic duty <span data-notr>' + h(x[4]) + '</span></span>');
     if (x[6] && POL[x[6]]) b.push('<span class="' + POL[x[6]][1] + '">Import: ' + POL[x[6]][0] + '</span>');
     if (x[7] && POL[x[7]]) b.push('<span class="' + POL[x[7]][1] + '">Export: ' + POL[x[7]][0] + '</span>');
     var un = UN[(x[3] || '').toLowerCase()]; if (un) b.push('<span>Unit: ' + un + '</span>');
-    return '<div class="hf-it' + (common ? ' hf-c' : '') + '">' + (common ? '<div class="hf-tag">Commonly used for this product</div>' : '') + '<div class="hf-top"><span class="hf-code">' + fc(x[0]) + '</span><span class="hf-d">' + h(x[1]) + '</span></div>' +
-      '<div class="hf-p">Chapter ' + ch + ' · ' + h(CH[ch] || '') + (path ? ' › ' + h(path.slice(0, 220)) : '') + '</div>' +
+    return '<div class="hf-it' + (common ? ' hf-c' : '') + '">' + (common ? '<div class="hf-tag">Commonly used for this product</div>' : '') + '<div class="hf-top"><span class="hf-code">' + fc(x[0]) + '</span><span class="hf-d" data-notr>' + h(x[1]) + '</span></div>' +
+      '<div class="hf-p">Chapter ' + ch + ' · <span>' + h(CH[ch] || '') + '</span>' + (path ? '<span data-notr> › ' + h(path.slice(0, 220)) + '</span>' : '') + '</div>' +
       '<div class="hf-b">' + b.join('') + '</div>' +
       '<div class="hf-a"><a href="customs-duty-calculator.html#hs=' + x[0] + '">Import duty on this code →</a><a href="export-benefit-finder.html#hs=' + x[0] + '">Export benefits →</a><button data-copy="' + x[0] + '">Copy code</button></div></div>';
   }
@@ -230,7 +230,7 @@
     var show = chFilter ? ids.filter(function (i) { return D.rows[i][0].slice(0, 2) === chFilter; }) : ids;
     var isCode = /^\d{2,8}$/.test(t.replace(/[\s.\-]/g, ''));
     var H = '<div class="hf-meta"><span>' + (isCode ? show.length + ' tariff line' + (show.length === 1 ? '' : 's') + ' under ' + h(t) : (ids.length >= 200 ? 'Top 200' : ids.length) + ' likely code' + (ids.length === 1 ? '' : 's') + ' for “' + h(t) + '”') + '</span></div>';
-    if (chs.length > 1) H += '<div class="hf-meta"><span>Filter by chapter:</span><button class="hf-chip' + (chFilter ? '' : ' on') + '" data-f="">All</button>' + chs.slice(0, 10).map(function (c) { return '<button class="hf-chip' + (chFilter === c ? ' on' : '') + '" data-f="' + c + '">' + c + ' · ' + h(CH[c] || '') + ' (' + cnt[c] + ')</button>'; }).join('') + '</div>';
+    if (chs.length > 1) H += '<div class="hf-meta"><span>Filter by chapter:</span><button class="hf-chip' + (chFilter ? '' : ' on') + '" data-f="">All</button>' + chs.slice(0, 10).map(function (c) { return '<button class="hf-chip' + (chFilter === c ? ' on' : '') + '" data-f="' + c + '">' + c + ' · <span>' + h(CH[c] || '') + '</span> (' + cnt[c] + ')</button>'; }).join('') + '</div>';
     H += show.slice(0, 60).map(card).join('');
     if (show.length > 60) H += '<div class="hf-empty">Showing the first 60. Add another word (material, use, or type) or pick a chapter above to narrow it down.</div>';
     H += '<div class="hf-help"><span><b>Not sure which line fits?</b> Send us the product details and a licensed customs broker will suggest the right code.</span><a href="' + wa(t) + '" target="_blank" rel="noopener">WhatsApp the desk</a></div>';

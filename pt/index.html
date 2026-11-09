@@ -169,7 +169,7 @@ input{font:inherit}
 <details class="sol ftm"><summary class="nb nbf">Ferramentas grátis ▾</summary><div class="mega"><div class="wrap ft-in">
 <div class="ft-h"><span class="mono">FERRAMENTAS GRÁTIS · SEM CADASTRO</span><a href="free-tools.html">Ver todas as ferramentas →</a></div>
 <div class="ft-c"><div class="mh">ALFÂNDEGA E IMPOSTOS</div>
-<a href="hsn-code-finder.html"><b>Busca de código HSN</b><span>Descreva seu produto e veja o provável código de 8 dígitos</span></a>
+<a href="pt/hsn-code-finder.html"><b>Busca de código HSN</b><span>Descreva seu produto e veja o provável código de 8 dígitos</span></a>
 <a href="customs-duty-calculator.html"><b>Calculadora de impostos</b><span>BCD, SWS e IGST para qualquer código HSN, com custo final</span></a>
 <a href="export-benefit-finder.html"><b>Incentivos à exportação</b><span>Taxas de drawback, RoDTEP e RoSCTL por código HS</span></a>
 <a href="incoterms.html"><b>Tabela Incoterms 2020</b><span>Quem paga e quem assume o risco, nas 11 regras</span></a></div>
@@ -178,7 +178,7 @@ input{font:inherit}
 <a href="pt/container-load-planner.html"><b>Carga de contêiner</b><span>Quantos 20′, 40′ ou 40′ HC você precisa, com plano 3D</span></a>
 <a href="container-sizes.html"><b>Guia de tamanhos de contêineres</b><span>Medidas, pesos e carga útil de 11 tipos de contêiner, com PDFs</span></a>
 <a href="pt/cbm-calculator.html"><b>Calculadora de CBM e peso cubado</b><span>Volume total, peso taxado aéreo e W/M de LCL</span></a>
-<a href="track-shipment.html"><b>Rastrear um envio</b><span>55+ armadores e 400 companhias aéreas, mais o trecho no porto indiano</span></a></div>
+<a href="pt/track-shipment.html"><b>Rastrear um envio</b><span>55+ armadores e 400 companhias aéreas, mais o trecho no porto indiano</span></a></div>
 <div class="ft-c"><div class="mh">CARGAS PERIGOSAS</div>
 <a href="dg-cargo-checker.html"><b>Verificador de carga perigosa</b><span>É carga perigosa? Verifique por HSN, produto ou FDS</span></a>
 <a href="lithium-battery-checker.html"><b>Verificador de baterias de lítio</b><span>Número ONU, instrução de embalagem e etiquetas em 30 segundos</span></a>
@@ -187,7 +187,7 @@ input{font:inherit}
 </div></div></details>
 <a href="trade-desk.html" class="nb nb5 ntd"><i aria-hidden="true"></i><span>Trade Desk</span></a><details class="sol abm"><summary class="nb nb2">Sobre nós ▾</summary><div class="mega"><div class="wrap ab-in"><a href="pt/about.html"><b>Sobre a YAM</b><span>Desde 1968 · Licença de despachante aduaneiro R-7/92 · Nova Délhi, Mumbai, Mundra</span></a><a class="ai" href="how-we-use-ai.html"><b>Como usamos IA <em>→</em></b><span>A IA traz a velocidade. Um despachante licenciado decide.</span></a><a href="pt/contact.html"><b>Contato</b><span>Escritórios, telefone, WhatsApp e Telegram</span></a><a href="pt/india-logistics-partner.html"><b>Seja nosso parceiro</b><span>Para agentes de carga, importadores e exportadores</span></a></div></div></details><a href="pt/mobile-phone-exports.html" class="nb nb3"><span>Exportação de celulares</span></a>
 <a href="customs-duty-calculator.html" class="nb nb4"><span>Calculadora de impostos</span></a>
-<a href="track-shipment.html" class="btn-o">Rastrear embarque</a>
+<a href="pt/track-shipment.html" class="btn-o">Rastrear embarque</a>
 <a href="pt/contact.html" class="btn go">Solicitar cotação</a>
 </div></div></nav>
 <script>(function(){var d=document.querySelectorAll(".links details.sol");d.forEach(function(x){x.addEventListener("toggle",function(){if(x.open)d.forEach(function(y){if(y!==x)y.open=false})})});document.addEventListener("click",function(e){d.forEach(function(x){if(x.open&&!x.contains(e.target))x.open=false})})})();</script>
@@ -1109,7 +1109,7 @@ function ecb(){return fetch('https://api.frankfurter.dev/v1/latest?base=INR&symb
 er().catch(function(){return ecb()}).catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'});
 })();
 </script>
-<script src="i18n/tr-core.js"></script><script src="i18n/pt.js"></script><script src="yam-runtime.js"></script>
+<script src="i18n/tr-core.js"></script><script src="i18n/pt.js?v=3"></script><script src="yam-runtime.js"></script>
 <script>
 window.yamQuote=function(){try{var q=document.getElementById('quote');var t=q.querySelector('[role=tab][aria-selected=true]');var data={},lines=[],em='';q.querySelectorAll('label').forEach(function(l){var e=l.querySelector('input,select');var n=(l.childNodes[0].textContent||'').trim();if(e&&e.value){lines.push(n+': '+e.value);data[n]=e.value;if(e.name==='email')em=e.value}});if(!lines.length){var f=q.querySelector('input');f&&f.focus();return}var svc=t?t.textContent.trim():'';var msg='Quote request ('+svc+')\n'+lines.join('\n')+'\n— sent from yamlogistics.com';window.open('https://wa.me/message/6YB7I76DV6UJL1','_blank');data._subject='Website quote request: '+svc;data.Service=svc;data.Page=location.href;if(em)data._replyto=em;data._template='table';data._cc='yamlogisticsdelhi@gmail.com';var btn=q.querySelector('button.go');fetch('https://formsubmit.co/ajax/info@yamlogistics.com',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}).then(function(r){if(btn)btn.textContent='Sent ✓'}).catch(function(){window.location.href='mailto:info@yamlogistics.com?subject='+encodeURIComponent(data._subject)+'&body='+encodeURIComponent(msg)})}catch(e){}};
 (function(){const DCLogic=YAMDC.DCLogic;class Component extends DCLogic {

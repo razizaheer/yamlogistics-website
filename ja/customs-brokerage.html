@@ -140,7 +140,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <details class="sol ftm"><summary class="nb nbf">無料ツール ▾</summary><div class="mega"><div class="wrap ft-in">
 <div class="ft-h"><span class="mono">無料ツール · 登録不要</span><a href="free-tools.html">すべての無料ツール →</a></div>
 <div class="ft-c"><div class="mh">通関・関税</div>
-<a href="hsn-code-finder.html"><b>HSNコード検索</b><span>製品を説明して、該当しそうな8桁コードを表示</span></a>
+<a href="ja/hsn-code-finder.html"><b>HSNコード検索</b><span>製品を説明して、該当しそうな8桁コードを表示</span></a>
 <a href="customs-duty-calculator.html"><b>輸入関税計算</b><span>任意のHSNコードのBCD・SWS・IGSTと陸揚げ原価</span></a>
 <a href="export-benefit-finder.html"><b>輸出優遇検索</b><span>HSコード別のドローバック・RoDTEP・RoSCTL率</span></a>
 <a href="incoterms.html"><b>インコタームズ2020早見表</b><span>全11規則で誰が支払い誰がリスクを負うか</span></a></div>
@@ -149,7 +149,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 <a href="ja/container-load-planner.html"><b>コンテナ積載計算</b><span>必要な20′・40′・40′HCの本数と3D積付け図</span></a>
 <a href="container-sizes.html"><b>コンテナサイズガイド</b><span>11種類のコンテナの寸法・重量・積載量（PDF付き）</span></a>
 <a href="ja/cbm-calculator.html"><b>CBM・容積重量計算ツール</b><span>総容積・航空運賃重量・LCLのW/M</span></a>
-<a href="track-shipment.html"><b>貨物を追跡</b><span>55社超の船会社と400航空会社、インドの港湾区間も</span></a></div>
+<a href="ja/track-shipment.html"><b>貨物を追跡</b><span>55社超の船会社と400航空会社、インドの港湾区間も</span></a></div>
 <div class="ft-c"><div class="mh">危険物</div>
 <a href="dg-cargo-checker.html"><b>危険物貨物チェッカー</b><span>HSコード・品名・SDSで危険物か確認</span></a>
 <a href="lithium-battery-checker.html"><b>リチウム電池チェッカー</b><span>UN番号・包装基準・ラベルを30秒で</span></a>
@@ -158,7 +158,7 @@ details summary{cursor:pointer;list-style:none}details summary::-webkit-details-
 </div></div></details>
 <a href="trade-desk.html" class="nb nb5 ntd"><i aria-hidden="true"></i><span>Trade Desk</span></a><details class="sol abm"><summary class="nb nb2">会社概要 ▾</summary><div class="mega"><div class="wrap ab-in"><a href="ja/about.html"><b>YAMについて</b><span>1968年創業 · 通関業ライセンス R-7/92 · ニューデリー、ムンバイ、ムンドラ</span></a><a class="ai" href="how-we-use-ai.html"><b>AIの活用 <em>→</em></b><span>スピードはAI、判断は資格を持つ通関士。</span></a><a href="ja/contact.html"><b>お問い合わせ</b><span>オフィス・電話・WhatsApp・Telegram</span></a></div></div></details><a href="ja/mobile-phone-exports.html" class="nb nb3"><span>携帯電話の輸出</span></a>
 <a href="customs-duty-calculator.html" class="nb nb4"><span>輸入関税計算</span></a>
-<a href="track-shipment.html" class="btn-o">貨物追跡</a>
+<a href="ja/track-shipment.html" class="btn-o">貨物追跡</a>
 <a href="ja/contact.html" class="btn go">見積依頼</a>
 </div></div></nav>
 <script>(function(){var d=document.querySelectorAll(".links details.sol");d.forEach(function(x){x.addEventListener("toggle",function(){if(x.open)d.forEach(function(y){if(y!==x)y.open=false})})});document.addEventListener("click",function(e){d.forEach(function(x){if(x.open&&!x.contains(e.target))x.open=false})})})();</script>
@@ -661,7 +661,7 @@ function ecb(){return fetch('https://api.frankfurter.dev/v1/latest?base=INR&symb
 er().catch(function(){return ecb()}).catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'});
 })();
 </script>
-<script src="i18n/tr-core.js"></script><script src="i18n/ja.js"></script><script src="yam-runtime.js"></script>
+<script src="i18n/tr-core.js"></script><script src="i18n/ja.js?v=3"></script><script src="yam-runtime.js"></script>
 <script>
 
 (function(){const DCLogic=YAMDC.DCLogic;class Component extends DCLogic {

@@ -1,4 +1,31 @@
 /* YAM Logistics app: registers the offline service worker and offers "Install the app" where the browser allows it. */
+// App chrome text in every site language (the tool pages themselves are translated by /i18n/<lang>.js).
+var CK_UI = (function () {
+  var L = (location.pathname.match(/^\/(ar|de|es|fr|hi|ja|ko|pt|ru|zh)\//) || [])[1] || 'en';
+  //       0 Tools, 1 Planner, 2 HSN, 3 Duty, 4 Track, 5 App, 6 by-line, 7 Privacy, 8 Contact, 9 install title, 10 install text, 11 Install, 12 Close,
+  //       13 track placeholder, 14 track label, 15 rate q, 16 Rate it, 17 Not now, 18 Star, 19 Unstar
+  var T = {
+    en: ['Tools', 'Planner', 'HSN', 'Duty', 'Track', 'App', 'CargoKit by YAM Logistics', 'Privacy', 'Contact', 'Install CargoKit, our free app', 'Our tools on your home screen, even with no signal.', 'Install', 'Close', 'Track container, AWB or B/L', 'Container, AWB or B/L number', 'Finding CargoKit useful?', 'Rate it', 'Not now', 'Star', 'Unstar'],
+    es: ['Herramientas', 'Planificador', 'HSN', 'Aranceles', 'Rastrear', 'App', 'CargoKit de YAM Logistics', 'Privacidad', 'Contacto', 'Instale CargoKit, nuestra app gratuita', 'Nuestras herramientas en su pantalla de inicio, incluso sin señal.', 'Instalar', 'Cerrar', 'Rastree contenedor, AWB o B/L', 'Número de contenedor, AWB o B/L', '¿Te sirve CargoKit?', 'Calificar', 'Ahora no', 'Marcar', 'Desmarcar'],
+    pt: ['Ferramentas', 'Planejador', 'HSN', 'Impostos', 'Rastrear', 'App', 'CargoKit da YAM Logistics', 'Privacidade', 'Contato', 'Instale o CargoKit, nosso app gratuito', 'Nossas ferramentas na sua tela inicial, mesmo sem sinal.', 'Instalar', 'Fechar', 'Rastreie contêiner, AWB ou B/L', 'Número de contêiner, AWB ou B/L', 'Gostando do CargoKit?', 'Avaliar', 'Agora não', 'Marcar', 'Desmarcar'],
+    fr: ['Outils', 'Planificateur', 'HSN', 'Droits', 'Suivi', 'App', 'CargoKit par YAM Logistics', 'Confidentialité', 'Contact', 'Installez CargoKit, notre app gratuite', 'Nos outils sur votre écran d’accueil, même sans réseau.', 'Installer', 'Fermer', 'Suivre conteneur, AWB ou B/L', 'Numéro de conteneur, AWB ou B/L', 'CargoKit vous est utile ?', 'Noter', 'Plus tard', 'Épingler', 'Retirer'],
+    de: ['Tools', 'Planer', 'HSN', 'Zoll', 'Tracking', 'App', 'CargoKit von YAM Logistics', 'Datenschutz', 'Kontakt', 'Installieren Sie CargoKit, unsere kostenlose App', 'Unsere Tools auf Ihrem Startbildschirm, auch ohne Netz.', 'Installieren', 'Schließen', 'Container, AWB oder B/L verfolgen', 'Container-, AWB- oder B/L-Nummer', 'Ist CargoKit hilfreich?', 'Bewerten', 'Nicht jetzt', 'Markieren', 'Entfernen'],
+    ar: ['الأدوات', 'المخطط', 'HSN', 'الرسوم', 'التتبع', 'التطبيق', 'CargoKit من YAM Logistics', 'الخصوصية', 'اتصل بنا', 'ثبّت CargoKit، تطبيقنا المجاني', 'أدواتنا على شاشتك الرئيسية، حتى دون إشارة.', 'تثبيت', 'إغلاق', 'تتبع حاوية أو AWB أو B/L', 'رقم الحاوية أو AWB أو B/L', 'هل تجد CargoKit مفيدًا؟', 'قيّمه', 'ليس الآن', 'تثبيت كمفضلة', 'إزالة من المفضلة'],
+    hi: ['टूल्स', 'प्लानर', 'HSN', 'ड्यूटी', 'ट्रैक', 'ऐप', 'YAM Logistics का CargoKit', 'गोपनीयता', 'संपर्क', 'CargoKit इंस्टॉल करें, हमारा मुफ़्त ऐप', 'हमारे टूल आपकी होम स्क्रीन पर, बिना सिग्नल के भी।', 'इंस्टॉल करें', 'बंद करें', 'कंटेनर, AWB या B/L ट्रैक करें', 'कंटेनर, AWB या B/L नंबर', 'क्या CargoKit उपयोगी लगा?', 'रेटिंग दें', 'अभी नहीं', 'स्टार करें', 'स्टार हटाएँ'],
+    ja: ['ツール', 'プランナー', 'HSN', '関税', '追跡', 'アプリ', 'CargoKit by YAM Logistics', 'プライバシー', 'お問い合わせ', '無料アプリ CargoKit をインストール', 'ツールをホーム画面に。電波がなくても使えます。', 'インストール', '閉じる', 'コンテナ・AWB・B/L を追跡', 'コンテナ、AWB または B/L 番号', 'CargoKit は役に立っていますか？', '評価する', '後で', 'お気に入り', 'お気に入り解除'],
+    ko: ['도구', '플래너', 'HSN', '관세', '추적', '앱', 'YAM Logistics의 CargoKit', '개인정보', '문의', '무료 앱 CargoKit 설치', '홈 화면에서 바로 쓰는 도구, 신호가 없어도 됩니다.', '설치', '닫기', '컨테이너, AWB 또는 B/L 추적', '컨테이너, AWB 또는 B/L 번호', 'CargoKit이 도움이 되셨나요?', '평가하기', '나중에', '즐겨찾기', '즐겨찾기 해제'],
+    ru: ['Инструменты', 'Планировщик', 'HSN', 'Пошлины', 'Трекинг', 'Приложение', 'CargoKit от YAM Logistics', 'Конфиденциальность', 'Контакты', 'Установите CargoKit — наше бесплатное приложение', 'Наши инструменты на главном экране, даже без связи.', 'Установить', 'Закрыть', 'Отследить контейнер, AWB или B/L', 'Номер контейнера, AWB или B/L', 'CargoKit вам полезен?', 'Оценить', 'Не сейчас', 'В избранное', 'Убрать из избранного'],
+    zh: ['工具', '规划', 'HSN', '关税', '追踪', '应用', 'YAM Logistics 出品的 CargoKit', '隐私', '联系我们', '安装 CargoKit 免费应用', '工具放在主屏幕上，没有信号也能用。', '安装', '关闭', '追踪集装箱、AWB 或提单', '集装箱、AWB 或 B/L 号码', 'CargoKit 对您有帮助吗？', '去评分', '以后再说', '收藏', '取消收藏']
+  };
+  var t = T[L] || T.en;
+  // link to the translated version of a page when this language has one (window.YAM_PAGES from /i18n/<lang>.js)
+  function href(path) {
+    if (L === 'en') return path;
+    var pages = window.YAM_PAGES || [], f = path.replace(/^\//, '').replace(/#.*$/, '');
+    return pages.indexOf(f + '.html') >= 0 || pages.indexOf(f) >= 0 ? '/' + L + path : path;
+  }
+  return { L: L, t: t, href: href };
+})();
 (function () {
   'use strict';
   // Opened as the installed app? (home-screen app, or the Google Play app, which marks its first page with
@@ -32,8 +59,8 @@
       if (!top || document.getElementById('ck-trk')) return;
       var f = document.createElement('form');
       f.id = 'ck-trk';
-      f.innerHTML = '<input name="n" placeholder="Track container, AWB or B/L" autocomplete="off" aria-label="Container, AWB or B/L number"><button type="submit">Track</button>';
-      f.addEventListener('submit', function (e) { e.preventDefault(); var v = f.n.value.trim(); location.href = '/track-shipment.html' + (v ? '?n=' + encodeURIComponent(v) : ''); });
+      f.innerHTML = '<input name="n" placeholder="' + CK_UI.t[13] + '" autocomplete="off" aria-label="' + CK_UI.t[14] + '"><button type="submit">' + CK_UI.t[4] + '</button>';
+      f.addEventListener('submit', function (e) { e.preventDefault(); var v = f.n.value.trim(); location.href = CK_UI.href('/track-shipment') + '.html' + (v ? '?n=' + encodeURIComponent(v) : ''); });
       var h = top.previousElementSibling; (h || top).parentNode.insertBefore(f, h || top);
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addTrk); else addTrk();
@@ -101,17 +128,17 @@
       duty: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'
     };
     var tabs = [
-      ['tools', '/free-tools', 'Tools', /^\/(free-tools|index)?(\.html)?$/],
-      ['plan', pre + '/container-load-planner', 'Planner', /container-load-planner/],
-      ['hsn', '/hsn-code-finder', 'HSN', /hsn-code-finder/],
-      ['duty', '/customs-duty-calculator', 'Duty', /customs-duty-calculator|landed-cost/],
-      ['track', '/track-shipment', 'Track', /track-shipment|my-shipments|^\/tracking\//]
+      ['tools', CK_UI.href('/free-tools'), CK_UI.t[0], /^\/(free-tools|index)?(\.html)?$/],
+      ['plan', pre + '/container-load-planner', CK_UI.t[1], /container-load-planner/],
+      ['hsn', CK_UI.href('/hsn-code-finder'), CK_UI.t[2], /hsn-code-finder/],
+      ['duty', CK_UI.href('/customs-duty-calculator'), CK_UI.t[3], /customs-duty-calculator|landed-cost/],
+      ['track', CK_UI.href('/track-shipment'), CK_UI.t[4], /track-shipment|my-shipments|^\/tracking\//]
     ];
     function build() {
       if (document.getElementById('yam-tabs')) return;
       var nav = document.createElement('nav');
       nav.id = 'yam-tabs';
-      nav.setAttribute('aria-label', 'App');
+      nav.setAttribute('aria-label', CK_UI.t[5]);
       var p = location.pathname.replace(/^\/(ar|de|es|fr|hi|ja|ko|pt|ru|zh)(?=\/)/, '');
       nav.innerHTML = tabs.map(function (t) {
         return '<a href="' + t[1] + '"' + (t[3].test(p) ? ' class="on" aria-current="page"' : '') + '><svg viewBox="0 0 24 24" aria-hidden="true">' + I[t[0]] + '</svg><span>' + t[2] + '</span></a>';
@@ -119,10 +146,10 @@
       document.body.appendChild(nav);
       var slim = document.createElement('div');
       slim.id = 'yam-slim';
-      slim.innerHTML = '<span>CargoKit by YAM Logistics</span> · <a href="/privacy">Privacy</a> · <a href="/contact">Contact</a>';
+      slim.innerHTML = '<span>' + CK_UI.t[6] + '</span> · <a href="' + CK_UI.href('/privacy') + '">' + CK_UI.t[7] + '</a> · <a href="' + CK_UI.href('/contact') + '">' + CK_UI.t[8] + '</a>';
       var f = document.querySelector('footer');
       if (f) f.parentNode.insertBefore(slim, f); else document.body.appendChild(slim);
-      if (window.YAM_TR) try { window.YAM_TR(nav); window.YAM_TR(slim); } catch (err) {}
+      
     }
     if (document.body) build(); else document.addEventListener('DOMContentLoaded', build);
   }
@@ -150,16 +177,15 @@
     bar.setAttribute('role', 'dialog');
     bar.style.cssText = 'position:fixed;left:12px;right:84px;bottom:14px;z-index:9998;max-width:520px;background:#0B2A4A;color:#FFFFFF;border-radius:16px;padding:12px 14px;display:flex;gap:10px;align-items:center;box-shadow:0 12px 30px rgba(11,42,74,.3);font:14px/1.35 Geist,system-ui,sans-serif';
     bar.innerHTML = '<img src="/app/icon-192.png" alt="" width="40" height="40" style="border-radius:10px;background:#fff;flex:0 0 auto">' +
-      '<span style="flex:1"><b style="display:block">Install CargoKit, our free app</b><span style="color:#CFE3F5">Our tools on your home screen, even with no signal.</span></span>' +
-      '<button type="button" data-a="i" style="border:0;border-radius:999px;background:#FFC93C;color:#0B2A4A;font:inherit;font-weight:700;padding:9px 14px;min-height:40px;cursor:pointer">Install</button>' +
-      '<button type="button" data-a="x" aria-label="Close" style="border:0;background:transparent;color:#CFE3F5;font-size:22px;line-height:1;padding:4px 6px;cursor:pointer">×</button>';
+      '<span style="flex:1"><b style="display:block">' + CK_UI.t[9] + '</b><span style="color:#CFE3F5">' + CK_UI.t[10] + '</span></span>' +
+      '<button type="button" data-a="i" style="border:0;border-radius:999px;background:#FFC93C;color:#0B2A4A;font:inherit;font-weight:700;padding:9px 14px;min-height:40px;cursor:pointer">' + CK_UI.t[11] + '</button>' +
+      '<button type="button" data-a="x" aria-label="' + CK_UI.t[12] + '" style="border:0;background:transparent;color:#CFE3F5;font-size:22px;line-height:1;padding:4px 6px;cursor:pointer">×</button>';
     bar.addEventListener('click', function (e) {
       var a = e.target.closest('[data-a]'); if (!a) return;
       if (a.dataset.a === 'i') install();
       else { try { localStorage.setItem(KEY, String(Date.now())); } catch (err) {} hideBar(); }
     });
     document.body.appendChild(bar);
-    if (window.YAM_TR) try { window.YAM_TR(bar); } catch (err) {}
   }
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault(); deferred = e; setButtons();
@@ -176,8 +202,7 @@
     function set(o) { try { localStorage.setItem(K, JSON.stringify(o)); } catch (e) {} }
     function ask() {
       var s = get(); if (s.done || document.getElementById('ck-rate')) return;
-      var es = /^es/.test(document.documentElement.lang), pt = /^pt/.test(document.documentElement.lang);
-      var tx = es ? ['¿Te sirve CargoKit?', 'Calificar', 'Ahora no'] : pt ? ['Gostando do CargoKit?', 'Avaliar', 'Agora não'] : ['Finding CargoKit useful?', 'Rate it', 'Not now'];
+      var tx = [CK_UI.t[15], CK_UI.t[16], CK_UI.t[17]];
       var d = document.createElement('div'); d.id = 'ck-rate';
       d.style.cssText = 'position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:9999;background:#0a5fc4;color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:center;font:600 15px Inter,system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.3)';
       d.innerHTML = '<span style="flex:1">' + tx[0] + '</span><a href="https://play.google.com/store/apps/details?id=ai.cargokit.app" style="background:#ffc72c;color:#111;padding:8px 14px;border-radius:10px;text-decoration:none">' + tx[1] + '</a><button style="background:none;border:0;color:#fff;font:inherit;opacity:.85">' + tx[2] + '</button>';
@@ -219,7 +244,7 @@
         if (!b) { b = document.createElement('button'); b.type = 'button'; b.className = 'ft-pin'; a.appendChild(b); }
         var on = stars.indexOf(a.getAttribute('data-k')) >= 0;
         b.textContent = pin(on); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
-        b.setAttribute('aria-label', (on ? 'Unstar ' : 'Star ') + (a.querySelector('b') || a).textContent);
+        b.setAttribute('aria-label', (on ? CK_UI.t[19] : CK_UI.t[18]) + ': ' + (a.querySelector('b') || a).textContent);
       });
       [].forEach.call(row.querySelectorAll('a, .ft-none'), function (x) { x.remove(); });
       stars.forEach(function (k) {

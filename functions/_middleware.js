@@ -6,10 +6,10 @@
 //    can be installed as the YAM Logistics app.
 const PT = new Set(['BR']);
 const ES = new Set(['AR', 'BO', 'CL', 'CO', 'CR', 'CU', 'DO', 'EC', 'SV', 'GT', 'HN', 'MX', 'NI', 'PA', 'PY', 'PE', 'PR', 'UY', 'VE']);
-const COMMON = ['index', 'container-load-planner', 'cbm-calculator', 'contact', 'about', 'customs-brokerage', 'ocean-freight', 'air-freight', 'mobile-phone-exports', 'third-country-trade', 'india-logistics-partner', 'india-latin-america-trade', 'latin-america', 'customs-duty-calculator'];
+const COMMON = ['index', 'container-load-planner', 'cbm-calculator', 'contact', 'about', 'customs-brokerage', 'ocean-freight', 'air-freight', 'mobile-phone-exports', 'third-country-trade', 'india-logistics-partner', 'india-latin-america-trade', 'latin-america', 'customs-duty-calculator', 'hsn-code-finder', 'track-shipment', 'my-shipments', 'landed-cost-calculator', 'bl-awb-draft', 'document-generator'];
 const PAGES = { es: new Set(COMMON), pt: new Set(COMMON) };
 const BOT = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|whatsapp|telegram|linkedin|preview|lighthouse|headless/i;
-const APP_TAGS = '<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/app/icon-180.png"><script src="/app/pwa.js?v=5" defer></script>';
+const APP_TAGS = '<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/app/icon-180.png"><script src="/app/pwa.js?v=6" defer></script>';
 
 // On cargokit.ai the blue YAM banner at the foot of each free tool page promotes CargoKit instead, so other
 // forwarders and agents can use the tools without a YAM sales pitch (yamlogistics.com keeps the YAM banner).
@@ -50,7 +50,7 @@ function topBar(url) {
   let done = false;
   return [
     ['.links > a.nb4', { element(el) { el.remove(); } }],
-    ['.links > a.btn-o', { element(el) { if (done) return; done = true; el.after('<a href="/my-shipments.html" class="btn-o">★ ' + MYSHIP[lg] + '</a>', { html: true }); } }]
+    ['.links > a.btn-o', { element(el) { if (done) return; done = true; el.after('<a href="/' + (lg === 'en' ? '' : lg + '/') + 'my-shipments.html" class="btn-o">★ ' + MYSHIP[lg] + '</a>', { html: true }); } }]
   ];
 }
 
@@ -125,6 +125,8 @@ async function route(ctx) {
     if (host !== CK_MAIN) return new Response(null, { status: 301, headers: { Location: 'https://' + CK_MAIN + p + url.search } });
     if (request.method === 'GET' && (p === '/' || p === '/index' || p === '/index.html')) return cargoKitHome(ctx, url);
   }
+  // build scripts and translation working files in the repo are not part of the site
+  if (/^\/tools(\/|$)/.test(p)) return new Response('Not found', { status: 404 });
   if (request.method !== 'GET') return ctx.next();
   if (/^\/(api|vendor|i18n|_fonts|samples|notices|labels|containers|fta|app)(\/|$)/.test(p) || /\.(?!html$)[a-z0-9]{2,12}$/i.test(p)) return ctx.next();
   // translated pages and tracking pages: no redirect, just the app tags

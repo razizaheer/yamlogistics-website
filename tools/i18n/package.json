@@ -1,0 +1,6 @@
+{
+  "name": "yam-i18n-tools",
+  "private": true,
+  "description": "Build scripts for the translated pages (not part of the site)",
+  "dependencies": { "linkedom": "^0.18.0" }
+}
