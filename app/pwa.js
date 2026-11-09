@@ -50,13 +50,15 @@
       plan: '<path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>',
       cbm: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h2M12 18h2M16 15v3"/>',
       docs: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13l2 2 4-4"/>',
-      track: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'
+      track: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+      hsn: '<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M8 9h5M8 12h3"/>',
+      duty: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'
     };
     var tabs = [
       ['tools', '/free-tools', 'Tools', /^\/(free-tools|index)?(\.html)?$/],
       ['plan', pre + '/container-load-planner', 'Planner', /container-load-planner/],
-      ['cbm', pre + '/cbm-calculator', 'CBM', /cbm-calculator/],
-      ['docs', '/document-checker', 'Documents', /document-checker/],
+      ['hsn', '/hsn-code-finder', 'HSN', /hsn-code-finder/],
+      ['duty', '/customs-duty-calculator', 'Duty', /customs-duty-calculator|landed-cost/],
       ['track', '/track-shipment', 'Track', /track-shipment|my-shipments|^\/tracking\//]
     ];
     function build() {
@@ -148,4 +150,74 @@
     // one count per visit to a tool page that has produced a result
     setTimeout(function () { if (/container-number|freight-compare|world-duty|cbm|hsn/.test(location.pathname) && !seen.p) { seen.p = 1; ok(); } }, 20000);
   })();
+})();
+
+// "My top 3": the starred row at the top of the Free Tools menu (and of the Free Tools page).
+// Defaults are the 3D load planner, HSN finder and duty calculator; each visitor can star any 3 tools
+// with the ☆ next to a tool. Kept on this device only (localStorage), nothing is sent anywhere.
+(function () {
+  var KEY = 'ck_stars', DEF = ['load', 'hsn', 'duty'], MAX = 3;
+  function get() {
+    try { var a = JSON.parse(localStorage.getItem(KEY)); if (Array.isArray(a)) return a.slice(0, MAX); } catch (e) {}
+    return DEF.slice();
+  }
+  function set(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
+  function pin(on) { return on ? '★' : '☆'; }
+  function render() {
+    var stars = get();
+    // menu: star buttons on every tool, and the top row rebuilt from the chosen tools
+    [].forEach.call(document.querySelectorAll('details.ftm'), function (d) {
+      var row = d.querySelector('.ft-star'); if (!row) return;
+      [].forEach.call(d.querySelectorAll('.ft-c a[data-k]'), function (a) {
+        var b = a.querySelector('.ft-pin');
+        if (!b) { b = document.createElement('button'); b.type = 'button'; b.className = 'ft-pin'; a.appendChild(b); }
+        var on = stars.indexOf(a.getAttribute('data-k')) >= 0;
+        b.textContent = pin(on); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.setAttribute('aria-label', (on ? 'Unstar ' : 'Star ') + (a.querySelector('b') || a).textContent);
+      });
+      [].forEach.call(row.querySelectorAll('a, .ft-none'), function (x) { x.remove(); });
+      stars.forEach(function (k) {
+        var src = d.querySelector('.ft-c a[data-k="' + k + '"]'); if (!src) return;
+        var c = src.cloneNode(true), p = c.querySelector('.ft-pin'); if (p) p.remove();
+        row.appendChild(c);
+      });
+      if (!stars.length) { var n = document.createElement('div'); n.className = 'ft-none'; n.textContent = row.getAttribute('data-empty') || ''; row.appendChild(n); }
+    });
+    // Free Tools page: the "Start here" grid follows the same stars
+    var top = document.getElementById('ft-top');
+    if (top) {
+      [].forEach.call(document.querySelectorAll('.ft-grid a.ftc[data-k]'), function (a) {
+        if (top.contains(a)) return;
+        var b = a.querySelector('.ft-pin');
+        if (!b) { b = document.createElement('button'); b.type = 'button'; b.className = 'ft-pin'; b.style.cssText = 'position:absolute;right:12px;top:12px'; a.style.position = 'relative'; a.appendChild(b); }
+        var on = stars.indexOf(a.getAttribute('data-k')) >= 0;
+        b.textContent = pin(on); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      top.innerHTML = '';
+      stars.forEach(function (k) {
+        var src = document.querySelector('.ft-grid:not(#ft-top) a.ftc[data-k="' + k + '"]'); if (!src) return;
+        var c = src.cloneNode(true), p = c.querySelector('.ft-pin'); if (p) p.remove();
+        c.style.background = '#FFF8E6'; c.style.border = '1.5px solid #FFE3A0';
+        top.appendChild(c);
+      });
+    }
+  }
+  function warn(btn) {
+    var d = btn.closest('details.ftm'), s = d && d.querySelector('.ft-sh small'), row = d && d.querySelector('.ft-star');
+    var msg = (row && row.getAttribute('data-full')) || 'You can star 3 tools. Unstar one first.';
+    if (s) { var old = s.textContent; s.textContent = msg; s.classList.add('warn'); setTimeout(function () { s.textContent = old; s.classList.remove('warn'); }, 2600); }
+    else if (window.alert) { try { btn.title = msg; } catch (e) {} }
+    btn.animate && btn.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-3px)' }, { transform: 'translateX(3px)' }, { transform: 'translateX(0)' }], { duration: 250 });
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.ft-pin'); if (!btn) return;
+    e.preventDefault(); e.stopPropagation();
+    var a = btn.closest('a[data-k]'); if (!a) return;
+    var k = a.getAttribute('data-k'), s = get(), i = s.indexOf(k);
+    if (i >= 0) s.splice(i, 1);
+    else if (s.length >= MAX) { warn(btn); return; }
+    else s.push(k);
+    set(s); render();
+  }, true);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render); else render();
 })();
