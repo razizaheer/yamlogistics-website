@@ -30,5 +30,10 @@
  "Customs Brokerage": "Despacho aduaneiro",
  "Contact": "Contato",
  "Container": "Contêiner",
+ "Gross weight (kg)": "Peso bruto (kg)",
+ "Net weight (kg)": "Peso líquido (kg)",
+ "Consignee": "Consignatário",
+ "Port of loading": "Porto de embarque",
+ "Port of discharge": "Porto de descarga",
  "Chat with YAM on WhatsApp": "Converse com a YAM no WhatsApp"
 }

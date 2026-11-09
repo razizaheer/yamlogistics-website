@@ -6,7 +6,7 @@
 //    can be installed as the YAM Logistics app.
 const PT = new Set(['BR']);
 const ES = new Set(['AR', 'BO', 'CL', 'CO', 'CR', 'CU', 'DO', 'EC', 'SV', 'GT', 'HN', 'MX', 'NI', 'PA', 'PY', 'PE', 'PR', 'UY', 'VE']);
-const COMMON = ['index', 'container-load-planner', 'cbm-calculator', 'contact', 'about', 'customs-brokerage', 'ocean-freight', 'air-freight', 'mobile-phone-exports', 'third-country-trade', 'india-logistics-partner', 'india-latin-america-trade', 'latin-america', 'customs-duty-calculator', 'hsn-code-finder', 'track-shipment', 'my-shipments', 'landed-cost-calculator', 'bl-awb-draft', 'document-generator'];
+const COMMON = ['index', 'container-load-planner', 'cbm-calculator', 'contact', 'about', 'customs-brokerage', 'ocean-freight', 'air-freight', 'mobile-phone-exports', 'third-country-trade', 'india-logistics-partner', 'india-latin-america-trade', 'latin-america', 'customs-duty-calculator', 'hsn-code-finder', 'track-shipment', 'my-shipments', 'landed-cost-calculator', 'bl-awb-draft', 'document-generator', 'container-number-checker', 'incoterms', 'freight-compare', 'lithium-battery-checker', 'container-sizes', 'export-benefit-finder', 'document-checker', 'awb-label-generator', 'dg-cargo-checker', 'trade-notifications', 'free-tools'];
 const PAGES = { es: new Set(COMMON), pt: new Set(COMMON) };
 const BOT = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|whatsapp|telegram|linkedin|preview|lighthouse|headless/i;
 const APP_TAGS = '<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/app/icon-180.png"><script src="/app/pwa.js?v=6" defer></script>';

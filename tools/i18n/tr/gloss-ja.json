@@ -30,5 +30,10 @@
  "Customs Brokerage": "通関業務",
  "Contact": "お問い合わせ",
  "Container": "コンテナ",
+ "Gross weight (kg)": "総重量（kg）",
+ "Net weight (kg)": "正味重量（kg）",
+ "Consignee": "荷受人",
+ "Port of loading": "船積港",
+ "Port of discharge": "荷揚港",
  "Chat with YAM on WhatsApp": "WhatsAppでYAMとチャット"
 }

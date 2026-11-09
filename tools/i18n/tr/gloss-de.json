@@ -29,5 +29,10 @@
  "Air Freight": "Luftfracht",
  "Customs Brokerage": "Zollabfertigung",
  "Contact": "Kontakt",
+ "Gross weight (kg)": "Bruttogewicht (kg)",
+ "Net weight (kg)": "Nettogewicht (kg)",
+ "Consignee": "Empfänger",
+ "Port of loading": "Ladehafen",
+ "Port of discharge": "Löschhafen",
  "Chat with YAM on WhatsApp": "Mit YAM auf WhatsApp chatten"
 }

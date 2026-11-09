@@ -30,5 +30,10 @@
  "Customs Brokerage": "कस्टम ब्रोकरेज",
  "Contact": "संपर्क",
  "Container": "कंटेनर",
+ "Gross weight (kg)": "ग्रॉस वज़न (किलो)",
+ "Net weight (kg)": "नेट वज़न (किलो)",
+ "Consignee": "कंसाइनी",
+ "Port of loading": "लोडिंग पोर्ट",
+ "Port of discharge": "डिस्चार्ज पोर्ट",
  "Chat with YAM on WhatsApp": "WhatsApp पर YAM से चैट करें"
 }

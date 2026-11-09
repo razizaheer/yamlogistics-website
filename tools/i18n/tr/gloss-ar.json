@@ -30,5 +30,10 @@
  "Customs Brokerage": "التخليص الجمركي",
  "Contact": "اتصل بنا",
  "Container": "الحاوية",
+ "Gross weight (kg)": "الوزن الإجمالي (كغ)",
+ "Net weight (kg)": "الوزن الصافي (كغ)",
+ "Consignee": "المرسَل إليه",
+ "Port of loading": "ميناء التحميل",
+ "Port of discharge": "ميناء التفريغ",
  "Chat with YAM on WhatsApp": "تحدّث مع YAM عبر WhatsApp"
 }
