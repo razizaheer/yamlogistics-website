@@ -34,10 +34,10 @@
   const CATS = {
     dry: { label: 'Dry containers', sub: '20′ · 40′ · 40′ HC', kind: 'container', cands: () => [['20gp', 1], ['40gp', 1.3], ['40hc', 1.35]] },
     reefer: { label: 'Reefer containers', sub: '20′ RF · 40′ HC RF', kind: 'container', note: 'Reefer heights are kept below the red load line so cold air can circulate.', cands: () => [['20rf', 1], ['40rh', 1.3]] },
-    uld: { label: 'Air pallets (ULDs)', sub: 'PMC · PAG', kind: 'air pallet', note: 'Air pallets are planned as a box shape. The aircraft contour is not modelled, so the airline will confirm the build-up.', cands: () => (S.deck === 'md' ? [['pmc-md', 1], ['pag-md', 0.93]] : [['pmc-ld', 1], ['pag-ld', 0.93]]) },
+    uld: { label: 'Air cargo (ULDs)', sub: 'PMC · PAG · AKE · LD7', kind: 'ULD', note: 'Air pallets and air containers are planned as a box shape. The aircraft contour is not modelled, so the airline will confirm the build-up.', cands: () => (S.deck === 'md' ? [['pmc-md', 1], ['pag-md', 0.93]] : S.deck === 'ct' ? [['ake', 1], ['akh', 0.75], ['ld7', 2.4]] : [['pmc-ld', 1], ['pag-ld', 0.93]]) },
     truck: { label: 'Trucks & trailers', sub: 'India · Europe · USA', kind: 'truck', note: 'Truck bodies vary by builder and the legal payload depends on the vehicle registration and axle rules. Check the actual truck before loading.', cands: () => (S.truck === 'eu' ? [['eu136', 1]] : S.truck === 'us' ? [['us53', 1]] : [['in20', 0.62], ['in24', 0.74], ['in32s', 0.86], ['in32m', 1]]) }
   };
-  const KN = { container: ['Container', 'containers'], 'air pallet': ['Air pallet', 'air pallets'], truck: ['Truck', 'trucks'] };
+  const KN = { container: ['Container', 'containers'], 'air pallet': ['Air pallet', 'air pallets'], ULD: ['ULD', 'ULDs'], truck: ['Truck', 'trucks'] };
   const PRIO = [['auto', 'Auto'], ['rear', 'First, at the front wall'], ['door', 'Last, at the doors']];
   const PALLETS = [['euro', 'Euro 120 × 80', 120, 80], ['std', 'Standard 120 × 100', 120, 100], ['asia', 'Asia 110 × 110', 110, 110], ['us', 'US 48″ × 40″', 121.9, 101.6], ['custom', 'Other size', 0, 0]];
   const palletOf = (it) => (PALLETS.find((p) => p[2] && Math.abs(p[2] - it.l) < 0.6 && Math.abs(p[3] - it.w) < 0.6) || PALLETS[PALLETS.length - 1])[0];
@@ -51,10 +51,13 @@
   }
   function decodeHash() {
     const h = location.hash.slice(1);
+    // short links from the menu: #pallets = build pallets, #air = air cargo (ULDs)
+    if (h === 'pallets') { S.build = true; S.pal = false; return false; }
+    if (h === 'air' || h === 'uld') { S.cat = 'uld'; return false; }
     try {
       if (h.startsWith('p=')) {
         const o = JSON.parse(decodeURIComponent(escape(atob(h.slice(2)))));
-        S.unit = o.u || 'cm'; S.wunit = o.wu || 'kg'; S.cat = CATS[o.c] ? o.c : 'dry'; S.pal = !!o.p; S.deck = o.d === 'md' ? 'md' : 'ld';
+        S.unit = o.u || 'cm'; S.wunit = o.wu || 'kg'; S.cat = CATS[o.c] ? o.c : 'dry'; S.pal = !!o.p; S.deck = o.d === 'md' || o.d === 'ct' ? o.d : 'ld';
         S.truck = ['in', 'eu', 'us'].includes(o.t) ? o.t : 'in';
         if (Array.isArray(o.b)) { const b = o.b; S.build = true; S.pb = { t: b[0], l: +b[1], w: +b[2], deck: +b[3], maxH: +b[4], maxKg: +b[5], tare: +b[6], stack: !!b[7] }; }
         if (Array.isArray(o.r)) { S.heavy = !!o.r[0]; S.heavyKg = +o.r[1] || 250; S.gapD = +o.r[2] || 0; S.gapR = +o.r[3] || 0; }
@@ -81,7 +84,7 @@
     <div class="lp-row lp-top">
       <div class="lp-f"><span>2 · Are your packages on pallets?</span><div class="lp-seg lp-wrap" id="lp-pal"><button data-p="0">No, loose cartons / cases</button><button data-p="1">Yes, already palletised</button><button data-p="2">Build pallets for me</button></div></div>
       <div class="lp-f" id="lp-truckf"><span>Trucks for</span><div class="lp-seg" id="lp-truck"><button data-t="in">India</button><button data-t="eu">Europe</button><button data-t="us">USA</button></div></div>
-      <div class="lp-f" id="lp-deckf"><span>Aircraft</span><div class="lp-seg" id="lp-deck"><button data-d="ld">Passenger, lower deck (160 cm)</button><button data-d="md">Freighter, main deck (244 cm)</button></div></div>
+      <div class="lp-f" id="lp-deckf"><span>Aircraft</span><div class="lp-seg" id="lp-deck"><button data-d="ld">Passenger, lower deck (160 cm)</button><button data-d="md">Freighter, main deck (244 cm)</button><button data-d="ct">Air containers: AKE · AKH · LD7</button></div></div>
       <div class="lp-f"><span>Units</span><div class="lp-seg" id="lp-units"><button data-u="cm">cm</button><button data-u="in">inches</button></div></div>
       <div class="lp-f"><span>Weight</span><div class="lp-seg" id="lp-wunits"><button data-w="kg">kg</button><button data-w="lb">lb</button></div></div>
     </div>
@@ -1780,6 +1783,7 @@ ${n ? `<div class="lp-card">
   function alertBox(msg) { const d = document.createElement('div'); d.className = 'lp-card lp-warn'; d.textContent = msg; $('lp-out').prepend(d); setTimeout(() => d.remove(), 5000); }
 
   // ---------------- init
+  window.addEventListener('hashchange', () => { if (/^#(pallets|air|uld)$/.test(location.hash)) location.reload(); });
   const fromLink = decodeHash();
   segs(); renderRows(); renderEqInfo();
   if (fromLink) setTimeout(calc, 50);
