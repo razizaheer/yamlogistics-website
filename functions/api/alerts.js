@@ -68,7 +68,7 @@ export async function onRequestPost({ request, env }) {
     let sent = false;
     if (ch === 'email') sent = await sendEmail(env, to, 'Your CargoKit code: ' + r.code, 'Your CargoKit verification code is ' + r.code + '. It works for 15 minutes. If you did not ask for it, ignore this email.', '<p>Your CargoKit verification code is <b style="font-size:20px">' + r.code + '</b>.</p><p>It works for 15 minutes. If you did not ask for it, ignore this email.</p>');
     else sent = await sendWA(env, to, env.WA_TPL_CODE, [r.code]);
-    if (!sent) return json({ ok: false, error: 'send-failed', detail: ch === 'email' ? (sendEmail.lastErr || '') : '' }, 502);
+    if (!sent) return json({ ok: false, error: 'send-failed', detail: ch === 'email' ? (sendEmail.lastErr || '') : '' }, 422);
     await putRec(env, r); return json({ ok: true, id });
   }
   const r = await getRec(env, id);
