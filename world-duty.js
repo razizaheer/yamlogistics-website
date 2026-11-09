@@ -136,7 +136,7 @@
   function curOf() { return C[S.cn].cur; }
   function render() {
     var c = C[S.cn], H = '', sl = sel();
-    if (window.CK_EMBED) H += '<div class="wd-card"><h2 class="wd-h">' + c.flag + ' Importing to ' + c.n + '</h2><div class="wd-note" style="margin-top:0">' + c.note + '</div></div>';
+    if (window.CK_EMBED) H += '<div class="wd-card"><h2 class="wd-h">' + '<img src="flags/' + S.cn.toLowerCase() + '.svg" alt="" width="28" height="21" style="vertical-align:-3px;border-radius:3px;box-shadow:0 0 0 1px rgba(11,42,74,.18)"> Importing to ' + c.n + '</h2><div class="wd-note" style="margin-top:0">' + c.note + '</div></div>';
     else H += '<div class="wd-card"><h2 class="wd-h">1. Where are you importing to?</h2><p class="wd-s">Choose the destination. The tool uses that country\'s official tariff, valuation base, taxes and fees.</p><div class="wd-cn" id="wd-cn">';
     if (!window.CK_EMBED) { ORDER.forEach(function (k) { H += '<button data-cn="' + k + '"' + (k === S.cn ? ' class="on"' : '') + '>' + C[k].flag + ' ' + C[k].n + '</button>'; });
     H += '</div><div class="wd-note">' + c.note + '</div></div>'; }
