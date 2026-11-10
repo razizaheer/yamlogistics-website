@@ -111,6 +111,15 @@ export async function onRequest(ctx) {
   }
 }
 
+const SHORT = {
+  '/planner': '/container-load-planner', '/load': '/container-load-planner', '/3d': '/container-load-planner',
+  '/vgm': '/vgm-declaration', '/awb': '/awb-label-generator', '/labels': '/awb-label-generator',
+  '/hsn': '/hsn-code-finder', '/duty': '/customs-duty-calculator', '/cbm': '/cbm-calculator',
+  '/track': '/track-shipment', '/bl': '/bl-awb-draft', '/dg': '/dg-cargo-checker', '/docs': '/document-generator',
+  '/check': '/document-checker', '/tools-list': '/free-tools'
+};
+const TOOL_DOMAINS = { 'awblabels.com': '/awb-label-generator', 'awblabelgenerator.com': '/awb-label-generator' };
+
 async function route(ctx) {
   const { request } = ctx;
   const url = new URL(request.url), p = url.pathname;
@@ -125,6 +134,12 @@ async function route(ctx) {
     if (host !== CK_MAIN) return new Response(null, { status: 301, headers: { Location: 'https://' + CK_MAIN + p + url.search } });
     if (request.method === 'GET' && (p === '/' || p === '/index' || p === '/index.html')) return cargoKitHome(ctx, url);
   }
+  // Shortcut domains bought for single tools open that tool on cargokit.ai.
+  const TD = TOOL_DOMAINS[host.replace(/^www\./, '')];
+  if (TD) return new Response(null, { status: 301, headers: { Location: 'https://' + CK_MAIN + TD } });
+  // Short addresses that are easy to say and type: cargokit.ai/planner, /vgm, /awb ...
+  const sh = SHORT[p.replace(/\/$/, '').toLowerCase()];
+  if (sh && request.method === 'GET') return new Response(null, { status: 302, headers: { Location: sh + url.search } });
   // build scripts and translation working files in the repo are not part of the site
   if (/^\/tools(\/|$)/.test(p)) return new Response('Not found', { status: 404 });
   if (request.method !== 'GET') return ctx.next();
