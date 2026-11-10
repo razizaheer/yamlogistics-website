@@ -2,7 +2,25 @@
 (function (root) {
   const norm = (s) => String(s).replace(/\s+/g, ' ').trim();
   const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  function make(dict) {
+  // localise dates such as "18 October 2026" / "October 2026" / "5 Nov" that sit inside placeholders
+  const MN = { de: 'Januar Februar März April Mai Juni Juli August September Oktober November Dezember', es: 'enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre', fr: 'janvier février mars avril mai juin juillet août septembre octobre novembre décembre', pt: 'janeiro fevereiro março abril maio junho julho agosto setembro outubro novembro dezembro', ru: 'января февраля марта апреля мая июня июля августа сентября октября ноября декабря', ar: 'يناير فبراير مارس أبريل مايو يونيو يوليو أغسطس سبتمبر أكتوبر نوفمبر ديسمبر', hi: 'जनवरी फ़रवरी मार्च अप्रैल मई जून जुलाई अगस्त सितंबर अक्तूबर नवंबर दिसंबर' };
+  const EN = 'January February March April May June July August September October November December'.split(' ');
+  const MNR = { ru: 'январь февраль март апрель май июнь июль август сентябрь октябрь ноябрь декабрь' };
+  const dateRe = /^(?:(\d{1,2}) )?(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)(?: (\d{4}))?$/;
+  function locDate(v, lang) {
+    const m = dateRe.exec(v); if (!m || !lang) return null;
+    const i = EN.findIndex((e) => e.slice(0, 3) === m[2].slice(0, 3)); if (i < 0) return null;
+    const d = m[1], y = m[3];
+    if (lang === 'ja' || lang === 'zh') return (y ? y + '年' : '') + (i + 1) + '月' + (d ? d + '日' : '');
+    if (lang === 'ko') return (y ? y + '년 ' : '') + (i + 1) + '월' + (d ? ' ' + d + '일' : '');
+    const names = (d || !MNR[lang]) ? MN[lang] : MNR[lang]; if (!names) return null;
+    const n = names.split(' ')[i];
+    if (lang === 'de') return (d ? d + '. ' : '') + n + (y ? ' ' + y : '');
+    if (lang === 'es' || lang === 'pt') return (d ? d + ' de ' : '') + n + (y ? ' de ' + y : '');
+    return (d ? d + ' ' : '') + n + (y ? ' ' + y : '');
+  }
+  function make(dict, lang) {
+    lang = lang || root.YAM_LANG || (root.document && root.document.documentElement && (root.document.documentElement.lang || '').slice(0, 2)) || '';
     const pats = [];
     for (const k of Object.keys(dict)) {
       if (!/\{\d\}/.test(k)) continue;
@@ -21,7 +39,7 @@
       let out = null;
       if ((depth || 0) < 3) for (const p of pats) {
         const m = p.re.exec(n); if (!m) continue;
-        const caps = {}; p.order.forEach((idx, i) => { const v = m[i + 1]; caps[idx] = t(v, (depth || 0) + 1) || v; });
+        const caps = {}; p.order.forEach((idx, i) => { const v = m[i + 1]; caps[idx] = locDate(v, lang) || t(v, (depth || 0) + 1) || v; });
         out = p.to.replace(/\{(\d)\}/g, (_, d) => (caps[d] != null ? caps[d] : '')); break;
       }
       if (out == null) { const m = /^([^A-Za-z]*?)([A-Za-z][\s\S]*?)([^A-Za-z]*)$/.exec(n); if (m && (m[1] || m[3]) && Object.prototype.hasOwnProperty.call(dict, m[2])) out = m[1] + dict[m[2]] + m[3]; }

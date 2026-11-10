@@ -13,7 +13,7 @@ const exists = (lang, slug) => BUILDING.has(lang + '/' + slug) || fs.existsSync(
 function build(lang, slug, I18V) {
   const info = L.loadDict(lang);
   const dict = Object.assign({}, info.dict);
-  const tr = L.core.make(dict);
+  const tr = L.core.make(dict, lang);
   const pages = new Set(info.pages);
   const html = fs.readFileSync(L.ROOT + '/' + slug + '.html', 'utf8');
   const { document } = parseHTML(html);

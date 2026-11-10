@@ -1,0 +1,55 @@
+const a=require("../d5-in-hi.json");
+const o={};
+const tr={
+"Loading the Indian customs tariff…":"भारतीय सीमा शुल्क टैरिफ़ लोड हो रहा है…",
+"© {0} YAM Logistics Pvt. Ltd.":null,
+"India Customs Duty Calculator by HSN Code (BCD, SWS, IGST) | YAM Logistics":"HSN कोड द्वारा भारत सीमा शुल्क कैलकुलेटर (BCD, SWS, IGST) | YAM Logistics",
+"BCD ?":null,
+"BCD Free":"BCD मुक्त",
+"Loading the European Union tariff…":"यूरोपीय संघ का टैरिफ़ लोड हो रहा है…",
+"Loading the United Kingdom tariff…":"यूनाइटेड किंगडम का टैरिफ़ लोड हो रहा है…",
+"Loading the Japan tariff…":"जापान का टैरिफ़ लोड हो रहा है…",
+"Loading the Australia tariff…":"ऑस्ट्रेलिया का टैरिफ़ लोड हो रहा है…",
+"Loading the United Arab Emirates tariff…":"संयुक्त अरब अमीरात का टैरिफ़ लोड हो रहा है…",
+"Loading the Saudi Arabia tariff…":"सऊदी अरब का टैरिफ़ लोड हो रहा है…",
+"Loading the Oman tariff…":"ओमान का टैरिफ़ लोड हो रहा है…",
+"Loading the Kuwait tariff…":"कुवैत का टैरिफ़ लोड हो रहा है…",
+"Loading the Qatar tariff…":"क़तर का टैरिफ़ लोड हो रहा है…",
+"Loading the Bahrain tariff…":"बहरीन का टैरिफ़ लोड हो रहा है…",
+"Loading the Mexico tariff…":"मेक्सिको का टैरिफ़ लोड हो रहा है…",
+"Loading the Brazil tariff…":"ब्राज़ील का टैरिफ़ लोड हो रहा है…",
+"Machines and appliances for testing the hardness, strength, compressibility, elasticity or other m…":"कठोरता, मज़बूती, संपीड्यता, लोच या अन्य यांत्रिक गुणों के परीक्षण के लिए मशीनें और उपकरण…",
+"Mechano-therapy appliances; massage apparatus; psychological aptitude-testing apparatus; ozone the…":"यांत्रिक-चिकित्सा उपकरण; मालिश उपकरण; मनोवैज्ञानिक अभिक्षमता-परीक्षण उपकरण; ओज़ोन चिकित्सा…",
+"{0}% to {1}% (varies by item)":"{0}% से {1}% (वस्तु के अनुसार भिन्न)",
+"INSTRUMENTS AND APPLIANCES USED IN MEDICAL, SURGI CAL, DE NTAL OR VETERINARY SCIENCES, INCLUDING S…":"चिकित्सा, शल्य चिकित्सा, दंत चिकित्सा या पशु चिकित्सा विज्ञान में प्रयुक्त उपकरण और साधन, जिनमें सम्मिलित हैं…",
+"{0}¢/bbl":null,
+"Universal or for tensile tests":"सार्वभौमिक या तन्यता परीक्षण के लिए",
+"For hardness tests":"कठोरता परीक्षण के लिए",
+"Weighing {0} g/m{1} or less":"वज़न {0} g/m{1} या उससे कम",
+"Weighing more than {0} g/m{1}":"वज़न {0} g/m{1} से अधिक",
+"Parts and accessories":"पुर्ज़े और सहायक उपकरण",
+"Other machines and appliances":"अन्य मशीनें और उपकरण",
+"Electrical vibratory-massage apparatus":"विद्युत कंपन-मालिश उपकरण",
+"Electrocardiographs":"इलेक्ट्रोकार्डियोग्राफ़",
+"Ultrasonic scanning apparatus":"अल्ट्रासोनिक स्कैनिंग उपकरण",
+"Weighing {0}g/m${1}or less":"वज़न {0}g/m${1}या उससे कम",
+"Weighing more than {0}g/m${1}":"वज़न {0}g/m${1}से अधिक",
+"Machines and appliances for testing metals":"धातुओं के परीक्षण के लिए मशीनें और उपकरण",
+"Mechano-therapy appliances; massage apparatus; psychological aptitude-testing apparatus":"यांत्रिक-चिकित्सा उपकरण; मालिश उपकरण; मनोवैज्ञानिक अभिक्षमता-परीक्षण उपकरण",
+"Other breathing appliances and gas masks, excluding protective masks having neither mechan":"अन्य श्वसन उपकरण और गैस मास्क, उन सुरक्षात्मक मास्कों को छोड़कर जिनमें न तो यांत्रिक",
+"Electro-cardiographs":"इलेक्ट्रो-कार्डियोग्राफ़",
+"Diagnostic test kits":"नैदानिक परीक्षण किट",
+"Multi-ply paper and paperboard":"बहु-परत कागज़ और पेपरबोर्ड",
+"Weighing {0} g/m{1}or less":"वज़न {0} g/m{1}या उससे कम",
+"Weighing not more than {0} g/m{1}":"वज़न {0} g/m{1} से अधिक नहीं",
+"OTHER BREATHING APPLIANCES AND GAS MASKS, EXCLUDING PROTECTIVE MASKS HAVING NEITHER MECHAN":"अन्य श्वसन उपकरण और गैस मास्क, उन सुरक्षात्मक मास्कों को छोड़कर जिनमें न तो यांत्रिक",
+};
+const M="Mechano-therapy appliances; massage apparatus; psychological aptitude-testing apparatus; ozone therapy, oxygen therapy, aerosol therapy, artificial respiration or other therapeutic respiration apparatus";
+const mh="यांत्रिक-चिकित्सा उपकरण; मालिश उपकरण; मनोवैज्ञानिक अभिक्षमता-परीक्षण उपकरण; ओज़ोन चिकित्सा, ऑक्सीजन चिकित्सा, एरोसोल चिकित्सा, कृत्रिम श्वसन या अन्य चिकित्सीय श्वसन उपकरण";
+tr[M]=mh;
+tr[M+" › Mechano-therapy appliances; massage apparatus; psychological aptitude-testing apparatus"]=mh+" › यांत्रिक-चिकित्सा उपकरण; मालिश उपकरण; मनोवैज्ञानिक अभिक्षमता-परीक्षण उपकरण";
+for(const k of a){
+ if(k.startsWith("DIAGNOSTIC OR LAB")) o[k]="बैकिंग पर नैदानिक या प्रयोगशाला अभिकर्मक, तैयार नैदानिक या प्रयोगशाला अभिकर्मक, चाहे बैकिंग पर हों या नहीं, चाहे किट के रूप में प्रस्तुत हों या नहीं, शीर्षक {0} के अलावा; प्रमाणित संदर्भ सामग्री - बैकिंग पर नैदानिक या प्रयोगशाला अभिकर्मक, तैयार नैदानिक या प्रयोगशाला";
+ else if(k in tr && tr[k]!==null) o[k]=tr[k]; else o[k]=k;
+}
+require("fs").writeFileSync(__dirname+"/../d5-out-hi.json",JSON.stringify(o,null,1));
