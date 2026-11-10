@@ -23,7 +23,7 @@ const PRECACHE = [
 "/doc-gen.js?v=1",
 "/bl-awb-draft",
 "/vgm-declaration",
-"/vgm.js?v=1",
+"/vgm.js?v=2",
 "/draft-gen.js?v=1",
 "/landed-cost.js?v=1",
 "/saved",

@@ -8,7 +8,7 @@
   var KEY = 'ck_vgm_v1';
   var TYPES = [['20GP', "20' Standard", 2200, 30480], ['40GP', "40' Standard", 3750, 32500], ['40HC', "40' High Cube", 3900, 32500], ['20RF', "20' Reefer", 3000, 30480], ['40RH', "40' High Cube Reefer", 4600, 34000], ['45HC', "45' High Cube", 4800, 32500], ['20OT', "20' Open Top", 2350, 30480], ['40OT', "40' Open Top", 3950, 32500], ['20FR', "20' Flat Rack", 2750, 34000], ['40FR', "40' Flat Rack", 5200, 45000], ['20TK', "20' Tank", 3600, 36000], ['OTH', 'Other', 0, 0]];
   var CARGO = ['Normal', 'Reefer', 'Hazardous', 'Other'];
-  var S = { shipper: '', addr: '', reg: '', person: '', desig: '', contact: '', booking: '', bl: '', line: '', vessel: '', pol: '', method: '1', unit: 'kg', appr: '', rows: [] };
+  var S = { shipper: '', addr: '', reg: '', person: '', desig: '', contact: '', booking: '', bl: '', line: '', vessel: '', pol: '', method: '1', unit: 'kg', appr: '', lh: false, rows: [] };
   function blank() { return { no: '', type: '40HC', max: '', tare: '', gross: '', truck: '', cargo: '', pack: '', seal: '', wb: '', wbreg: '', slip: '', when: '', ctype: 'Normal', un: '', how: 'direct' }; }
   function load() { try { var j = JSON.parse(localStorage.getItem(KEY) || 'null'); if (j && j.rows) { for (var k in S) if (j[k] != null) S[k] = j[k]; } } catch (e) {} if (!S.rows.length) S.rows = [blank()]; }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
@@ -85,7 +85,7 @@
     var tot = S.rows.reduce(function (a, r) { return a + Math.max(0, vgmOf(r)); }, 0);
     el.innerHTML = '<table class="vg-sum"><tr><th>#</th><th>Container</th><th>Type</th><th>VGM (' + S.unit + ')</th><th>Status</th></tr>' + S.rows.map(function (r, i) { var p = problems(r), e = p.filter(function (x) { return x[0] === 'e'; }).length, w = p.length - e; return '<tr><td>' + (i + 1) + '</td><td>' + esc(cnCheck(r.no).s || '–') + '</td><td>' + esc(typeOf(r.type)[1]) + '</td><td><b>' + (vgmOf(r) > 0 ? fmt(vgmOf(r)) : '–') + '</b></td><td class="' + (e ? 'vg-e' : w ? 'vg-w' : 'vg-ok') + '">' + (e ? 'Fix ' + e + ' item' + (e > 1 ? 's' : '') : w ? 'Check ' + w + ' item' + (w > 1 ? 's' : '') : 'Ready') + '</td></tr>'; }).join('') + (S.rows.length > 1 ? '<tr><td></td><td colspan="2"><b>Total</b></td><td><b>' + fmt(tot) + '</b></td><td></td></tr>' : '') + '</table>' + (hp.length ? '<div class="vg-e" style="margin-top:10px">Still needed above: ' + esc(hp.join(', ')) + '.</div>' : '');
     var ok = !hp.length && !bad;
-    ['vg-pdf', 'vg-txt', 'vg-csv'].forEach(function (id) { var b = D.getElementById(id); if (b) b.disabled = !ok; });
+    ['vg-pdf', 'vg-pdf2', 'vg-txt', 'vg-csv'].forEach(function (id) { var b = D.getElementById(id); if (b) b.disabled = !ok; });
   }
   function render() {
     var m2 = S.method === '2';
@@ -96,7 +96,7 @@
       '<div class="vg-card"><div class="vg-q">3 · How was the weight found?</div><div class="vg-act" style="margin:10px 0 4px"><div class="vg-seg" id="vg-method"><button type="button" data-m="1" class="' + (m2 ? '' : 'on') + '">Method 1 · weighed the packed container</button><button type="button" data-m="2" class="' + (m2 ? 'on' : '') + '">Method 2 · added up the contents</button></div><div class="vg-seg" id="vg-unit"><button type="button" data-u="kg" class="' + (S.unit === 'kg' ? 'on' : '') + '">kg</button><button type="button" data-u="lb" class="' + (S.unit === 'lb' ? 'on' : '') + '">lb</button></div></div>' +
       (m2 ? '<div class="vg-note"><b>Method 2 needs approval.</b> You weigh every package, pallet and piece of dunnage and add the container tare. In India this method may be used only by shippers whose procedure is approved by the Directorate General of Shipping; many other countries also ask for a registration or certificate. If you are not approved, use Method 1.</div><div class="vg-g" style="margin-top:12px">' + F('Method 2 approval / certificate no.', 'appr', S.appr) + '</div>' : '<p class="vg-m" style="margin-top:10px">The packed and sealed container is weighed on a weighbridge. If the truck was weighed with the container on it, the tool subtracts the truck for you.</p>') + '</div>' +
       '<div class="vg-card"><div class="vg-q">4 · Containers</div><p class="vg-m">One block per container. The maximum gross mass and the tare are printed on the container door (CSC plate).</p><div id="vg-rows">' + S.rows.map(rowHtml).join('') + '</div><div class="vg-act"><button type="button" class="vg-btn g" id="vg-add">+ Add container</button><button type="button" class="vg-btn g" id="vg-dup">+ Copy the last one</button></div></div>' +
-      '<div class="vg-card"><div class="vg-q">5 · Your declaration</div><div id="vg-sum" style="margin:10px 0 16px"></div><div class="vg-act"><button type="button" class="vg-btn" id="vg-pdf">↓ VGM declaration (PDF)</button><button type="button" class="vg-btn g" id="vg-txt">Copy as text for email</button><button type="button" class="vg-btn g" id="vg-csv">↓ CSV for upload</button><button type="button" class="vg-btn g" id="vg-clear">Clear containers</button></div><p class="vg-m" style="margin-top:12px">Sign and stamp the PDF, then send it to your shipping line, forwarder or terminal before their VGM cut-off. Many lines also want the same figures typed into their own portal: the text and CSV copies make that quick.</p></div>';
+      '<div class="vg-card"><div class="vg-q">5 · Your declaration</div><div id="vg-sum" style="margin:10px 0 16px"></div><div class="vg-act"><button type="button" class="vg-btn" id="vg-pdf">↓ VGM declaration (PDF)</button><button type="button" class="vg-btn g" id="vg-pdf2">↓ All containers on one sheet</button><button type="button" class="vg-btn g" id="vg-txt">Copy as text for email</button><button type="button" class="vg-btn g" id="vg-csv">↓ CSV for upload</button><button type="button" class="vg-btn g" id="vg-clear">Clear containers</button></div><label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:15px"><input type="checkbox" id="vg-lh"' + (S.lh ? ' checked' : '') + '> I will print it on my letterhead (leave the top and bottom of the page blank)</label><p class="vg-m" style="margin-top:8px">The declaration is in the standard Indian format, "Information about verified gross mass of container", one page per container. Sign and stamp the PDF, then send it to your shipping line, forwarder or terminal before their VGM cut-off. Many lines also want the same figures typed into their own portal: the text and CSV copies make that quick.</p></div>';
     S.rows.forEach(function (r, i) { verdict(i); }); summary();
   }
   function setKey(k, v) {
@@ -111,7 +111,7 @@
     if (k.indexOf('r.') === 0) verdict(+k.split('.')[2]);
     summary();
   });
-  root.addEventListener('change', function (e) { var k = e.target.getAttribute && e.target.getAttribute('data-k'); if (k && e.target.tagName === 'SELECT') { if (setKey(k, e.target.value)) { save(); render(); } } });
+  root.addEventListener('change', function (e) { if (e.target.id === 'vg-lh') { S.lh = e.target.checked; save(); return; } var k = e.target.getAttribute && e.target.getAttribute('data-k'); if (k && e.target.tagName === 'SELECT') { if (setKey(k, e.target.value)) { save(); render(); } } });
   root.addEventListener('click', function (e) {
     var t = e.target.closest ? e.target.closest('button') : null; if (!t) return;
     if (t.dataset.m) { S.method = t.dataset.m; save(); render(); }
@@ -120,7 +120,8 @@
     else if (t.id === 'vg-add') { var b = blank(), l = S.rows[S.rows.length - 1]; if (l) { b.type = l.type; b.wb = l.wb; b.wbreg = l.wbreg; b.ctype = l.ctype; b.how = l.how; } S.rows.push(b); save(); render(); }
     else if (t.id === 'vg-dup') { var c = JSON.parse(JSON.stringify(S.rows[S.rows.length - 1])); c.no = ''; c.seal = ''; c.slip = ''; S.rows.push(c); save(); render(); }
     else if (t.id === 'vg-clear') { S.rows = [blank()]; S.booking = ''; S.bl = ''; S.vessel = ''; save(); render(); }
-    else if (t.id === 'vg-pdf') makePdf(t);
+    else if (t.id === 'vg-pdf') indiaPdf(t);
+    else if (t.id === 'vg-pdf2') makePdf(t);
     else if (t.id === 'vg-txt') { copy(textOut(), t); }
     else if (t.id === 'vg-csv') { dl('VGM-' + (S.booking || S.bl || 'declaration') + '.csv', csvOut(), 'text/csv'); }
   });
@@ -190,6 +191,83 @@
       [[M, 'Name of authorised person', String(S.person).toUpperCase()], [M + 66, 'Signature and company stamp', ''], [M + 132, 'Place and date', '']].forEach(function (b) { if (b[2]) T(b[2], b[0], y + 9, { s: 9.5, b: true }); doc.line(b[0], y + 12, b[0] + 56, y + 12); T(b[1], b[0], y + 16, { s: 7.5, c: muted }); });
       if (B) B.finish(doc);
       doc.save(('VGM-' + (S.booking || S.bl || 'declaration') + '.pdf').replace(/[^\w.\-]+/g, '-'));
+    }).catch(function (e) { console.error(e); alert('Sorry, the PDF could not be made in this browser.'); }).then(function () { btn.disabled = false; btn.textContent = old; summary(); });
+  }
+
+  // The Indian format: "Information about verified gross mass of container", 13 rows, one page per container.
+  // It is the shipper's own document, so it carries the shipper's name (or is left blank for a letterhead), not a CargoKit header.
+  function indiaPdf(btn) {
+    var old = btn.textContent; btn.disabled = true; btn.textContent = 'Making PDF…';
+    jspdf().then(function (lib) {
+      var doc = new lib.jsPDF({ unit: 'mm', format: 'a4' }), W = 210;
+      var pt = function (t) { return String(t == null ? '' : t).replace(/[′’]/g, "'").replace(/[–—]/g, '-').replace(/[^\x00-\xFF]/g, '?'); };
+      var p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+      var dt = function (v) { if (!v) return ''; var d = new Date(v); if (isNaN(d)) return String(v); return p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes()) + ' HRS'; };
+      var f2 = function (n) { return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+      var f0 = function (n) { return (Math.round(n * 10) / 10).toLocaleString('en-IN', { maximumFractionDigits: 1 }); };
+      var U = S.unit === 'lb' ? 'LBS' : 'KGS', now = new Date(), today = p2(now.getDate()) + '-' + p2(now.getMonth() + 1) + '-' + now.getFullYear();
+      S.rows.forEach(function (r, i) {
+        if (i) doc.addPage();
+        var y = 16;
+        if (!S.lh) {
+          doc.setFont('times', 'bold'); doc.setFontSize(22); doc.setTextColor(11, 42, 74); doc.text(pt(String(S.shipper).toUpperCase()), W / 2, y + 4, { align: 'center', maxWidth: 180 });
+          y += 10;
+          if (S.addr) { doc.setFont('times', 'normal'); doc.setFontSize(10.5); doc.setTextColor(60, 60, 60); var al = doc.splitTextToSize(pt(S.addr), 170); doc.text(al, W / 2, y + 1, { align: 'center' }); y += al.length * 4.6; }
+          doc.setDrawColor(90, 90, 90); doc.setLineWidth(0.5); doc.line(14, y + 2, W - 14, y + 2); y += 12;
+        } else y = 46;
+        doc.setTextColor(20, 20, 20); doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+        var title = 'INFORMATION ABOUT VERIFIED GROSS MASS OF CONTAINER'; doc.text(title, W / 2, y, { align: 'center' });
+        var tw = doc.getTextWidth(title); doc.setLineWidth(0.3); doc.setDrawColor(20, 20, 20); doc.line(W / 2 - tw / 2, y + 1, W / 2 + tw / 2, y + 1);
+        y += 7;
+        var v = vgmOf(r), tare = num(r.tare), c = cnCheck(r.no).s, t = typeOf(r.type), ft = (t[0].match(/^\d\d/) || [''])[0];
+        var mass = S.method === '2' ? f0(num(r.cargo) + num(r.pack)) + ' ' + U + '+TARE ' + f0(tare) + ' ' + U + ' =\nTOTAL: ' + f2(v) + ' ' + U + ' METHOD 2' : (tare > 0 && v > tare ? f0(v - tare) + ' ' + U + '+TARE ' + f0(tare) + ' ' + U + ' =\n' : '') + 'TOTAL: ' + f2(v) + ' ' + U + ' METHOD 1';
+        var who = [String(S.person).toUpperCase(), String(S.desig).toUpperCase()].filter(Boolean).join('\n');
+        var rows = [
+          ['1*', 'Name of the shipper', String(S.shipper).toUpperCase()],
+          ['2*', 'Shipper Registration/License No. (IEC No/CIN No) **', String(S.reg).toUpperCase()],
+          ['3*', 'Name and designation of official of the shipper authorized to sign document', who],
+          ['4*', '24 x 7 contact details of authorized official of shipper', S.contact],
+          ['5*', 'Container No.', c + (ft ? '/' + ft : '')],
+          ['6*', 'Container Size (TEU/FEU/other)', ft ? '1X' + ft : t[1].toUpperCase()],
+          ['7*', 'Maximum permissible weight of container as per the CSC plate', num(r.max) ? f2(num(r.max)) + ' ' + U + '.' : ''],
+          ['8*', 'Verified gross mass of container (method-1/method-2)', mass],
+          ['9*', S.method === '2' ? 'Date and time of weighing' : 'Date and time of weighing', dt(r.when)],
+          ['10*', 'Weighing slip no.', S.method === '2' ? (S.appr ? 'METHOD 2 APPROVAL ' + S.appr : '') : r.slip],
+          ['11*', 'Weighbridge registration no. & Address of Weighbridge', [r.wbreg, r.wb].filter(Boolean).join('\n').toUpperCase()],
+          ['12', 'Type (Normal/Reefer/Hazardous/others)', String(r.ctype).toUpperCase()],
+          ['13', 'If Hazardous, UN No, IMDG class', r.ctype === 'Hazardous' ? String(r.un).toUpperCase() : 'NON HAZ']
+        ];
+        var X = [20, 34, 112, 190], LH = 6.1;
+        var cell = function (txt, x, w) { return doc.splitTextToSize(pt(txt), w - 4); };
+        doc.setFontSize(10.5); doc.setLineWidth(0.35);
+        // header row
+        var hh = 9; doc.rect(X[0], y, X[3] - X[0], hh); doc.line(X[1], y, X[1], y + hh); doc.line(X[2], y, X[2], y + hh);
+        doc.text('Sr.', (X[0] + X[1]) / 2, y + 3.8, { align: 'center' }); doc.text('No.', (X[0] + X[1]) / 2, y + 7.8, { align: 'center' });
+        doc.text('Details of Information', (X[1] + X[2]) / 2, y + 4.6, { align: 'center' }); doc.text('Particulars', (X[2] + X[3]) / 2, y + 4.6, { align: 'center' });
+        y += hh;
+        rows.forEach(function (rw) {
+          var a = cell(rw[1], X[1], X[2] - X[1]), b = [];
+          String(rw[2] || '').split('\n').forEach(function (ln) { b = b.concat(cell(ln, X[2], X[3] - X[2])); });
+          var n = Math.max(a.length, b.length, 1), h = n * LH + 2.6;
+          doc.rect(X[0], y, X[3] - X[0], h); doc.line(X[1], y, X[1], y + h); doc.line(X[2], y, X[2], y + h);
+          doc.text(rw[0], X[0] + 4, y + 5); doc.text(a, X[1] + 2.4, y + 5, { lineHeightFactor: 1.62 }); doc.text(b, X[2] + 2.4, y + 5, { lineHeightFactor: 1.62 });
+          y += h;
+        });
+        // signature block
+        y += 26;
+        var sx = 150; doc.setFontSize(10.5);
+        var st = 'Signature of Authorized Person of Shipper'; doc.text(st, sx, y, { align: 'center' }); var sw = doc.getTextWidth(st); doc.line(sx - sw / 2, y + 1, sx + sw / 2, y + 1);
+        y += 7; doc.text('Name:-  ' + pt(String(S.person).toUpperCase()), sx + 4, y, { align: 'center' });
+        y += 7; doc.text('Date: ' + today, sx + 4, y, { align: 'center' });
+        y += 9; doc.setFontSize(9);
+        doc.text('*Indicates mandatory fields', 22, y); y += 4.4;
+        doc.text('**Shippers not having IEC No. or CIN No. may provide information as follows:', 22, y); y += 4.4;
+        doc.text('Company - PAN No.', 26, y); y += 4.4; doc.text('Individuals', 26, y); y += 4.4;
+        doc.text('Indian National - AADHAR No', 26, y); y += 4.4; doc.text('Foreign National - PASSPORT No & Country of issue of passport.', 26, y);
+        if (S.booking || S.bl) { doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(70, 70, 70); doc.text(pt((S.booking ? 'Booking No. ' + S.booking : '') + (S.booking && S.bl ? '   |   ' : '') + (S.bl ? 'B/L No. ' + S.bl : '') + (S.line ? '   |   ' + S.line : '')), 22, Math.min(y + 7, 285)); }
+        if (!S.lh) { doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(140, 150, 160); doc.text('Prepared with the free VGM declaration maker on www.CargoKit.ai', W / 2, 292.5, { align: 'center' }); }
+      });
+      doc.save(('VGM-' + (S.booking || S.bl || cnCheck(S.rows[0].no).s || 'declaration') + '.pdf').replace(/[^\w.\-]+/g, '-'));
     }).catch(function (e) { console.error(e); alert('Sorry, the PDF could not be made in this browser.'); }).then(function () { btn.disabled = false; btn.textContent = old; summary(); });
   }
   // containers handed over from the load planner: #lp=<base64 json {u, c:[[typeId, cargoKg, name]]}>
