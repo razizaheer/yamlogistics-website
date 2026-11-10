@@ -1002,6 +1002,7 @@ ${n ? `<div class="lp-card">
     <button class="lp-btn" id="lp-pdf">↓ Summary PDF</button>
     <button class="lp-btn" id="lp-pdf2">↓ Step-by-step PDF</button>
     <button class="lp-btn lp-vid" id="lp-vid">▶ MP4 loading video for phones</button>
+    ${CATS[S.cat].kind === 'container' && !S.build ? `<a class="lp-btn lp-ghost" id="lp-vgm" href="vgm-declaration.html#lp=${btoa(unescape(encodeURIComponent(JSON.stringify({ u: S.wunit, c: r.units.map((u) => [u.eq.id, Math.round(u.kg / wtF())]) }))))}">VGM declaration for this load</a>` : ''}
     <a class="lp-btn lp-wa" id="lp-wa" target="_blank" rel="noopener">Get a quote for this load on WhatsApp</a>
     <a class="lp-btn lp-ghost" id="lp-mail">Email this plan</a>
     <button class="lp-btn lp-ghost" id="lp-copy">Copy share link</button>
