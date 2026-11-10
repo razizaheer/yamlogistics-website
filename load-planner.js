@@ -6,7 +6,7 @@
   if (!root || !E) return;
 
   // strong colours that are easy to tell apart, the most different ones first (no pastels)
-  const PALETTE = ['#1F6FEB', '#F97316', '#16A34A', '#DC2626', '#9333EA', '#EAB308', '#0891B2', '#DB2777', '#78350F', '#65A30D', '#1E3A8A', '#F43F5E', '#0F766E', '#A21CAF', '#525252', '#C2410C'];
+  const PALETTE = ['#3F83D9', '#EE9B3F', '#4FA873', '#D9645C', '#8F6FC9', '#DDB640', '#3FA3B8', '#D272A0', '#8F6A4E', '#93AE45', '#44589A', '#E58383', '#40928A', '#AA62AC', '#727B88', '#C97A44'];
     // CargoKit logo for the loading video's header (loaded early so it is ready when a video is made)
   const CK_ICON = new Image(); CK_ICON.src = 'cargokit-logo.svg';
   const EMAIL = 'info@yamlogistics.com';
@@ -992,9 +992,27 @@ ${n ? `<div class="lp-card">
     renderer.setClearColor(0xF4F8FC, 1);
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(40, 1, 1, 100000);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.62));
-    const dl = new THREE.DirectionalLight(0xffffff, 0.55); dl.position.set(1, 2, 1.4); scene.add(dl);
-    const dl2 = new THREE.DirectionalLight(0xffffff, 0.25); dl2.position.set(-1, 0.6, -1); scene.add(dl2);
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xD5DEE8, 0.74));
+    // main light from above the front wall, on the viewer's side: taller stacks shade the lower ones towards the doors
+    const dl = new THREE.DirectionalLight(0xffffff, 0.46); dl.castShadow = true; dl.shadow.mapSize.set(2048, 2048); dl.shadow.bias = -0.0006; dl.shadow.normalBias = 1.2; scene.add(dl); scene.add(dl.target);
+    const dl2 = new THREE.DirectionalLight(0xffffff, 0.2); dl2.position.set(1.4, 0.5, 0.2); scene.add(dl2);
+    const ocam = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 100000); let acam = camera;
+    let doorGrp = null, doorReach = 0, dimsV = {}, groundM = null;
+    const texStore = {};
+    function plankTex() {
+      const c = document.createElement('canvas'); c.width = 512; c.height = 256; const g = c.getContext('2d');
+      g.fillStyle = '#C8AE86'; g.fillRect(0, 0, 512, 256);
+      for (let r = 0; r < 8; r++) { g.fillStyle = r % 2 ? 'rgba(120,90,50,0.07)' : 'rgba(255,255,255,0.05)'; g.fillRect(0, r * 32, 512, 32); g.fillStyle = 'rgba(90,65,35,0.35)'; g.fillRect(0, r * 32, 512, 1.5); const o = (r * 173) % 512; g.fillRect(o, r * 32, 1.5, 32); g.fillRect((o + 260) % 512, r * 32, 1.5, 32); }
+      const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 4; return t;
+    }
+    function steelTex() {
+      const c = document.createElement('canvas'); c.width = 64; c.height = 8; const g = c.getContext('2d');
+      const gr = g.createLinearGradient(0, 0, 64, 0);
+      gr.addColorStop(0, '#D3DCE5'); gr.addColorStop(0.22, '#E9EEF3'); gr.addColorStop(0.5, '#D3DCE5'); gr.addColorStop(0.72, '#B9C6D2'); gr.addColorStop(1, '#D3DCE5');
+      g.fillStyle = gr; g.fillRect(0, 0, 64, 8);
+      const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+    }
     let cyl = null, matB = null, matC = null, epos = null;
     let controls = null, group = null, inst = null, edges = null, eqDims = null, curUnit = null, view = 'iso', doorLbl = null, dims = null;
     // the package type's letter, printed on the top, the door side and the right-hand side of every package
@@ -1006,30 +1024,40 @@ ${n ? `<div class="lp-card">
       const c = document.createElement('canvas'); c.width = c.height = 128;
       const g = c.getContext('2d'), fs = t.length > 2 ? 52 : t.length > 1 ? 70 : 104;
       g.font = `900 ${fs}px Arial, Helvetica, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.lineJoin = 'round'; g.lineWidth = fs * 0.16; g.strokeStyle = '#FFFFFF'; g.strokeText(t, 64, 68);
-      g.fillStyle = '#111111'; g.fillText(t, 64, 68);
+      g.lineJoin = 'round'; g.lineWidth = fs * 0.14; g.strokeStyle = 'rgba(11,42,74,0.85)'; g.strokeText(t, 64, 68);
+      g.fillStyle = '#FFFFFF'; g.fillText(t, 64, 68);
       const tx = new THREE.CanvasTexture(c); tx.anisotropy = 4; return tx;
     }
     function buildDecals(u) {
       decals = [];
-      const N = u.boxes.length; if (N > 2500) return;
+      const N = u.boxes.length; if (!N) return;
+      // one letter per block of identical packages (a block = one detailed loading step), on its top, door side and near side
+      const blocks = u.dsteps || (u.dsteps = E.detailSteps(u)), soRow = stepOf(u, u.steps);
+      const F = eqDims, cap = Math.max(26, Math.min(F.W, F.H) * 0.3);
       const byL = new Map();
-      u.boxes.forEach((b, i) => { const L = letterOf(b.type.idx); if (!byL.has(L)) byL.set(L, []); byL.get(L).push(i); });
+      for (const st of blocks) {
+        const idx = stepIdx(st); if (!idx.length) continue;
+        let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9, z0 = 1e9, z1 = -1e9, own = idx[0];
+        for (const i of idx) { const b = u.boxes[i]; x0 = Math.min(x0, b.x); x1 = Math.max(x1, b.x + b.dx); y0 = Math.min(y0, b.y); y1 = Math.max(y1, b.y + b.dy); z0 = Math.min(z0, b.z); z1 = Math.max(z1, b.z + b.dz); if (soRow[i] >= soRow[own]) own = i; }
+        const t = u.boxes[idx[0]].type, Lt = letterOf(t.idx);
+        if (!byL.has(Lt)) byL.set(Lt, []);
+        byL.get(Lt).push({ own, x0, x1, y0, y1, z0, z1, drum: isDrum(t) });
+      }
       const pg = new THREE.PlaneGeometry(1, 1), m = new THREE.Matrix4();
       const qTop = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
       const qDoor = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2), qSide = new THREE.Quaternion();
-      const sz = (a, b) => Math.max(3, Math.min(48, Math.min(a, b) * 0.62));
-      for (const [L, idxs] of byL) {
-        const mat = new THREE.MeshBasicMaterial({ map: letterTex(L), transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
-        const mesh = new THREE.InstancedMesh(pg, mat, idxs.length * 3), owner = new Int32Array(idxs.length * 3), mats = new Float32Array(idxs.length * 48);
+      const sz = (a, b) => Math.max(3, Math.min(cap, Math.min(a, b) * 0.6));
+      for (const [Lt, bl] of byL) {
+        const mat = new THREE.MeshBasicMaterial({ map: letterTex(Lt), transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+        const mesh = new THREE.InstancedMesh(pg, mat, bl.length * 3), owner = new Int32Array(bl.length * 3), mats = new Float32Array(bl.length * 48);
         let k = 0;
-        const put = (i, x, y, z, q, s) => { m.compose(new THREE.Vector3(x, y, z), q, new THREE.Vector3(s, s, 1)); mesh.setMatrixAt(k, m); mats.set(m.elements, k * 16); owner[k] = i; k++; };
-        for (const i of idxs) {
-          const b = u.boxes[i];
-          put(i, b.x + b.dx / 2, b.y + b.dy + 0.25, b.z + b.dz / 2, qTop, sz(b.dx, b.dz));
-          if (!isDrum(b.type)) { put(i, b.x + b.dx + 0.25, b.y + b.dy / 2, b.z + b.dz / 2, qDoor, sz(b.dy, b.dz)); put(i, b.x + b.dx / 2, b.y + b.dy / 2, b.z + b.dz + 0.25, qSide, sz(b.dx, b.dy)); }
+        const put = (i, x, y, z, q, sc) => { m.compose(new THREE.Vector3(x, y, z), q, new THREE.Vector3(sc, sc, 1)); mesh.setMatrixAt(k, m); mats.set(m.elements, k * 16); owner[k] = i; k++; };
+        for (const b of bl) {
+          const cx = (b.x0 + b.x1) / 2, cy = (b.y0 + b.y1) / 2, cz = (b.z0 + b.z1) / 2, dx = b.x1 - b.x0, dy = b.y1 - b.y0, dz = b.z1 - b.z0;
+          put(b.own, cx, b.y1 + 0.3, cz, qTop, sz(dx, dz));
+          if (!b.drum) { put(b.own, b.x1 + 0.3, cy, cz, qDoor, sz(dy, dz)); put(b.own, cx, cy, b.z1 + 0.3, qSide, sz(dx, dy)); }
         }
-        mesh.count = k; mesh.instanceMatrix.needsUpdate = true; mesh.renderOrder = 2;
+        mesh.count = k; mesh.instanceMatrix.needsUpdate = true; mesh.renderOrder = 2; mesh.frustumCulled = false;
         group.add(mesh); decals.push({ mesh, owner, mats, n: k });
       }
     }
@@ -1072,15 +1100,16 @@ ${n ? `<div class="lp-card">
       const h = $('lp-canvas'); if (!h) return;
       const w = h.clientWidth || 800, ht = h.clientHeight || 460;
       renderer.setSize(w, ht, false); renderer.domElement.style.width = '100%'; renderer.domElement.style.height = '100%';
-      camera.aspect = w / ht; camera.updateProjectionMatrix(); render();
+      camera.aspect = w / ht; camera.updateProjectionMatrix(); fitFlat(); render();
     }
     window.addEventListener('resize', resize);
-    function render() { renderer.render(scene, camera); }
-    function loop() { if (controls) controls.update(); requestAnimationFrame(loop); render(); }
+    function render() { renderer.render(scene, acam); }
+    function loop() { if (controls && controls.enabled) controls.update(); requestAnimationFrame(loop); render(); }
 
     function label(text) {
-      const c = document.createElement('canvas'); c.width = 256; c.height = 64;
-      const g = c.getContext('2d'); g.fillStyle = '#0B2A4A'; g.font = 'bold 34px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, 128, 32);
+      const c = document.createElement('canvas'); c.width = 512; c.height = 128;
+      const g = c.getContext('2d'); g.font = 'bold 68px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.lineJoin = 'round'; g.lineWidth = 12; g.strokeStyle = 'rgba(244,248,252,0.92)'; g.strokeText(text, 256, 66); g.fillStyle = '#0B2A4A'; g.fillText(text, 256, 66);
       const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), depthTest: false }));
       return s;
     }
@@ -1092,30 +1121,75 @@ ${n ? `<div class="lp-card">
       eqDims = eq.full || eq; curUnit = u;
       const L = eqDims.L, W = eqDims.W, H = eqDims.H;
       group.position.set(-L / 2, -H / 2, -W / 2);
-      // floor
-      const floor = new THREE.Mesh(new THREE.BoxGeometry(L, 2, W), new THREE.MeshLambertMaterial({ color: 0xC9B79C }));
-      floor.position.set(L / 2, -1, W / 2); group.add(floor);
-      // back (front wall) and one side wall, translucent
-      const wallM = new THREE.MeshLambertMaterial({ color: 0x9FB7CC, transparent: true, opacity: 0.18, side: THREE.DoubleSide, depthWrite: false });
-      const fw = new THREE.Mesh(new THREE.PlaneGeometry(W, H), wallM); fw.rotation.y = Math.PI / 2; fw.position.set(0, H / 2, W / 2); group.add(fw);
-      const sw = new THREE.Mesh(new THREE.PlaneGeometry(L, H), wallM); sw.position.set(L / 2, H / 2, 0); group.add(sw);
-      const box = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(L, H, W)), new THREE.LineBasicMaterial({ color: 0x0B2A4A }));
-      box.position.set(L / 2, H / 2, W / 2); group.add(box);
-      doorLbl = null;
-      // dimension lines on the 3D model: length, width and height with their measurements
-      dims = new THREE.Group(); group.add(dims);
+      const isBox = eq.group !== 'Pallets & air ULDs';
+      // light and shadow area follow the size of the unit
       {
-        const off = dimOff(eqDims), tk = off * 0.45;
-        const lm = new THREE.LineBasicMaterial({ color: 0x0B2A4A });
-        const seg = (a, b) => { const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...a), new THREE.Vector3(...b)]); dims.add(new THREE.Line(g, lm)); };
-        const txt = (t, p) => { const sp = label(t); const sw = Math.max(70, Math.min(W, H) * 0.62); sp.scale.set(sw, sw / 4, 1); sp.position.set(...p); dims.add(sp); };
+        const R = Math.max(L, W, H);
+        dl.position.set(-L * 0.28, H * 0.5 + R * 0.75, W * 0.5 + R * 0.42); dl.target.position.set(0, 0, 0);
+        const sc = dl.shadow.camera, e = Math.sqrt(L * L + W * W + H * H) / 2 + W * 0.6 + 40;
+        sc.left = -e; sc.right = e; sc.top = e; sc.bottom = -e; sc.near = 1; sc.far = R * 4 + 2000; sc.updateProjectionMatrix();
+      }
+      // soft shadow on the ground under the unit
+      const ground = new THREE.Mesh(new THREE.PlaneGeometry(L * 3 + 2000, W * 3 + 2000), new THREE.ShadowMaterial({ opacity: 0.16, depthWrite: false }));
+      ground.rotation.x = -Math.PI / 2; ground.position.set(L / 2, -3.2, W / 2); ground.receiveShadow = true; group.add(ground); groundM = ground;
+      // floor: plywood planks
+      const ft = plankTex(); ft.repeat.set(Math.max(1, L / 260), Math.max(1, W / 130));
+      const floor = new THREE.Mesh(new THREE.BoxGeometry(L, 3, W), new THREE.MeshLambertMaterial({ color: 0xffffff, map: ft }));
+      floor.position.set(L / 2, -1.5, W / 2); floor.receiveShadow = true; floor.castShadow = true; group.add(floor);
+      doorGrp = null; doorReach = 0;
+      if (isBox) {
+        // corrugated steel on the front wall and the far side wall, seen from inside only (they vanish when you look from behind)
+        const wall = (w, h) => { const t = steelTex(); t.repeat.set(Math.max(2, Math.round(w / 28)), 1); const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshLambertMaterial({ color: 0xffffff, map: t, side: THREE.FrontSide })); m.receiveShadow = true; return m; };
+        const fw = wall(W, H); fw.rotation.y = Math.PI / 2; fw.position.set(0, H / 2, W / 2); group.add(fw);
+        const sw = wall(L, H); sw.position.set(L / 2, H / 2, 0); group.add(sw);
+        // frame: corner posts and rails
+        const tk = Math.max(3.5, Math.min(7, H * 0.022)), fm = new THREE.MeshLambertMaterial({ color: 0x1F3F63 });
+        const bar = (lx, ly, lz, x, y, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(lx, ly, lz), fm); m.position.set(x, y, z); group.add(m); };
+        for (const x of [-tk / 2, L + tk / 2]) for (const z of [-tk / 2, W + tk / 2]) bar(tk, H + tk * 2, tk, x, H / 2, z);
+        for (const y of [-tk / 2, H + tk / 2]) { for (const z of [-tk / 2, W + tk / 2]) { if (y > 0 && z > 0) { const ln = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, H, W), new THREE.Vector3(L, H, W)]), new THREE.LineBasicMaterial({ color: 0x1F3F63 })); group.add(ln); continue; } bar(L, tk, tk, L / 2, y, z); } for (const x of [-tk / 2, L + tk / 2]) bar(tk, tk, W, x, y, W / 2); }
+        // the two doors, swung open
+        doorGrp = new THREE.Group(); group.add(doorGrp);
+        const dw = W / 2, ang = 0.42, dm = new THREE.MeshLambertMaterial({ color: 0xffffff, map: (() => { const t = steelTex(); t.repeat.set(Math.max(2, Math.round(dw / 28)), 1); return t; })(), side: THREE.DoubleSide });
+        const em = new THREE.LineBasicMaterial({ color: 0x1F3F63 });
+        for (const sgn of [-1, 1]) {
+          const hinge = new THREE.Group(); hinge.position.set(L + tk, 0, sgn < 0 ? -tk / 2 : W + tk / 2); hinge.rotation.y = -sgn * ang;
+          const g2 = new THREE.BoxGeometry(dw, H, 2.5), d = new THREE.Mesh(g2, dm); d.position.set(dw / 2, H / 2, 0); hinge.add(d);
+          const ed = new THREE.LineSegments(new THREE.EdgesGeometry(g2), em); ed.position.copy(d.position); hinge.add(ed);
+          for (const fx of [0.3, 0.7]) { const rod = new THREE.Mesh(new THREE.BoxGeometry(2, H * 0.94, 2), fm); rod.position.set(dw * fx, H / 2, sgn * 2.2); hinge.add(rod); }
+          doorGrp.add(hinge);
+        }
+        doorReach = dw * Math.cos(ang) + tk + 4;
+      } else {
+        const box = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(L, H, W)), new THREE.LineBasicMaterial({ color: 0x0B2A4A, transparent: true, opacity: 0.55 }));
+        box.position.set(L / 2, H / 2, W / 2); group.add(box);
+      }
+      doorLbl = null;
+      // dimension lines with their measurements: one set for the 3D view and one for each flat view
+      dims = new THREE.Group(); group.add(dims); dimsV = {};
+      {
+        const off = dimOff(eqDims), tk = off * 0.45, sw = Math.max(80, Math.min(260, Math.max(L, W, H) * 0.17)), wx = L + doorReach + off * 0.7;
+        const lm = new THREE.LineBasicMaterial({ color: 0x0B2A4A, depthTest: false });
         const lt = (v) => `${showLen(v)} ${S.unit}`;
-        seg([0, 0, W + off], [L, 0, W + off]); seg([0, 0, W + off - tk], [0, 0, W + off + tk]); seg([L, 0, W + off - tk], [L, 0, W + off + tk]);
-        txt(lt(L), [L / 2, 0, W + off * 2.6]);
-        seg([L + off, 0, 0], [L + off, 0, W]); seg([L + off - tk, 0, 0], [L + off + tk, 0, 0]); seg([L + off - tk, 0, W], [L + off + tk, 0, W]);
-        txt(lt(W), [L + off * 3.2, 0, W / 2 - off * 0.6]);
-        seg([0, 0, W + off], [0, H, W + off]); seg([0, H, W + off - tk], [0, H, W + off + tk]);
-        txt(lt(H), [-off * 1.2, H / 2, W + off * 2.4]);
+        const set = (name) => { const gr = new THREE.Group(); gr.renderOrder = 5; dims.add(gr); dimsV[name] = gr;
+          const seg = (a, b) => { const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...a), new THREE.Vector3(...b)]); const ln = new THREE.Line(g, lm); ln.renderOrder = 5; gr.add(ln); };
+          // a measured line from a to b with end ticks along the direction t
+          const dim = (a, b, t) => { seg(a, b); for (const q of [a, b]) seg(q.map((v, i) => v - t[i] * tk), q.map((v, i) => v + t[i] * tk)); };
+          const txt = (t, p) => { const sp = label(t); sp.scale.set(sw, sw / 4, 1); sp.position.set(...p); sp.renderOrder = 6; gr.add(sp); };
+          return { dim, txt }; };
+        let d = set('iso');
+        d.dim([0, 0, W + off], [L, 0, W + off], [0, 0, 1]); d.txt(lt(L), [L / 2, 0, W + off * 2.6]);
+        d.dim([0, 0, W + off], [0, H, W + off], [0, 0, 1]); d.txt(lt(H), [-off * 1.2, H / 2, W + off * 2.4]);
+        d.dim([wx, 0, 0], [wx, 0, W], [1, 0, 0]); d.txt(lt(W), [wx + off * 1.2 + sw * 0.3, 0, W / 2]);
+        d = set('top');
+        d.dim([0, 0, W + off], [L, 0, W + off], [0, 0, 1]); d.txt(lt(L), [L / 2, 0, W + off * 2.2]);
+        d.dim([-off, 0, 0], [-off, 0, W], [1, 0, 0]); d.txt(lt(W), [-off * 1.6 - sw / 2, 0, W / 2]);
+        d = set('side');
+        d.dim([0, -off, W], [L, -off, W], [0, 1, 0]); d.txt(lt(L), [L / 2, -off * 2.2, W]);
+        d.dim([-off, 0, W], [-off, H, W], [1, 0, 0]); d.txt(lt(H), [-off * 1.6 - sw / 2, H / 2, W]);
+        d = set('door');
+        d.dim([L, -off, 0], [L, -off, W], [0, 1, 0]); d.txt(lt(W), [L, -off * 2.2, W / 2]);
+        d.dim([L, 0, W + off], [L, H, W + off], [0, 0, 1]); d.txt(lt(H), [L, H / 2, W + off * 1.6 + sw / 2]);
+        view3d.dimPad = { off, sw, wx };
       }
       if (eq.group !== 'Pallets & air ULDs') { const d = label('DOORS'); d.position.set(L, H + Math.max(18, H * 0.1), W / 2); d.scale.set(Math.max(90, W * 0.55), Math.max(22, W * 0.14), 1); group.add(d); doorLbl = d; }
       else if (eq.id === 'build') { // pallet deck under the cargo
@@ -1163,38 +1237,72 @@ ${n ? `<div class="lp-card">
         Ed.forEach((k, j) => { pos.set(P[k], (i * 24 + j) * 3); });
       });
       inst.instanceMatrix.needsUpdate = true; if (inst.instanceColor) inst.instanceColor.needsUpdate = true;
+      inst.castShadow = inst.receiveShadow = true; inst.frustumCulled = false;
       group.add(inst);
-      if (cyl) { cyl.instanceMatrix.needsUpdate = true; if (cyl.instanceColor) cyl.instanceColor.needsUpdate = true; group.add(cyl); }
+      if (cyl) { cyl.instanceMatrix.needsUpdate = true; if (cyl.instanceColor) cyl.instanceColor.needsUpdate = true; cyl.castShadow = cyl.receiveShadow = true; cyl.frustumCulled = false; group.add(cyl); }
       hull.count = 0; group.add(hull); if (cylHull) { cylHull.count = 0; group.add(cylHull); }
       epos = pos.slice();
       const eg = new THREE.BufferGeometry(); eg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-      edges = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x0B2A4A, transparent: true, opacity: 0.5 }));
+      const ecol = new Float32Array(N * 24 * 3);
+      u.boxes.forEach((b, i) => { col.set(itemColor(b.type)).multiplyScalar(0.5); for (let j = 0; j < 24; j++) { ecol[(i * 24 + j) * 3] = col.r; ecol[(i * 24 + j) * 3 + 1] = col.g; ecol[(i * 24 + j) * 3 + 2] = col.b; } });
+      eg.setAttribute('color', new THREE.BufferAttribute(ecol, 3));
+      edges = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.85 })); edges.frustumCulled = false;
       group.add(edges);
       buildDecals(u);
       setView(view, true);
       if (!view3d.ready) { view3d.ready = true; loop(); }
     }
+    // flat views use a true orthographic camera; the frustum follows the canvas shape
+    function fitFlat() {
+      const e = eqDims; if (!e || view === 'iso') return;
+      const L = e.L, W = e.W, H = e.H, pd = view3d.dimPad || { off: 20, sw: 80 };
+      const ext = { top: [L, W], side: [L, H], door: [W, H] }[view];
+      const mx = pd.off * 2 + pd.sw + 12, my = pd.off * 3.2 + 10;
+      let hw = ext[0] / 2 + mx, hh = ext[1] / 2 + my;
+      const h = $('lp-canvas'), asp = h ? (h.clientWidth || 800) / (h.clientHeight || 460) : 1.6;
+      if (hw / hh > asp) hh = hw / asp; else hw = hh * asp;
+      ocam.left = -hw; ocam.right = hw; ocam.top = hh; ocam.bottom = -hh; ocam.zoom = 1;
+      const D = 20000;
+      if (view === 'top') { ocam.position.set(0, D, 0); ocam.up.set(0, 0, -1); }
+      else if (view === 'side') { ocam.position.set(0, 0, D); ocam.up.set(0, 1, 0); }
+      else { ocam.position.set(D, 0, 0); ocam.up.set(0, 1, 0); }
+      ocam.lookAt(0, 0, 0); ocam.updateProjectionMatrix();
+    }
     function setView(v, keep) {
       view = v || view;
       const e = eqDims; if (!e) return;
       const L = e.L, W = e.W, H = e.H;
+      const flat = view !== 'iso';
+      for (const k in dimsV) dimsV[k].visible = k === view;
+      if (doorGrp) doorGrp.visible = !flat;
+      if (groundM) groundM.visible = !flat;
+      if (doorLbl) doorLbl.visible = view === 'side' || (view === 'iso' && !doorGrp);
+      if (flat) {
+        fitFlat(); acam = ocam;
+        if (controls) { controls.enabled = false; }
+        render(); return;
+      }
+      acam = camera; if (controls) controls.enabled = true;
       const t = new THREE.Vector3(0, 0, 0);
-      const dir = { iso: [0.95, 0.75, 1.15], top: [0.0001, 1, 0.001], side: [0.0001, 0.12, 1], door: [1, 0.1, 0.0001] }[view] || [1, 0.8, 1];
-      const v3 = new THREE.Vector3(...dir).normalize();
-      // fit the container's bounding box into the view
-      const half = new THREE.Vector3(L / 2 + 20, H / 2 + 20, W / 2 + 20);
+      const v3 = new THREE.Vector3(0.95, 0.75, 1.15).normalize();
+      // fit the container (with its open doors and the dimension lines) into the view
+      const pd = view3d.dimPad || { off: 20 }, m = pd.off * 2.6;
       const fov = camera.fov * Math.PI / 180, fovH = 2 * Math.atan(Math.tan(fov / 2) * camera.aspect);
       const corners = [];
-      for (const sx of [-1, 1]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) corners.push(new THREE.Vector3(sx * half.x, sy * half.y, sz * half.z));
+      for (const x of [-L / 2 - 20, L / 2 + doorReach + pd.off * 1.9 + (pd.sw || 80) * 0.6]) for (const y of [-H / 2 - 10, H / 2 + (doorLbl ? Math.max(40, H * 0.22) : 20)]) for (const z of [-W / 2 - 20, W / 2 + m + 20]) corners.push(new THREE.Vector3(x, y, z));
       const up = new THREE.Vector3(0, 1, 0);
-      const right = new THREE.Vector3().crossVectors(up, v3).normalize(); if (right.lengthSq() < 1e-6) right.set(1, 0, 0);
+      const right = new THREE.Vector3().crossVectors(up, v3).normalize();
       const upv = new THREE.Vector3().crossVectors(v3, right).normalize();
+      // centre the picture on the middle of what has to be seen
+      let ax0 = 1e9, ax1 = -1e9, ay0 = 1e9, ay1 = -1e9;
+      for (const c of corners) { const a = c.dot(right), b2 = c.dot(upv); ax0 = Math.min(ax0, a); ax1 = Math.max(ax1, a); ay0 = Math.min(ay0, b2); ay1 = Math.max(ay1, b2); }
+      t.copy(right.clone().multiplyScalar((ax0 + ax1) / 2)).add(upv.clone().multiplyScalar((ay0 + ay1) / 2));
       let dist = 0;
       for (const c of corners) {
-        const depth = c.dot(v3), x = Math.abs(c.dot(right)), y = Math.abs(c.dot(upv));
+        const q = c.clone().sub(t), depth = q.dot(v3), x = Math.abs(q.dot(right)), y = Math.abs(q.dot(upv));
         dist = Math.max(dist, depth + x / Math.tan(fovH / 2), depth + y / Math.tan(fov / 2));
       }
-      camera.position.copy(v3.multiplyScalar(dist * 1.04));
+      camera.position.copy(t.clone().add(v3.multiplyScalar(dist * 1.02)));
       camera.up.set(0, 1, 0);
       camera.lookAt(t); if (controls) { controls.target.copy(t); controls.update(); }
       render();
@@ -1234,7 +1342,9 @@ ${n ? `<div class="lp-card">
       const xa = win ? win[0] - L / 2 : -L / 2, xb = win ? win[1] - L / 2 : L / 2;
       for (const px of [xa, xb]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) pts.push(new THREE.Vector3(px, sy * H / 2, sz * W / 2));
       if (doorLbl && !win) pts.push(new THREE.Vector3(L / 2, H / 2 + Math.max(18, H * 0.1) + Math.max(22, W * 0.14) / 2, 0));
-      if (!win) { const o = dimOff(F) * 2.6; for (const q of [[L / 2 + o, -H / 2, -W / 2], [L / 2 + o, -H / 2, W / 2], [-L / 2, -H / 2, W / 2 + o], [L / 2, -H / 2, W / 2 + o], [-L / 2 - o, H / 2, W / 2 + o], [-L / 2, H / 2 + o, W / 2]]) pts.push(new THREE.Vector3(...q)); }
+      if (doorGrp && (!win || win[1] >= L - 1)) { doorGrp.visible = true; for (const sy of [-1, 1]) for (const z of [-W / 2 - W * 0.22, W / 2 + W * 0.22]) pts.push(new THREE.Vector3(L / 2 + doorReach, sy * H / 2, z)); } else if (doorGrp) doorGrp.visible = false;
+      if (doorLbl) doorLbl.visible = !doorGrp;
+      if (!win) { const o = dimOff(F) * 2.6; for (const q of [[L / 2 + doorReach + o, -H / 2, -W / 2], [L / 2 + doorReach + o, -H / 2, W / 2], [-L / 2, -H / 2, W / 2 + o], [L / 2, -H / 2, W / 2 + o], [-L / 2 - o, H / 2, W / 2 + o], [-L / 2, H / 2 + o, W / 2]]) pts.push(new THREE.Vector3(...q)); }
       let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
       for (const q of pts) { const a = q.dot(right), b = q.dot(upv); x0 = Math.min(x0, a); x1 = Math.max(x1, a); y0 = Math.min(y0, b); y1 = Math.max(y1, b); }
       const pad = 0.02 * Math.max(x1 - x0, y1 - y0);
@@ -1252,7 +1362,7 @@ ${n ? `<div class="lp-card">
       if (dims) dims.visible = true;
       const url = renderer.domElement.toDataURL('image/jpeg', 0.86);
       // where a point of the container (local cm) lands on the picture, 0..1 across and down
-      view3d.proj = { L, W, H, off: dimOff(F), at: (x, y, z) => { const q = new THREE.Vector3(x - L / 2, y - H / 2, z - W / 2); return [(q.dot(right) - cxm + hw) / (2 * hw), (hh - (q.dot(upv) - cym)) / (2 * hh)]; } };
+      view3d.proj = { L, W, H, off: dimOff(F), wx: L + (doorGrp ? doorReach : 0) + dimOff(F) * (doorGrp ? 0.7 : 1), at: (x, y, z) => { const q = new THREE.Vector3(x - L / 2, y - H / 2, z - W / 2); return [(q.dot(right) - cxm + hw) / (2 * hw), (hh - (q.dot(upv) - cym)) / (2 * hh)]; } };
       renderer.setPixelRatio(pr); resize(); setView(view);
       return url;
     }
@@ -1274,25 +1384,26 @@ ${n ? `<div class="lp-card">
       renderer.setPixelRatio(1); renderer.setSize(w, h, false);
       show(u, -1);
       if (doorLbl) doorLbl.visible = false;
+      if (doorGrp) doorGrp.visible = false; if (groundM) groundM.visible = false;
       if (dims) dims.visible = false;
       renderer.render(scene, cam);
       if (dims) dims.visible = true;
-      const url = renderer.domElement.toDataURL('image/jpeg', 0.88);
-      if (doorLbl) doorLbl.visible = true;
+      const url = renderer.domElement.toDataURL('image/jpeg', 0.9);
       renderer.setPixelRatio(pr); resize(); setView(view);
       return { url, hw, hh, L, W, H };
     }
     // ---- video frames: an isometric camera that follows the loading, and blocks that slide in from the doors
     function isoCam(w, h, win) {
       const F = eqDims, L = F.L, W = F.W, H = F.H;
-      const dir = new THREE.Vector3(0.95, 0.72, 1.15).normalize(), up = new THREE.Vector3(0, 1, 0);
+      // seen from the door end, a little to the side and from above: the whole unit stays in the picture and the
+      // block being loaded is always nearest the viewer
+      const dir = new THREE.Vector3(1.5, 0.82, 0.9).normalize(), up = new THREE.Vector3(0, 1, 0);
       const right = new THREE.Vector3().crossVectors(up, dir).normalize(), upv = new THREE.Vector3().crossVectors(dir, right).normalize();
       let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
-      for (const px of [win[0] - L / 2, win[1] - L / 2]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) {
-        const q = new THREE.Vector3(px, sy * H / 2, sz * W / 2), a = q.dot(right), b = q.dot(upv);
-        x0 = Math.min(x0, a); x1 = Math.max(x1, a); y0 = Math.min(y0, b); y1 = Math.max(y1, b);
-      }
-      const pad = 0.05 * Math.max(x1 - x0, y1 - y0);
+      const add = (q) => { const a = q.dot(right), b = q.dot(upv); x0 = Math.min(x0, a); x1 = Math.max(x1, a); y0 = Math.min(y0, b); y1 = Math.max(y1, b); };
+      for (const px of [win[0] - L / 2, win[1] - L / 2]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) add(new THREE.Vector3(px, sy * H / 2, sz * W / 2));
+      if (doorGrp) for (const sy of [-1, 1]) for (const z of [-W / 2 - W * 0.22, W / 2 + W * 0.22]) add(new THREE.Vector3(L / 2 + doorReach, sy * H / 2, z));
+      const pad = 0.03 * Math.max(x1 - x0, y1 - y0);
       let hw = (x1 - x0) / 2 + pad, hh = (y1 - y0) / 2 + pad;
       const asp = w / h; if (hw / hh > asp) hh = hw / asp; else hw = hh * asp;
       const ctr = right.clone().multiplyScalar((x0 + x1) / 2).add(upv.clone().multiplyScalar((y0 + y1) / 2));
@@ -1306,6 +1417,7 @@ ${n ? `<div class="lp-card">
       vprev = renderer.getPixelRatio();
       renderer.setPixelRatio(1); renderer.setSize(w, h, false);
       if (dims) dims.visible = false;
+      if (doorGrp) { doorGrp.visible = true; doorGrp.children[1].visible = false; } if (doorLbl) doorLbl.visible = false;
       return renderer.domElement;
     }
     // draw step `step` with its blocks `t` (0..1) of the way in; step -1 = empty, step >= steps = all loaded
@@ -1337,7 +1449,7 @@ ${n ? `<div class="lp-card">
       renderer.render(scene, isoCam(w, h, win));
     }
     function videoEnd() {
-      if (dims) dims.visible = true;
+      if (dims) dims.visible = true; if (doorGrp) doorGrp.children[1].visible = true;
       renderer.setPixelRatio(vprev || 1); resize(); setView(view);
     }
     Object.assign(view3d, { build, show, setView, snapshot, snapOrtho, resize, cur: () => curUnit, videoBegin, videoFrame, videoEnd, dimsL: () => eqDims });
@@ -1448,7 +1560,7 @@ ${n ? `<div class="lp-card">
       // measurements drawn straight onto a 3D picture (vector lines, so they stay sharp)
       const isoDims = (u, ix, iy, iw, ih, small) => {
         const pj = view3d.proj; if (!pj) return;
-        const { L, W, H, off } = pj, tk = off * 0.45;
+        const { L, W, H, off } = pj, tk = off * 0.45, wx = pj.wx || L + off;
         const P = (x, y, z) => { const [a, b] = pj.at(x, y, z); return [ix + a * iw, iy + b * ih]; };
         const fs = small ? 6.2 : 8;
         const seg = (a, b, c) => { const p = P(...a), q = P(...b); doc.setDrawColor(...c); doc.setLineWidth(small ? 0.2 : 0.3); doc.line(p[0], p[1], q[0], q[1]); };
@@ -1464,7 +1576,7 @@ ${n ? `<div class="lp-card">
         };
         const lt = (v) => `${showLen(v)} ${S.unit}`;
         dim([0, 0, W + off], [L, 0, W + off], [0, 0, 1], [0, 0, off * 1.3], lt(L));
-        dim([L + off, 0, 0], [L + off, 0, W], [1, 0, 0], [off * 2.6, 0, -off * 0.6], lt(W));
+        dim([wx, 0, 0], [wx, 0, W], [1, 0, 0], [off * 2.6, 0, -off * 0.6], lt(W));
         dim([0, 0, W + off], [0, H, W + off], [0, 0, 1], [-off * 0.9, 0, off * 0.9], lt(H));
       };
       const ortho = (u, v, x, y0, w, h) => {
@@ -1658,16 +1770,19 @@ ${n ? `<div class="lp-card">
   const loadMuxer = () => muxerP || (muxerP = new Promise((res, rej) => { if (window.Mp4Muxer) return res(); const sc = document.createElement('script'); sc.src = 'vendor/mp4-muxer.js'; sc.onload = () => res(); sc.onerror = rej; document.head.appendChild(sc); }));
   async function pickCodec(w, h) {
     if (!window.VideoEncoder || !window.VideoFrame) return null;
-    for (const codec of ['avc1.4d401f', 'avc1.42001f', 'avc1.640028', 'avc1.4d4028']) {
-      try { const r = await VideoEncoder.isConfigSupported({ codec, width: w, height: h, bitrate: 1500000, framerate: 24 }); if (r && r.supported) return codec; } catch (e) { /* try next */ }
+    const list = w > 720 ? ['avc1.640028', 'avc1.4d4028', 'avc1.42e028'] : ['avc1.4d401f', 'avc1.42001f', 'avc1.640028', 'avc1.4d4028'];
+    for (const codec of list) {
+      try { const r = await VideoEncoder.isConfigSupported({ codec, width: w, height: h, bitrate: w > 720 ? 5000000 : 2500000, framerate: 24 }); if (r && r.supported) return codec; } catch (e) { /* try next */ }
     }
     return null;
   }
   async function makeVideo() {
     const btn = $('lp-vid');
     if (!view3d.ready) { alertBox('The video needs the 3D view to load first.'); return; }
-    const VW = 720, VH = 1280, GH = 640, FPS = 24;
-    const codec = await pickCodec(VW, VH);
+    // everything is laid out on a 720 x 1280 page and drawn K times larger (full HD when the browser can encode it)
+    const VW = 720, VH = 1280, GH = 700, FPS = 24;
+    let K = 1.5, codec = await pickCodec(VW * K, VH * K);
+    if (!codec) { K = 1; codec = await pickCodec(VW, VH); }
     if (!codec) { alertBox('This browser cannot make MP4 videos. Please use Chrome, Edge or Safari (on a computer or phone) to make the loading video.'); return; }
     const old = btn.textContent; btn.disabled = true; btn.textContent = 'Making video…';
     const r = S.result, u = curU(), isPal = S.palSel != null;
@@ -1675,13 +1790,13 @@ ${n ? `<div class="lp-card">
     const list = stepList(u);
     try {
       await loadMuxer();
-      const cv = document.createElement('canvas'); cv.width = VW; cv.height = VH;
-      const g = cv.getContext('2d');
-      const muxer = new Mp4Muxer.Muxer({ target: new Mp4Muxer.ArrayBufferTarget(), video: { codec: 'avc', width: VW, height: VH }, fastStart: 'in-memory' });
+      const cv = document.createElement('canvas'); cv.width = VW * K; cv.height = VH * K;
+      const g = cv.getContext('2d'); g.setTransform(K, 0, 0, K, 0, 0);
+      const muxer = new Mp4Muxer.Muxer({ target: new Mp4Muxer.ArrayBufferTarget(), video: { codec: 'avc', width: VW * K, height: VH * K }, fastStart: 'in-memory' });
       let encErr = null;
       const enc = new VideoEncoder({ output: (chunk, meta) => muxer.addVideoChunk(chunk, meta), error: (e) => { encErr = e; } });
-      enc.configure({ codec, width: VW, height: VH, bitrate: 1500000, framerate: FPS });
-      const gl = view3d.videoBegin(u, VW, GH);
+      enc.configure({ codec, width: VW * K, height: VH * K, bitrate: K > 1 ? 5000000 : 2500000, framerate: FPS });
+      const gl = view3d.videoBegin(u, VW * K, GH * K);
       const F = view3d.dimsL(), L = F.L;
       let ts = 0, nf = 0;
       const emit = async (dur, key) => {
@@ -1705,17 +1820,18 @@ ${n ? `<div class="lp-card">
       };
       const footer = () => { g.fillStyle = '#0B2A4A'; g.fillRect(0, VH - 56, VW, 56); g.fillStyle = '#FFFFFF'; g.font = '22px Arial'; g.textAlign = 'center'; g.fillText('www.CargoKit.ai · free shipping tools, no sign-up', VW / 2, VH - 30); g.fillStyle = '#9FB6CC'; g.font = '15px Arial'; g.fillText('Made free with CargoKit', VW / 2, VH - 9); g.textAlign = 'left'; };
       const plan = (k, y0) => {
-        const pw = VW - 56, ph = Math.max(60, Math.min(150, pw * F.W / F.L)), x0 = 28, so = stepOf(u, list), sx = pw / F.L, sz = ph / F.W;
+        const pw = VW - 56, ph = Math.max(50, Math.min(96, pw * F.W / F.L)), x0 = 28, so = stepOf(u, list), sx = pw / F.L, sz = ph / F.W;
         g.fillStyle = '#FFFFFF'; g.fillRect(x0, y0, pw, ph);
         u.boxes.forEach((bx, i) => { if (bx.y > 1 && so[i] !== k) return; if (k >= 0 && so[i] > k) return; g.fillStyle = so[i] === k ? itemColor(bx.type) : '#D6DEE6'; g.fillRect(x0 + bx.x * sx, y0 + (F.W - bx.z - bx.dz) * sz, Math.max(1, bx.dx * sx - 0.5), Math.max(1, bx.dz * sz - 0.5)); });
         g.strokeStyle = '#0B2A4A'; g.lineWidth = 2; g.strokeRect(x0, y0, pw, ph);
         g.fillStyle = '#5E7891'; g.font = '19px Arial'; g.fillText(isPal ? 'far edge' : 'front wall', x0, y0 + ph + 24); g.textAlign = 'right'; g.fillText(isPal ? 'near edge' : 'doors', x0 + pw, y0 + ph + 24); g.textAlign = 'left';
         g.save(); g.translate(x0 - 6, y0 + 4); g.rotate(-Math.PI / 2); g.textAlign = 'right'; g.fillText('left', 0, 0); g.restore();
       };
-      const win = (k) => { if (k < 0 || k >= list.length) return [0, L]; const st = list[k]; const a = Math.max(0, st.x0 - L * 0.35); return [a, Math.min(L, Math.max(st.x1 + L * 0.18, a + L * 0.45))]; };
+      const win = () => [0, L];
+      const seen = new Set();
       const lerpW = (a, b, e) => [a[0] + (b[0] - a[0]) * e, a[1] + (b[1] - a[1]) * e];
       const ease = (x) => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
-      const scene3d = (k, t, w) => { view3d.videoFrame(u, list, k, t, w, VW, GH); g.fillStyle = '#F4F8FC'; g.fillRect(0, 118, VW, GH); g.drawImage(gl, 0, 118, VW, GH); };
+      const scene3d = (k, t, w) => { view3d.videoFrame(u, list, k, t, w, VW * K, GH * K); g.fillStyle = '#F4F8FC'; g.fillRect(0, 118, VW, GH); g.drawImage(gl, 0, 118, VW, GH); };
       const panelTop = 118 + GH;
       const progress = (k) => { g.fillStyle = '#E1EDF7'; g.fillRect(0, panelTop, VW, 8); g.fillStyle = '#0A6CC2'; g.fillRect(0, panelTop, VW * Math.max(0, Math.min(1, (k + 1) / list.length)), 8); };
       // intro
@@ -1742,17 +1858,18 @@ ${n ? `<div class="lp-card">
           g.fillStyle = '#0B2A4A'; g.font = 'bold 34px Arial';
           for (const ln of wrap(`${fmt(st.n)} × ${st.type.name}`, VW - 110).slice(0, 2)) { g.fillText(ln, 76, y); y += 42; }
           if (ctn) { g.fillStyle = '#B45309'; g.font = 'bold 28px Arial'; for (const ln of wrap(ctn[0].toUpperCase() + ctn.slice(1), VW - 110).slice(0, 2)) { g.fillText(ln, 76, y); y += 36; } }
-          g.font = '27px Arial'; g.fillStyle = '#0B2A4A';
+          g.font = '26px Arial'; g.fillStyle = '#0B2A4A';
           const lines = [p.lvl[0].toUpperCase() + p.lvl.slice(1) + ', ' + p.side, grid.join(' × ') + (xt.hows.length ? ' · ' + xt.hows.join(', ') : ''), p.along + (st.reps > 1 ? ` (${fmt(st.n / st.reps)} in each of ${st.reps} rows)` : '')];
           y += 6;
-          for (const L2 of lines) for (const ln of wrap(L2, VW - 56)) { if (y > VH - 270) break; g.fillText(ln, 28, y); y += 36; }
-          g.fillStyle = '#5E7891'; g.font = '24px Arial'; g.fillText(`Total so far: ${fmt(st.cumN)} pcs, ${showWt(st.cumKg)} ${S.wunit}`, 28, Math.min(y + 6, VH - 236));
-          plan(k, VH - 230);
+          for (const L2 of lines) for (const ln of wrap(L2, VW - 56)) { if (y > VH - 240) break; g.fillText(ln, 28, y); y += 34; }
+          g.fillStyle = '#5E7891'; g.font = '24px Arial'; g.fillText(`Total so far: ${fmt(st.cumN)} pcs, ${showWt(st.cumKg)} ${S.wunit}`, 28, Math.min(y + 4, VH - 204));
+          plan(k, VH - 186);
           footer();
         };
-        const AN = 18;
+        const sig = [st.type.idx, st.across, st.high, st.deep, Math.round(st.y0 || 0), Math.round(st.z0 || 0)].join('|'), again = seen.has(sig); seen.add(sig);
+        const AN = again ? 12 : 16;
         for (let f = 0; f <= AN; f++) { draw(f / AN); await emit(1 / FPS, f === 0); }
-        for (let hd = 0; hd < 4; hd++) await emit(0.5);
+        for (let hd = 0; hd < (again ? 2 : 5); hd++) await emit(0.3);
         btn.textContent = `Making video… ${Math.round((k + 1) / list.length * 100)}%`;
       }
       // finished load
