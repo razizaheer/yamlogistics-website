@@ -1,0 +1,22 @@
+{
+ "Ways to improve this load": "优化本次装载的方法",
+ "Checking how to save space…": "正在检查如何节省空间…",
+ "Checking what else fits…": "正在检查还能装下什么…",
+ "Save a container": "省一个集装箱",
+ "Save a truck": "省一辆卡车",
+ "Save a ULD": "省一个ULD",
+ "Save an air pallet": "省一块航空托盘",
+ "Save a unit": "省一个单元",
+ "Leave out:": "去掉：",
+ "Then everything else fits in:": "其余货物即可全部装入：",
+ "Free space:": "剩余空间：",
+ "We found room for:": "还能装下：",
+ "Or a mix:": "或混装：",
+ "Apply": "应用",
+ "Each suggestion was checked by planning the changed load again. Apply changes the quantities in your list and plans again.": "每条建议都已通过重新规划调整后的装载进行验证。点击“应用”将修改清单中的数量并重新规划。",
+ "Video speed": "视频速度",
+ "Slow": "慢速",
+ "Normal": "正常",
+ "Fast": "快速",
+ "VGM declaration for this load": "本次装载的VGM申报"
+}

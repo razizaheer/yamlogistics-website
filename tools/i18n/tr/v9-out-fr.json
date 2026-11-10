@@ -1,0 +1,22 @@
+{
+ "Ways to improve this load": "Pistes pour améliorer ce chargement",
+ "Checking how to save space…": "Recherche de gains de place…",
+ "Checking what else fits…": "Recherche de ce qui peut encore rentrer…",
+ "Save a container": "Économiser un conteneur",
+ "Save a truck": "Économiser un camion",
+ "Save a ULD": "Économiser un ULD",
+ "Save an air pallet": "Économiser une palette aérienne",
+ "Save a unit": "Économiser une unité",
+ "Leave out:": "À retirer :",
+ "Then everything else fits in:": "Tout le reste tient alors dans :",
+ "Free space:": "Espace libre :",
+ "We found room for:": "Nous avons trouvé de la place pour :",
+ "Or a mix:": "Ou un mélange :",
+ "Apply": "Appliquer",
+ "Each suggestion was checked by planning the changed load again. Apply changes the quantities in your list and plans again.": "Chaque suggestion a été vérifiée en replanifiant le chargement modifié. Appliquer modifie les quantités de votre liste et relance la planification.",
+ "Video speed": "Vitesse de la vidéo",
+ "Slow": "Lente",
+ "Normal": "Normale",
+ "Fast": "Rapide",
+ "VGM declaration for this load": "Déclaration VGM pour ce chargement"
+}

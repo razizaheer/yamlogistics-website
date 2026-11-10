@@ -1,0 +1,22 @@
+{
+ "Ways to improve this load": "この積載を改善する方法",
+ "Checking how to save space…": "スペースを節約する方法を確認中…",
+ "Checking what else fits…": "ほかに積めるものを確認中…",
+ "Save a container": "コンテナを1本減らす",
+ "Save a truck": "トラックを1台減らす",
+ "Save a ULD": "ULDを1台減らす",
+ "Save an air pallet": "航空パレットを1枚減らす",
+ "Save a unit": "1ユニット減らす",
+ "Leave out:": "除外するもの:",
+ "Then everything else fits in:": "残りはすべて次に収まります:",
+ "Free space:": "空きスペース:",
+ "We found room for:": "追加で積めるもの:",
+ "Or a mix:": "または組み合わせ:",
+ "Apply": "適用",
+ "Each suggestion was checked by planning the changed load again. Apply changes the quantities in your list and plans again.": "各提案は、変更後の積載を再計画して確認済みです。「適用」を押すとリストの数量が変更され、再計画されます。",
+ "Video speed": "動画の速度",
+ "Slow": "低速",
+ "Normal": "標準",
+ "Fast": "高速",
+ "VGM declaration for this load": "この積載のVGM申告"
+}

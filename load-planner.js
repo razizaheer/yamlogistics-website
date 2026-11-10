@@ -24,6 +24,7 @@
     ],
     result: null, unitSel: 0, step: -1
   };
+  try { S.vsp = localStorage.getItem('ck_lp_vsp') || 'normal'; } catch (e) { S.vsp = 'normal'; }
   const isDrum = (it) => it && it.shape === 'drum';
   const unitVol = (it) => it.l * it.w * it.h * (isDrum(it) ? Math.PI / 4 : 1);
   const lenF = () => (S.unit === 'in' ? 2.54 : 1);
@@ -812,10 +813,24 @@
     if (r.advice === undefined) { el.innerHTML = '<div class="lp-k">Ways to improve this load</div><div class="lp-muted">Checking how to save space…</div>'; el.hidden = false; return; }
     const L = adviceLines(r);
     if (!L.length && !(r.advice && r.advice.pending)) { el.hidden = true; return; }
-    const cuts = L.filter((x) => x.kind === 'cut'), adds = L.filter((x) => x.kind !== 'cut');
-    const row = (x, k) => (x.kind === 'head' ? `<div class="lp-advh">${esc(x.text)}</div>` : `<div class="lp-advr"><span>${esc(x.text)}</span><button class="lp-btn lp-ghost lp-advb" data-adv="${k}">Apply</button></div>`);
-    el.hidden = false;
-    el.innerHTML = `<div class="lp-k">Ways to improve this load</div>${cuts.length ? `<div class="lp-advh">Save a ${KN[CATS[S.cat].kind][0].toLowerCase()}:</div>` : ''}${L.map((x, k) => (x.kind === 'cut' ? row(x, k) : '')).join('')}${adds.length ? L.map((x, k) => (x.kind !== 'cut' ? row(x, k) : '')).join('') : ''}${r.advice.pending ? '<div class="lp-muted">Checking what else fits…</div>' : ''}<div class="lp-muted">Each suggestion was checked by planning the changed load again. Apply changes the quantities in your list and plans again.</div>`;
+    // on screen every fixed phrase sits in its own element, so the page translator can handle it; names and numbers stay as typed
+    const A = r.advice, items = r.items, kn = KN[CATS[S.cat].kind];
+    const qn = (t, plus) => t.map((x) => `<b>${plus ? '+' : ''}${fmt(x.n)} × ${esc(items[x.i].name)}</b>`).join('<i class="lp-sep">, </i>');
+    const btn = (k) => `<button class="lp-btn lp-ghost lp-advb" data-adv="${k}">Apply change</button>`;
+    let h = '<div class="lp-k">Ways to improve this load</div>', k = 0;
+    if (A.cut.length) {
+      h += `<div class="lp-advh"><span>${{ container: 'Save a container', truck: 'Save a truck', ULD: 'Save a ULD', 'air pallet': 'Save an air pallet' }[CATS[S.cat].kind] || 'Save a unit'}</span></div>`;
+      for (const c of A.cut) { h += `<div class="lp-advr"><div><span class="lp-muted">Leave out:</span> ${qn(c.take)}<br><span class="lp-muted">Then everything else fits in:</span> <b>${esc(c.into)}</b></div>${btn(k)}</div>`; k++; }
+    }
+    if (A.unit && A.add.length) {
+      h += `<div class="lp-advh"><span>Free space:</span> ${fmt(A.unit.free / 1e6, 1)} m³ <i class="lp-sep">· </i>${r.units.length > 1 ? `<span>${kn[0]} ${A.unit.index + 1}</span> <i class="lp-sep">· </i>` : ''}${esc(A.unit.name)}</div><div class="lp-muted">We found room for:</div>`;
+      k++; // the heading line has its own place in the list of suggestions
+      for (const x of A.add) { h += `<div class="lp-advr"><div>${qn([x], true)}</div>${btn(k)}</div>`; k++; }
+      if (A.mix) { h += `<div class="lp-advr"><div><span class="lp-muted">Or a mix:</span> ${qn(A.mix, true)}</div>${btn(k)}</div>`; k++; }
+    }
+    if (A.pending) h += '<div class="lp-muted">Checking what else fits…</div>';
+    h += '<div class="lp-muted lp-advn">Each suggestion was checked by planning the changed load again. Apply changes the quantities in your list and plans again.</div>';
+    el.hidden = false; el.innerHTML = h;
     el.querySelectorAll('[data-adv]').forEach((b) => b.addEventListener('click', () => {
       const x = L[+b.dataset.adv];
       for (const c of x.apply) { const row2 = S.items[r.items[c.i].src]; if (row2) row2.qty = Math.max(0, Math.floor(+row2.qty) + c.d); }
@@ -982,7 +997,7 @@
   ${warn.length ? `<div class="lp-warn">${warn.join('<br>')}</div>` : ''}
   ${heavyN.length ? `<div class="lp-muted lp-rulenote">Kept upright and on the floor as heavy pieces: ${heavyN.join(', ')}.</div>` : ''}
   ${pbCard}
-  <div class="lp-adv" id="lp-adv" hidden></div>
+  <div class="lp-tips" id="lp-adv" hidden></div>
 </div>
 ${n ? `<div class="lp-card">
   <div class="lp-tabs" id="lp-tabs">${tabs}</div>
@@ -1002,6 +1017,7 @@ ${n ? `<div class="lp-card">
     <button class="lp-btn" id="lp-pdf">↓ Summary PDF</button>
     <button class="lp-btn" id="lp-pdf2">↓ Step-by-step PDF</button>
     <button class="lp-btn lp-vid" id="lp-vid">▶ MP4 loading video for phones</button>
+    <label class="lp-vsp"><span>Video speed</span> <select id="lp-vsp" class="lp-in"><option value="slow"${S.vsp === 'slow' ? ' selected' : ''}>Slow</option><option value="normal"${!S.vsp || S.vsp === 'normal' ? ' selected' : ''}>Normal</option><option value="fast"${S.vsp === 'fast' ? ' selected' : ''}>Fast</option></select></label>
     ${CATS[S.cat].kind === 'container' && !S.build ? `<a class="lp-btn lp-ghost" id="lp-vgm" href="vgm-declaration.html#lp=${btoa(unescape(encodeURIComponent(JSON.stringify({ u: S.wunit, c: r.units.map((u) => [u.eq.id, Math.round(u.kg / wtF())]) }))))}">VGM declaration for this load</a>` : ''}
     <a class="lp-btn lp-wa" id="lp-wa" target="_blank" rel="noopener">Get a quote for this load on WhatsApp</a>
     <a class="lp-btn lp-ghost" id="lp-mail">Email this plan</a>
@@ -1023,6 +1039,7 @@ ${n ? `<div class="lp-card">
     $('lp-pdf').addEventListener('click', () => makePdf('summary'));
     $('lp-pdf2').addEventListener('click', () => makePdf('steps'));
     $('lp-vid').addEventListener('click', makeVideo);
+    $('lp-vsp').addEventListener('change', (e) => { S.vsp = e.target.value; try { localStorage.setItem('ck_lp_vsp', S.vsp); } catch (er) { /* ignore */ } });
     $('lp-copy').addEventListener('click', () => { const u = location.href; (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(() => { $('lp-copy').textContent = 'Link copied ✓'; }).catch(() => { prompt('Copy this link', u); }); });
   }
 
@@ -1219,6 +1236,7 @@ ${n ? `<div class="lp-card">
 
     function attach() {
       const h = $('lp-canvas'); if (!h) return;
+      if (ro) { ro.disconnect(); ro.observe(h); }
       if (renderer.domElement.parentNode !== h) { h.innerHTML = ''; h.appendChild(renderer.domElement); controls = new THREE.OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.addEventListener('change', render); }
       resize();
     }
@@ -1229,6 +1247,9 @@ ${n ? `<div class="lp-card">
       camera.aspect = w / ht; camera.updateProjectionMatrix(); fitFlat(); render();
     }
     window.addEventListener('resize', resize);
+    // the 3D box can change size without the window changing (phone layout, cards opening above it)
+    let roT = 0, roW = 0, roH = 0;
+    const ro = window.ResizeObserver ? new ResizeObserver(() => { const h = $('lp-canvas'); if (!h || (h.clientWidth === roW && h.clientHeight === roH)) return; roW = h.clientWidth; roH = h.clientHeight; clearTimeout(roT); roT = setTimeout(() => { resize(); if (eqDims && view === 'iso') setView('iso'); }, 60); }) : null;
     function render() { renderer.render(scene, acam); }
     function loop() { if (controls && controls.enabled) controls.update(); requestAnimationFrame(loop); render(); }
 
@@ -1410,7 +1431,7 @@ ${n ? `<div class="lp-card">
       }
       acam = camera; if (controls) controls.enabled = true;
       const t = new THREE.Vector3(0, 0, 0);
-      const v3 = new THREE.Vector3(0.95, 0.75, 1.15).normalize();
+      const v3 = (camera.aspect < 1.05 ? new THREE.Vector3(1.5, 0.82, 0.9) : new THREE.Vector3(0.95, 0.75, 1.15)).normalize();
       // fit the container (with its open doors and the dimension lines) into the view
       const pd = view3d.dimPad || { off: 20 }, m = pd.off * 2.6;
       const fov = camera.fov * Math.PI / 180, fovH = 2 * Math.atan(Math.tan(fov / 2) * camera.aspect);
@@ -1428,8 +1449,15 @@ ${n ? `<div class="lp-card">
         const q = c.clone().sub(t), depth = q.dot(v3), x = Math.abs(q.dot(right)), y = Math.abs(q.dot(upv));
         dist = Math.max(dist, depth + x / Math.tan(fovH / 2), depth + y / Math.tan(fov / 2));
       }
-      camera.position.copy(t.clone().add(v3.multiplyScalar(dist * 1.02)));
+      // tighten: move in or out until the farthest corner just touches the edge of the picture
       camera.up.set(0, 1, 0);
+      for (let it2 = 0; it2 < 6; it2++) {
+        camera.position.copy(t.clone().add(v3.clone().multiplyScalar(dist))); camera.lookAt(t); camera.updateMatrixWorld(true); camera.updateProjectionMatrix();
+        let mx = 0; for (const c of corners) { const q = c.clone().project(camera); mx = Math.max(mx, Math.abs(q.x), Math.abs(q.y)); }
+        if (!(mx > 0) || Math.abs(mx - 0.95) < 0.01) break;
+        dist *= 1 + (mx / 0.95 - 1) * 0.85;
+      }
+      camera.position.copy(t.clone().add(v3.multiplyScalar(dist)));
       camera.lookAt(t); if (controls) { controls.target.copy(t); controls.update(); }
       render();
     }
@@ -2002,9 +2030,11 @@ ${n ? `<div class="lp-card">
           footer();
         };
         const sig = [st.type.idx, st.across, st.high, st.deep, Math.round(st.y0 || 0), Math.round(st.z0 || 0)].join('|'), again = seen.has(sig); seen.add(sig);
-        const AN = again ? 12 : 16;
+        // speed: how long a step slides in and how long it is held (a repeat of a step already shown is held for less)
+        const SP = { slow: [22, 22, 3.2, 1.6], normal: [16, 12, 1.5, 0.6], fast: [10, 8, 0.7, 0.3] }[S.vsp] || [16, 12, 1.5, 0.6];
+        const AN = again ? SP[1] : SP[0], hold = again ? SP[3] : SP[2];
         for (let f = 0; f <= AN; f++) { draw(f / AN); await emit(1 / FPS, f === 0); }
-        for (let hd = 0; hd < (again ? 2 : 5); hd++) await emit(0.3);
+        for (let hd = 0, nh = Math.max(1, Math.round(hold / 0.3)); hd < nh; hd++) await emit(hold / nh);
         btn.textContent = `Making video… ${Math.round((k + 1) / list.length * 100)}%`;
       }
       // finished load
