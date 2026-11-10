@@ -106,6 +106,7 @@
     <div class="lp-q">3 · Your packages <span class="lp-muted">type them, or upload your packing list (Excel or CSV). We work out which containers you need.</span></div>
     <div class="lp-row lp-actions lp-actions-top">
       <button class="lp-btn lp-xl lp-upl" id="lp-paste-t">⇪ Upload or paste your packing list</button>
+      <button type="button" class="lp-btn lp-tplb" id="lp-tpl">↓ Excel template</button>
       <button class="lp-btn lp-ghost" id="lp-example">Load example</button>
       <label class="lp-chk lp-advl"><input type="checkbox" id="lp-advt"> <span>Show handling options (orientation, stacking, load order)</span></label>
     </div>
@@ -126,7 +127,7 @@
       </div>
       <p>Or copy the whole table in Excel (headers included) and paste it here:</p>
       <textarea id="lp-paste-ta" rows="5" placeholder="Description	Length	Width	Height	Qty	Weight&#10;Carton A	60	40	40	200	12"></textarea>
-      <div class="lp-row"><button class="lp-btn" id="lp-paste-go">Read pasted table</button><button type="button" class="lp-link lp-linkbtn" id="lp-tpl">Download Excel template (standard cargo-list format)</button></div>
+      <div class="lp-row"><button class="lp-btn" id="lp-paste-go">Read pasted table</button><button type="button" class="lp-btn lp-tplb" id="lp-tpl2">↓ Excel template</button></div>
       <div id="lp-map"></div>
     </div>
     <div class="lp-rules" id="lp-rules">
@@ -475,10 +476,11 @@
       drop.addEventListener('drop', (e) => { const f = e.dataTransfer.files[0]; if (f) readFile(f); });
       document.getElementById('lp-paste-go').addEventListener('click', () => { parsed = analyze(csvRows(document.getElementById('lp-paste-ta').value)); showMap(); });
       document.getElementById('lp-paste-ta').addEventListener('paste', () => setTimeout(() => { parsed = analyze(csvRows(document.getElementById('lp-paste-ta').value)); showMap(); }, 30));
-      document.getElementById('lp-tpl').addEventListener('click', (e) => {
+      const tplGo = (e) => {
         e.preventDefault();
         const a = document.createElement('a'); a.href = 'YAM-load-planner-template.xlsx'; a.download = 'CargoKit-load-planner-template.xlsx'; document.body.appendChild(a); a.click(); a.remove();
-      });
+      };
+      for (const id of ['lp-tpl', 'lp-tpl2']) { const b = document.getElementById(id); if (b) b.addEventListener('click', tplGo); }
     }
     function fromText(text) { document.getElementById('lp-paste').hidden = false; document.getElementById('lp-paste-ta').value = text; parsed = analyze(csvRows(text)); showMap(); document.getElementById('lp-map').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
     return { init, analyze, toItems, csvRows, fromText, pending, done };
