@@ -669,7 +669,7 @@
       .map((it) => {
         const heavy = S.heavy && S.heavyKg > 0 && (it.kg || 0) >= S.heavyKg;
         if (isDrum(it)) it.w = it.l;
-        return { ...it, name: String(it.name || '').trim() || (S.pal ? 'Pallet ' : 'Package ') + String.fromCharCode(65 + (S.items.indexOf(it) % 26)), heavy, upright: it.orient === 'upright' || it.orient === 'fixed' || heavy, onTop: heavy ? false : it.onTop, maxLayers: +it.maxLayers || 0, qty: Math.floor(+it.qty), prio: it.prio || 'auto', color: it.color || PALETTE[S.items.indexOf(it) % PALETTE.length] };
+        return { ...it, name: String(it.name || '').trim() || (S.pal ? 'Pallet ' : 'Package ') + String.fromCharCode(65 + (S.items.indexOf(it) % 26)), heavy, upright: it.orient === 'upright' || it.orient === 'fixed' || heavy, onTop: heavy ? false : it.onTop, maxLayers: +it.maxLayers || 0, qty: Math.floor(+it.qty), prio: it.prio || 'auto', color: it.color || PALETTE[S.items.indexOf(it) % PALETTE.length], src: S.items.indexOf(it) };
       });
     if (!raw.length) { $('lp-out').innerHTML = '<div class="lp-card lp-warn">Enter at least one package with length, width, height and quantity.</div>'; return; }
     let items = raw, pb = null;
@@ -710,6 +710,129 @@
     show(0);
     try { history.replaceState(null, '', location.pathname + location.search + '#p=' + encodeState()); } catch (e) { /* ignore */ }
     $('lp-out').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ---------------- advice: how to save a unit, and how to use the space that is left
+  // Every suggestion is checked by packing the changed load again, so what we say fits does fit in the plan.
+  let advTok = 0;
+  const nm = (eq) => eq.name.replace(/ \(.*\)$/, '');
+  const fits1 = (list, eq) => {
+    const it = list.filter((x) => x.qty > 0); if (!it.length) return true;
+    const rr = E.plan(it, eq, { budget: 0 });
+    return rr.units.length === 1 && !rr.tooBig.length && !rr.notPlaced.length && rr.totalBoxes === it.reduce((a, x) => a + x.qty, 0);
+  };
+  const tick = () => new Promise((res) => setTimeout(res, 0));
+  async function advise(r, part) {
+    const items = r.items, n = r.units.length, out = { cut: [], add: [], mix: null, unit: null, pending: true };
+    let t0 = Date.now(); const late = () => Date.now() - t0 > 10000;
+    const withQty = (q) => items.map((it, i) => ({ ...it, qty: q[i] }));
+    const all = items.map((it) => it.qty);
+    const volOf = (u) => { const F = Fof(u.eq); return F.L * F.W * F.H; };
+    // ---- 1. save a unit
+    if (n >= 2) {
+      const uMin = r.units.reduce((a, u) => (u.vol < a.vol ? u : a), r.units[0]);
+      const rest = r.units.filter((u) => u !== uMin);
+      const comp = (us) => { const c = new Map(); for (const u of us) c.set(nm(u.eq), (c.get(nm(u.eq)) || 0) + 1); return [...c].map(([k, v]) => `${v} × ${k}`).join(' + '); };
+      out.cut.push({ sure: true, take: Object.entries(uMin.counts).filter((e) => e[1] > 0).map(([i, c]) => ({ i: +i, n: c })), into: comp(rest) });
+      if (n === 2) {
+        // can everything but a few packages go into the biggest single unit?
+        const gapEq = (eq) => (S.gapD > 0 || S.gapR > 0 ? { ...eq, L: Math.max(10, eq.L - S.gapD), H: Math.max(10, eq.H - S.gapR), full: eq } : eq);
+        const big = CATS[S.cat].cands().map(([id]) => gapEq(EQ(id))).sort((a, b) => b.L * b.W * b.H - a.L * a.W * a.H)[0];
+        const totVol = items.reduce((a, it) => a + unitVol(it) * it.qty, 0), totKg = items.reduce((a, it) => a + (it.kg || 0) * it.qty, 0);
+        const overV = totVol - big.L * big.W * big.H, overK = totKg - big.maxKg;
+        const order = items.map((it, i) => i).sort((a, b) => unitVol(items[a]) * items[a].qty - unitVol(items[b]) * items[b].qty);
+        for (const i of order.slice(0, 8)) {
+          if (late()) break;
+          const it = items[i];
+          let lo = Math.max(1, Math.ceil(Math.max(overV / unitVol(it), it.kg > 0 ? overK / it.kg : 0)));
+          if (lo > it.qty) continue;
+          const q = all.slice(); q[i] = 0; await tick();
+          if (!fits1(withQty(q), big)) continue; // even without this item the rest does not fit
+          let hi = it.qty;
+          while (lo < hi && !late()) { const mid = (lo + hi) >> 1; q[i] = it.qty - mid; await tick(); if (fits1(withQty(q), big)) hi = mid; else lo = mid + 1; }
+          out.cut.push({ take: [{ i, n: hi }], into: `1 × ${nm(big)}`, vol: hi * unitVol(it) });
+        }
+      }
+      // the smallest cuts first; the always-true one (empty the lightest unit) last unless it is the only one
+      const found = out.cut.filter((c) => !c.sure).sort((a, b) => a.vol - b.vol).slice(0, 3);
+      const sure = out.cut.find((c) => c.sure);
+      const same = (c) => c.take.length === 1 && sure.take.length === 1 && c.take[0].i === sure.take[0].i && c.take[0].n >= sure.take[0].n;
+      out.cut = found.filter((c) => !same(c)).concat(sure);
+    }
+    if (part) part(out);
+    t0 = Date.now();
+    // ---- 2. use the space that is left in the least-filled unit
+    const u = r.units.reduce((a, x) => (x.vol / volOf(x) < a.vol / volOf(a) ? x : a), r.units[0]);
+    const freeV = volOf(u) - u.vol, freeK = u.eq.maxKg - u.kg;
+    if (freeV / volOf(u) > 0.03 && freeK > 0) {
+      const base = items.map((it, i) => u.counts[i] || 0);
+      await tick();
+      if (fits1(withQty(base), u.eq)) {
+        out.unit = { index: u.index, name: nm(u.eq), free: freeV };
+        const maxMore = async (i, q0) => {
+          const it = items[i];
+          let hi = Math.min(5000, Math.floor(freeV / unitVol(it)), it.kg > 0 ? Math.floor(freeK / it.kg) : 5000), lo = 0;
+          const used = q0.reduce((a, v, k) => a + (v - base[k]) * unitVol(items[k]), 0), usedK = q0.reduce((a, v, k) => a + (v - base[k]) * (items[k].kg || 0), 0);
+          hi = Math.min(hi, Math.floor((freeV - used) / unitVol(it)), it.kg > 0 ? Math.floor((freeK - usedK) / it.kg) : hi);
+          while (lo < hi && !late()) { const mid = (lo + hi + 1) >> 1, q = q0.slice(); q[i] += mid; await tick(); if (fits1(withQty(q), u.eq)) lo = mid; else hi = mid - 1; }
+          return lo;
+        };
+        for (let i = 0; i < items.length && i < 8; i++) {
+          if (late()) break;
+          if (items[i].heavy && items[i].stackable === false && freeV < unitVol(items[i])) continue;
+          const m = await maxMore(i, base); if (m > 0) out.add.push({ i, n: m });
+        }
+        out.add.sort((a, b) => b.n * unitVol(items[b.i]) - a.n * unitVol(items[a.i]));
+        if (out.add.length >= 2 && !late()) {
+          const A = out.add[0], B = out.add[1], a = Math.floor(A.n / 2);
+          if (a > 0) { const q = base.slice(); q[A.i] += a; const b = await maxMore(B.i, q); if (b > 0) out.mix = [{ i: A.i, n: a }, { i: B.i, n: b }]; }
+        }
+        out.add = out.add.slice(0, 4);
+      }
+    }
+    out.pending = false;
+    return out;
+  }
+  // plain-text lines for the screen and the PDFs
+  function adviceLines(r) {
+    const a = r.advice; if (!a) return [];
+    const kn = KN[CATS[S.cat].kind], items = r.items, list = (t) => t.map((x) => `${fmt(x.n)} × ${items[x.i].name}`).join(' and ');
+    const L = [];
+    for (const c of a.cut) L.push({ kind: 'cut', text: `Leave out ${list(c.take)} and everything else fits in ${c.into}.`, apply: c.take.map((x) => ({ i: x.i, d: -x.n })) });
+    if (a.unit && a.add.length) {
+      const where = r.units.length > 1 ? `${kn[0]} ${a.unit.index + 1} (${a.unit.name})` : `the ${a.unit.name}`;
+      L.push({ kind: 'head', text: `There is ${fmt(a.unit.free / 1e6, 1)} m³ free in ${where}. We found room for:` });
+      for (const x of a.add) L.push({ kind: 'add', text: `${fmt(x.n)} more × ${items[x.i].name}`, apply: [{ i: x.i, d: x.n }] });
+      if (a.mix) L.push({ kind: 'add', text: `or a mix: ${a.mix.map((x) => `${fmt(x.n)} more × ${items[x.i].name}`).join(' and ')}`, apply: a.mix.map((x) => ({ i: x.i, d: x.n })) });
+    }
+    return L;
+  }
+  function paintAdvice() {
+    const el = $('lp-adv'), r = S.result; if (!el) return;
+    if (r.advice === undefined) { el.innerHTML = '<div class="lp-k">Ways to improve this load</div><div class="lp-muted">Checking how to save space…</div>'; el.hidden = false; return; }
+    const L = adviceLines(r);
+    if (!L.length && !(r.advice && r.advice.pending)) { el.hidden = true; return; }
+    const cuts = L.filter((x) => x.kind === 'cut'), adds = L.filter((x) => x.kind !== 'cut');
+    const row = (x, k) => (x.kind === 'head' ? `<div class="lp-advh">${esc(x.text)}</div>` : `<div class="lp-advr"><span>${esc(x.text)}</span><button class="lp-btn lp-ghost lp-advb" data-adv="${k}">Apply</button></div>`);
+    el.hidden = false;
+    el.innerHTML = `<div class="lp-k">Ways to improve this load</div>${cuts.length ? `<div class="lp-advh">Save a ${KN[CATS[S.cat].kind][0].toLowerCase()}:</div>` : ''}${L.map((x, k) => (x.kind === 'cut' ? row(x, k) : '')).join('')}${adds.length ? L.map((x, k) => (x.kind !== 'cut' ? row(x, k) : '')).join('') : ''}${r.advice.pending ? '<div class="lp-muted">Checking what else fits…</div>' : ''}<div class="lp-muted">Each suggestion was checked by planning the changed load again. Apply changes the quantities in your list and plans again.</div>`;
+    el.querySelectorAll('[data-adv]').forEach((b) => b.addEventListener('click', () => {
+      const x = L[+b.dataset.adv];
+      for (const c of x.apply) { const row2 = S.items[r.items[c.i].src]; if (row2) row2.qty = Math.max(0, Math.floor(+row2.qty) + c.d); }
+      S.items = S.items.filter((it) => !(+it.qty === 0 && it.l > 0)); if (!S.items.length) addRow();
+      renderRows(); calc();
+    }));
+  }
+  function startAdvice() {
+    const r = S.result, tok = ++advTok;
+    if (!$('lp-adv')) return;
+    if (r.advice !== undefined) { paintAdvice(); return; }
+    if (S.build || !r.units.length || r.tooBig.length || r.notPlaced.length || r.items.some((it) => it.src == null)) { r.advice = null; paintAdvice(); return; }
+    paintAdvice();
+    setTimeout(async () => {
+      let a = null; try { a = await advise(r, (o) => { r.advice = o; if (tok === advTok && S.result === r) paintAdvice(); }); } catch (e) { console.error(e); }
+      r.advice = a; if (tok === advTok && S.result === r) paintAdvice();
+    }, 400);
   }
   function palName() { const b = S.pb, p = PALLETS.find((x) => x[0] === b.t && x[2]); return p ? p[1] + ' pallet' : `Pallet ${showLen(b.l)} × ${showLen(b.w)} ${S.unit}`; }
   function show(i) { S.opt = i; S.result = S.options[i].res; S.unitSel = 0; S.palSel = null; S.step = -1; renderResult(); }
@@ -859,6 +982,7 @@
   ${warn.length ? `<div class="lp-warn">${warn.join('<br>')}</div>` : ''}
   ${heavyN.length ? `<div class="lp-muted lp-rulenote">Kept upright and on the floor as heavy pieces: ${heavyN.join(', ')}.</div>` : ''}
   ${pbCard}
+  <div class="lp-adv" id="lp-adv" hidden></div>
 </div>
 ${n ? `<div class="lp-card">
   <div class="lp-tabs" id="lp-tabs">${tabs}</div>
@@ -893,6 +1017,7 @@ ${n ? `<div class="lp-card">
     });
     document.querySelectorAll('.lp-popen').forEach((tr) => tr.addEventListener('click', () => { S.palSel = +tr.dataset.pal; S.step = -1; renderResult(); $('lp-tabs').scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
     renderUnit();
+    startAdvice();
     shareLinks();
     $('lp-pdf').addEventListener('click', () => makePdf('summary'));
     $('lp-pdf2').addEventListener('click', () => makePdf('steps'));
@@ -1547,6 +1672,15 @@ ${n ? `<div class="lp-card">
       });
       if (r.tooBig.length || r.notPlaced.length) { y += 2; [...r.tooBig, ...r.notPlaced].forEach((t) => { T(`Not loaded: ${t.n} x ${t.type.name} - ${t.why}`, M, y, { c: red, s: 9 }); y += 5; }); }
       if (S.gapD || S.gapR) { T(`Space kept free: ${showLen(S.gapD)} ${S.unit} at the doors, ${showLen(S.gapR)} ${S.unit} under the roof.`, M, y + 2, { c: muted, s: 8.5 }); y += 6; }
+      {
+        const AL = adviceLines(r).slice(0, 10), pt = (t) => String(t).replace(/×/g, 'x').replace(/³/g, '3').replace(/[′’]/g, "'");
+        if (AL.length && y < BOT - 12 - AL.length * 4.8) {
+          y += 5; box(M, y - 4.4, 1.2, AL.length * 4.8 + 7.5, [255, 201, 60]);
+          T('Ways to improve this load', M + 4, y, { s: 10, b: true }); y += 5.6;
+          for (const x of AL) { T((x.kind === 'head' ? '' : '-  ') + pt(x.text), M + 4, y, { s: 8.6, c: x.kind === 'head' ? muted : undefined }); y += 4.8; }
+          T('Each suggestion was checked by planning the changed load again.', M + 4, y, { s: 7.2, c: muted }); y += 5;
+        }
+      }
       if (window.YAMBrand && y < BOT - 34) YAMBrand.promo(doc, M, BOT - 32, PW - 2 * M);
 
       // ---- drawing helpers for measured views

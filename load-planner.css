@@ -178,3 +178,8 @@
 }
 .lp-code{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 4px;border-radius:5px;font:800 13px/1 Geist,system-ui,sans-serif;margin-right:7px;flex:0 0 auto;vertical-align:middle}
 .lp-step ul li .lp-code{margin-top:1px}
+.lp-adv{margin-top:14px;padding:14px 16px;border-radius:14px;background:#FFF9E8;border:1px solid #F3DE9B}
+.lp-advh{font-weight:600;color:#0B2A4A;margin:8px 0 4px}
+.lp-advr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid #F1E4B8}
+.lp-advr span{flex:1}
+.lp-advb{padding:5px 14px;font-size:13px;flex:0 0 auto}
