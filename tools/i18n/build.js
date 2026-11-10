@@ -77,6 +77,25 @@ function build(lang, slug, I18V) {
   const mk = (src, code) => { const s = document.createElement('script'); if (src) s.setAttribute('src', src); if (code) s.textContent = code; return s; };
   const ins = [mk('i18n/tr-core.js'), mk('i18n/' + lang + '.js?v=' + I18V), mk(null, "YAM_TR_OBSERVE(document.querySelector('main'))")];
   for (const s of ins) { if (first) first.parentNode.insertBefore(s, first); else document.body.appendChild(s); }
+  // FAQ structured data: reuse the page's own translations
+  for (const sc of document.querySelectorAll('script[type="application/ld+json"]')) {
+    let j; try { j = JSON.parse(sc.textContent); } catch (e) { continue; }
+    let changed = false;
+    const SW = /\b(the|of|and|is|to|in|for|are|with|that|your)\b/gi;
+    const tj = (s) => { const r = tr.text(s); if (!r || r === s) return s; if ((r.match(SW) || []).length >= 3 && lang !== 'en') { (global.FAQ_MISS = global.FAQ_MISS || new Set()).add(s); return s; } return r; };
+    const walk = (o) => {
+      if (Array.isArray(o)) return o.forEach(walk);
+      if (!o || typeof o !== 'object') return;
+      if (o['@type'] === 'Question') {
+        if (o.name) { const n = tj(o.name); if (n !== o.name) { o.name = n; changed = true; } }
+        const a = o.acceptedAnswer;
+        if (a && a.text) { const n = tj(a.text); if (n !== a.text) { a.text = n; changed = true; } }
+      }
+      Object.values(o).forEach(walk);
+    };
+    walk(j);
+    if (changed) sc.textContent = JSON.stringify(j);
+  }
   let out = document.toString();
   if (!/^<!doctype/i.test(out)) out = '<!doctype html>\n' + out;
   fs.writeFileSync(L.ROOT + '/' + lang + '/' + slug + '.html', out);
