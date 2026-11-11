@@ -79,6 +79,30 @@
     });
     return out;
   }
+  // A weight that is only in a table: the number in the totals row (the lowest all-number row) under a header such as "PALLET GROSS".
+  function tableTotal(d, rx, not) {
+    var best = null;
+    d.items.forEach(function (L) {
+      if (!rx.test(L.s) || (not && not.test(L.s)) || L.s.length > 40) return;
+      var rows = {};
+      d.items.forEach(function (it) { if (it.y < L.y - 6 && (it.p || 1) === (L.p || 1)) { var k = Math.round(it.y / 3); (rows[k] = rows[k] || []).push(it); } });
+      var keys = Object.keys(rows).map(Number).sort(function (a, b) { return a - b; });
+      for (var i = 0; i < keys.length; i++) {
+        var r = rows[keys[i]].filter(function (it) { return it.s.trim(); });
+        if (r.length < 3 || !r.every(function (it) { return /^[\d.,\s]+$/.test(it.s); })) continue;
+        var c = r.filter(function (it) { return it.x >= L.x - 10 && it.x <= L.x + (L.w || 30) + 50; }).sort(function (a, b) { return a.x - b.x; })[0];
+        if (c) { var v = num(c.s.trim()); if (v != null && v >= 5 && (!best || v > best)) best = v; }
+        break; // only the lowest all-number row counts as the totals row
+      }
+    });
+    return best;
+  }
+  // The company on the letterhead (top of the first page) when no line says "Exporter" or "Shipper".
+  function letterhead(d) {
+    var top = d.items.filter(function (it) { return (it.p || 1) === 1 && it.s.trim(); }).sort(function (a, b) { return b.y - a.y; }).slice(0, 12);
+    for (var i = 0; i < top.length; i++) { var s = top[i].s.trim(); if (s.length < 70 && /\b(PVT\.?|PRIVATE|LTD\.?|LIMITED|LLP|LLC|INC\.?|CORP\.?|CORPORATION|COMPANY|GMBH|FZC|FZE|FZCO|EXPORTS?|IMPEX|ENTERPRISES?|INDUSTRIES|TRADERS|TRADING|OVERSEAS|INTERNATIONAL)\b/i.test(s) && !/INVOICE|PACKING|LIST|SOLD TO|CONSIGNEE|BUYER|BILL TO|SHIP TO/i.test(s)) return s; }
+    return '';
+  }
   function weights(d) {
     var skip = /TARE|VGM|MAX|PAYLOAD|CAPACITY/;
     var g = labelledNumbers(d, /GROSS\s*(CARGO\s*)?(WEIGHT|WT\.?|WGT|MASS)?|G\.\s?W\.?|GR\.?\s?WT\.?/, { skipPre: skip, stop: /NET|N\.\s?W|CBM|M3|VOLUME|MEAS/i });
@@ -87,6 +111,7 @@
     var kg = [], m, re = /(\d{1,3}(?:[,.]\d{3})+(?:[.,]\d{1,3})?|\d+(?:[.,]\d{1,3})?)\s*(KGS?|KGM|KILOS?)\b/gi;
     while ((m = re.exec(d.text))) { var pre = U(d.text.slice(Math.max(0, m.index - 30), m.index)); if (!/TARE|VGM|MAX|PAYLOAD|NET/.test(pre)) kg.push({ v: num(m[1]) }); }
     function pick(a, fb) { a = a.filter(function (x) { return x.v != null && x.v >= 5 && x.v < 5e6; }); if (!a.length) a = fb || []; if (!a.length) return null; var t = a.filter(function (x) { return x.total; }); var pool = t.length ? t : a; var best = Math.max.apply(null, pool.map(function (x) { return x.v; })); return { v: best, all: uniq(a.map(function (x) { return x.v; })) }; }
+    if (!g.length && !kg.length) { var tt = tableTotal(d, /GROSS/i, /NET|TARE/i); if (tt) g.push({ v: tt, total: true }); }
     return { gross: pick(g, kg), net: pick(n) };
   }
   var PKG = 'PACKAGES?|PACKAGE\\(S\\)|PKGS?\\.?|CARTONS?|CTNS?\\.?|PALLETS?|PLTS?\\.?|BOXES|BOX|CASES?|BALES?|BAGS?|DRUMS?|CRATES?|ROLLS?|BUNDLES?|COILS?|SKIDS?|PIECES?\\s+\\(PACKAGES\\)|WOODEN\\s+CASES?|CARTON\\s+BOXES';
@@ -205,6 +230,7 @@
       inv: invoiceNo(d), inco: incoterm(d), freight: freightTerm(d),
       pol: port(d, /AIRPORT\s+OF\s+DEPARTURE|PORT\s+OF\s+LOADING|PORT\s+OF\s+SHIPMENT|LOADING\s+PORT|\bPOL\b/i), pod: port(d, /AIRPORT\s+(OF\s+)?DESTINATION|PORT\s+OF\s+DISCHARGE|DISCHARGE\s+PORT|PORT\s+OF\s+DESTINATION|\bPOD\b/i)
     };
+    if (!f.shipper) f.shipper = letterhead(d);
     return air ? airFacts(d, f) : f;
   }
 

@@ -100,7 +100,7 @@
     '<div class="al-sec">Print</div>' +
     '<div class="al-f" style="margin-bottom:14px"><label for="al-sz">Printer and label stock</label><select id="al-sz" class="al-in">' + (function () { var gs = {}, o = ''; Object.keys(SIZES).forEach(function (k) { (gs[SIZES[k].g] = gs[SIZES[k].g] || []).push(k); }); Object.keys(gs).forEach(function (g) { o += '<optgroup label="' + g + '">' + gs[g].map(function (k) { return '<option value="' + k + '">' + SIZES[k].name + '</option>'; }).join('') + '</optgroup>'; }); return o; })() + '</select><div class="al-msg" id="al-tip" style="color:#3D5873"></div></div>' +
     '<label class="al-ack"><input type="checkbox" id="al-ack"' + (ackd ? ' checked' : '') + '><span>I will check these labels against my air waybill and the airline\'s requirements. I understand they are provided <b>for guidance only</b> and that YAM Logistics Pvt. Ltd. accepts <b>no liability</b> for their use. I have read the <a href="#disclaimer">disclaimer</a>.</span></label>' +
-    '<div class="al-btns"><button class="al-btn" id="al-dl" disabled>Download PDF</button><button class="al-btn o" id="al-pr" disabled>Print</button></div>' +
+    '<div class="al-btns"><button class="al-btn" id="al-dl" disabled>Download PDF</button><button class="al-btn o" id="al-pr" disabled>Print</button><button class="al-btn o" id="al-clr" type="button" style="color:#B91C1C;border-color:#F3C5C5">✕ Clear form</button></div>' +
     '<div class="al-msg" id="al-st"></div>' +
     '</div>' +
     '<div class="al-prev"><div class="al-card"><div class="al-h">Preview</div><p class="al-s" id="al-pvs">Fill in the airline, air waybill number, destination and pieces.</p><div class="al-pv" id="al-pv"></div><div class="al-nav" id="al-nav" style="display:none"><button id="al-prevb">‹ Previous</button><span id="al-pn"></span><button id="al-nextb">Next ›</button></div>' +
@@ -277,6 +277,11 @@
   root.addEventListener('input', function (e) { if (e.target.id === 'al-air' || e.target.id === 'al-awb') cur = 0; refresh(); });
   root.addEventListener('change', refresh);
   ack.addEventListener('change', function () { try { sessionStorage.setItem('al-ack', ack.checked ? '1' : '0'); } catch (e) {} refresh(); });
+  $('al-clr').addEventListener('click', function () {
+    if (!confirm('Clear everything typed on this form?')) return;
+    [].forEach.call(root.querySelectorAll('input, textarea'), function (i) { if (i.type === 'checkbox' || i.type === 'radio' || i.type === 'file' || i.id === 'al-ack') return; i.value = ''; });
+    var u = $('al-upr'); if (u) u.innerHTML = ''; cur = 0; refresh(); try { root.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+  });
   $('al-prevb').addEventListener('click', function () { var d = read(); if (cur > d.from) { cur--; refresh(); } });
   $('al-nextb').addEventListener('click', function () { var d = read(); if (cur < d.to) { cur++; refresh(); } });
   function busy(b, t) { $('al-st').textContent = t || ''; $('al-st').className = 'al-msg'; dl.disabled = pr.disabled = b || dl.disabled; }

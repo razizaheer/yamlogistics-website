@@ -104,7 +104,7 @@
   root.innerHTML =
     '<div class="bd-tabs" role="tablist"><button type="button" data-t="bl">🚢 B/L draft</button><button type="button" data-t="awb">✈️ AWB draft</button></div>' +
     '<div class="bd-card" style="background:#FFF8E6;border-color:#FFE3A0"><b style="font-family:Archivo,sans-serif;font-size:18px">Start from your invoice and packing list</b><div class="bd-s" style="margin:4px 0 12px">We fill in the parties, ports, goods, packages and weights for you. Files are read on this phone; nothing is uploaded.</div>' +
-    '<div class="bd-row"><button type="button" class="bd-b bd-y" id="bd-up">Read my invoice / packing list (PDF or photo)</button><button type="button" class="bd-b bd-q" id="bd-fill">Use the invoice I made in CargoKit</button><input type="file" id="bd-file" accept="application/pdf,image/*" multiple hidden></div><div class="bd-s" id="bd-upmsg" style="margin:10px 0 0" aria-live="polite"></div></div>' +
+    '<div class="bd-row"><button type="button" class="bd-b bd-y" id="bd-up">Read my invoice / packing list (PDF or photo)</button><button type="button" class="bd-b bd-q" id="bd-fill">Use the invoice I made in CargoKit</button><button type="button" class="bd-b bd-r" id="bd-clr2">✕ Clear form</button><input type="file" id="bd-file" accept="application/pdf,image/*" multiple hidden></div><div class="bd-s" id="bd-upmsg" style="margin:10px 0 0" aria-live="polite"></div></div>' +
     '<div id="bd-bl">' + BL_HTML + '</div><div id="bd-awb">' + AWB_HTML + '</div>' +
     '<div class="bd-card"><h2 class="bd-h">Make the draft</h2><p class="bd-s">An A4 PDF marked DRAFT, for checking with your forwarder, carrier or buyer before the real document is issued.</p>' +
     '<div class="bd-row"><button type="button" class="bd-b bd-p" id="bd-pdf">Download the draft PDF</button><button type="button" class="bd-b bd-w" id="bd-wa">Share the PDF</button><a class="bd-b bd-q" href="document-checker.html" style="text-decoration:none">Check it against my invoice →</a><button type="button" class="bd-b bd-r" id="bd-clr">Clear this form</button></div>' +
@@ -210,6 +210,7 @@
   });
   el('bl-add').onclick = function () { var l = S.bl.ctrs[S.bl.ctrs.length - 1]; var n = bCtr(); if (l) n.type = l.type; S.bl.ctrs.push(n); save(); ctrsUI(); refresh(); };
   el('awb-add').onclick = function () { S.awb.lines.push(bLine()); save(); linesUI(); refresh(); };
+  el('bd-clr2').onclick = function () { el('bd-clr').click(); };
   el('bd-clr').onclick = function () {
     if (!confirm('Clear the ' + (S.tab === 'bl' ? 'B/L' : 'AWB') + ' draft?')) return;
     if (S.tab === 'bl') S.bl = { f: { frt: 'FREIGHT PREPAID', service: 'CY/CY', orig: 'THREE (3)', issueDate: today(), stc: 'yes' }, ctrs: [bCtr()] };
@@ -239,7 +240,7 @@
 
   // read the visitor's own invoice / packing list (PDF, scan or photo) with the document checker's reader
   function ld(src) { return new Promise(function (ok, no) { var s = D.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; D.head.appendChild(s); }); }
-  var rdP; function readers() { if (!rdP) rdP = (window.BLRead ? Promise.resolve() : ld('bl-reader.js?v=4')).then(function () { return window.DocCheck ? 0 : ld('doc-check.js?v=2'); }); return rdP; }
+  var rdP; function readers() { if (!rdP) rdP = (window.BLRead ? Promise.resolve() : ld('bl-reader.js?v=4')).then(function () { return window.DocCheck ? 0 : ld('doc-check.js?v=3'); }); return rdP; }
   function vOf(x) { return x == null ? null : typeof x === 'object' && !Array.isArray(x) ? x.v : x; }
   function addrAfter(text, name) {
     if (!name) return ''; var T = String(text || ''), i = T.toUpperCase().indexOf(name.toUpperCase()); if (i < 0) return '';
@@ -262,7 +263,8 @@
       }, Promise.resolve()).then(function () { return { F: F, txt: txt }; });
     }).then(function (r) {
       var F = r.F, got = [], g = S.tab, f = S[g].f;
-      function put(k, v, label) { if (v == null || v === '' || (f[k] || '').trim()) return; f[k] = String(v).toUpperCase(); got.push(label); }
+      // what we read from the documents replaces what was typed before: the user asked us to read them
+      function put(k, v, label) { if (v == null || v === '') return; f[k] = String(v).toUpperCase(); got.push(label); }
       var sa = addrAfter(r.txt, F.shipper), ca = addrAfter(r.txt, F.consignee);
       put('shp', F.shipper && [F.shipper, sa].filter(Boolean).join('\n'), 'shipper'); put('cons', F.consignee && [F.consignee, ca].filter(Boolean).join('\n'), 'consignee');
       var hs = Array.isArray(F.hs) ? F.hs.map(function (x) { return typeof x === 'object' ? x.v || x.code : x; }).filter(Boolean).join(', ') : F.hs;
@@ -270,15 +272,15 @@
       if (g === 'bl') {
         put('pol', F.pol, 'port of loading'); put('pod', F.pod, 'port of discharge'); put('hs', hs, 'HS codes'); put('inv', F.inv, 'invoice no.'); if (nw) put('nw', nw, 'net weight');
         var c = S.bl.ctrs[0];
-        if (S.bl.ctrs.length === 1 && !c.pk && !c.gw) { if (pk) { c.pk = String(pk); got.push(fmt(pk, 0) + ' packages'); } if (gw) { c.gw = String(gw); got.push(fmt(gw) + ' kg gross'); } }
+        if (S.bl.ctrs.length === 1) { if (pk) { c.pk = String(pk); got.push(fmt(pk, 0) + ' packages'); } if (gw) { c.gw = String(gw); got.push(fmt(gw) + ' kg gross'); } }
         (F.ctr || []).forEach(function (no, i) { if (i && !S.bl.ctrs[i]) S.bl.ctrs.push(bCtr()); if (S.bl.ctrs[i] && !S.bl.ctrs[i].no) S.bl.ctrs[i].no = no; });
       } else {
         put('dep', F.pol, 'departure'); put('dest', F.pod, 'destination');
-        var gd = [hs ? 'HSN: ' + hs : '', F.inv ? 'INVOICE NO: ' + F.inv : ''].filter(Boolean).join('\n'); if (gd && !(f.goods || '').trim()) { f.goods = gd.toUpperCase(); got.push('HS codes and invoice no.'); }
-        var l = S.awb.lines[0]; if (S.awb.lines.length === 1 && !l.pcs && !l.gw) { if (pk) { l.pcs = String(pk); got.push(fmt(pk, 0) + ' pieces'); } if (gw) { l.gw = String(gw); got.push(fmt(gw) + ' kg gross'); } }
+        var gd = [hs ? 'HSN: ' + hs : '', F.inv ? 'INVOICE NO: ' + F.inv : ''].filter(Boolean).join('\n'); if (gd) { f.goods = gd.toUpperCase(); got.push('HS codes and invoice no.'); }
+        var l = S.awb.lines[0]; if (S.awb.lines.length === 1) { if (pk) { l.pcs = String(pk); got.push(fmt(pk, 0) + ' pieces'); } if (gw) { l.gw = String(gw); got.push(fmt(gw) + ' kg gross'); } }
       }
       save();
-      try { sessionStorage.setItem('bd_msg', got.length ? 'Filled from your documents: ' + got.join(', ') + '. Please check every field, and add anything we missed.' : 'We could not read the details from that file. Please type them in, or try a clearer PDF.'); } catch (e) {}
+      try { sessionStorage.setItem('bd_msg', got.length ? 'Filled from your documents: ' + got.join(', ') + '. Please check every field, and add anything we missed.' : 'We opened the file but could not find the shipment details in it. Please type them in, or try the invoice and the packing list together.'); } catch (e) {}
       location.reload();
     }).catch(function () { msg.textContent = 'That file could not be read. Please try a PDF or a clear photo.'; });
   };

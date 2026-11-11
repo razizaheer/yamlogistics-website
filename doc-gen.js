@@ -43,7 +43,7 @@
   };
 
   root.innerHTML =
-    '<div class="dg-card"><h2 class="dg-h">1. The parties</h2><p class="dg-s">Your details are kept on this phone so you do not type them again.</p><div class="dg-g">' +
+    '<div style="display:flex;justify-content:flex-end;margin:0 0 10px"><button class="dg-b dg-r" id="dg-clear2" type="button">✕ Clear form</button></div><div class="dg-card"><h2 class="dg-h">1. The parties</h2><p class="dg-s">Your details are kept on this phone so you do not type them again.</p><div class="dg-g">' +
     inp('exName', 'Exporter or seller name', 'Company name', 'w') + area('exAddr', 'Exporter address', 'Street, city, country') + inp('exTax', 'Tax or registration number (optional)', 'IEC, GSTIN, VAT or EIN', 'w') +
     inp('coName', 'Consignee or buyer name', 'Company name', 'w') + area('coAddr', 'Consignee address', 'Street, city, country') + inp('coTax', 'Buyer tax number (optional)', 'VAT, EIN or tax ID', 'w') + inp('ntName', 'Notify party (optional)', 'Name, address', 'w') + '</div></div>' +
     '<div class="dg-card"><h2 class="dg-h">2. The shipment</h2><div class="dg-g">' +
@@ -91,6 +91,7 @@
   }
   el('dg-tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-t]'); if (b) { cur = b.dataset.t; clUI(); } });
   el('dg-chk').addEventListener('change', function (e) { var c = e.target.dataset.c; if (c) { S.cl[c] = e.target.checked; save(); } });
+  el('dg-clear2').addEventListener('click', function () { el('dg-clear').click(); });
   el('dg-clear').addEventListener('click', function () { if (!confirm('Clear all the fields on this form?')) return; var cl = S.cl; S = { f: { invDate: today(), cur: 'USD', inc: 'FOB' }, items: [blankItem()], cl: cl }; save(); location.reload(); });
 
   // ---------- PDF ----------

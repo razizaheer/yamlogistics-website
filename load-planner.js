@@ -108,6 +108,7 @@
       <button class="lp-btn lp-xl lp-upl" id="lp-paste-t">⇪ Upload or paste your packing list</button>
       <button type="button" class="lp-btn lp-tplb" id="lp-tpl">↓ Excel template</button>
       <button class="lp-btn lp-ghost" id="lp-example">Load example</button>
+      <button class="lp-btn lp-ghost lp-clr" id="lp-clear2">✕ Clear all</button>
       <label class="lp-chk lp-advl"><input type="checkbox" id="lp-advt"> <span>Show handling options (orientation, stacking, load order)</span></label>
     </div>
     <div class="lp-tablewrap"><table class="lp-table">
@@ -626,6 +627,7 @@
     renderRows();
   });
   $('lp-clear').addEventListener('click', () => { S.items = []; addRow(); S.result = null; $('lp-out').innerHTML = ''; renderRows(); });
+  $('lp-clear2').addEventListener('click', () => { if (S.items.some((it) => it.l > 0 || it.qty > 0 || it.name) && !confirm('Clear the whole list and the plan?')) return; $('lp-clear').click(); });
   $('lp-example').addEventListener('click', () => {
     S.unit = 'cm'; S.wunit = 'kg';
     S.items = S.pal ? [
@@ -1018,6 +1020,7 @@ ${n ? `<div class="lp-card">
   <div class="lp-row lp-share">
     <button class="lp-btn" id="lp-pdf">↓ Summary PDF</button>
     <button class="lp-btn" id="lp-pdf2">↓ Step-by-step PDF</button>
+    <button class="lp-btn lp-ghost lp-clr" id="lp-new">✕ Clear and start a new plan</button>
     <button class="lp-btn lp-vid" id="lp-vid">▶ MP4 loading video for phones</button>
     <label class="lp-vsp"><span>Video speed</span> <select id="lp-vsp" class="lp-in"><option value="slow"${S.vsp === 'slow' ? ' selected' : ''}>Slow</option><option value="normal"${!S.vsp || S.vsp === 'normal' ? ' selected' : ''}>Normal</option><option value="fast"${S.vsp === 'fast' ? ' selected' : ''}>Fast</option></select></label>
     ${CATS[S.cat].kind === 'container' && !S.build ? `<a class="lp-btn lp-ghost" id="lp-vgm" href="vgm-declaration.html#lp=${btoa(unescape(encodeURIComponent(JSON.stringify({ u: S.wunit, c: r.units.map((u) => [u.eq.id, Math.round(u.kg / wtF())]) }))))}">VGM declaration for this load</a>` : ''}
@@ -1041,6 +1044,7 @@ ${n ? `<div class="lp-card">
     $('lp-pdf').addEventListener('click', () => makePdf('summary'));
     $('lp-pdf2').addEventListener('click', () => makePdf('steps'));
     $('lp-vid').addEventListener('click', makeVideo);
+    $('lp-new').addEventListener('click', () => { if (!confirm('Clear the whole list and the plan?')) return; $('lp-clear').click(); try { $('lp-example').scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { /* ignore */ } });
     $('lp-vsp').addEventListener('change', (e) => { S.vsp = e.target.value; try { localStorage.setItem('ck_lp_vsp', S.vsp); } catch (er) { /* ignore */ } });
     $('lp-copy').addEventListener('click', () => { const u = location.href; (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(() => { $('lp-copy').textContent = 'Link copied ✓'; }).catch(() => { prompt('Copy this link', u); }); });
   }
