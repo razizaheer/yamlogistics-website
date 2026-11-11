@@ -295,10 +295,13 @@
   function wrap(t, n) { var out = [], line = ''; String(t || '').split(/\s+/).forEach(function (w) { if (line && (line + ' ' + w).length > n) { out.push(line); line = w; } else line = line ? line + ' ' + w : w; }); if (line) out.push(line); return out.join('\n'); }
   (function () {
     var st; try { st = JSON.parse(sessionStorage.getItem('bd_ai') || 'null'); } catch (e) {}
-    if (!st || !st.docs || !st.docs.length || st.tab !== S.tab) return;
-    fetch('/api/read-doc').then(function (r) { return r.json(); }).then(function (j) { if (j && j.on) show(); }).catch(function () {});
+    // the line about uploads tells the truth whenever the AI reader is on, also after it has been used
+    fetch('/api/read-doc').then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.on) return;
+      el('bd-priv').textContent = 'Files are read on this phone. Nothing is uploaded unless you choose the AI reading below.';
+      if (st && st.docs && st.docs.length && st.tab === S.tab) show();
+    }).catch(function () {});
     function show() {
-    el('bd-priv').textContent = 'Files are read on this phone. Nothing is uploaded unless you choose the AI reading below.';
     var box = D.createElement('div'); box.style.cssText = 'margin-top:12px;padding-top:12px;border-top:1px dashed #E6C46A';
     box.innerHTML = '<button type="button" class="bd-b bd-q" id="bd-ai">✨ Names or addresses missing? Read them with AI</button><div class="bd-s" id="bd-aimsg" style="margin:8px 0 0" aria-live="polite">This sends the text of the documents you just chose (not the files) to our AI reader, to find the shipper, consignee, ports and goods. Nothing is stored.</div>';
     el('bd-upmsg').parentNode.appendChild(box);
