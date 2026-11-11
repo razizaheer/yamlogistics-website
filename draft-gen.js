@@ -303,7 +303,7 @@
     box.innerHTML = '<button type="button" class="bd-b bd-q" id="bd-ai">✨ Names or addresses missing? Read them with AI</button><div class="bd-s" id="bd-aimsg" style="margin:8px 0 0" aria-live="polite">This sends the text of the documents you just chose (not the files) to our AI reader, to find the shipper, consignee, ports and goods. Nothing is stored.</div>';
     el('bd-upmsg').parentNode.appendChild(box);
     el('bd-ai').onclick = function () {
-      var b = this, m = el('bd-aimsg'); b.disabled = true; m.textContent = 'Reading with AI… this takes about 10 seconds.';
+      var b = this, m = el('bd-aimsg'); b.disabled = true; m.textContent = 'Reading with AI… this takes a few seconds.';
       (window.DocAI ? Promise.resolve() : ld('doc-ai.js?v=1')).then(function () { return window.DocAI.read(st.docs, st.tab); }).then(function (x) {
         var g = S.tab, f = S[g].f, got = [];
         function put(k, v, label) { if (v == null || v === '') return; f[k] = String(v).toUpperCase(); got.push(label); }
