@@ -103,7 +103,7 @@
 
   root.innerHTML =
     '<div class="bd-tabs" role="tablist"><button type="button" data-t="bl">🚢 B/L draft</button><button type="button" data-t="awb">✈️ AWB draft</button></div>' +
-    '<div class="bd-card" style="background:#FFF8E6;border-color:#FFE3A0"><b style="font-family:Archivo,sans-serif;font-size:18px">Start from your invoice and packing list</b><div class="bd-s" style="margin:4px 0 12px">We fill in the parties, ports, goods, packages and weights for you. Files are read on this phone; nothing is uploaded.</div>' +
+    '<div class="bd-card" style="background:#FFF8E6;border-color:#FFE3A0"><b style="font-family:Archivo,sans-serif;font-size:18px">Start from your invoice and packing list</b><div class="bd-s" style="margin:4px 0 12px">We fill in the parties, ports, goods, packages and weights for you. <span id="bd-priv">Files are read on this phone; nothing is uploaded.</span></div>' +
     '<div class="bd-row"><button type="button" class="bd-b bd-y" id="bd-up">Read my invoice / packing list (PDF or photo)</button><button type="button" class="bd-b bd-q" id="bd-fill">Use the invoice I made in CargoKit</button><button type="button" class="bd-b bd-r" id="bd-clr2">✕ Clear form</button><input type="file" id="bd-file" accept="application/pdf,image/*" multiple hidden></div><div class="bd-s" id="bd-upmsg" style="margin:10px 0 0" aria-live="polite"></div></div>' +
     '<div id="bd-bl">' + BL_HTML + '</div><div id="bd-awb">' + AWB_HTML + '</div>' +
     '<div class="bd-card"><h2 class="bd-h">Make the draft</h2><p class="bd-s">An A4 PDF marked DRAFT, for checking with your forwarder, carrier or buyer before the real document is issued.</p>' +
@@ -215,6 +215,7 @@
     if (!confirm('Clear the ' + (S.tab === 'bl' ? 'B/L' : 'AWB') + ' draft?')) return;
     if (S.tab === 'bl') S.bl = { f: { frt: 'FREIGHT PREPAID', service: 'CY/CY', orig: 'THREE (3)', issueDate: today(), stc: 'yes' }, ctrs: [bCtr()] };
     else S.awb = { f: { frt: 'PREPAID', dvc: 'NVD', dvcu: 'NCV', ins: 'NIL', execDate: today() }, lines: [bLine()] };
+    try { sessionStorage.removeItem('bd_ai'); } catch (e) {}
     save(); location.reload();
   };
   // fill from the invoice and packing list maker
@@ -240,7 +241,7 @@
 
   // read the visitor's own invoice / packing list (PDF, scan or photo) with the document checker's reader
   function ld(src) { return new Promise(function (ok, no) { var s = D.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; D.head.appendChild(s); }); }
-  var rdP; function readers() { if (!rdP) rdP = (window.BLRead ? Promise.resolve() : ld('bl-reader.js?v=4')).then(function () { return window.DocCheck ? 0 : ld('doc-check.js?v=3'); }); return rdP; }
+  var rdP; function readers() { if (!rdP) rdP = (window.BLRead ? Promise.resolve() : ld('bl-reader.js?v=4')).then(function () { return window.DocCheck ? 0 : ld('doc-check.js?v=3'); }).then(function () { return window.DocAI ? 0 : ld('doc-ai.js?v=1'); }); return rdP; }
   function vOf(x) { return x == null ? null : typeof x === 'object' && !Array.isArray(x) ? x.v : x; }
   function addrAfter(text, name) {
     if (!name) return ''; var T = String(text || ''), i = T.toUpperCase().indexOf(name.toUpperCase()); if (i < 0) return '';
@@ -254,13 +255,16 @@
     var files = [].slice.call(this.files || []), msg = el('bd-upmsg'); this.value = ''; if (!files.length) return;
     msg.textContent = 'Getting the reader ready…';
     readers().then(function () {
-      var F = {}, txt = '';
+      var F = {}, txt = '', N = { pallets: 0, cartons: 0, pieces: 0, gross: 0, net: 0, cbm: 0, dims: [] }, ai = [];
       return files.reduce(function (pr, f, n) {
         return pr.then(function () {
           return window.BLRead.readText(f, function (p) { msg.textContent = 'Reading ' + f.name + (files.length > 1 ? ' (' + (n + 1) + ' of ' + files.length + ')' : '') + ': ' + p.stage + (p.p ? ' ' + Math.round(p.p * 100) + '%' : ''); })
-            .then(function (d) { var x = window.DocCheck.extract(d, S.tab === 'awb'); txt += '\n' + (d.text || ''); Object.keys(x).forEach(function (k) { var v = vOf(x[k]); if (v != null && v !== '' && !(Array.isArray(v) && !v.length) && (F[k] == null || (k === 'gross' && v > F[k]))) F[k] = v; }); });
+            .then(function (d) { var x = window.DocCheck.extract(d, S.tab === 'awb'); txt += '\n' + (d.text || '');
+              // totals read from the tables by column name, and the page text kept on this device in case the user asks for the AI reading
+              try { var m = window.DocAI.numbers(d); ['pallets', 'cartons', 'pieces', 'gross', 'net', 'cbm'].forEach(function (k) { if (m[k] > N[k]) N[k] = m[k]; }); if (m.dims.length > N.dims.length) N.dims = m.dims; ai.push({ name: f.name, text: window.DocAI.layoutText(d, true).slice(0, 9000) }); } catch (e) {}
+              Object.keys(x).forEach(function (k) { var v = vOf(x[k]); if (v != null && v !== '' && !(Array.isArray(v) && !v.length) && (F[k] == null || (k === 'gross' && v > F[k]))) F[k] = v; }); });
         });
-      }, Promise.resolve()).then(function () { return { F: F, txt: txt }; });
+      }, Promise.resolve()).then(function () { return { F: F, txt: txt, N: N, ai: ai }; });
     }).then(function (r) {
       var F = r.F, got = [], g = S.tab, f = S[g].f;
       // what we read from the documents replaces what was typed before: the user asked us to read them
@@ -268,16 +272,17 @@
       var sa = addrAfter(r.txt, F.shipper), ca = addrAfter(r.txt, F.consignee);
       put('shp', F.shipper && [F.shipper, sa].filter(Boolean).join('\n'), 'shipper'); put('cons', F.consignee && [F.consignee, ca].filter(Boolean).join('\n'), 'consignee');
       var hs = Array.isArray(F.hs) ? F.hs.map(function (x) { return typeof x === 'object' ? x.v || x.code : x; }).filter(Boolean).join(', ') : F.hs;
-      var pk = num(F.pkgs), gw = num(F.gross), nw = num(F.net);
+      var N = r.N, pk = N.pallets || num(F.pkgs) || N.cartons, gw = Math.max(num(F.gross), N.gross), nw = num(F.net) || N.net;
+      try { if (r.ai.length) sessionStorage.setItem('bd_ai', JSON.stringify({ tab: g, docs: r.ai })); else sessionStorage.removeItem('bd_ai'); } catch (e) {}
       if (g === 'bl') {
         put('pol', F.pol, 'port of loading'); put('pod', F.pod, 'port of discharge'); put('hs', hs, 'HS codes'); put('inv', F.inv, 'invoice no.'); if (nw) put('nw', nw, 'net weight');
         var c = S.bl.ctrs[0];
-        if (S.bl.ctrs.length === 1) { if (pk) { c.pk = String(pk); got.push(fmt(pk, 0) + ' packages'); } if (gw) { c.gw = String(gw); got.push(fmt(gw) + ' kg gross'); } }
+        if (S.bl.ctrs.length === 1) { if (pk) { c.pk = String(pk); got.push(fmt(pk, 0) + (pk === 1 ? ' package' : ' packages')); } if (gw) { c.gw = String(gw); got.push(fmt(gw) + ' kg gross'); } if (N.cbm) { c.cb = String(N.cbm); got.push(N.cbm + ' CBM'); } }
         (F.ctr || []).forEach(function (no, i) { if (i && !S.bl.ctrs[i]) S.bl.ctrs.push(bCtr()); if (S.bl.ctrs[i] && !S.bl.ctrs[i].no) S.bl.ctrs[i].no = no; });
       } else {
         put('dep', F.pol, 'departure'); put('dest', F.pod, 'destination');
         var gd = [hs ? 'HSN: ' + hs : '', F.inv ? 'INVOICE NO: ' + F.inv : ''].filter(Boolean).join('\n'); if (gd) { f.goods = gd.toUpperCase(); got.push('HS codes and invoice no.'); }
-        var l = S.awb.lines[0]; if (S.awb.lines.length === 1) { if (pk) { l.pcs = String(pk); got.push(fmt(pk, 0) + ' pieces'); } if (gw) { l.gw = String(gw); got.push(fmt(gw) + ' kg gross'); } }
+        var l = S.awb.lines[0]; if (S.awb.lines.length === 1) { if (pk) { l.pcs = String(pk); got.push(fmt(pk, 0) + (pk === 1 ? ' piece' : ' pieces')); } if (gw) { l.gw = String(gw); got.push(fmt(gw) + ' kg gross'); } if (N.dims.length) { l.dims = N.dims.join('\n'); got.push('dimensions'); } }
       }
       save();
       try { sessionStorage.setItem('bd_msg', got.length ? 'Filled from your documents: ' + got.join(', ') + '. Please check every field, and add anything we missed.' : 'We opened the file but could not find the shipment details in it. Please type them in, or try the invoice and the packing list together.'); } catch (e) {}
@@ -285,6 +290,45 @@
     }).catch(function () { msg.textContent = 'That file could not be read. Please try a PDF or a clear photo.'; });
   };
   try { var bm = sessionStorage.getItem('bd_msg'); if (bm) { el('bd-upmsg').innerHTML = '<b>' + h(bm) + '</b>'; sessionStorage.removeItem('bd_msg'); } } catch (e) {}
+
+  // optional second step: the text of the documents just read goes to our AI reader, only when this button is pressed
+  function wrap(t, n) { var out = [], line = ''; String(t || '').split(/\s+/).forEach(function (w) { if (line && (line + ' ' + w).length > n) { out.push(line); line = w; } else line = line ? line + ' ' + w : w; }); if (line) out.push(line); return out.join('\n'); }
+  (function () {
+    var st; try { st = JSON.parse(sessionStorage.getItem('bd_ai') || 'null'); } catch (e) {}
+    if (!st || !st.docs || !st.docs.length || st.tab !== S.tab) return;
+    fetch('/api/read-doc').then(function (r) { return r.json(); }).then(function (j) { if (j && j.on) show(); }).catch(function () {});
+    function show() {
+    el('bd-priv').textContent = 'Files are read on this phone. Nothing is uploaded unless you choose the AI reading below.';
+    var box = D.createElement('div'); box.style.cssText = 'margin-top:12px;padding-top:12px;border-top:1px dashed #E6C46A';
+    box.innerHTML = '<button type="button" class="bd-b bd-q" id="bd-ai">✨ Names or addresses missing? Read them with AI</button><div class="bd-s" id="bd-aimsg" style="margin:8px 0 0" aria-live="polite">This sends the text of the documents you just chose (not the files) to our AI reader, to find the shipper, consignee, ports and goods. Nothing is stored.</div>';
+    el('bd-upmsg').parentNode.appendChild(box);
+    el('bd-ai').onclick = function () {
+      var b = this, m = el('bd-aimsg'); b.disabled = true; m.textContent = 'Reading with AI… this takes about 10 seconds.';
+      (window.DocAI ? Promise.resolve() : ld('doc-ai.js?v=1')).then(function () { return window.DocAI.read(st.docs, st.tab); }).then(function (x) {
+        var g = S.tab, f = S[g].f, got = [];
+        function put(k, v, label) { if (v == null || v === '') return; f[k] = String(v).toUpperCase(); got.push(label); }
+        put('shp', x.shipper_name && [x.shipper_name, wrap(x.shipper_address, 46)].filter(Boolean).join('\n'), 'shipper');
+        put('cons', x.consignee_name && [x.consignee_name, wrap(x.consignee_address, 46)].filter(Boolean).join('\n'), 'consignee');
+        var inv = [x.invoice_no, x.invoice_date ? 'DT ' + x.invoice_date : ''].filter(Boolean).join(' ');
+        if (g === 'bl') {
+          put('notify', wrap(x.notify_party, 46), 'notify party'); put('pol', x.port_of_loading, 'port of loading'); put('pod', x.port_of_discharge, 'port of discharge'); put('fdest', x.final_destination, 'final destination');
+          put('desc', x.goods_description, 'goods'); put('hs', x.hs_codes, 'HS codes'); put('inv', x.invoice_no && inv, 'invoice no.');
+        } else {
+          put('dep', x.port_of_loading, 'departure'); put('dest', x.port_of_discharge, 'destination');
+          put('goods', [x.goods_description, x.hs_codes ? 'HSN: ' + x.hs_codes : '', x.invoice_no ? 'INVOICE NO: ' + inv : ''].filter(Boolean).join('\n'), 'goods, HS codes and invoice no.');
+        }
+        if (!got.length) { m.textContent = 'The AI reader could not find more details in these documents. Please type them in.'; b.disabled = false; return; }
+        save();
+        try { sessionStorage.removeItem('bd_ai'); sessionStorage.setItem('bd_msg', 'Filled by the AI reader: ' + got.join(', ').replace(/\.$/, '') + '. AI can make mistakes: please check every field against your documents.'); } catch (e) {}
+        location.reload();
+      }).catch(function (e) {
+        var c = String((e && e.message) || '');
+        m.textContent = c === 'slow-down' || c === 'busy' ? 'The AI reader has reached its limit for now. Please try again later, or type the details in.' : c === 'not-set-up' ? 'The AI reader is not switched on yet.' : 'The AI reader could not be reached. Please try again, or type the details in.';
+        b.disabled = false;
+      });
+    };
+    }
+  })();
 
   // ---------- PDF
   var jsP; function jspdf() { if (!jsP) jsP = new Promise(function (ok, no) { var s = D.createElement('script'); s.src = 'vendor/jspdf.umd.min.js'; s.onload = function () { ok(window.jspdf); }; s.onerror = no; D.head.appendChild(s); }); return jsP; }
