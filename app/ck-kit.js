@@ -167,17 +167,18 @@
     out.push('The preference needs the agreement’s certificate of origin. The importer’s broker confirms the code.');
     return { title: 'Duty preference for Indian goods: ' + tx(hd), lines: out };
   };
+  function ttn(e) { var n = e.querySelector('.tt-n'), est = n && n.querySelector('.tt-e'); return tx(n).replace(/^[^A-Za-z]+/, '').replace(/\s*estimate$/, '') + (est ? ' (estimate)' : ''); }
   EX['/india-transit-times'] = function () {
     var o = D.getElementById('tt-out'), all = o ? qa('.tt-d', o) : []; if (!all.length) return null;
     var open = all.filter(function (e) { return e.open; }), out = [];
     if (open.length) open.slice(0, 4).forEach(function (e) {
-      out.push(tx(e.querySelector('.tt-n')).replace(/^[^A-Za-z]+/, '') + ': ' + tx(e.querySelector('.tt-days')));
-      qa('.tt-b h4', e).forEach(function (h4) { var n = h4.nextElementSibling, k = tx(h4); if (/TRADE AGREEMENT/.test(k)) return; while (n && n.tagName !== 'H4' && n.tagName !== 'A') { var t = n.className === 'tt-c' ? '' : tx(n); if (t && !/^Checked /.test(t)) out.push('  ' + (n.tagName === 'P' ? k.charAt(0) + k.slice(1).toLowerCase() + ': ' : '') + short(t, 230)); n = n.nextElementSibling; } });
+      out.push(ttn(e) + ': ' + tx(e.querySelector('.tt-days')));
+      qa('.tt-b h4', e).forEach(function (h4) { var n = h4.nextElementSibling, k = String(h4.textContent || '').trim(); if (/TRADE AGREEMENT/i.test(k)) return; if (k === k.toUpperCase()) k = k.charAt(0) + k.slice(1).toLowerCase(); while (n && n.tagName !== 'H4' && n.tagName !== 'A') { var t = n.className === 'tt-c' ? '' : tx(n); if (t && !/^Checked /.test(t)) out.push('  ' + (n.tagName === 'P' ? k + ': ' : '') + short(t, 230)); n = n.nextElementSibling; } });
       var ck = qa('.tt-b p', e).map(tx).filter(function (t) { return /^Checked /.test(t); })[0]; if (ck) out.push('  ' + ck);
     });
-    else all.slice(0, 30).forEach(function (e) { out.push(tx(e.querySelector('.tt-n')).replace(/^[^A-Za-z]+/, '') + ': ' + tx(e.querySelector('.tt-days')) + ' · ' + tx(e.querySelector('.tt-sub'))); });
-    out.push('Indicative transit times from India. Confirm the sailing before you promise a date.');
-    return { title: open.length === 1 ? 'Transit time: ' + tx(open[0].querySelector('.tt-n')).replace(/^[^A-Za-z]+/, '') : 'Transit times from India', lines: out };
+    else all.slice(0, 30).forEach(function (e) { out.push(ttn(e) + ': ' + tx(e.querySelector('.tt-days')) + ' · ' + tx(e.querySelector('.tt-sub'))); });
+    out.push('Indicative transit times from India. Rows marked estimate are worked out from the sea distance. Confirm the sailing before you promise a date.');
+    return { title: open.length === 1 ? 'Transit time: ' + ttn(open[0]) : 'Transit times from India', lines: out };
   };
 
   // ---------- compose / share ----------
