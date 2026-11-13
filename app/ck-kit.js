@@ -9,7 +9,10 @@
   var BASE = (function () { var s = D.currentScript; return s ? s.src.replace(/[^\/]*\/[^\/]*$/, '') : '/'; })();
   var TOOLS = {
     '/cbm-calculator': 'CBM calculator', '/customs-duty-calculator': 'Import duty calculator', '/hsn-code-finder': 'HSN code finder',
-    '/container-number-checker': 'Container number checker', '/landed-cost-calculator': 'Landed cost calculator', '/freight-compare': 'Freight comparison', '/world-duty-calculator': 'Import duty and tax'
+    '/container-number-checker': 'Container number checker', '/landed-cost-calculator': 'Landed cost calculator', '/freight-compare': 'Freight comparison', '/world-duty-calculator': 'Import duty and tax',
+    '/freight-quote-checker': 'Freight quote checker', '/customs-exchange-rates': 'Customs exchange rates', '/port-airport-codes': 'Port and airport codes', '/icegate-status-guide': 'ICEGATE status guide',
+    '/customs-late-charges-calculator': 'Customs late charges', '/brazil-ncm-finder': 'Brazil NCM finder', '/mexico-import-tariff-2026': 'Mexico 2026 tariff checker',
+    '/trade-agreement-preference-checker': 'Preference checker', '/india-transit-times': 'Transit times'
   };
 
   // ---------- storage ----------
@@ -88,6 +91,95 @@
   EX['/landed-cost-calculator'] = function () { return G.CK_LANDED ? G.CK_LANDED() : null; };
   EX['/container-number-checker'] = function () { return G.CK_RESULT ? G.CK_RESULT() : null; };
 
+  // ---------- the tools added in November 2026: read the result from the page ----------
+  function qa(sel, r) { return Array.prototype.slice.call((r || D).querySelectorAll(sel)); }
+  function tx(e) { return e ? String(e.innerText || e.textContent || '').replace(/\s+/g, ' ').trim() : ''; }
+  function own(e) { return e ? String((e.childNodes[0] && e.childNodes[0].nodeType === 3 ? e.childNodes[0].textContent : e.innerText) || '').replace(/\s+/g, ' ').trim() : ''; }
+  EX['/freight-quote-checker'] = function () {
+    var r = D.getElementById('qc-root'), boxes = r ? qa('.qc-box', r) : []; if (!boxes.length) return null;
+    var pick = qa('.qc-p.on', r).map(own).filter(Boolean), out = [pick.join(' - ')];
+    boxes.forEach(function (b) { var L = lines(b.innerText); if (!L.length) return; out.push(L[0].toUpperCase()); L.slice(1, 14).forEach(function (x) { out.push('  ' + short(x, 150)); }); });
+    out.push('A guide to who usually pays what under Incoterms 2020. The contract decides.');
+    return { title: 'Freight quote check' + (pick.length ? ': ' + pick[pick.length - 1] : ''), lines: out.slice(0, 70) };
+  };
+  EX['/customs-exchange-rates'] = function () {
+    var r = D.getElementById('fx-root'); if (!r) return null;
+    var o = D.getElementById('fx-out'), pills = qa('.fx-pill', r).map(function (e) { return tx(e); }), out = [];
+    if (o && tx(o.querySelector('b'))) { out.push(tx(o.querySelector('span'))); out.push('= ' + tx(o.querySelector('b'))); }
+    else if (pills.length < 3) return null;
+    pills.forEach(function (x) { out.push(x); });
+    out.push('Rates notified for customs valuation in India. Check the notice before filing.');
+    return { title: 'Customs exchange rate', lines: out };
+  };
+  EX['/port-airport-codes'] = function () {
+    var o = D.getElementById('pf-out'), rows = o ? qa('.pf-r', o) : []; if (!rows.length) return null;
+    var qv = (D.getElementById('pf-q') || {}).value || '', out = [];
+    rows.slice(0, 8).forEach(function (e) {
+      var c = e.querySelector('.pf-c'), n = e.querySelector('.pf-n'); if (!c || !n) return;
+      var place = tx(n.querySelector('span')).replace(/\s*·\s*Map$/, ''), in6 = n.querySelector('.pf-in6 code');
+      out.push((c.getAttribute('data-c') || own(c)) + ' (' + tx(c.querySelector('small')) + '): ' + tx(n.querySelector('b')) + (place ? ', ' + place : '') + (tx(n.querySelector('.pf-t')) ? ' · ' + tx(n.querySelector('.pf-t')) : '') + (in6 ? ' · Indian customs code usually ' + tx(in6) : ''));
+    });
+    if (!out.length) return null;
+    if (rows.length > 8) out.push('and ' + (rows.length - 8) + ' more');
+    out.push('Confirm the code against your booking or carrier.');
+    return { title: 'Port and airport codes' + (qv.trim() ? ': ' + short(qv, 30) : ''), lines: out };
+  };
+  EX['/icegate-status-guide'] = function () {
+    var r = D.getElementById('ig-root'), st = r && r.querySelector('.ig-st[aria-expanded="true"]'), a = r && r.querySelector('.ig-a'); if (!st || !a) return null;
+    var L = lines(a.innerText).map(function (x) { return short(x, 260); }); if (!L.length) return null;
+    var doc = own(r.querySelector('.ig-p.on'));
+    return { title: 'ICEGATE status: ' + short(tx(st), 60), lines: (doc ? [doc] : []).concat(L.slice(0, 24), ['A plain-language guide. Check your own document on ICEGATE.']) };
+  };
+  EX['/customs-late-charges-calculator'] = function () {
+    var out = [];
+    [['cl-o1', 'Late bill of entry charge'], ['cl-o2', 'Interest on duty paid late']].forEach(function (x) {
+      var b = D.getElementById(x[0]), o = b && b.querySelector('.cl-out'), v = o && tx(o.querySelector('b')); if (!v) return;
+      out.push(x[1] + ': ' + v); qa('p', o).forEach(function (p) { out.push('  ' + short(tx(p), 240)); });
+    });
+    if (!out.length) return null;
+    out.push('For guidance. The customs system works out the amount actually charged.');
+    return { title: 'Customs late charges', lines: out };
+  };
+  EX['/brazil-ncm-finder'] = function () {
+    var o = D.getElementById('nb-out'), hd = o && o.querySelector('h2.nb-h'), rows = o ? qa('.nb-line', o).filter(function (e) { return e.querySelector('.nb-c8'); }) : []; if (!hd || !rows.length) return null;
+    var out = [], en = o.querySelector('h2.nb-h + p.nb-s'); if (en) out.push(short(tx(en), 200));
+    rows.slice(0, 15).forEach(function (e) { out.push('NCM ' + e.querySelector('.nb-c8').getAttribute('data-c') + ': ' + short(tx(e.querySelector('.nb-t')), 170)); });
+    if (rows.length > 15) out.push('and ' + (rows.length - 15) + ' more NCM codes');
+    out.push('Brazilian text as published by Siscomex. The importer’s broker in Brazil decides the final NCM.');
+    return { title: 'Brazil NCM codes for ' + tx(hd), lines: out };
+  };
+  EX['/mexico-import-tariff-2026'] = function () {
+    var o = D.getElementById('mx-out'), hd = o && o.querySelector('h2.mx-h'), v = o && o.querySelector('.mx-yes b, .mx-no b'); if (!hd || !v || !/^HS /.test(tx(hd))) return null;
+    var out = [tx(v)];
+    qa('.mx-line', o).slice(0, 15).forEach(function (e) { var t = e.querySelector('.mx-t'), duty = t.querySelector('em'), note = t.querySelector('u'); out.push(tx(t.querySelector('b')) + ': ' + own(e.querySelector('.mx-rate')) + ' ' + tx(e.querySelector('.mx-rate small')) + ' · ' + short(tx(t.querySelector('span')), 130) + (duty ? ' · ' + tx(duty) : '') + (note ? ' · ' + tx(note) : '')); });
+    var n = qa('.mx-line', o).length; if (n > 15) out.push('and ' + (n - 15) + ' more lines');
+    out.push('General import duty from Mexico’s 2026 decrees. The Mexican customs broker confirms the line and the duty.');
+    return { title: 'Mexico 2026 tariff check: ' + tx(hd), lines: out };
+  };
+  EX['/trade-agreement-preference-checker'] = function () {
+    var o = D.getElementById('pt-out'), hd = o && o.querySelector('h2.pt-h'), ags = o ? qa('.pt-ag', o) : []; if (!hd || !ags.length || !/^HS /.test(tx(hd))) return null;
+    var out = [];
+    ags.forEach(function (a) {
+      out.push(tx(a.querySelector('h3')).toUpperCase() + ': ' + tx(a.querySelector('.pt-yes b, .pt-no b, .pt-mid b')));
+      var ls = qa('.pt-line', a); ls.slice(0, 8).forEach(function (e) { var t = e.querySelector('.pt-t'), em = t.querySelector('em'), u = t.querySelector('u'), m = e.querySelector('.pt-m'); out.push('  ' + tx(t.querySelector('b')) + ': ' + own(m) + (tx(m.querySelector('small')) ? ' ' + tx(m.querySelector('small')) : '') + (em ? ' · ' + tx(em) : '') + (u ? ' · ' + short(tx(u), 120) : '')); });
+      if (ls.length > 8) out.push('  and ' + (ls.length - 8) + ' more lines');
+    });
+    out.push('The preference needs the agreement’s certificate of origin. The importer’s broker confirms the code.');
+    return { title: 'Duty preference for Indian goods: ' + tx(hd), lines: out };
+  };
+  EX['/india-transit-times'] = function () {
+    var o = D.getElementById('tt-out'), all = o ? qa('.tt-d', o) : []; if (!all.length) return null;
+    var open = all.filter(function (e) { return e.open; }), out = [];
+    if (open.length) open.slice(0, 4).forEach(function (e) {
+      out.push(tx(e.querySelector('.tt-n')).replace(/^[^A-Za-z]+/, '') + ': ' + tx(e.querySelector('.tt-days')));
+      qa('.tt-b h4', e).forEach(function (h4) { var n = h4.nextElementSibling, k = tx(h4); if (/TRADE AGREEMENT/.test(k)) return; while (n && n.tagName !== 'H4' && n.tagName !== 'A') { var t = n.className === 'tt-c' ? '' : tx(n); if (t && !/^Checked /.test(t)) out.push('  ' + (n.tagName === 'P' ? k.charAt(0) + k.slice(1).toLowerCase() + ': ' : '') + short(t, 230)); n = n.nextElementSibling; } });
+      var ck = qa('.tt-b p', e).map(tx).filter(function (t) { return /^Checked /.test(t); })[0]; if (ck) out.push('  ' + ck);
+    });
+    else all.slice(0, 30).forEach(function (e) { out.push(tx(e.querySelector('.tt-n')).replace(/^[^A-Za-z]+/, '') + ': ' + tx(e.querySelector('.tt-days')) + ' · ' + tx(e.querySelector('.tt-sub'))); });
+    out.push('Indicative transit times from India. Confirm the sailing before you promise a date.');
+    return { title: open.length === 1 ? 'Transit time: ' + tx(open[0].querySelector('.tt-n')).replace(/^[^A-Za-z]+/, '') : 'Transit times from India', lines: out };
+  };
+
   // ---------- compose / share ----------
   function textOf(it, withUrl) {
     var url = it.url || (location.origin + '/' + path.replace(/^\//, ''));
@@ -147,7 +239,7 @@
       var a = D.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; D.body.appendChild(a); a.click(); setTimeout(function () { a.remove(); URL.revokeObjectURL(a.href); }, 4000);
     }).catch(function () { toast('PDF is not available here. Try WhatsApp or Copy.'); });
   }
-  function clean(s) { return String(s).replace(/[′]/g, "'").replace(/[″]/g, '"').replace(/₹/g, 'Rs ').replace(/m³/g, 'm3').replace(/[·•]/g, '-').replace(/[–—]/g, '-').replace(/[^\x20-\x7E]/g, ''); }
+  function clean(s) { return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/[′]/g, "'").replace(/[″]/g, '"').replace(/₹/g, 'Rs ').replace(/m³/g, 'm3').replace(/[·•]/g, '-').replace(/[–—]/g, '-').replace(/[^\x20-\x7E]/g, ''); }
   function slug(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'result'; }
 
   // ---------- small UI ----------
