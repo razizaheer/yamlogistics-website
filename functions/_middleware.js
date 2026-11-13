@@ -113,7 +113,7 @@ export async function onRequest(ctx) {
 
 const SHORT = {
   '/planner': '/container-load-planner', '/load': '/container-load-planner', '/3d': '/container-load-planner',
-  '/vgm': '/vgm-declaration', '/quote': '/freight-quote-checker', '/awb': '/awb-label-generator', '/labels': '/awb-label-generator',
+  '/vgm': '/vgm-declaration', '/quote': '/freight-quote-checker', '/rates': '/customs-exchange-rates', '/fx': '/customs-exchange-rates', '/awb': '/awb-label-generator', '/labels': '/awb-label-generator',
   '/hsn': '/hsn-code-finder', '/duty': '/customs-duty-calculator', '/cbm': '/cbm-calculator',
   '/track': '/track-shipment', '/bl': '/bl-awb-draft', '/dg': '/dg-cargo-checker', '/docs': '/document-generator',
   '/check': '/document-checker', '/tools-list': '/free-tools'
