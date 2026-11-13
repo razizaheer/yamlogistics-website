@@ -211,7 +211,7 @@
       doc.setFillColor(255, 201, 60); doc.rect(0, H, W, 4, 'F');
       if (imgs.logo) { try { doc.addImage(imgs.logo, 'PNG', m, 12, 40, 40); } catch (e) {} }
       doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(18); doc.text('CargoKit', m + 50, 33);
-      doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.text('Free tools for importers and exporters  |  by YAM Logistics', m + 50, 49);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.text('Free tools for importers and exporters', m + 50, 49);
       y = H + 4 + 40;
       doc.setTextColor(11, 42, 74); doc.setFont('helvetica', 'bold'); doc.setFontSize(20); doc.text(clean(it.title), m, y);
       doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(94, 120, 145);
