@@ -157,7 +157,7 @@ var CK_UI = (function () {
   (function () {
     var pth = location.pathname.replace(/^\/(ar|de|es|fr|hi|ja|ko|pt|ru|zh)(?=\/)/, '').replace(/\.html$/, '').replace(/\/$/, '');
     if (/^\/(cbm-calculator|customs-duty-calculator|hsn-code-finder|container-number-checker|landed-cost-calculator|freight-compare|world-duty-calculator|freight-quote-checker|customs-exchange-rates|port-airport-codes|icegate-status-guide|customs-late-charges-calculator|brazil-ncm-finder|mexico-import-tariff-2026|trade-agreement-preference-checker|india-transit-times)$/.test(pth)) {
-      var k = document.createElement('script'); k.src = '/app/ck-kit.js?v=5'; k.defer = true; document.head.appendChild(k);
+      var k = document.createElement('script'); k.src = '/app/ck-kit.js?v=6'; k.defer = true; document.head.appendChild(k);
     }
   })();
   if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });

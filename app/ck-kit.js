@@ -230,8 +230,7 @@
         if (imgs.qr) { try { doc.addImage(imgs.qr, 'PNG', W - m - 56, 764, 56, 56); } catch (e) {} }
         doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(10, 108, 194); doc.text('Get the free CargoKit app  |  cargokit.ai', m, 780);
         doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(94, 120, 145);
-        doc.text('YAM Logistics Pvt. Ltd.  |  Licensed customs broker (CHA)  |  yamlogistics.com', m, 794);
-        doc.text('Indicative result for guidance only. Verify with Customs and a licensed customs broker.', m, 807);
+        doc.text('Indicative result for guidance only. Verify with Customs and a licensed customs broker.', m, 795);
         doc.text('Page ' + i + ' of ' + n, W - m - 56, 832);
       }
       var blob = doc.output('blob'), name = 'cargokit-' + slug(it.title) + '.pdf';
