@@ -68,6 +68,9 @@ async function withAppTags(ctx) {
       .on('footer a[href*="india-latin-america-trade"]', { element(el) { if (added) return; added = true; el.after('<a href="/' + desk[0].replace(/\.html$/, '') + '">' + desk[1] + '</a>', { html: true }); } })
       .on('details.ftm', { element(el) { if (menu) el.setInnerContent(menu, { html: true }); } });
     const u = new URL(ctx.request.url);
+    // footer: small "Staff Login" link to the staff panel (yamlogistics.com only, not the CargoKit domains)
+    let staffDone = false;
+    if (!CK_HOST.test(u.hostname)) rw.on('footer a[href$="how-we-use-ai.html"]', { element(el) { if (staffDone) return; staffDone = true; el.after(' \u00b7 <a href="https://staff.yamlogistics.com/app" rel="nofollow noopener">Staff Login</a>', { html: true }); } });
     if (CK_HOST.test(u.hostname) && !MENU_LANGS.test(u.pathname)) rw.on(CK_BAND_SEL, { element(el) { el.setAttribute('data-ck', '1'); el.setInnerContent(CK_BAND, { html: true }); } });
     for (const [sel, h] of topBar(new URL(ctx.request.url))) rw.on(sel, h);
     return rw.transform(res);
