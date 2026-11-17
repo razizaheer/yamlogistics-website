@@ -58,6 +58,15 @@ def make(x):
     f = 'guides/%s.html' % x['slug']; s = rd(f)
     s = s.replace('"name":"Free tools","item":"https://www.yamlogistics.com/free-tools"', '"name":"Guides","item":"https://www.yamlogistics.com/guides/"')
     s = REL.sub(lambda m: m.group(1) + '../' + m.group(2), s); wr(f, s)
+EXTRA = {}
+def X(slug, secs, faq=()):
+    o = EXTRA.get(slug, ([], []))
+    EXTRA[slug] = (o[0] + list(secs), o[1] + list(faq))
 def load_all():
     for f in sorted(glob.glob('/root/dbg/guides/b[0-9]*.py')):
         exec(compile(open(f).read(), f, 'exec'), globals())
+    for f in sorted(glob.glob('/root/dbg/guides/e[0-9]*.py')):
+        exec(compile(open(f).read(), f, 'exec'), globals())
+    for x in G:
+        if x['slug'] in EXTRA:
+            x['secs'] = list(x['secs']) + EXTRA[x['slug']][0]; x['faq'] = list(x['faq']) + EXTRA[x['slug']][1]

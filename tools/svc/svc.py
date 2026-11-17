@@ -23,7 +23,7 @@ def make(x):
     f=x['slug']+'.html'; s=rd(f)
     s=s.replace('"name":"Free tools","item":"https://www.yamlogistics.com/free-tools"','"name":"Customs brokerage","item":"https://www.yamlogistics.com/customs-brokerage"')
     wr(f,s)
-for f in ['p1','p2','p3']:
+for f in ['p1','p2','p3','p4']:
     exec(open('/root/dbg/svc/%s.py'%f).read())
 only=sys.argv[1:]
 for x in PAGES:
