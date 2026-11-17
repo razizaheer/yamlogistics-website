@@ -15,6 +15,18 @@ MINP = 10000   # a supplier country counts when India imported at least US$ 10,0
 MINV = 5e6
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 1000
 
+def guides_for(code):
+    g = [('guides/how-customs-duty-is-calculated-in-india', 'How duty is calculated', 'Basic duty, surcharge and IGST, step by step.'),
+         ('guides/assessable-value-cif-landing-charges', 'Assessable value', 'How CIF value and landing charges are worked out.'),
+         ('guides/hs-code-classification-general-rules', 'Classifying your goods', 'The general rules for choosing the right HS code.')]
+    ch = code[:2]; h4 = code[:4]
+    if h4 == '8507' or h4 == '8506': g.append(('guides/lithium-battery-shipping-guide', 'Shipping lithium batteries', 'UN numbers, UN 38.3 tests and packing.'))
+    if int(ch) <= 24: g.append(('guides/fssai-import-clearance', 'FSSAI import clearance', 'Shelf life, labels and the food import process.'))
+    if ch in ('84', '85', '94', '95'): g.append(('guides/bis-certification-for-imports', 'BIS certification', 'Which imported goods need BIS registration.'))
+    if ch in ('72', '73', '76', '39', '29', '28'): g.append(('guides/anti-dumping-duty-explained', 'Anti-dumping duty', 'Extra duties on goods from named countries.'))
+    g.append(('guides/igst-on-imports-and-input-tax-credit', 'IGST and input tax credit', 'How to claim back the IGST you pay at import.'))
+    return g[:5]
+
 def cname(c):
     n = AREAS.get(c, c); return NAMEFIX.get(n, n)
 def partners(code):
@@ -104,7 +116,7 @@ def make(code):
         (h3('Import policy') + p('%d of the %d lines %s restricted, prohibited or reserved for state trading under the DGFT import policy. Check the exact line before you order.' % (len(nres), len(lines), 'is' if len(nres) == 1 else 'are') + (' For example: ' + e(short(nres[0]['pn'], 220)) if nres[0]['pn'] else '')) if nres else '') +
         (h3('Conditional exemptions') + p('There are conditional exemption or concession entries that can apply to these lines, for example for a stated end use or a named importer. They are not applied above. The calculator lists each one under the line.') if cond else '') +
         note('<b>For guidance.</b> Rates are from the data in the CargoKit duty calculator: %s. Duty rates change by notification, and classification decides the rate. Verify with Customs and a licensed customs broker before you rely on a figure.' % e(short(L['v'], 240))) +
-        h3('Related products') + cards([('import-duty/' + c, 'HS ' + hs(c), cap1(short(H['s'][c], 80))) for c in sibs] + [('customs-duty-calculator', 'Customs duty calculator', 'Any HSN code, any country of origin, with landed cost.')]), '#FFFFFF')
+        h3('Related products') + cards([('import-duty/' + c, 'HS ' + hs(c), cap1(short(H['s'][c], 80))) for c in sibs] + [('customs-duty-calculator', 'Customs duty calculator', 'Any HSN code, any country of origin, with landed cost.')]) + h3('Related guides') + cards(guides_for(code)), '#FFFFFF')
     faq = [('What is the import duty on HS %s in India?' % hs(code), 'At the standard rate the total duty is %s of the assessable (CIF) value: basic customs duty %s, social welfare surcharge of 10%% of the basic duty where it applies, and IGST of %s. The exact figure depends on the eight-digit HSN line.' % (rng([x['tot'] for x in rated]), rng([x['bcd'] for x in rated]), rng([x['ig'] for x in rated]))),
            ('What is the IGST rate on imports under HS %s?' % hs(code), 'IGST is %s. It is charged on the assessable value plus the customs duties, and a GST-registered importer can normally claim it as input tax credit.' % rng([x['ig'] for x in rated])),
            ('Is a licence needed to import goods under HS %s?' % hs(code), ('%d of the %d HSN lines %s restricted, prohibited or reserved for state trading under the DGFT import policy; the rest are free to import.' % (len(nres), len(lines), 'is' if len(nres) == 1 else 'are')) if nres else 'All %d HSN line%s under this subheading %s free to import under the DGFT import policy. Other rules, such as BIS, FSSAI or WPC approval, can still apply to the product.' % (len(lines), '' if len(lines) == 1 else 's', 'is' if len(lines) == 1 else 'are')),
