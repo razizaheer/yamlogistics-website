@@ -24,6 +24,7 @@ def render(sec):
 def block(c):
     if isinstance(c, str): return p(c)
     if isinstance(c, list): return ul(c)
+    if isinstance(c, tuple) and c[0] == 'p': return p(c[1])
     if isinstance(c, tuple) and c[0] == 'ul': return ul(c[1])
     if isinstance(c, tuple) and c[0] == 'table': return table(c[1], c[2], c[3] if len(c) > 3 else '')
     if isinstance(c, tuple) and c[0] == 'note': return note(c[1])
@@ -62,6 +63,11 @@ EXTRA = {}
 def X(slug, secs, faq=()):
     o = EXTRA.get(slug, ([], []))
     EXTRA[slug] = (o[0] + list(secs), o[1] + list(faq))
+def _fp(parts):
+    # a list of long strings is paragraphs, not bullets
+    if isinstance(parts, list) and parts and all(isinstance(i, str) for i in parts) and sum(len(i) for i in parts) / len(parts) > 170:
+        return [('p', i) for i in parts]
+    return parts
 def load_all():
     for f in sorted(glob.glob('/root/dbg/guides/b[0-9]*.py')):
         exec(compile(open(f).read(), f, 'exec'), globals())
@@ -69,4 +75,4 @@ def load_all():
         exec(compile(open(f).read(), f, 'exec'), globals())
     for x in G:
         if x['slug'] in EXTRA:
-            x['secs'] = list(x['secs']) + EXTRA[x['slug']][0]; x['faq'] = list(x['faq']) + EXTRA[x['slug']][1]
+            x['secs'] = list(x['secs']) + [(hd, _fp(pt)) for hd, pt in EXTRA[x['slug']][0]]; x['faq'] = list(x['faq']) + EXTRA[x['slug']][1]
