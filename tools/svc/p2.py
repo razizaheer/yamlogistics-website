@@ -1,0 +1,23 @@
+S('mundra-port-customs-clearance','Mundra Port Customs Clearance (INMUN1) | YAM Logistics',
+ 'Customs clearance and freight at Mundra port (INMUN1), Gujarat. Own office in Adani Ports and SEZ, licensed customs broker R-7/92, rail to Delhi NCR depots.',
+ 'Mundra customs clearance','MUNDRA PORT · INMUN1','Mundra port','customs clearance.',
+ 'Mundra, in Kachchh, Gujarat, is India’s largest private port and a main gateway for northern India. YAM Logistics has its own office in the Adani Ports and SEZ and clears import and export cargo at Mundra, station code INMUN1.',
+ [('Why shippers use Mundra',['Deep draft berths for large container ships and good rail links to the north, including the Western Dedicated Freight Corridor.','Direct rail to the inland depots at Tughlakabad and Dadri for Delhi NCR cargo.','Many lines call at Mundra, so there is a choice of services to Europe, the Gulf, Africa and the Far East.']),
+  ('What we do at Mundra',['File the bill of entry before the ship arrives and manage queries on the spot.','Handle the shipping bill for exports, the let export order and the gate-in.','Coordinate examination, CFS or port stuffing and detention.','Move cargo onward by rail or road, or move it to the inland depot under customs control.']),
+  ('Mundra or JNPT',['The right port depends on your factory location, the lines you need and the rail connections. Our guide to <a href="guides/mundra-vs-jnpt-which-port" style="color:#0A6CC2">Mundra vs JNPT</a> sets out how to choose, and the <a href="guides/mundra-port-guide" style="color:#0A6CC2">Mundra port guide</a> covers the port in detail.'])],
+ [('What is the customs code for Mundra?','INMUN1 is the Indian Customs location code for Mundra port.'),
+  ('Do you have an office at Mundra?','Yes. We have an office at the Adani Ports and Special Economic Zone, so a team member is on site.'),
+  ('Can cargo from Mundra be cleared in Delhi?','Yes. The container moves by rail under customs seal to Tughlakabad or Dadri and is cleared there.')],
+ [('nhava-sheva-jnpt-customs-clearance','Nhava Sheva clearance','Our other main gateway.'),('guides/mundra-vs-jnpt-which-port','Mundra vs JNPT','Which port to choose.'),('ocean-freight','Ocean freight','FCL and LCL service.')])
+
+S('nhava-sheva-jnpt-customs-clearance','Nhava Sheva (JNPT) Customs Clearance (INNSA1) | YAM Logistics',
+ 'Customs clearance and freight at Nhava Sheva, Jawaharlal Nehru Port (INNSA1). Licensed customs broker R-7/92 with a Mumbai sea office. Import and export, FCL and LCL.',
+ 'Nhava Sheva customs clearance','NHAVA SHEVA · INNSA1','Nhava Sheva (JNPT)','customs clearance.',
+ 'Nhava Sheva, officially Jawaharlal Nehru Port, near Navi Mumbai is India’s largest container port by volume. YAM Logistics has a sea office in Mumbai and clears import and export cargo at INNSA1.',
+ [('What we do at Nhava Sheva',['Advance bill of entry filing, so cargo is assessed before the ship berths.','Export shipping bills, let export orders and gate-in at the port or at the CFS.','Coordination with the CFS, the shipping line and the terminal for examination, delivery orders and detention.','Rail or road movement to Delhi NCR, Gujarat, Maharashtra and the south.']),
+  ('Direct port delivery and CFS',['Some importers can take direct port delivery to avoid CFS charges. Our guide to <a href="guides/jnpt-nhava-sheva-port-guide" style="color:#0A6CC2">JNPT and Nhava Sheva</a> explains the options and <a href="guides/icd-vs-cfs-vs-port-explained" style="color:#0A6CC2">ICD vs CFS vs port</a> compares them.']),
+  ('Our Mumbai office',['Room No. 51/52, 179 Commercial Chambers, Yusuf Meherali Road, Masjid Bunder, Mumbai 400003. The desk handles sea cargo at Nhava Sheva and works with our Delhi and Mundra teams.'])],
+ [('What is the customs code for Nhava Sheva?','INNSA1 is the Indian Customs location code for Nhava Sheva, JNPT.'),
+  ('Do you clear LCL at Nhava Sheva?','Yes. LCL cargo is deconsolidated at a CFS and cleared there.'),
+  ('Can Nhava Sheva cargo go on to a Delhi depot?','Yes. Containers move by rail to Dadri or Tughlakabad under customs control for clearance near your factory.')],
+ [('mundra-port-customs-clearance','Mundra clearance','The other main port.'),('guides/jnpt-nhava-sheva-port-guide','JNPT guide','The port explained.'),('ocean-freight','Ocean freight','FCL and LCL.')])

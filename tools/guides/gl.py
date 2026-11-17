@@ -43,7 +43,7 @@ def build_body(x):
         elif all(isinstance(i, str) for i in parts): parts = [parts]
         elif isinstance(parts, list) and parts and all(isinstance(i, str) for i in parts) and False: pass
         for c in parts: inner += block(c)
-    inner += note('<b>For guidance only.</b> Rules, rates and forms change, and your case may differ. Check with Customs or a licensed customs broker before you act. We can help: <a href="contact" style="color:#0A6CC2;font-weight:700">talk to YAM Logistics</a>.')
+    inner += note('<b>For guidance only.</b> Rules, rates and forms change, and your case may differ. Check with Customs or a licensed customs broker before you act. We can help: <a href="contact" style="color:#0A6CC2;font-weight:700">talk to YAM Logistics</a>, a licensed <a href="customs-brokerage" style="color:#0A6CC2">customs broker</a> and <a href="freight-forwarder-delhi" style="color:#0A6CC2">freight forwarder in Delhi</a> with <a href="ocean-freight" style="color:#0A6CC2">sea</a> and <a href="air-freight" style="color:#0A6CC2">air</a> freight.')
     sib = [y for y in G if y['cat'] == x['cat'] and y['slug'] != x['slug']]
     i = [y['slug'] for y in G if y['cat'] == x['cat']].index(x['slug'])
     sib = sib[i:] + sib[:i]; sib = sib[:4]
