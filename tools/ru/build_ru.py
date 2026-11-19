@@ -147,6 +147,7 @@ def make(x):
     s = s.replace('https://www.yamlogistics.com/ru/cbm-calculator"', url + '"')
     s = re.sub(r'<link href="[^"]*" hreflang="[a-z-]*" rel="alternate">', '', s)
     s = s.replace('<link rel="canonical" href="%s">' % url, '<link rel="canonical" href="%s"><link href="%s" hreflang="ru" rel="alternate"><link href="%s" hreflang="x-default" rel="alternate">' % (url, url, url))
+    if x['slug'] == 'dostavka-gruzov-iz-indii-v-rossiyu': s = s.replace('<link href="%s" hreflang="x-default" rel="alternate">' % url, '<link href="https://www.yamlogistics.com/shipping-india-to-russia" hreflang="x-default" rel="alternate"><link href="https://www.yamlogistics.com/shipping-india-to-russia" hreflang="en" rel="alternate">', 1)
     m = re.search(r'(<script type="application/ld\+json">)(.*?)(</script>)', s, re.S); j = json.loads(m.group(2))
     g = [n for n in j['@graph'] if n['@type'] not in ('WebApplication', 'WebPage', 'FAQPage', 'BreadcrumbList')]
     g.append({"@type": "WebPage", "@id": url + '#page', "url": url, "name": x['T'], "description": x['DESC'], "inLanguage": "ru", "isPartOf": {"@id": "https://www.yamlogistics.com/#website"}, "about": {"@id": "https://www.yamlogistics.com/#org"}})
