@@ -815,9 +815,13 @@ input{font:inherit}
 <span style="display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-weight: 600; font-size: 17px">CBM और वॉल्यूमेट्रिक वेट कैलकुलेटर</span><span style="font-size: 14px; line-height: 1.5; color: #5E7891">बॉक्स साइज़ डालें, CBM, एयर चार्जेबल वेट और कंटेनर फ़िट पाएँ। अभी उपलब्ध।</span></span>
 </a>
 
-<a class="card" href="hi/cbm-calculator.html" style="background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 20px; padding: 24px; text-decoration: none; color: #0B2A4A; display: flex; gap: 16px; align-items: start">
+<a class="card" href="hi/container-load-planner.html" style="background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 20px; padding: 24px; text-decoration: none; color: #0B2A4A; display: flex; gap: 16px; align-items: start">
 <span style="flex: 0 0 auto; width: 50px; height: 50px; border-radius: 14px; background: #FFF4D6; color: #B45309; display: flex; align-items: center; justify-content: center; font-family: 'Geist Mono', monospace; font-size: 14px; font-weight: 500">3D</span>
 <span style="display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-weight: 600; font-size: 17px">कंटेनर लोड कैलकुलेटर</span><span style="font-size: 14px; line-height: 1.5; color: #5E7891">कितने कंटेनर, हर कार्टन कहाँ जाएगा, और स्टेप-बाय-स्टेप 3D लोडिंग प्लान। अभी उपलब्ध।</span></span>
+</a>
+<a class="card" href="hi/awb-label-generator.html" style="background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 20px; padding: 24px; text-decoration: none; color: #0B2A4A; display: flex; gap: 16px; align-items: start">
+<span style="flex: 0 0 auto; width: 50px; height: 50px; border-radius: 14px; background: #FFF4D6; color: #B45309; display: flex; align-items: center; justify-content: center; font-family: 'Geist Mono', monospace; font-size: 14px; font-weight: 500">AWB</span>
+<span style="display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-weight: 600; font-size: 17px">AWB लेबल जनरेटर</span><span style="font-size: 14px; line-height: 1.5; color: #5E7891">हर पैकेज के लिए बारकोड वाले IATA एयर कार्गो लेबल, प्रिंट के लिए तैयार PDF में। मुफ़्त, बिना साइन-अप।</span></span>
 </a>
 
 <a class="card" href="dg-labels.html" style="background: #FFFFFF; border: 1px solid #E1EDF7; border-radius: 20px; padding: 24px; text-decoration: none; color: #0B2A4A; display: flex; gap: 16px; align-items: start">
@@ -1109,7 +1113,7 @@ function ecb(){return fetch('https://api.frankfurter.dev/v1/latest?base=INR&symb
 er().catch(function(){return ecb()}).catch(function(){var el=document.getElementById('fx');if(el)el.style.display='none'});
 })();
 </script>
-<script src="i18n/tr-core.js"></script><script src="i18n/hi.js?v=8"></script><script src="yam-runtime.js"></script>
+<script src="i18n/tr-core.js"></script><script src="i18n/hi.js?v=14"></script><script src="yam-runtime.js"></script>
 <script>
 window.yamQuote=function(){try{var q=document.getElementById('quote');var t=q.querySelector('[role=tab][aria-selected=true]');var data={},lines=[],em='';q.querySelectorAll('label').forEach(function(l){var e=l.querySelector('input,select');var n=(l.childNodes[0].textContent||'').trim();if(e&&e.value){lines.push(n+': '+e.value);data[n]=e.value;if(e.name==='email')em=e.value}});if(!lines.length){var f=q.querySelector('input');f&&f.focus();return}var svc=t?t.textContent.trim():'';var msg='Quote request ('+svc+')\n'+lines.join('\n')+'\n— sent from yamlogistics.com';window.open('https://wa.me/message/6YB7I76DV6UJL1','_blank');data._subject='Website quote request: '+svc;data.Service=svc;data.Page=location.href;if(em)data._replyto=em;data._template='table';data._cc='yamlogisticsdelhi@gmail.com';var btn=q.querySelector('button.go');fetch('https://formsubmit.co/ajax/info@yamlogistics.com',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}).then(function(r){if(btn)btn.textContent='Sent ✓'}).catch(function(){window.location.href='mailto:info@yamlogistics.com?subject='+encodeURIComponent(data._subject)+'&body='+encodeURIComponent(msg)})}catch(e){}};
 (function(){const DCLogic=YAMDC.DCLogic;class Component extends DCLogic {
@@ -1219,6 +1223,7 @@ window.yamQuote=function(){try{var q=document.getElementById('quote');var t=q.qu
         { icon: '⌂', t: 'Re-export duty planner', b: 'See the duty saved by routing through an Indian bonded warehouse.' },
         { icon: 'm³', t: 'CBM & volumetric weight calculator', b: 'Box sizes in, CBM, air chargeable weight and container fit out. Live now.' },
         { icon: '3D', t: 'Container load calculator', b: 'How many containers, where every carton goes and a step-by-step 3D loading plan. Live now.' },
+        { icon: 'AWB', t: 'AWB label generator', b: 'Barcoded IATA air cargo labels for every piece, as a print-ready PDF. Free, no sign-up.' },
         { icon: '◇', t: 'DG labels & marks library', b: '51 printable hazard labels, battery marks, handling labels and perishable, live animal and pharma labels. Free PDF, PNG and SVG. Live now.' }
       ],
       briefs: [

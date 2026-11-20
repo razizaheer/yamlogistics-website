@@ -1,0 +1,9 @@
+[
+ "First AWB number in your stock",
+ "Type the airline name or {0}-digit prefix and the {1}-digit air waybill number, or drop a PDF or photo of the air waybill and let the tool fill it in.",
+ "Enter the destination airport and the total number of pieces. Origin, transfer points, piece weight, handling information and house waybill details are optional.",
+ "Sample IATA air cargo label made with the free AWB label generator: Emirates, air waybill {0}-{1} {2}, destination DXB, piece {3} of {4}, with Code {5} barcode",
+ "An air waybill number is a {0}-digit airline prefix and an {1}-digit serial. The last digit of the serial is a check digit: the first {2} digits divided by {3}, keep the remainder. Check one number, or list the next numbers in the stock your airline allocated to you.",
+ "Use only air waybill numbers issued to you by the airline. A few carriers use their own numbering, so a check digit mismatch is a warning, not proof of an error.",
+ "The air waybill serial has {0} digits. The {1}th is normally the remainder when the first {2} digits are divided by {3}. For {4} the remainder is {5}, so the serial is {6}. A few carriers use their own numbering, so a mismatch is a warning, not proof of an error."
+]

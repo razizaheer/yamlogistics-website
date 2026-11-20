@@ -1,0 +1,8 @@
+["Enter {0} digits: {1}-digit prefix and {2}-digit serial.",
+ "Check digit should be {0}: {1}-{2}",
+ "✓ Check digit matches ({0}-{1}).",
+ "⚠ Check digit is {0}, expected {1} ({2}-{3}).",
+ "Enter the first AWB number: {0}-digit prefix and {1}-digit serial.",
+ "Choose between {0} and {1} numbers.",
+ "{0} numbers listed.",
+ "Copied."]

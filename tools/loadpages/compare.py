@@ -16,7 +16,8 @@ CK_DOES = ul(['Works out the best mix of 20 ft, 40 ft and 40 ft high cube contai
               'Free on the web and in the CargoKit Android app, in 11 languages, with no sign-up.'])
 COMPARE = [('pier2pier-alternative', 'CargoKit and Pier2Pier', 'What each gives you free and what sits behind a trial.'),
            ('searates-load-calculator-alternative', 'CargoKit and SeaRates Load Calculator', 'Daily limits, monthly plans and what is free.'),
-           ('easycargo-alternative', 'CargoKit and EasyCargo', 'A 10-day trial against a tool that stays free.')]
+           ('easycargo-alternative', 'CargoKit and EasyCargo', 'A 10-day trial against a tool that stays free.'),
+           ('free-container-loading-calculators', '8 free container loading calculators compared', 'CargoKit, SeaRates, Pier2Pier, EasyCargo, Cargo-Planner and more.')]
 def others(skip): return cards([c for c in COMPARE if c[0] != skip] + [('container-load-planner', 'Open the free 3D load planner', 'Enter your packing list and see it loaded.')])
 HEAD = lambda name: ['', name, 'CargoKit load planner']
 made = []
