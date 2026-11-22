@@ -101,7 +101,7 @@
     el('lc-cp').onclick = function () { copy(L.join('\n'), 'Summary copied'); };
     el('lc-brk').onclick = function () {
       copy('Landed cost check from CargoKit\n' + L.join('\n'), 'Summary copied. Paste it in the WhatsApp chat.');
-      setTimeout(function () { window.open('https://wa.me/message/6YB7I76DV6UJL1', '_blank', 'noopener'); }, 400);
+      setTimeout(function () { window.open('https://wa.me/message/E6TS54HPVZHVH1', '_blank', 'noopener'); }, 400);
     };
     mark(q > 0 || local > 0 ? 3 : 2);
   }

@@ -101,7 +101,7 @@
   }
   function waBtn(n, who) {
     var msg = 'Hello YAM, I need help with shipment ' + n + (who ? ' (' + who + ')' : '') + '.';
-    return '<a class="tk-b wa" target="_blank" rel="noopener" href="https://wa.me/message/6YB7I76DV6UJL1' + '"><b>Need it cleared? WhatsApp a broker</b><span>Customs, delivery or a stuck shipment: we reply fast</span></a>';
+    return '<a class="tk-b wa" target="_blank" rel="noopener" href="https://wa.me/message/E6TS54HPVZHVH1' + '"><b>Need it cleared? WhatsApp a broker</b><span>Customs, delivery or a stuck shipment: we reply fast</span></a>';
   }
   function picker(n) {
     return '<select class="tk-sel" id="tk-pick"><option value="">Choose the shipping line…</option>' + SEA.map(function (c, i) { return '<option value="' + i + '">' + h(c[0]) + '</option>'; }).join('') + '</select>';

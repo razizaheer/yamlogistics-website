@@ -74,7 +74,7 @@
       L = ['Sea or air', 'Cargo: ' + f(cb, 2) + ' CBM, ' + f(kg2, 0) + ' kg' + (val ? ', value ' + c + ' ' + f(val, 0) : ''), 'Sea: ' + f(wm2, 2) + ' W/M = ' + c + ' ' + f(sea, 0) + (carry ? ' + time cost ' + f(carry, 0) : ''), 'Air: ' + f(ck, 0) + ' kg = ' + c + ' ' + f(air, 0), 'Cheaper overall: ' + cheap2 + ' by ' + c + ' ' + f(diff2, 0)];
       last = { title: 'Sea or air: ' + cheap2 + ' is cheaper', lines: L.concat(['Estimate from the quotes entered. Check with a forwarder.']) };
     }
-    H += '<div style="margin-top:14px"><a class="fc-btn" href="https://wa.me/message/6YB7I76DV6UJL1" target="_blank" rel="noopener" style="display:inline-block;background:#25D366;color:#073B1B;border-radius:999px;padding:12px 20px;font-weight:700;text-decoration:none">Get a live quote from YAM on WhatsApp</a></div>';
+    H += '<div style="margin-top:14px"><a class="fc-btn" href="https://wa.me/message/E6TS54HPVZHVH1" target="_blank" rel="noopener" style="display:inline-block;background:#25D366;color:#073B1B;border-radius:999px;padding:12px 20px;font-weight:700;text-decoration:none">Get a live quote from YAM on WhatsApp</a></div>';
     el('fc-out').innerHTML = H;
   }
   function all() { inputs(); calc(); }

@@ -243,7 +243,7 @@
     H += '</table>';
     (notes || []).forEach(function (n) { H += '<div class="wd-note">' + n + '</div>'; });
     H += '<div class="wd-note wd-warn">Indicative only. The duty rate is the standard (most-favoured-nation or general) rate from the official tariff. Lower preferential rates may apply under a trade agreement or for certain origins, and anti-dumping or other additional duties are not included unless you add them. Not including port charges, clearance fees, inland transport or other local costs. Confirm with a licensed customs broker before you file.</div>';
-    H += '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><a class="wd-a" href="hsn-code-finder.html" style="background:#EEF6FD;color:#0A6CC2">Find the HSN code</a><a class="wd-a" href="https://wa.me/message/6YB7I76DV6UJL1" target="_blank" rel="noopener" style="background:#25D366;color:#073B1B">Ask a licensed broker on WhatsApp</a></div></div>';
+    H += '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><a class="wd-a" href="hsn-code-finder.html" style="background:#EEF6FD;color:#0A6CC2">Find the HSN code</a><a class="wd-a" href="https://wa.me/message/E6TS54HPVZHVH1" target="_blank" rel="noopener" style="background:#25D366;color:#073B1B">Ask a licensed broker on WhatsApp</a></div></div>';
     el('wd-out').innerHTML = H;
     last = { title: C[S.cn].n + ' import duty and tax', lines: L.concat(['Total duty, taxes and fees: ' + cur + ' ' + f(tax, cur === 'JPY' ? 0 : 2), 'Landed cost: ' + cur + ' ' + f(landed, cur === 'JPY' ? 0 : 2), 'Indicative estimate. Confirm the rate and classification with a licensed customs broker.']) };
   }

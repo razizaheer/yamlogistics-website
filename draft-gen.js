@@ -2,7 +2,7 @@
    Runs on the device; nothing is uploaded. Can fill itself from the invoice and packing list maker (ck_doc_v1). */
 (function () {
   var root = document.getElementById('bd-root'); if (!root) return;
-  var D = document, KEY = 'ck_draft_v1', WA = 'https://wa.me/message/6YB7I76DV6UJL1';
+  var D = document, KEY = 'ck_draft_v1', WA = 'https://wa.me/message/E6TS54HPVZHVH1';
   var css = D.createElement('style');
   css.textContent =
     '.bd-card{background:#fff;border:1px solid #E1EDF7;border-radius:24px;padding:24px;margin-bottom:16px}' +

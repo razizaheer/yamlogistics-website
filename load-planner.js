@@ -1058,7 +1058,7 @@ ${n ? `<div class="lp-card">
   }
   function shareLinks() {
     const txt = 'Hello YAM Logistics, please quote for this shipment.\n' + summaryText();
-    $('lp-wa').href = 'https://wa.me/message/6YB7I76DV6UJL1';
+    $('lp-wa').href = 'https://wa.me/message/E6TS54HPVZHVH1';
     $('lp-mail').href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Load plan – quote request') + '&body=' + encodeURIComponent(txt);
   }
 
