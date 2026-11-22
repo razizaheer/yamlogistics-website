@@ -84,6 +84,23 @@ async function withAppTags(ctx) {
 const CK_MAIN = 'cargokit.ai';
 const CK_HOST = /^(www\.)?cargokit\.(ai|app|in)$/i;
 
+// cargokit.ai home describes CargoKit itself (title, description, share preview, schema), so sites that read
+// the page (Product Hunt, G2, WhatsApp/LinkedIn previews) see CargoKit and not YAM Logistics' company details.
+// The canonical and hreflang links still point to yamlogistics.com/free-tools, so search ranking is unchanged.
+const CK_TITLE = 'CargoKit: Free 3D Container Load Planner and Freight Tools';
+const CK_DESC = 'Free tools for exporters, importers and freight forwarders: 3D container load planner, CBM calculator, Indian import duty calculator, HS code finder, document makers and container tracking. No sign-up, 11 languages. By YAM Logistics.';
+const CK_LD = JSON.stringify({
+  '@context': 'https://schema.org', '@type': 'WebApplication', '@id': 'https://cargokit.ai/#app',
+  name: 'CargoKit', url: 'https://cargokit.ai/', description: CK_DESC,
+  applicationCategory: 'BusinessApplication', operatingSystem: 'Web, Android', browserRequirements: 'Any modern browser',
+  inLanguage: ['en', 'ar', 'de', 'es', 'fr', 'hi', 'ja', 'ko', 'pt', 'ru', 'zh'],
+  image: 'https://cargokit.ai/app/icon-512.png', isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: ['3D container load planner', 'CBM and chargeable weight calculator', 'Indian import duty calculator', 'HS code finder', 'Invoice, packing list and B/L draft makers', 'Dangerous goods checker', 'Container and air waybill tracking'],
+  publisher: { '@type': 'Organization', name: 'YAM Logistics Pvt. Ltd.', url: 'https://www.yamlogistics.com/' }
+}).replace(/</g, '\\u003c');
+const ckAttr = (v) => ({ element(el) { el.setAttribute('content', v); } });
+
 async function cargoKitHome(ctx, url) {
   const res = await ctx.env.ASSETS.fetch(new Request(new URL('/free-tools', url), ctx.request));
   const out = new Response(res.body, res);
@@ -91,7 +108,17 @@ async function cargoKitHome(ctx, url) {
   try {
     if (typeof HTMLRewriter === 'undefined') return out;
     const menu = await menuFor(ctx, url), tb = topBar(url);
-    return new HTMLRewriter().on('head', { element(el) { el.append(APP_TAGS, { html: true }); } })
+    const ogImg = '<meta property="og:image" content="https://cargokit.ai/app/icon-512.png"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="' + CK_TITLE + '"><meta name="twitter:description" content="' + CK_DESC + '">';
+    return new HTMLRewriter()
+      .on('title', { element(el) { el.setInnerContent(CK_TITLE); } })
+      .on('meta[name="description"]', ckAttr(CK_DESC))
+      .on('meta[property="og:site_name"]', ckAttr('CargoKit'))
+      .on('meta[property="og:title"]', ckAttr(CK_TITLE))
+      .on('meta[property="og:description"]', ckAttr(CK_DESC))
+      .on('meta[property="og:url"]', ckAttr('https://cargokit.ai/'))
+      .on('meta[property="og:image"], meta[name^="twitter:"]', { element(el) { el.remove(); } })
+      .on('script[type="application/ld+json"]', { element(el) { el.setInnerContent(CK_LD, { html: true }); } })
+      .on('head', { element(el) { el.append(ogImg + APP_TAGS, { html: true }); } })
       .on('details.ftm', { element(el) { if (menu) el.setInnerContent(menu, { html: true }); } })
       .on(tb[0][0], tb[0][1]).on(tb[1][0], tb[1][1]).transform(out);
   } catch (e) {
